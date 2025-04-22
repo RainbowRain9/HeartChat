@@ -1,0 +1,54 @@
+{
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "packageEmotion/pages/emotion-history/emotion-history",
+          "pathName": "packageEmotion/pages/emotion-history/emotion-history",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/welcome/welcome",
+          "pathName": "pages/welcome/welcome",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "packageEmotion/pages/emotion-history/emotion-history",
+          "pathName": "packageEmotion/pages/emotion-history/emotion-history",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "packageEmotion/pages/daily-report/daily-report",
+          "pathName": "packageEmotion/pages/daily-report/daily-report",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/keywordTest/keywordTest",
+          "pathName": "pages/keywordTest/keywordTest",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/emotionVault/emotionVault",
+          "pathName": "pages/emotionVault/emotionVault",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  },
+  "setting": {
+    "compileHotReLoad": true
+  },
+  "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html"
+}
