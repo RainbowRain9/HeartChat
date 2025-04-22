@@ -1,0 +1,66 @@
+<view class="welcome-container">
+  <!-- 顶部状态栏占位 -->
+  <view class="status-bar"></view>
+
+  <!-- 头部区域 -->
+  <view class="welcome-header">
+    <view class="app-logo">
+      <view class="heart-icon">❤️</view>
+    </view>
+    <view class="app-name">HeartChat</view>
+    <view class="app-slogan">情感陪伴与情商提升的智能伙伴</view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="welcome-content">
+    <view class="welcome-features">
+      <view class="feature-item">
+        <view class="feature-icon">💬</view>
+        <view class="feature-text">
+          <view class="feature-title">情感倾诉</view>
+          <view class="feature-description">在安全的环境中表达情感，获得理解和支持</view>
+        </view>
+      </view>
+      <view class="feature-item">
+        <view class="feature-icon">👥</view>
+        <view class="feature-text">
+          <view class="feature-title">角色互动</view>
+          <view class="feature-description">与多样化的AI角色对话，满足不同情感需求</view>
+        </view>
+      </view>
+      <view class="feature-item">
+        <view class="feature-icon">📊</view>
+        <view class="feature-text">
+          <view class="feature-title">情绪跟踪</view>
+          <view class="feature-description">记录和分析情绪变化，了解自己的情感模式</view>
+        </view>
+      </view>
+      <view class="feature-item">
+        <view class="feature-icon">💡</view>
+        <view class="feature-text">
+          <view class="feature-title">每日心情报告</view>
+          <view class="feature-description">获取个性化的心情总结和建议</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部区域 -->
+  <view class="welcome-footer">
+    <!-- 登录按钮 -->
+    <button class="login-button" open-type="getUserInfo" bindgetuserinfo="handleGetUserInfo" loading="{{loading}}" disabled="{{loading || !agreed}}">一键微信登录</button>
+
+    <!-- 协议区域 -->
+    <view class="agreement-box">
+      <checkbox-group bindchange="handleAgreementChange">
+        <label class="agreement-label">
+          <checkbox value="agreed" checked="{{agreed}}" />
+          <text class="agreement-text">我已阅读并同意</text>
+          <navigator url="/pages/agreement/service" class="link">《服务协议》</navigator>
+          <text class="agreement-text">和</text>
+          <navigator url="/pages/agreement/privacy" class="link">《隐私协议》</navigator>
+        </label>
+      </checkbox-group>
+    </view>
+  </view>
+</view>

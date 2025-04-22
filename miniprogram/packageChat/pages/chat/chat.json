@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "聊天",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "chat-bubble": "../../components/chat-bubble/index",
+    "chat-input": "../../components/chat-input/index",
+    "emotion-dashboard": "/components/emotion-dashboard/emotion-dashboard"
+  }
+}

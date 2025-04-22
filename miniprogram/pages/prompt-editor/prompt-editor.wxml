@@ -1,0 +1,64 @@
+<view class="container">
+  <!-- 状态栏占位 -->
+  <view class="status-bar" style="height: {{statusBarHeight}}px"></view>
+
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-bar-left">
+      <text class="nav-bar-btn" bindtap="handleBack">返回</text>
+    </view>
+    <view class="nav-bar-title">编辑提示词</view>
+    <view class="nav-bar-right">
+      <text class="nav-bar-btn primary" bindtap="savePrompt" wx:if="{{!submitting}}">保存</text>
+      <text class="nav-bar-btn" wx:else>保存中...</text>
+    </view>
+  </view>
+
+  <!-- 主要内容区域 -->
+  <view class="content">
+    <!-- 角色信息 -->
+    <view class="role-info">
+      <text class="role-name">{{roleName}}</text>
+      <text class="role-id">ID: {{roleId}}</text>
+    </view>
+
+    <!-- 提示词编辑区 -->
+    <view class="prompt-editor-container">
+      <view class="editor-header">
+        <text class="editor-title">提示词模板</text>
+        <view class="editor-actions">
+          <text class="action-btn" bindtap="generatePrompt">重新生成</text>
+          <text class="action-btn" bindtap="clearPrompt">清空</text>
+        </view>
+      </view>
+      <textarea class="prompt-textarea" 
+                value="{{prompt}}" 
+                bindinput="handlePromptInput" 
+                placeholder="输入或生成提示词模板..." 
+                maxlength="-1" 
+                auto-height 
+                show-confirm-bar="{{false}}"
+                cursor-spacing="100"></textarea>
+    </view>
+
+    <!-- 提示词说明 -->
+    <view class="prompt-guide">
+      <view class="guide-title">提示词编写指南</view>
+      <view class="guide-content">
+        <text>1. 提示词是AI扮演角色的关键指令，决定了角色的行为方式</text>
+        <text>2. 好的提示词应包含角色的身份、性格、说话风格等信息</text>
+        <text>3. 可以使用"你是..."开头，明确角色定位</text>
+        <text>4. 添加具体的行为指导，如"你应该..."或"避免..."</text>
+        <text>5. 留空将根据角色信息自动生成提示词</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-buttons">
+    <button class="bottom-btn cancel" bindtap="handleBack">取消</button>
+    <button class="bottom-btn save" bindtap="savePrompt" loading="{{submitting}}">
+      {{submitting ? '保存中...' : '保存提示词'}}
+    </button>
+  </view>
+</view>

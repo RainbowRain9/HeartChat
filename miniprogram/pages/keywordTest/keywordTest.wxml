@@ -1,0 +1,55 @@
+<!--pages/keywordTest/keywordTest.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">关键词提取测试</text>
+  </view>
+
+  <view class="input-area">
+    <textarea
+      class="input"
+      placeholder="输入文字进行关键词提取..."
+      bindinput="onInput"
+      value="{{text}}"
+      maxlength="500"
+      auto-height
+    />
+    <view class="btn-area">
+      <button
+        class="clear-btn"
+        bindtap="clearInput"
+        disabled="{{!text || loading}}"
+      >
+        清空
+      </button>
+      <button
+        class="extract-btn {{text ? 'active' : ''}}"
+        bindtap="extractKeywords"
+        loading="{{loading}}"
+        disabled="{{!text || loading}}"
+      >
+        提取关键词
+      </button>
+    </view>
+  </view>
+
+  <!-- 关键词展示 -->
+  <view class="keyword-area" wx:if="{{keywords.length > 0}}">
+    <view class="section-title">提取结果</view>
+    <view class="keyword-cloud">
+      <view
+        class="keyword-tag"
+        wx:for="{{keywords}}"
+        wx:key="index"
+        style="font-size: {{14 + item.weight * 10}}px; opacity: {{0.6 + item.weight * 0.4}};"
+      >
+        {{item.word}}
+        <text class="weight">{{item.weightFormatted}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="tips" wx:if="{{!keywords.length && !loading}}">
+    <text>输入文本并点击"提取关键词"按钮</text>
+  </view>
+</view>

@@ -1,0 +1,39 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# HeartChat 项目概述
+
+## 项目简介
+HeartChat 是一款基于微信小程序云开发的AI情感陪伴与情商提升应用。通过与可定制的AI角色进行对话，用户可以在安全私密的环境中倾诉心事、整理思绪，并通过实时情感分析获得反馈，逐步提升自我认知和人际交往能力。
+
+## 核心功能
+- AI角色聊天：用户可与不同性格和专长的AI角色对话
+- 情感分析：实时分析对话中的情绪变化
+- 情绪记录：记录和可视化用户的情绪状态变化
+- 日常报告：生成用户情绪状态的分析报告
+
+## 项目架构
+- 前端：微信小程序（pages、components等）
+- 后端：云函数（cloudfunctions目录）
+- 数据存储：云数据库
+- AI能力：云调用第三方AI服务
+
+## 主要目录结构
+- [miniprogram/](mdc:miniprogram/)：小程序前端代码
+  - [pages/](mdc:miniprogram/pages/)：小程序页面
+  - [components/](mdc:miniprogram/components/)：公共组件
+  - [packageChat/](mdc:miniprogram/packageChat/)：聊天相关功能（分包）
+  - [packageEmotion/](mdc:miniprogram/packageEmotion/)：情感分析相关功能（分包）
+- [cloudfunctions/](mdc:cloudfunctions/)：云函数后端代码
+  - [chat/](mdc:cloudfunctions/chat/)：聊天相关云函数
+  - [emotion/](mdc:cloudfunctions/emotion/)：情感分析相关云函数
+  - [user/](mdc:cloudfunctions/user/)：用户管理相关云函数
+
+## 技术栈
+- 微信小程序原生框架
+- JavaScript/TypeScript
+- 微信云开发（云函数、云数据库、云存储）
+- Vant Weapp UI组件库
+- ECharts图表库（用于情绪可视化）

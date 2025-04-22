@@ -1,0 +1,353 @@
+/* components/emotion-panel/emotion-panel.wxss */
+.emotion-panel-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+/* 显示面板 */
+.emotion-panel-container.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 面板遮罩 */
+.panel-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+}
+
+/* 情感分析面板 */
+.emotion-panel {
+  position: relative;
+  width: 90%;
+  max-width: 600rpx;
+  max-height: 90vh;
+  background-color: white;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.15);
+  z-index: 1002;
+  overflow-y: auto;
+  padding: 30rpx;
+  transition: all 0.3s ease;
+}
+
+/* 面板头部 */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+/* 面板标题 */
+.panel-title {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+/* 关闭按钮 */
+.close-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40rpx;
+  color: #999;
+  cursor: pointer;
+}
+
+/* 情感饼图容器 */
+.emotion-pie-container {
+  margin: 20rpx 0;
+}
+
+/* 情感报告 */
+.emotion-report {
+  margin: 30rpx 0;
+  padding: 20rpx;
+  background-color: #f9f9f9;
+  border-radius: 10rpx;
+}
+
+/* 报告标题 */
+.report-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  color: #333;
+}
+
+/* 报告内容 */
+.report-content {
+  font-size: 28rpx;
+  line-height: 1.5;
+  color: #666;
+}
+
+/* 情感详情 */
+.emotion-details {
+  margin: 30rpx 0;
+  padding: 20rpx;
+  background-color: #f9f9f9;
+  border-radius: 10rpx;
+}
+
+/* 详情标题 */
+.details-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 15rpx;
+  color: #333;
+}
+
+/* 详情项 */
+.details-item {
+  margin-bottom: 15rpx;
+  padding: 10rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+
+/* 详情标签 */
+.detail-label {
+  font-size: 26rpx;
+  color: #666;
+  margin-right: 10rpx;
+  display: block;
+  margin-bottom: 5rpx;
+}
+
+/* 详情值 */
+.detail-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 标签容器 */
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10rpx;
+}
+
+/* 标签 */
+.detail-tag {
+  display: inline-block;
+  padding: 6rpx 16rpx;
+  margin: 6rpx;
+  font-size: 24rpx;
+  color: #fff;
+  background-color: #3498db;
+  border-radius: 30rpx;
+}
+
+/* 无数据 */
+.no-data {
+  font-size: 24rpx;
+  color: #999;
+  font-style: italic;
+}
+
+/* 建议列表 */
+.emotion-suggestions {
+  margin: 30rpx 0;
+}
+
+/* 建议标题 */
+.suggestions-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 15rpx;
+  color: #333;
+}
+
+/* 建议列表 */
+.suggestions-list {
+  padding: 10rpx;
+}
+
+/* 建议项 */
+.suggestion-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15rpx;
+  padding: 10rpx;
+  background-color: #f5f5f5;
+  border-radius: 8rpx;
+}
+
+/* 建议图标 */
+.suggestion-icon {
+  margin-right: 10rpx;
+  font-size: 28rpx;
+}
+
+/* 建议文本 */
+.suggestion-text {
+  font-size: 26rpx;
+  line-height: 1.4;
+  color: #555;
+  flex: 1;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30rpx;
+}
+
+/* 按钮样式 */
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15rpx 20rpx;
+  background-color: #f0f0f0;
+  border-radius: 10rpx;
+  width: 30%;
+  height: 120rpx;
+  line-height: 1.2;
+}
+
+/* 按钮图标 */
+.btn-icon {
+  font-size: 36rpx;
+  margin-bottom: 8rpx;
+}
+
+/* 按钮文本 */
+.btn-text {
+  font-size: 24rpx;
+  color: #555;
+}
+
+/* 切换角色按钮 */
+.switch-role-btn {
+  background-color: #e1f5fe;
+}
+
+/* 保存按钮 */
+.save-btn {
+  background-color: #e8f5e9;
+}
+
+/* 历史记录按钮 */
+.history-btn {
+  background-color: #fff3e0;
+}
+
+/* 情感类型特定样式 */
+.emotion-panel.joy {
+  border-top: 8rpx solid #2ECC71;
+}
+
+.emotion-panel.sadness {
+  border-top: 8rpx solid #3498DB;
+}
+
+.emotion-panel.anger {
+  border-top: 8rpx solid #E74C3C;
+}
+
+.emotion-panel.anxiety {
+  border-top: 8rpx solid #F1C40F;
+}
+
+.emotion-panel.neutral {
+  border-top: 8rpx solid #95A5A6;
+}
+
+/* 暗色主题 */
+.emotion-panel-container.dark .emotion-panel {
+  background-color: #333;
+  color: #eee;
+}
+
+.emotion-panel-container.dark .panel-title {
+  color: #fff;
+}
+
+.emotion-panel-container.dark .close-btn {
+  color: #ccc;
+}
+
+.emotion-panel-container.dark .emotion-report,
+.emotion-panel-container.dark .emotion-details {
+  background-color: #444;
+}
+
+.emotion-panel-container.dark .report-title,
+.emotion-panel-container.dark .suggestions-title,
+.emotion-panel-container.dark .details-title {
+  color: #eee;
+}
+
+.emotion-panel-container.dark .report-content,
+.emotion-panel-container.dark .detail-label {
+  color: #ccc;
+}
+
+.emotion-panel-container.dark .detail-value {
+  color: #fff;
+}
+
+.emotion-panel-container.dark .details-item {
+  border-bottom-color: #555;
+}
+
+.emotion-panel-container.dark .detail-tag {
+  background-color: #2980b9;
+}
+
+.emotion-panel-container.dark .no-data {
+  color: #777;
+}
+
+.emotion-panel-container.dark .suggestion-item {
+  background-color: #555;
+}
+
+.emotion-panel-container.dark .suggestion-text {
+  color: #ddd;
+}
+
+.emotion-panel-container.dark .action-btn {
+  background-color: #555;
+}
+
+.emotion-panel-container.dark .btn-text {
+  color: #eee;
+}
+
+.emotion-panel-container.dark .switch-role-btn {
+  background-color: #01579b;
+}
+
+.emotion-panel-container.dark .save-btn {
+  background-color: #1b5e20;
+}
+
+.emotion-panel-container.dark .history-btn {
+  background-color: #e65100;
+}

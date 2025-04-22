@@ -1,0 +1,125 @@
+<!--components/emotion-pie/emotion-pie.wxml-->
+<view class="emotion-pie">
+  <!-- 情感饼图 -->
+  <view class="pie-container">
+    <!-- 情感扇区 -->
+    <view class="emotion-sectors">
+      <!-- 基本情感类型扇区 -->
+      <view class="emotion-sector {{highlightSector === 'joy' ? 'active' : ''}}"
+            data-emotion="joy"
+            bindtap="onSectorTap"
+            style="background-color: {{colors.joy}}; transform: rotate(0deg) skew(30deg);">
+      </view>
+      <view class="emotion-sector {{highlightSector === 'sadness' ? 'active' : ''}}"
+            data-emotion="sadness"
+            bindtap="onSectorTap"
+            style="background-color: {{colors.sadness}}; transform: rotate(72deg) skew(30deg);">
+      </view>
+      <view class="emotion-sector {{highlightSector === 'anger' ? 'active' : ''}}"
+            data-emotion="anger"
+            bindtap="onSectorTap"
+            style="background-color: {{colors.anger}}; transform: rotate(144deg) skew(30deg);">
+      </view>
+      <view class="emotion-sector {{highlightSector === 'anxiety' ? 'active' : ''}}"
+            data-emotion="anxiety"
+            bindtap="onSectorTap"
+            style="background-color: {{colors.anxiety}}; transform: rotate(216deg) skew(30deg);">
+      </view>
+      <view class="emotion-sector {{highlightSector === 'neutral' ? 'active' : ''}}"
+            data-emotion="neutral"
+            bindtap="onSectorTap"
+            style="background-color: {{colors.neutral}}; transform: rotate(288deg) skew(30deg);">
+      </view>
+    </view>
+
+    <!-- 中心圆 -->
+    <view class="pie-center">
+      <view class="intensity-indicator" style="transform: scale({{intensity}})"></view>
+    </view>
+  </view>
+
+  <!-- 情感标签 -->
+  <view class="emotion-labels">
+    <!-- 基本情感类型 -->
+    <view class="emotion-label {{currentEmotion === 'joy' ? 'active' : ''}}"
+          data-emotion="joy"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.joy}}"></view>
+      <text>{{labels.joy}}</text>
+    </view>
+    <view class="emotion-label {{currentEmotion === 'sadness' ? 'active' : ''}}"
+          data-emotion="sadness"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.sadness}}"></view>
+      <text>{{labels.sadness}}</text>
+    </view>
+    <view class="emotion-label {{currentEmotion === 'anger' ? 'active' : ''}}"
+          data-emotion="anger"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.anger}}"></view>
+      <text>{{labels.anger}}</text>
+    </view>
+    <view class="emotion-label {{currentEmotion === 'anxiety' ? 'active' : ''}}"
+          data-emotion="anxiety"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.anxiety}}"></view>
+      <text>{{labels.anxiety}}</text>
+    </view>
+    <view class="emotion-label {{currentEmotion === 'neutral' ? 'active' : ''}}"
+          data-emotion="neutral"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.neutral}}"></view>
+      <text>{{labels.neutral}}</text>
+    </view>
+
+    <!-- 新增情感类型 -->
+    <view class="emotion-label {{currentEmotion === 'calm' ? 'active' : ''}}"
+          data-emotion="calm"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.calm}}"></view>
+      <text>{{labels.calm}}</text>
+    </view>
+    <view class="emotion-label {{currentEmotion === 'surprise' ? 'active' : ''}}"
+          data-emotion="surprise"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.surprise}}"></view>
+      <text>{{labels.surprise}}</text>
+    </view>
+    <view class="emotion-label {{currentEmotion === 'disgust' ? 'active' : ''}}"
+          data-emotion="disgust"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.disgust}}"></view>
+      <text>{{labels.disgust}}</text>
+    </view>
+    <view class="emotion-label {{currentEmotion === 'anticipation' ? 'active' : ''}}"
+          data-emotion="anticipation"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.anticipation}}"></view>
+      <text>{{labels.anticipation}}</text>
+    </view>
+    <view class="emotion-label {{currentEmotion === 'urgency' ? 'active' : ''}}"
+          data-emotion="urgency"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.urgency}}"></view>
+      <text>{{labels.urgency}}</text>
+    </view>
+    <view class="emotion-label {{currentEmotion === 'disappointment' ? 'active' : ''}}"
+          data-emotion="disappointment"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.disappointment}}"></view>
+      <text>{{labels.disappointment}}</text>
+    </view>
+    <view class="emotion-label {{currentEmotion === 'fatigue' ? 'active' : ''}}"
+          data-emotion="fatigue"
+          bindtap="onSectorTap">
+      <view class="label-color" style="background-color: {{colors.fatigue}}"></view>
+      <text>{{labels.fatigue}}</text>
+    </view>
+  </view>
+
+  <!-- 当前情感信息 -->
+  <view class="current-emotion">
+    <text class="emotion-type">{{labels[currentEmotion]}}</text>
+    <text class="emotion-intensity">强度: {{intensity * 100}}%</text>
+  </view>
+</view>

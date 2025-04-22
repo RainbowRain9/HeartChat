@@ -1,0 +1,124 @@
+/**app.wxss**/
+page {
+  --primary-color: #07c160;
+  --danger-color: #ee0a24;
+  --warning-color: #ff976a;
+  --info-color: #1989fa;
+  --text-color: #333333;
+  --text-color-gray: #999999;
+  --border-color: #ebedf0;
+  --active-color: #f2f3f5;
+  --background-color: #ededed;
+  
+  background: var(--background-color);
+  font-size: 28rpx;
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica,
+    Segoe UI, Arial, Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei',
+    sans-serif;
+}
+
+/* 通用容器 */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* 安全区适配 */
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 通用动画 */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* 通用过渡 */
+.transition {
+  transition: all 0.3s ease-in-out;
+}
+
+/* 文本溢出省略 */
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* 通用间距 */
+.margin-xs { margin: 10rpx; }
+.margin-sm { margin: 20rpx; }
+.margin { margin: 30rpx; }
+.margin-lg { margin: 40rpx; }
+.margin-xl { margin: 50rpx; }
+
+.padding-xs { padding: 10rpx; }
+.padding-sm { padding: 20rpx; }
+.padding { padding: 30rpx; }
+.padding-lg { padding: 40rpx; }
+.padding-xl { padding: 50rpx; }
+
+/* 通用flex布局 */
+.flex { display: flex; }
+.flex-column { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.flex-wrap { flex-wrap: wrap; }
+.justify-start { justify-content: flex-start; }
+.justify-end { justify-content: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+.align-start { align-items: flex-start; }
+.align-end { align-items: flex-end; }
+.align-center { align-items: center; }
+
+/* 通用按钮样式重置 */
+button {
+  background: initial;
+  line-height: inherit;
+  border-radius: inherit;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+button:focus { outline: 0; }
+button::after { border: none; }
+
+/* 去除button的默认边框 */
+button[plain] { border: 0; }
+
+/* 隐藏滚动条 */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}

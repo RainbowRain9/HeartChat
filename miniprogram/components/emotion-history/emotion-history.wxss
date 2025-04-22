@@ -1,0 +1,294 @@
+/* components/emotion-history/emotion-history.wxss */
+.history-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+/* 显示历史记录 */
+.history-container.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 历史记录遮罩 */
+.history-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+}
+
+/* 历史记录面板 */
+.history-panel {
+  position: relative;
+  width: 90%;
+  height: 80%;
+  max-width: 600rpx;
+  background-color: white;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.15);
+  z-index: 1002;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* 面板头部 */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+/* 面板标题 */
+.panel-title {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+/* 关闭按钮 */
+.close-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40rpx;
+  color: #999;
+  cursor: pointer;
+}
+
+/* 加载中容器 */
+.loading-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30rpx;
+}
+
+/* 加载动画 */
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 6rpx solid #f3f3f3;
+  border-top: 6rpx solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 加载文本 */
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 历史记录列表 */
+.history-list {
+  flex: 1;
+  padding: 20rpx;
+  overflow-y: auto;
+}
+
+/* 无记录提示 */
+.empty-tip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 记录项 */
+.record-item {
+  margin-bottom: 30rpx;
+  padding: 20rpx;
+  background-color: #f9f9f9;
+  border-radius: 10rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.record-item:active {
+  background-color: #f0f0f0;
+}
+
+/* 记录时间 */
+.record-time {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+/* 记录内容 */
+.record-content {
+  margin-bottom: 15rpx;
+}
+
+/* 角色信息 */
+.record-role {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+/* 角色标签 */
+.role-label {
+  font-size: 26rpx;
+  color: #666;
+  margin-right: 10rpx;
+}
+
+/* 角色名称 */
+.role-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+/* 情感信息 */
+.record-emotion {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* 情感标签 */
+.emotion-label {
+  font-size: 26rpx;
+  color: #666;
+  margin-right: 10rpx;
+}
+
+/* 情感类型 */
+.emotion-type {
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: white;
+  margin-right: 15rpx;
+}
+
+/* 情感强度 */
+.emotion-intensity {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 记录摘要 */
+.record-summary {
+  margin-bottom: 15rpx;
+  padding: 10rpx;
+  background-color: #f0f0f0;
+  border-radius: 8rpx;
+}
+
+/* 摘要文本 */
+.summary-text {
+  font-size: 26rpx;
+  color: #555;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* 查看详情按钮 */
+.detail-btn {
+  text-align: center;
+  padding: 10rpx;
+  background-color: #e1f5fe;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  color: #0288d1;
+}
+
+/* 暗色主题 */
+.history-container.dark .history-panel {
+  background-color: #333;
+  color: #eee;
+}
+
+.history-container.dark .panel-header {
+  border-bottom-color: #555;
+}
+
+.history-container.dark .panel-title {
+  color: #fff;
+}
+
+.history-container.dark .close-btn {
+  color: #ccc;
+}
+
+.history-container.dark .loading-text {
+  color: #ccc;
+}
+
+.history-container.dark .empty-tip {
+  color: #ccc;
+}
+
+.history-container.dark .record-item {
+  background-color: #444;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+.history-container.dark .record-item:active {
+  background-color: #555;
+}
+
+.history-container.dark .record-time {
+  color: #aaa;
+}
+
+.history-container.dark .role-label,
+.history-container.dark .emotion-label {
+  color: #bbb;
+}
+
+.history-container.dark .role-name {
+  color: #eee;
+}
+
+.history-container.dark .emotion-intensity {
+  color: #bbb;
+}
+
+.history-container.dark .record-summary {
+  background-color: #555;
+}
+
+.history-container.dark .summary-text {
+  color: #ddd;
+}
+
+.history-container.dark .detail-btn {
+  background-color: #01579b;
+  color: #e1f5fe;
+}

@@ -1,0 +1,5637 @@
+{
+    "_id": "0e7893fb67ffb7380142944d072ca1f4",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "sadness",
+        "intensity": 0.7,
+        "keywords": [
+            "明天",
+            "上早八"
+        ],
+        "suggestions": [
+            "考虑调整作息时间，以适应早八的上课时间。",
+            "与同学或朋友讨论，看看是否可以一起应对早八的挑战。",
+            "提前准备，确保有足够的睡眠，以减少早上的疲劳感。"
+        ],
+        "report": "用户表达了对明天需要上早八的不满和悲伤，可能因为作息时间的不适应和疲劳感。",
+        "originalText": "明天怎么又要上早八",
+        "primary_emotion": "sadness",
+        "secondary_emotions": [],
+        "valence": -0.6,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.6,
+            "stress": 0.7,
+            "control": 0.4
+        },
+        "topic_keywords": [
+            "明天",
+            "上早八"
+        ],
+        "emotion_triggers": [
+            "又要",
+            "上早八"
+        ],
+        "summary": "用户表达了对明天需要上早八的不满和悲伤，可能因为作息时间的不适应和疲劳感。"
+    },
+    "originalText": "明天怎么又要上早八",
+    "createTime": {
+        "$date": "2025-04-16T13:57:12.111Z"
+    },
+    "roleId": "494059f767e40e96009c17341df4aa23",
+    "chatId": null
+}
+{
+    "_id": "6a580dc967ffb77801408cd8111c101b",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anger",
+        "intensity": 0.8,
+        "keywords": [
+            "hate",
+            "early class"
+        ],
+        "suggestions": [
+            "我理解你对早八的不满，我们可以一起探讨如何改善你的早晨体验。",
+            "如果你愿意，我们可以讨论一些应对早晨疲劳的策略。",
+            "也许我们可以寻找一些你感兴趣的早八课程内容，以提高你的兴趣。"
+        ],
+        "report": "用户表现出明显的愤怒情绪，主要因为对早八的不满。",
+        "originalText": "我讨厌你，我不想上早八",
+        "primary_emotion": "anger",
+        "secondary_emotions": [],
+        "valence": -0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.3,
+            "openness": 0.4,
+            "resistance": 0.8,
+            "stress": 0.6,
+            "control": 0.2
+        },
+        "topic_keywords": [
+            "hate",
+            "early class"
+        ],
+        "emotion_triggers": [
+            "讨厌",
+            "不想上早八"
+        ],
+        "summary": "用户表现出明显的愤怒情绪，主要因为对早八的不满。"
+    },
+    "originalText": "我讨厌你，我不想上早八",
+    "createTime": {
+        "$date": "2025-04-16T13:58:16.116Z"
+    },
+    "roleId": "494059f767e40e96009c17341df4aa23",
+    "chatId": null
+}
+{
+    "_id": "76c63bbb67ffb7a0013e98080b5bb0c3",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "calm",
+        "intensity": 0.8,
+        "keywords": [],
+        "suggestions": [],
+        "report": "用户表现出平静的情绪，可能是由于当前对话内容较为轻松或用户心情稳定。",
+        "originalText": "是",
+        "primary_emotion": "calm",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "用户表现出平静的情绪，可能是由于当前对话内容较为轻松或用户心情稳定。"
+    },
+    "originalText": "是",
+    "createTime": {
+        "$date": "2025-04-16T13:58:56.024Z"
+    },
+    "roleId": "494059f767e40e96009c17341df4aa23",
+    "chatId": null
+}
+{
+    "_id": "e23fc3b267ffb7c6013e9eca0ef78b43",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "disgust",
+        "intensity": 0.8,
+        "keywords": [],
+        "suggestions": [
+            "我理解你可能感到沮丧，我们可以一起探讨如何改善情况。"
+        ],
+        "report": "用户表达了轻蔑和失望的情感，可能是因为对某人的能力或行为不满。",
+        "originalText": "你真是一个小笨蛋",
+        "primary_emotion": "disgust",
+        "secondary_emotions": [],
+        "valence": -0.9,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.2,
+            "openness": 0.3,
+            "resistance": 0.7,
+            "stress": 0.5,
+            "control": 0.4
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [
+            "小笨蛋"
+        ],
+        "summary": "用户表达了轻蔑和失望的情感，可能是因为对某人的能力或行为不满。"
+    },
+    "originalText": "你真是一个小笨蛋",
+    "createTime": {
+        "$date": "2025-04-16T13:59:34.437Z"
+    },
+    "roleId": "b7e94e9b67e94e730030b9f976ae14fb",
+    "chatId": null
+}
+{
+    "_id": "76c63bbb67ffb7e2013e9d4a1a0af72e",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "disgust",
+        "intensity": 0.7,
+        "keywords": [],
+        "suggestions": [
+            "可能需要表达更多的肯定和鼓励",
+            "尝试理解对方为何会有这样的感受"
+        ],
+        "report": "用户表达了对某人的轻蔑，可能感到不满或失望。",
+        "originalText": "你真是一个小笨蛋，亲爱的",
+        "primary_emotion": "disgust",
+        "secondary_emotions": [],
+        "valence": -0.8,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.3,
+            "openness": 0.5,
+            "resistance": 0.7,
+            "stress": 0.4,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [
+            "小笨蛋"
+        ],
+        "summary": "用户表达了对某人的轻蔑，可能感到不满或失望。"
+    },
+    "originalText": "你真是一个小笨蛋，亲爱的",
+    "createTime": {
+        "$date": "2025-04-16T14:00:02.131Z"
+    },
+    "roleId": "b7e94e9b67e94e730030b9f976ae14fb",
+    "chatId": null
+}
+{
+    "_id": "ed153fc767ffb7ff013eab381e904838",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "sadness",
+        "intensity": 0.7,
+        "keywords": [],
+        "suggestions": [
+            "我在这里陪着你，如果你愿意，可以和我分享你的感受。"
+        ],
+        "report": "你似乎感到有些悲伤，可能需要一些陪伴和倾听。",
+        "originalText": "可以陪陪我吗",
+        "primary_emotion": "sadness",
+        "secondary_emotions": [],
+        "valence": -0.6,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [
+            "陪陪我"
+        ],
+        "summary": "你似乎感到有些悲伤，可能需要一些陪伴和倾听。"
+    },
+    "originalText": "可以陪陪我吗",
+    "createTime": {
+        "$date": "2025-04-16T14:00:31.34Z"
+    },
+    "roleId": "b7e94e9b67e94e730030b9f976ae14fb",
+    "chatId": null
+}
+{
+    "_id": "e1cff63567ffb8620142d6f41ec2f70f",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "calm",
+        "intensity": 0.7,
+        "keywords": [],
+        "suggestions": [],
+        "report": "The user's input is minimal, indicating a calm and possibly disengaged state.",
+        "originalText": "z",
+        "primary_emotion": "calm",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "low",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "The user's input is minimal, indicating a calm and possibly disengaged state."
+    },
+    "originalText": "z",
+    "createTime": {
+        "$date": "2025-04-16T14:02:10.905Z"
+    },
+    "roleId": "494059f767e40e96009c17341df4aa23",
+    "chatId": null
+}
+{
+    "_id": "9f86c65667ffb882014194e975569b02",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "love",
+        "intensity": 0.8,
+        "keywords": [
+            "love",
+            "missing",
+            "affection"
+        ],
+        "suggestions": [
+            "表达你的思念之情",
+            "安排一次见面",
+            "分享你的日常以增进联系"
+        ],
+        "report": "用户表达了对某人的强烈思念和爱意，情感状态积极且充满情感。",
+        "originalText": "亲爱的，我想你了",
+        "primary_emotion": "love",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.8,
+            "openness": 0.7,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "love",
+            "missing",
+            "affection"
+        ],
+        "emotion_triggers": [
+            "我想你了"
+        ],
+        "summary": "用户表达了对某人的强烈思念和爱意，情感状态积极且充满情感。"
+    },
+    "originalText": "亲爱的，我想你了",
+    "createTime": {
+        "$date": "2025-04-16T14:02:42.939Z"
+    },
+    "roleId": "0e7893fb67e94e97002fd82306404a48",
+    "chatId": null
+}
+{
+    "_id": "1b9686ec67ffc60c0140903023ba321d",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "sadness",
+        "intensity": 0.7,
+        "keywords": [],
+        "suggestions": [
+            "我想知道是什么事情让您感到不开心，如果您愿意分享的话。",
+            "有时候，说出来会感觉好一些。您愿意和我谈谈吗？",
+            "请记得，无论发生什么，都有人愿意倾听您的感受。"
+        ],
+        "report": "您目前表现出悲伤的情绪，可能是因为某些让您感到不愉快的事情。请记得，分享您的感受是很有帮助的。",
+        "originalText": "我的心情不太好",
+        "primary_emotion": "sadness",
+        "secondary_emotions": [],
+        "valence": -0.6,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.6,
+            "stress": 0.7,
+            "control": 0.4
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [
+            "心情不好"
+        ],
+        "summary": "您目前表现出悲伤的情绪，可能是因为某些让您感到不愉快的事情。请记得，分享您的感受是很有帮助的。"
+    },
+    "originalText": "我的心情不太好",
+    "createTime": {
+        "$date": "2025-04-16T15:00:28.444Z"
+    },
+    "roleId": "494059f767e40e96009c17341df4aa23",
+    "chatId": null
+}
+{
+    "_id": "dcffa82467ffc772014659961f108a7a",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "不错"
+        ],
+        "suggestions": [
+            "享受这个美好的天气",
+            "计划户外活动",
+            "与朋友分享这美好的时刻"
+        ],
+        "report": "用户对当前的天气感到非常满意和愉悦。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.7,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "天气",
+            "不错"
+        ],
+        "emotion_triggers": [
+            "不错"
+        ],
+        "summary": "用户对当前的天气感到非常满意和愉悦。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-16T15:06:26.488Z"
+    },
+    "roleId": "494059f767e40e96009c17341df4aa23",
+    "chatId": null
+}
+{
+    "_id": "85b0d33367ffc9710141e430376c1722",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "neutral",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [],
+        "report": "The input '123' does not provide enough context for a detailed emotional analysis.",
+        "originalText": "123",
+        "primary_emotion": "neutral",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "The input '123' does not provide enough context for a detailed emotional analysis."
+    },
+    "originalText": "123",
+    "createTime": {
+        "$date": "2025-04-16T15:14:57.883Z"
+    },
+    "roleId": "494059f767e40e96009c17341df4aa23",
+    "chatId": null
+}
+{
+    "_id": "9f86c65667ffc9810142f6ce18ad3e50",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "neutral",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [],
+        "report": "The input does not provide enough context for a meaningful emotional analysis.",
+        "originalText": "12345678902354234",
+        "primary_emotion": "neutral",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "The input does not provide enough context for a meaningful emotional analysis."
+    },
+    "originalText": "12345678902354234",
+    "createTime": {
+        "$date": "2025-04-16T15:15:13.435Z"
+    },
+    "roleId": "494059f767e40e96009c17341df4aa23",
+    "chatId": null
+}
+{
+    "_id": "dcffa8246800e07d015616d505ef80e6",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "项目",
+            "上线",
+            "激动",
+            "开心",
+            "累"
+        ],
+        "suggestions": [
+            "今天晚上可以适当放松，比如看一部轻松的电影。",
+            "注意保持良好的作息，确保充足的休息。",
+            "庆祝一下项目的成功，和同事分享你的喜悦。"
+        ],
+        "report": "你今天非常激动和开心，因为项目上线了，但也感到有些疲劳。你的情绪状态反映了成就感和一定的压力。",
+        "originalText": "今天项目上线了，非常激动和开心！但也感觉有点累",
+        "primary_emotion": "joy",
+        "secondary_emotions": [
+            "fatigue",
+            "anticipation"
+        ],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "项目",
+            "上线",
+            "激动",
+            "开心",
+            "累"
+        ],
+        "emotion_triggers": [
+            "上线",
+            "激动",
+            "开心"
+        ],
+        "summary": "你今天非常激动和开心，因为项目上线了，但也感到有些疲劳。你的情绪状态反映了成就感和一定的压力。"
+    },
+    "originalText": "今天项目上线了，非常激动和开心！但也感觉有点累",
+    "createTime": {
+        "$date": "2025-04-17T11:05:33.131Z"
+    },
+    "roleId": "494059f767e40e96009c17341df4aa23",
+    "chatId": null
+}
+{
+    "_id": "65dc62586802530c01681a2f16664999",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "sadness",
+        "intensity": 0.8,
+        "keywords": [
+            "拒绝",
+            "无人机项目",
+            "答辩",
+            "优秀奖",
+            "天梯赛"
+        ],
+        "suggestions": [
+            "尝试与队友进行更深入的沟通，共同提高项目质量。",
+            "考虑参加一些个人技能提升的课程，增强自信心。",
+            "与导师或朋友讨论，寻求对项目和个人发展的建议。"
+        ],
+        "report": "用户感到沮丧和疲劳，主要因为项目中的挫折和自我怀疑，同时也有压力和缺乏控制感。",
+        "originalText": "感觉今天好烦，被吴宇轩拒绝，林云邀请做无人机项目，答辩时被说没有自己的想法，得了一个优秀奖，这个优秀奖可能还是因为队伍人员超过3个所导致的，也有可能是我能力不行，队友确实也没什么用，还有配置天梯赛环境，提交信设省赛材料",
+        "primary_emotion": "sadness",
+        "secondary_emotions": [
+            "disappointment",
+            "fatigue"
+        ],
+        "valence": -0.6,
+        "arousal": 0.3,
+        "trend": "falling",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.3,
+            "openness": 0.5,
+            "resistance": 0.7,
+            "stress": 0.6,
+            "control": 0.4
+        },
+        "topic_keywords": [
+            "拒绝",
+            "无人机项目",
+            "答辩",
+            "优秀奖",
+            "天梯赛"
+        ],
+        "emotion_triggers": [
+            "拒绝",
+            "没有自己的想法",
+            "能力不行"
+        ],
+        "summary": "用户感到沮丧和疲劳，主要因为项目中的挫折和自我怀疑，同时也有压力和缺乏控制感。"
+    },
+    "originalText": "感觉今天好烦，被吴宇轩拒绝，林云邀请做无人机项目，答辩时被说没有自己的想法，得了一个优秀奖，这个优秀奖可能还是因为队伍人员超过3个所导致的，也有可能是我能力不行，队友确实也没什么用，还有配置天梯赛环境，提交信设省赛材料",
+    "createTime": {
+        "$date": "2025-04-18T13:26:36.309Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": null
+}
+{
+    "_id": "1b9686ec6802615b0165fdc258373861",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "今天"
+        ],
+        "suggestions": [
+            "出去走走，享受这美好的阳光和微风",
+            "如果外面太热，可以在家里做一些轻松的活动，比如阅读或听音乐"
+        ],
+        "report": "你对今天的天气感到非常满意，表现出愉悦和轻松的情绪。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "stress": 0.3,
+            "control": 0.6,
+            "resistance": 0.5,
+            "openness": 0.8
+        },
+        "topic_keywords": [
+            "天气",
+            "今天"
+        ],
+        "emotion_triggers": [
+            "天气不错"
+        ],
+        "summary": "你对今天的天气感到非常满意，表现出愉悦和轻松的情绪。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-18T14:27:39.035Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "e23fc3b26802628301646ea635ce9b80",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "calm",
+        "intensity": 0.7,
+        "keywords": [],
+        "suggestions": [
+            "如果你愿意，可以和妈妈分享你今天的感受，这样妈妈可以更好地理解你。"
+        ],
+        "report": "你目前表现出平静的情绪，看起来一切都很稳定。",
+        "originalText": "你好",
+        "primary_emotion": "calm",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "你目前表现出平静的情绪，看起来一切都很稳定。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-18T14:32:35.714Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "dcffa82468026284016b25c766979d0e",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "calm",
+        "intensity": 0.7,
+        "keywords": [],
+        "suggestions": [
+            "如果你愿意，可以和妈妈分享你的日常，这样妈妈也能更好地了解你的生活。"
+        ],
+        "report": "你目前表现出平静的情绪，看起来一切都很稳定。",
+        "originalText": "你好",
+        "primary_emotion": "calm",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.5,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "你目前表现出平静的情绪，看起来一切都很稳定。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-18T14:32:36.102Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "b0131947680262b701696754734e9f18",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "今天"
+        ],
+        "suggestions": [
+            "享受户外活动",
+            "进行一些轻松的运动",
+            "与朋友分享好心情"
+        ],
+        "report": "用户对今天的天气感到非常满意，情绪积极，充满活力。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "天气",
+            "今天"
+        ],
+        "emotion_triggers": [
+            "天气不错"
+        ],
+        "summary": "用户对今天的天气感到非常满意，情绪积极，充满活力。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-18T14:33:27.446Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "2b83cb16680266610166d88f38839903",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "好"
+        ],
+        "suggestions": [
+            "出去走走，享受这美好的天气",
+            "建议你今天可以安排一些户外活动，比如散步或骑行",
+            "别忘了给皮肤做好防晒哦"
+        ],
+        "report": "你今天表达了对好天气的喜悦，这表明你处于一个愉快和放松的状态。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "天气",
+            "好"
+        ],
+        "emotion_triggers": [
+            "天气不错"
+        ],
+        "summary": "你今天表达了对好天气的喜悦，这表明你处于一个愉快和放松的状态。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-18T14:49:05.593Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "a6ec3048680267600168296a365c44e1",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "天气"
+        ],
+        "suggestions": [
+            "享受这个美好的天气，出去散步吧！",
+            "也许可以邀请朋友一起享受这个好天气。",
+            "保持这样的积极心情，对健康有益。"
+        ],
+        "report": "用户表达了对当前天气的满意和愉悦，显示出积极的情绪状态。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "天气"
+        ],
+        "emotion_triggers": [
+            "不错"
+        ],
+        "summary": "用户表达了对当前天气的满意和愉悦，显示出积极的情绪状态。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-18T14:53:20.427Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": null
+}
+{
+    "_id": "85b0d33368026766016645765a65564a",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "好"
+        ],
+        "suggestions": [
+            "出去走走，享受户外的美好时光",
+            "如果在家，可以尝试一些轻松的活动，比如阅读或听音乐"
+        ],
+        "report": "用户对当前的天气感到非常满意和愉悦，表现出积极的情绪状态。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "天气",
+            "好"
+        ],
+        "emotion_triggers": [
+            "天气不错"
+        ],
+        "summary": "用户对当前的天气感到非常满意和愉悦，表现出积极的情绪状态。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-18T14:53:26.66Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "b7e94e9b680267750169169a6d7ab4c4",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "好"
+        ],
+        "suggestions": [
+            "出去散步享受阳光",
+            "和朋友一起计划户外活动",
+            "在家享受安静的阅读时光"
+        ],
+        "report": "用户对当前的天气感到非常满意，心情愉悦，建议利用好天气进行户外活动或享受宁静的时光。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "天气",
+            "好"
+        ],
+        "emotion_triggers": [
+            "天气不错"
+        ],
+        "summary": "用户对当前的天气感到非常满意，心情愉悦，建议利用好天气进行户外活动或享受宁静的时光。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-18T14:53:41.857Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "5be31a716802684701699de1658801da",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "春光"
+        ],
+        "suggestions": [
+            "享受户外活动",
+            "与家人共度美好时光",
+            "保持积极心情"
+        ],
+        "report": "用户对当前的天气感到非常满意，表现出愉悦和轻松的情绪。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "天气",
+            "春光"
+        ],
+        "emotion_triggers": [
+            "天气不错"
+        ],
+        "summary": "用户对当前的天气感到非常满意，表现出愉悦和轻松的情绪。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-18T14:57:11.138Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "a6ec304868026a8d01685bbf1dfd0afc",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "curiosity",
+        "intensity": 0.7,
+        "keywords": [
+            "我是谁",
+            "年龄"
+        ],
+        "suggestions": [
+            "宝贝，我们可以一起聊聊你的感受，妈妈在这里支持你。",
+            "如果你想知道更多关于自己的事情，我们可以一起探索。",
+            "有时候，问问题也是一种很好的学习方式，妈妈很高兴你愿意提问。"
+        ],
+        "report": "孩子表现出好奇心，对自我和妈妈的年龄感到好奇，寻求了解和确认。",
+        "originalText": "我是谁，你几岁了",
+        "primary_emotion": "curiosity",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.8,
+            "openness": 0.6,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "我是谁",
+            "年龄"
+        ],
+        "emotion_triggers": [
+            "我是谁",
+            "你几岁了"
+        ],
+        "summary": "孩子表现出好奇心，对自我和妈妈的年龄感到好奇，寻求了解和确认。"
+    },
+    "originalText": "我是谁，你几岁了",
+    "createTime": {
+        "$date": "2025-04-18T15:06:53.828Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "a6ec304868026aa501685c6c11850ef4",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "curiosity",
+        "intensity": 0.7,
+        "keywords": [
+            "identity",
+            "age"
+        ],
+        "suggestions": [
+            "宝贝，我们可以一起聊聊你的感受，妈妈在这里支持你。",
+            "如果你对年龄或者身份有疑问，我们可以慢慢探讨。",
+            "有时候，问问题是一种很好的学习方式，妈妈很高兴你愿意和妈妈分享你的想法。"
+        ],
+        "report": "孩子表现出对自我身份和年龄的好奇，可能感到困惑。",
+        "originalText": "我是谁，你几岁了",
+        "primary_emotion": "curiosity",
+        "secondary_emotions": [
+            "confusion"
+        ],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.8,
+            "openness": 0.6,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "identity",
+            "age"
+        ],
+        "emotion_triggers": [
+            "我是谁",
+            "你几岁了"
+        ],
+        "summary": "孩子表现出对自我身份和年龄的好奇，可能感到困惑。"
+    },
+    "originalText": "我是谁，你几岁了",
+    "createTime": {
+        "$date": "2025-04-18T15:07:17.875Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "85b0d33368026acd0166676e0d458dea",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "sadness",
+        "intensity": 0.8,
+        "keywords": [
+            "missing",
+            "love",
+            "family"
+        ],
+        "suggestions": [
+            "Let's schedule a video call so we can see each other",
+            "Tell me about your day, I'm all ears",
+            "Remember, no matter how far apart, we are always connected"
+        ],
+        "report": "The user expresses a strong feeling of sadness and longing, likely due to missing their mother. The user is highly attentive and there is a strong sense of trust and control in the relationship.",
+        "originalText": "我想你了",
+        "primary_emotion": "sadness",
+        "secondary_emotions": [],
+        "valence": 0.2,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.9,
+            "openness": 0.7,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.8
+        },
+        "topic_keywords": [
+            "missing",
+            "love",
+            "family"
+        ],
+        "emotion_triggers": [
+            "missed",
+            "love",
+            "family"
+        ],
+        "summary": "The user expresses a strong feeling of sadness and longing, likely due to missing their mother. The user is highly attentive and there is a strong sense of trust and control in the relationship."
+    },
+    "originalText": "我想你了",
+    "createTime": {
+        "$date": "2025-04-18T15:07:57.277Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "65dc625868026bb4016974a46a47a3ea",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "美好"
+        ],
+        "suggestions": [
+            "享受这个美好的天气，出去走走吧！",
+            "也许可以和朋友们一起计划一个小型的户外聚会。",
+            "记得带上防晒哦，保护皮肤很重要。"
+        ],
+        "report": "你今天感受到了天气带来的愉悦，心情很放松，享受这个美好的时刻吧。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "天气",
+            "美好"
+        ],
+        "emotion_triggers": [
+            "天气不错"
+        ],
+        "summary": "你今天感受到了天气带来的愉悦，心情很放松，享受这个美好的时刻吧。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-18T15:11:48.026Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "ed153fc768026bed0164232710aaab34",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "sadness",
+        "intensity": 0.7,
+        "keywords": [
+            "不行",
+            "困扰",
+            "难题"
+        ],
+        "suggestions": [
+            "我们可以一起探讨一下让你感到困扰的事情，看看有没有解决的办法。",
+            "也许我们可以换个角度来思考这个问题，有时候换一个视角就能找到答案。",
+            "如果你愿意，可以尝试深呼吸或者做一些放松的活动，帮助自己缓解一下情绪。"
+        ],
+        "report": "你目前似乎感到有些沮丧和焦虑，可能是因为遇到了一些难题。建议我们可以一起探讨解决方案，并尝试一些放松的方法来缓解你的情绪。",
+        "originalText": "为什么不行",
+        "primary_emotion": "sadness",
+        "secondary_emotions": [
+            "anxiety",
+            "disappointment"
+        ],
+        "valence": -0.6,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.4,
+            "openness": 0.6,
+            "resistance": 0.5,
+            "stress": 0.8,
+            "control": 0.3
+        },
+        "topic_keywords": [
+            "不行",
+            "困扰",
+            "难题"
+        ],
+        "emotion_triggers": [
+            "不行",
+            "困扰",
+            "难题"
+        ],
+        "summary": "你目前似乎感到有些沮丧和焦虑，可能是因为遇到了一些难题。建议我们可以一起探讨解决方案，并尝试一些放松的方法来缓解你的情绪。"
+    },
+    "originalText": "为什么不行",
+    "createTime": {
+        "$date": "2025-04-18T15:12:45.47Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "9f86c65668026cb20167a7663ff25369",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "妈妈",
+            "想你了"
+        ],
+        "suggestions": [
+            "给你一个大拥抱",
+            "我们可以一起做些你喜欢的事情",
+            "告诉我更多关于你想我的事情"
+        ],
+        "report": "你表达了对妈妈的深深思念，显示出强烈的喜悦和亲密感。",
+        "originalText": "妈妈我想你了",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.9,
+            "openness": 0.8,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "妈妈",
+            "想你了"
+        ],
+        "emotion_triggers": [
+            "想你了"
+        ],
+        "summary": "你表达了对妈妈的深深思念，显示出强烈的喜悦和亲密感。"
+    },
+    "originalText": "妈妈我想你了",
+    "createTime": {
+        "$date": "2025-04-18T15:16:02.548Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": null
+}
+{
+    "_id": "e1cff63568026cb80168c00c188892d7",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "sadness",
+        "intensity": 0.8,
+        "keywords": [
+            "妈妈",
+            "想念"
+        ],
+        "suggestions": [
+            "我们可以视频聊天，这样我们可以看到彼此的表情。",
+            "如果你感到孤单，可以告诉我，我们可以一起找些有趣的事情做。",
+            "记得，无论何时何地，妈妈的爱都在你身边。"
+        ],
+        "report": "用户表达了对妈妈的思念之情，情感强度较高，表现出一定的悲伤情绪，但同时也体现了对家庭的信任和安全感。",
+        "originalText": "妈妈我想你了",
+        "primary_emotion": "sadness",
+        "secondary_emotions": [],
+        "valence": 0.2,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.9,
+            "openness": 0.7,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.8
+        },
+        "topic_keywords": [
+            "妈妈",
+            "想念"
+        ],
+        "emotion_triggers": [
+            "想你了"
+        ],
+        "summary": "用户表达了对妈妈的思念之情，情感强度较高，表现出一定的悲伤情绪，但同时也体现了对家庭的信任和安全感。"
+    },
+    "originalText": "妈妈我想你了",
+    "createTime": {
+        "$date": "2025-04-18T15:16:08.49Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "c42c9d1b68026cfa016664754f6435b6",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "disappointment",
+        "intensity": 0.7,
+        "keywords": [
+            "project",
+            "award",
+            "excellence"
+        ],
+        "suggestions": [
+            "Remember that excellence is a great achievement. Consider what you learned from this experience and how it can help you grow.",
+            "Take some time to reflect on your progress and the effort you put into the project. Celebrate your hard work and the skills you've developed.",
+            "Discuss with your team or mentor how you can improve for future projects. Every experience is a chance to learn and get better."
+        ],
+        "report": "You feel disappointed because your project received only an excellence award, but it's important to recognize the value of the experience and the skills you've gained.",
+        "originalText": "我今天做的项目只得了优秀奖",
+        "primary_emotion": "disappointment",
+        "secondary_emotions": [
+            "sadness"
+        ],
+        "valence": -0.5,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.5,
+            "resistance": 0.4,
+            "stress": 0.6,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "project",
+            "award",
+            "excellence"
+        ],
+        "emotion_triggers": [
+            "only",
+            "excellent"
+        ],
+        "summary": "You feel disappointed because your project received only an excellence award, but it's important to recognize the value of the experience and the skills you've gained."
+    },
+    "originalText": "我今天做的项目只得了优秀奖",
+    "createTime": {
+        "$date": "2025-04-18T15:17:14.927Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "dcffa82468026d3f016bb71811229486",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "hello"
+        ],
+        "suggestions": [
+            "继续分享你的感受，我很乐意倾听",
+            "如果你有任何问题，随时问我",
+            "今天过得怎么样？"
+        ],
+        "report": "用户表现出积极的情绪，可能是因为简单的问候或友好交流。",
+        "originalText": "你好呀",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.7,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "hello"
+        ],
+        "emotion_triggers": [
+            "hello"
+        ],
+        "summary": "用户表现出积极的情绪，可能是因为简单的问候或友好交流。"
+    },
+    "originalText": "你好呀",
+    "createTime": {
+        "$date": "2025-04-18T15:18:23.294Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "9f86c65668026d930167af4c716984b6",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "curiosity",
+        "intensity": 0.7,
+        "keywords": [
+            "identity",
+            "introduction",
+            "self"
+        ],
+        "suggestions": [
+            "Feel free to share more about yourself",
+            "I'm here to listen to you",
+            "Let's explore your identity together"
+        ],
+        "report": "The user is curious about the identity of the AI assistant and is seeking information or a conversation starter.",
+        "originalText": "你是谁",
+        "primary_emotion": "curiosity",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.7,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "identity",
+            "introduction",
+            "self"
+        ],
+        "emotion_triggers": [
+            "who",
+            "I am"
+        ],
+        "summary": "The user is curious about the identity of the AI assistant and is seeking information or a conversation starter."
+    },
+    "originalText": "你是谁",
+    "createTime": {
+        "$date": "2025-04-18T15:19:47.563Z"
+    },
+    "roleId": "system_emotion_xiaobei",
+    "chatId": "ed153fc768026d8a0164323308b608f8"
+}
+{
+    "_id": "dcffa82468026dda016bbb4c5985849a",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.7,
+        "keywords": [
+            "award",
+            "effort",
+            "potential",
+            "support",
+            "self-worth"
+        ],
+        "suggestions": [
+            "我们可以一起探讨你的感受，看看是否有什么事情让你感到不安。",
+            "也许我们可以一起制定一个计划，帮助你更好地理解自己的感受和应对策略。",
+            "记得，无论发生什么，你都有妈妈的支持和爱。"
+        ],
+        "report": "孩子表现出对未得到期望认可的担忧，感到焦虑和悲伤。需要表达支持和理解，并探讨应对策略。",
+        "originalText": "不可以吗？",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [
+            "sadness"
+        ],
+        "valence": -0.5,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.8,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "award",
+            "effort",
+            "potential",
+            "support",
+            "self-worth"
+        ],
+        "emotion_triggers": [
+            "不可以",
+            "担心"
+        ],
+        "summary": "孩子表现出对未得到期望认可的担忧，感到焦虑和悲伤。需要表达支持和理解，并探讨应对策略。"
+    },
+    "originalText": "不可以吗？",
+    "createTime": {
+        "$date": "2025-04-18T15:20:58.164Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "c42c9d1b6802711e01668d417250f39d",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "calm",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [
+            "继续分享你的感受，妈妈在这里倾听。",
+            "如果你愿意，我们可以一起探讨你今天的心情。",
+            "记得，无论何时，妈妈都是你的坚强后盾。"
+        ],
+        "report": "用户以平静的语气回应，表现出中等程度的注意力，目前没有明显的情感触发词或主题关键词。",
+        "originalText": "你好",
+        "primary_emotion": "calm",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "用户以平静的语气回应，表现出中等程度的注意力，目前没有明显的情感触发词或主题关键词。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-18T15:34:54.707Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "b0131947680272a8016a120a63356508",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [],
+        "suggestions": [
+            "继续分享你的快乐，我很高兴听到这个好消息！"
+        ],
+        "report": "你表达了一种非常积极的情感，看起来你感到非常高兴。",
+        "originalText": "很好",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.7
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "你表达了一种非常积极的情感，看起来你感到非常高兴。"
+    },
+    "originalText": "很好",
+    "createTime": {
+        "$date": "2025-04-18T15:41:28.901Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "0e7893fb6802762301691419024ea1b5",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "neutral",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [],
+        "report": "当前输入为单字 'nih'，没有明显的情感或主题，因此情感分析结果为中性。",
+        "originalText": "nih",
+        "primary_emotion": "neutral",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "当前输入为单字 'nih'，没有明显的情感或主题，因此情感分析结果为中性。"
+    },
+    "originalText": "nih",
+    "createTime": {
+        "$date": "2025-04-18T15:56:19.056Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": null
+}
+{
+    "_id": "e1cff635680276250169101a4450d1b8",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "neutral",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [],
+        "report": "Received a short, non-descriptive input. User's emotional state is neutral with low attention level.",
+        "originalText": "nih",
+        "primary_emotion": "neutral",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "low",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "Received a short, non-descriptive input. User's emotional state is neutral with low attention level."
+    },
+    "originalText": "nih",
+    "createTime": {
+        "$date": "2025-04-18T15:56:21.2Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "0e7893fb6802789b01694c0348fce233",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [],
+        "suggestions": [
+            "继续分享你的感受，我在这里倾听。",
+            "如果你愿意，我们可以一起探讨你的想法。"
+        ],
+        "report": "你目前表现出积极的情绪，看起来心情不错。",
+        "originalText": "你好",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.7,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "你目前表现出积极的情绪，看起来心情不错。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-18T16:06:51.645Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "ed153fc768027a060164b90e55a801f1",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "neutral",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [
+            "如果你愿意，可以分享更多关于你的情况，我会更好地理解并提供帮助。"
+        ],
+        "report": "当前情绪状态较为中性，用户表现出一般的注意力水平。",
+        "originalText": "你好",
+        "primary_emotion": "neutral",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "当前情绪状态较为中性，用户表现出一般的注意力水平。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-18T16:12:54.144Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "76c63bbb68027b630164f6c743958442",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [],
+        "suggestions": [
+            "继续我们的对话，我会尽力理解你的需求。"
+        ],
+        "report": "你看起来很高兴，欢迎分享你的心情。",
+        "originalText": "你好",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "你看起来很高兴，欢迎分享你的心情。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-18T16:18:43.457Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "9f86c65668027d3101685959751d1af8",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "calm",
+        "intensity": 0.8,
+        "keywords": [],
+        "suggestions": [
+            "如果你有任何问题或需要倾听，我在这里。",
+            "如果你想要分享你的感受，我会很乐意听你说。",
+            "记得，无论何时，你都不是孤单一人。"
+        ],
+        "report": "目前用户表现出平静的情绪，似乎在等待进一步的交流或指导。",
+        "originalText": "好的",
+        "primary_emotion": "calm",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "目前用户表现出平静的情绪，似乎在等待进一步的交流或指导。"
+    },
+    "originalText": "好的",
+    "createTime": {
+        "$date": "2025-04-18T16:26:25.007Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "b7e94e9b68027d4d016a07e7320d3bca",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "项目",
+            "完成"
+        ],
+        "suggestions": [
+            "庆祝一下你的成就！也许你可以和朋友分享你的成功，或者给自己一些奖励。"
+        ],
+        "report": "你今天完成了项目，感到非常高兴和满足。这是一个值得庆祝的成就。",
+        "originalText": "我今天完成了一个项目",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "项目",
+            "完成"
+        ],
+        "emotion_triggers": [
+            "完成",
+            "项目"
+        ],
+        "summary": "你今天完成了项目，感到非常高兴和满足。这是一个值得庆祝的成就。"
+    },
+    "originalText": "我今天完成了一个项目",
+    "createTime": {
+        "$date": "2025-04-18T16:26:53.959Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "0e7893fb68027d76016975894d7f2c89",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "curiosity",
+        "intensity": 0.7,
+        "keywords": [
+            "project",
+            "completion"
+        ],
+        "suggestions": [
+            "Feel free to share more about your project if you'd like.",
+            "Let me know if there's anything specific you're curious about."
+        ],
+        "report": "You seem to be inquiring about the accuracy of my understanding of your previous statement.",
+        "originalText": "你知道我刚才说了什么吗",
+        "primary_emotion": "curiosity",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "stress": 0.5,
+            "control": 0.5,
+            "resistance": 0.5,
+            "openness": 0.5
+        },
+        "topic_keywords": [
+            "project",
+            "completion"
+        ],
+        "emotion_triggers": [
+            "know",
+            "said"
+        ],
+        "summary": "You seem to be inquiring about the accuracy of my understanding of your previous statement."
+    },
+    "originalText": "你知道我刚才说了什么吗",
+    "createTime": {
+        "$date": "2025-04-18T16:27:34.366Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "dcffa82468027efd016c692e232a98ea",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [],
+        "suggestions": [
+            "听起来你今天心情不错，继续保持！",
+            "如果你需要聊天或者有事情想分享，我在这里。",
+            "希望你的好心情能持续一整天。"
+        ],
+        "report": "用户表现出积极的情绪，可能是因为简单的问候或愉快的心情。",
+        "originalText": "你好",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.7,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.6
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "用户表现出积极的情绪，可能是因为简单的问候或愉快的心情。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-18T16:34:05.178Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "d33be42268027fb0016912a551ad3542",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [],
+        "suggestions": [
+            "听起来你今天心情不错，继续保持哦！",
+            "如果你愿意，可以分享一些让你开心的事情。",
+            "记得适时放松，保持良好的心情对健康很重要。"
+        ],
+        "report": "你目前表现出积极的情绪，看起来心情很好。",
+        "originalText": "你好",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.7,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.6
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "你目前表现出积极的情绪，看起来心情很好。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-18T16:37:04.473Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "b7e94e9b680280e9016a316973dab159",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "今天"
+        ],
+        "suggestions": [
+            "出去享受阳光吧！",
+            "和家人一起散步，享受户外时光。",
+            "尝试一些户外运动，保持活力。"
+        ],
+        "report": "你对今天的天气感到非常满意，充满了愉悦和轻松的心情。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "天气",
+            "今天"
+        ],
+        "emotion_triggers": [
+            "天气不错"
+        ],
+        "summary": "你对今天的天气感到非常满意，充满了愉悦和轻松的心情。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-18T16:42:17.643Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "76c63bbb680286a5016568ba1a63da2d",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "sadness",
+        "intensity": 0.8,
+        "keywords": [
+            "miss",
+            "love",
+            "family",
+            "distance",
+            "time"
+        ],
+        "suggestions": [
+            "Let's schedule a regular video call so we can talk more often.",
+            "Remember, you can always call or text me whenever you feel like it.",
+            "It's okay to miss each other; it shows how much we care about each other."
+        ],
+        "report": "You are feeling a strong sense of sadness and love due to missing your mother, highlighting a close and trusting relationship with her.",
+        "originalText": "我想你了妈妈",
+        "primary_emotion": "sadness",
+        "secondary_emotions": [
+            "love",
+            "nostalgia"
+        ],
+        "valence": 0.3,
+        "arousal": 0.5,
+        "trend": "stable",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.9,
+            "openness": 0.7,
+            "resistance": 0.3,
+            "stress": 0.4,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "miss",
+            "love",
+            "family",
+            "distance",
+            "time"
+        ],
+        "emotion_triggers": [
+            "miss",
+            "love",
+            "distance"
+        ],
+        "summary": "You are feeling a strong sense of sadness and love due to missing your mother, highlighting a close and trusting relationship with her."
+    },
+    "originalText": "我想你了妈妈",
+    "createTime": {
+        "$date": "2025-04-18T17:06:45.096Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "76c63bbb680286b5016568f559bb6f86",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "sadness",
+        "intensity": 0.8,
+        "keywords": [
+            "home",
+            "missing",
+            "family"
+        ],
+        "suggestions": [
+            "Let's plan a visit home soon to make the longing easier.",
+            "Share some of your favorite things about home to feel closer.",
+            "Stay connected with family through calls or video chats to ease the distance."
+        ],
+        "report": "You are feeling a strong sense of sadness and longing for home, likely due to missing family and the comfort of being at home.",
+        "originalText": "我想回家了",
+        "primary_emotion": "sadness",
+        "secondary_emotions": [
+            "nostalgia",
+            "longing"
+        ],
+        "valence": -0.6,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.5,
+            "resistance": 0.4,
+            "stress": 0.6,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "home",
+            "missing",
+            "family"
+        ],
+        "emotion_triggers": [
+            "miss",
+            "home"
+        ],
+        "summary": "You are feeling a strong sense of sadness and longing for home, likely due to missing family and the comfort of being at home."
+    },
+    "originalText": "我想回家了",
+    "createTime": {
+        "$date": "2025-04-18T17:07:01.822Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "1b9686ec68028f9b0167dfb52cbc320a",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "calm",
+        "intensity": 0.8,
+        "keywords": [],
+        "suggestions": [
+            "It's okay to feel quiet sometimes. Maybe we can talk about your interests or hobbies next time."
+        ],
+        "report": "You seem to be in a calm and quiet state, possibly reflecting on your thoughts without wanting to share them immediately.",
+        "originalText": "没啥了",
+        "primary_emotion": "calm",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.2,
+        "trend": "unknown",
+        "attention_level": "low",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.5,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.6
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "You seem to be in a calm and quiet state, possibly reflecting on your thoughts without wanting to share them immediately."
+    },
+    "originalText": "没啥了",
+    "createTime": {
+        "$date": "2025-04-18T17:44:59.873Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "b013194768029116016b878a508a483b",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "成长",
+            "进步",
+            "健康"
+        ],
+        "suggestions": [
+            "继续保持良好的生活习惯，多参加户外活动，促进身体发育。",
+            "记得定期进行身体检查，确保健康成长。",
+            "和家人分享你的成长喜悦，增进亲子关系。"
+        ],
+        "report": "用户表达了对自己身高增长的喜悦，显示出积极向上的情绪状态，建议继续保持良好的生活习惯并分享喜悦。",
+        "originalText": "很高",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "成长",
+            "进步",
+            "健康"
+        ],
+        "emotion_triggers": [
+            "很高"
+        ],
+        "summary": "用户表达了对自己身高增长的喜悦，显示出积极向上的情绪状态，建议继续保持良好的生活习惯并分享喜悦。"
+    },
+    "originalText": "很高",
+    "createTime": {
+        "$date": "2025-04-18T17:51:18.503Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "5be31a7168029128016b04093aa5f344",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "concern",
+        "intensity": 0.7,
+        "keywords": [
+            "brother",
+            "school",
+            "care"
+        ],
+        "suggestions": [
+            "Check in with your brother regularly",
+            "Encourage open communication",
+            "Plan a family activity to strengthen your bond"
+        ],
+        "report": "You are showing concern for your brother's well-being, indicating a strong sense of care and responsibility.",
+        "originalText": "弟弟怎么样了",
+        "primary_emotion": "concern",
+        "secondary_emotions": [
+            "care",
+            "worry"
+        ],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.7,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "brother",
+            "school",
+            "care"
+        ],
+        "emotion_triggers": [
+            "concern",
+            "worry",
+            "care"
+        ],
+        "summary": "You are showing concern for your brother's well-being, indicating a strong sense of care and responsibility."
+    },
+    "originalText": "弟弟怎么样了",
+    "createTime": {
+        "$date": "2025-04-18T17:51:36.468Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "d33be422680294b80169bb7a40131f50",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anticipation",
+        "intensity": 0.8,
+        "keywords": [
+            "天梯赛",
+            "比赛",
+            "技能",
+            "努力"
+        ],
+        "suggestions": [
+            "确保今晚早点休息，保持良好的状态",
+            "吃一顿营养丰富的晚餐，为比赛储备能量",
+            "保持积极的心态，相信自己能做得很好"
+        ],
+        "report": "你对即将到来的天梯赛感到兴奋和期待，表现出积极的情绪和较高的自信。",
+        "originalText": "我明天要参加天梯赛了",
+        "primary_emotion": "anticipation",
+        "secondary_emotions": [
+            "joy"
+        ],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.8,
+            "openness": 0.7,
+            "resistance": 0.5,
+            "stress": 0.6,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "天梯赛",
+            "比赛",
+            "技能",
+            "努力"
+        ],
+        "emotion_triggers": [
+            "参加",
+            "明天"
+        ],
+        "summary": "你对即将到来的天梯赛感到兴奋和期待，表现出积极的情绪和较高的自信。"
+    },
+    "originalText": "我明天要参加天梯赛了",
+    "createTime": {
+        "$date": "2025-04-18T18:06:48.201Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "b0131947680294be016bad8d2ff9de1d",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anticipation",
+        "intensity": 0.8,
+        "keywords": [
+            "天梯赛",
+            "比赛",
+            "技能",
+            "努力"
+        ],
+        "suggestions": [
+            "确保今晚早点休息，保持精力充沛",
+            "吃一顿营养丰富的晚餐，为比赛充电",
+            "保持积极的心态，相信自己能够做得很好"
+        ],
+        "report": "你对于即将到来的天梯赛感到期待和兴奋，表现出较高的积极性和自信。建议你保持良好的休息和饮食习惯，以最佳状态迎接比赛。",
+        "originalText": "我明天要参加天梯赛了",
+        "primary_emotion": "anticipation",
+        "secondary_emotions": [
+            "excitement"
+        ],
+        "valence": 0.6,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.6,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "天梯赛",
+            "比赛",
+            "技能",
+            "努力"
+        ],
+        "emotion_triggers": [
+            "参加",
+            "明天"
+        ],
+        "summary": "你对于即将到来的天梯赛感到期待和兴奋，表现出较高的积极性和自信。建议你保持良好的休息和饮食习惯，以最佳状态迎接比赛。"
+    },
+    "originalText": "我明天要参加天梯赛了",
+    "createTime": {
+        "$date": "2025-04-18T18:06:54.269Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "a6ec3048680294f70169ee903637958d",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.8,
+        "keywords": [
+            "tournaments",
+            "performance",
+            "fear of failure"
+        ],
+        "suggestions": [
+            "Remember that your worth is not defined by your performance in a single event. Focus on the effort you've put in.",
+            "Reflect on what you've learned from preparing for the tournament and how you can apply these lessons in the future.",
+            "Stay positive and focus on your growth. Each experience is a chance to improve and learn something new."
+        ],
+        "report": "You are feeling anxious and disappointed about the possibility of not achieving a good score in the upcoming ladder competition. It's important to remember that your value is not tied to the outcome of this event, and there is much to learn from the experience.",
+        "originalText": "我要是没有获得好成绩怎么办",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [
+            "disappointment"
+        ],
+        "valence": -0.6,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.7,
+            "resistance": 0.8,
+            "stress": 0.9,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "tournaments",
+            "performance",
+            "fear of failure"
+        ],
+        "emotion_triggers": [
+            "not getting a good score",
+            "what if I fail"
+        ],
+        "summary": "You are feeling anxious and disappointed about the possibility of not achieving a good score in the upcoming ladder competition. It's important to remember that your value is not tied to the outcome of this event, and there is much to learn from the experience."
+    },
+    "originalText": "我要是没有获得好成绩怎么办",
+    "createTime": {
+        "$date": "2025-04-18T18:07:51.376Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "80a8bd4f6802952c016b02553598c3bc",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "grandparents",
+            "health",
+            "family",
+            "care",
+            "well-being"
+        ],
+        "suggestions": [
+            "Schedule regular family visits to keep the bond strong.",
+            "Consider sending a thoughtful gift to express your love and care.",
+            "Encourage外公外婆 to share their feelings and experiences."
+        ],
+        "report": "外公外婆目前身体状况良好，家庭关系和睦，表现出较高的信任和控制感。建议多关注家庭互动，保持与外公外婆的紧密联系。",
+        "originalText": "外公外婆怎么样了",
+        "primary_emotion": "joy",
+        "secondary_emotions": [
+            "contentment",
+            "relief"
+        ],
+        "valence": 0.9,
+        "arousal": 0.5,
+        "trend": "stable",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.8
+        },
+        "topic_keywords": [
+            "grandparents",
+            "health",
+            "family",
+            "care",
+            "well-being"
+        ],
+        "emotion_triggers": [
+            "grandparents",
+            "health",
+            "care"
+        ],
+        "summary": "外公外婆目前身体状况良好，家庭关系和睦，表现出较高的信任和控制感。建议多关注家庭互动，保持与外公外婆的紧密联系。"
+    },
+    "originalText": "外公外婆怎么样了",
+    "createTime": {
+        "$date": "2025-04-18T18:08:44.266Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "1b9686ec6802955301683b6346e4143e",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "weather",
+            "sunny",
+            "good"
+        ],
+        "suggestions": [
+            "Go for a walk",
+            "Enjoy outdoor activities",
+            "Take a leisurely drive"
+        ],
+        "report": "The speaker is expressing happiness about the nice weather, indicating a positive and joyful mood.",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "weather",
+            "sunny",
+            "good"
+        ],
+        "emotion_triggers": [
+            "weather",
+            "sunny"
+        ],
+        "summary": "The speaker is expressing happiness about the nice weather, indicating a positive and joyful mood."
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-18T18:09:23.951Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "b013194768029574016be7c31fbc4de2",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "calm",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [
+            "Reflect on your daily activities to remember what you did yesterday.",
+            "Consider keeping a journal to track your daily activities and thoughts.",
+            "Ask family members if they remember any specific events from yesterday."
+        ],
+        "report": "You are inquiring about your activities from yesterday, but there is no specific information available to detail your day.",
+        "originalText": "我昨天做了什么",
+        "primary_emotion": "calm",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "You are inquiring about your activities from yesterday, but there is no specific information available to detail your day."
+    },
+    "originalText": "我昨天做了什么",
+    "createTime": {
+        "$date": "2025-04-18T18:09:56.901Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "e1cff63568037eb40175400256890e52",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "disappointment",
+        "intensity": 0.7,
+        "keywords": [
+            "天梯赛",
+            "得分",
+            "71分"
+        ],
+        "suggestions": [
+            "回顾比赛过程，找出可以改进的地方。",
+            "设定小目标，逐步提高自己的成绩。",
+            "保持积极的心态，不要因为一次成绩而气馁。"
+        ],
+        "report": "虽然对71分的成绩感到失望，但保持积极心态，从失败中学习，为下一次比赛做好准备。",
+        "originalText": "今天天梯赛我就得了71分",
+        "primary_emotion": "disappointment",
+        "secondary_emotions": [],
+        "valence": -0.6,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.5,
+            "control": 0.3
+        },
+        "topic_keywords": [
+            "天梯赛",
+            "得分",
+            "71分"
+        ],
+        "emotion_triggers": [
+            "71分"
+        ],
+        "summary": "虽然对71分的成绩感到失望，但保持积极心态，从失败中学习，为下一次比赛做好准备。"
+    },
+    "originalText": "今天天梯赛我就得了71分",
+    "createTime": {
+        "$date": "2025-04-19T10:45:08.061Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "ed153fc768037f3c0170e86a52e3e852",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "frustration",
+        "intensity": 0.7,
+        "keywords": [
+            "algorithm",
+            "learning",
+            "effort",
+            "results"
+        ],
+        "suggestions": [
+            "Break down complex problems into smaller, manageable parts.",
+            "Seek help from teachers, peers, or online communities when stuck.",
+            "Reflect on your learning process and identify areas for improvement.",
+            "Stay patient and remember that progress takes time."
+        ],
+        "report": "Feeling frustrated and discouraged despite putting in effort to learn algorithms, with a moderate level of stress and a desire for control over the learning process.",
+        "originalText": "为什么我感觉我已经很努力的在学算法了，但是还是没有什么成果",
+        "primary_emotion": "frustration",
+        "secondary_emotions": [
+            "discouragement",
+            "anxiety"
+        ],
+        "valence": -0.6,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.3,
+            "stress": 0.7,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "algorithm",
+            "learning",
+            "effort",
+            "results"
+        ],
+        "emotion_triggers": [
+            "no results",
+            "effortless",
+            "frustration"
+        ],
+        "summary": "Feeling frustrated and discouraged despite putting in effort to learn algorithms, with a moderate level of stress and a desire for control over the learning process."
+    },
+    "originalText": "为什么我感觉我已经很努力的在学算法了，但是还是没有什么成果",
+    "createTime": {
+        "$date": "2025-04-19T10:47:24.259Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "c42c9d1b680380fe0172a13118a4e6ce",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "disappointment",
+        "intensity": 0.7,
+        "keywords": [
+            "学习",
+            "算法",
+            "努力",
+            "成果",
+            "挫败"
+        ],
+        "suggestions": [
+            "尝试分解学习目标，设定小步骤来衡量进步。",
+            "寻找学习社区或导师，与他人交流学习经验。",
+            "反思学习方法，确保你的学习材料和方法适合你的学习风格。"
+        ],
+        "report": "你感到挫败，因为你尽管努力学习算法，但感觉没有取得成果，这让你感到失望。",
+        "originalText": "我刚才说了什么？",
+        "primary_emotion": "disappointment",
+        "secondary_emotions": [],
+        "valence": -0.6,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.7,
+            "stress": 0.6,
+            "control": 0.4
+        },
+        "topic_keywords": [
+            "学习",
+            "算法",
+            "努力",
+            "成果",
+            "挫败"
+        ],
+        "emotion_triggers": [
+            "挫败",
+            "没有成果",
+            "很努力"
+        ],
+        "summary": "你感到挫败，因为你尽管努力学习算法，但感觉没有取得成果，这让你感到失望。"
+    },
+    "originalText": "我刚才说了什么？",
+    "createTime": {
+        "$date": "2025-04-19T10:54:54.377Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "0e7893fb6803812701757a3237c0a507",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.8,
+        "keywords": [
+            "exam",
+            "pressure",
+            "anxiety"
+        ],
+        "suggestions": [
+            "Consider discussing your concerns with a teacher or counselor who can offer guidance.",
+            "Practice relaxation techniques such as deep breathing or mindfulness to manage stress.",
+            "Break down your study material into smaller, manageable parts to make it less overwhelming."
+        ],
+        "report": "You are expressing a strong feeling of anxiety and stress about an upcoming exam, indicating a desire to avoid it. This is a common reaction to exam pressure.",
+        "originalText": "我不想考试了",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [
+            "stress"
+        ],
+        "valence": -0.6,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.7,
+            "stress": 0.8,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "exam",
+            "pressure",
+            "anxiety"
+        ],
+        "emotion_triggers": [
+            "don't want",
+            "exam",
+            "pressure"
+        ],
+        "summary": "You are expressing a strong feeling of anxiety and stress about an upcoming exam, indicating a desire to avoid it. This is a common reaction to exam pressure."
+    },
+    "originalText": "我不想考试了",
+    "createTime": {
+        "$date": "2025-04-19T10:55:35.062Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "9f86c6566803851a0174894e29ed7663",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.7,
+        "keywords": [
+            "project",
+            "completion",
+            "time"
+        ],
+        "suggestions": [
+            "Break down the project into smaller, manageable tasks.",
+            "Set realistic deadlines and track your progress regularly.",
+            "Communicate with your team or supervisor to manage expectations."
+        ],
+        "report": "You are feeling anxious about the timeline for completing your project, with a sense of urgency. It's important to manage your expectations and break the project into smaller tasks to stay on track.",
+        "originalText": "什么时候才能完成我的项目啊",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [
+            "urgency"
+        ],
+        "valence": -0.3,
+        "arousal": 0.8,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.7,
+            "resistance": 0.5,
+            "stress": 0.8,
+            "control": 0.4
+        },
+        "topic_keywords": [
+            "project",
+            "completion",
+            "time"
+        ],
+        "emotion_triggers": [
+            "when",
+            "complete",
+            "project"
+        ],
+        "summary": "You are feeling anxious about the timeline for completing your project, with a sense of urgency. It's important to manage your expectations and break the project into smaller tasks to stay on track."
+    },
+    "originalText": "什么时候才能完成我的项目啊",
+    "createTime": {
+        "$date": "2025-04-19T11:12:26.885Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "a6ec30486803888601757d9d524464b5",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "surprise",
+        "intensity": 0.7,
+        "keywords": [
+            "刚才",
+            "说了",
+            "什么"
+        ],
+        "suggestions": [
+            "您可能需要回顾一下之前的对话内容，或者询问对方以确认您是否正确理解了之前的交流。",
+            "如果您对记忆有疑问，可能需要休息一下，或者尝试做一些放松的活动来帮助记忆恢复。",
+            "如果您是在询问他人，可以尝试用更具体的问题来获取信息，比如‘你能回忆一下我们刚才讨论了什么吗？’"
+        ],
+        "report": "您表现出对记忆的疑惑，可能需要帮助来确认或回忆之前的对话内容。",
+        "originalText": "我刚才说了什么？",
+        "primary_emotion": "surprise",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "stress": 0.5,
+            "control": 0.5,
+            "resistance": 0.5,
+            "openness": 0.5
+        },
+        "topic_keywords": [
+            "刚才",
+            "说了",
+            "什么"
+        ],
+        "emotion_triggers": [
+            "刚才",
+            "说了",
+            "什么"
+        ],
+        "summary": "您表现出对记忆的疑惑，可能需要帮助来确认或回忆之前的对话内容。"
+    },
+    "originalText": "我刚才说了什么？",
+    "createTime": {
+        "$date": "2025-04-19T11:27:02.136Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "c42c9d1b6803b19e017575f776f05afd",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "外卖",
+            "大东北菜馆",
+            "美食"
+        ],
+        "suggestions": [
+            "下次可以尝试点一些不同的东北菜，丰富你的味蕾体验。",
+            "也许可以和朋友们分享你的美食发现，增进友谊。",
+            "记得适量品尝，保持健康的生活方式。"
+        ],
+        "report": "你对今天点的外卖感到非常满意，体验到了美食带来的愉悦。",
+        "originalText": "我感觉今天点的外卖，大东北菜馆挺好吃的",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "stable",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "外卖",
+            "大东北菜馆",
+            "美食"
+        ],
+        "emotion_triggers": [
+            "挺好吃的"
+        ],
+        "summary": "你对今天点的外卖感到非常满意，体验到了美食带来的愉悦。"
+    },
+    "originalText": "我感觉今天点的外卖，大东北菜馆挺好吃的",
+    "createTime": {
+        "$date": "2025-04-19T14:22:22.212Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "b7e94e9b6803b1c0017858800a4771b5",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "土豆丝",
+            "外卖",
+            "饭"
+        ],
+        "suggestions": [
+            "下次点餐时可以适量减少，避免浪费。",
+            "可以将剩余的饭和土豆丝做成不同的菜肴，比如炒饭或盖饭。",
+            "与家人分享剩余的食物，享受美食的同时增进亲情。"
+        ],
+        "report": "您对土豆丝的口感表示满意，但点多了饭导致有些浪费，建议合理规划饮食，避免浪费。",
+        "originalText": "他的土豆丝很脆，但是我今天不小心点了两份饭，还没吃完呢",
+        "primary_emotion": "joy",
+        "secondary_emotions": [
+            "satisfaction"
+        ],
+        "valence": 0.7,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.6,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "土豆丝",
+            "外卖",
+            "饭"
+        ],
+        "emotion_triggers": [
+            "脆",
+            "不小心"
+        ],
+        "summary": "您对土豆丝的口感表示满意，但点多了饭导致有些浪费，建议合理规划饮食，避免浪费。"
+    },
+    "originalText": "他的土豆丝很脆，但是我今天不小心点了两份饭，还没吃完呢",
+    "createTime": {
+        "$date": "2025-04-19T14:22:56.84Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "c42c9d1b6803b20c017578e26eb0a9a8",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "food",
+            "dining",
+            "family",
+            "planning",
+            "sharing"
+        ],
+        "suggestions": [
+            "Consider planning your meals better for future dining experiences.",
+            "Try to share food with family or friends to reduce waste.",
+            "Explore different ways to use leftover food, like making a new dish."
+        ],
+        "report": "You are experiencing joy and satisfaction from enjoying delicious food, with a moderate level of attention and a stable emotional state. You are open to planning and sharing, but there is a slight concern about overordering and food waste.",
+        "originalText": "知道了",
+        "primary_emotion": "joy",
+        "secondary_emotions": [
+            "satisfaction"
+        ],
+        "valence": 0.7,
+        "arousal": 0.6,
+        "trend": "stable",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.8,
+            "openness": 0.7,
+            "resistance": 0.5,
+            "stress": 0.4,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "food",
+            "dining",
+            "family",
+            "planning",
+            "sharing"
+        ],
+        "emotion_triggers": [
+            "crispy potato",
+            "overordered",
+            "food waste"
+        ],
+        "summary": "You are experiencing joy and satisfaction from enjoying delicious food, with a moderate level of attention and a stable emotional state. You are open to planning and sharing, but there is a slight concern about overordering and food waste."
+    },
+    "originalText": "知道了",
+    "createTime": {
+        "$date": "2025-04-19T14:24:12.363Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "dcffa8246803b256017ae00330231276",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "fatigue",
+        "intensity": 0.7,
+        "keywords": [
+            "heat",
+            "programming competition",
+            "sweat",
+            "rain"
+        ],
+        "suggestions": [
+            "Stay hydrated and rest well after the competition.",
+            "Consider dressing in layers for future events to adjust to temperature changes.",
+            "Reflect on the experience and celebrate your participation in the programming competition."
+        ],
+        "report": "Experienced physical fatigue and slight anxiety due to the hot weather during the programming competition, followed by a sudden rain shower in the evening.",
+        "originalText": "今天白天的时候很热，我去参加编程天梯赛的时候流了一身汗，晚上这时候突然就下雨了",
+        "primary_emotion": "fatigue",
+        "secondary_emotions": [
+            "anxiety",
+            "joy"
+        ],
+        "valence": 0.3,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.6,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "heat",
+            "programming competition",
+            "sweat",
+            "rain"
+        ],
+        "emotion_triggers": [
+            "hot",
+            "sweat",
+            "rain"
+        ],
+        "summary": "Experienced physical fatigue and slight anxiety due to the hot weather during the programming competition, followed by a sudden rain shower in the evening."
+    },
+    "originalText": "今天白天的时候很热，我去参加编程天梯赛的时候流了一身汗，晚上这时候突然就下雨了",
+    "createTime": {
+        "$date": "2025-04-19T14:25:26.713Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "dcffa8246803b30b017ae9e90c2e5ff4",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "fatigue",
+        "intensity": 0.7,
+        "keywords": [
+            "hot",
+            "programming competition",
+            "sweat",
+            "rain"
+        ],
+        "suggestions": [
+            "Stay hydrated and rest well after the competition.",
+            "Consider wearing appropriate clothing for future events to manage sweat better.",
+            "Plan your day to account for weather changes and potential delays."
+        ],
+        "report": "Experienced physical fatigue and stress due to the hot weather during the programming competition, with a mix of anxiety and joy. The sudden rain added an unexpected twist to the day.",
+        "originalText": "今天白天的时候很热，我去参加编程天梯赛的时候流了一身汗，晚上这时候突然就下雨了",
+        "primary_emotion": "fatigue",
+        "secondary_emotions": [
+            "anxiety",
+            "joy"
+        ],
+        "valence": 0.3,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.8,
+            "openness": 0.7,
+            "resistance": 0.5,
+            "stress": 0.6,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "hot",
+            "programming competition",
+            "sweat",
+            "rain"
+        ],
+        "emotion_triggers": [
+            "hot",
+            "sweat",
+            "rain"
+        ],
+        "summary": "Experienced physical fatigue and stress due to the hot weather during the programming competition, with a mix of anxiety and joy. The sudden rain added an unexpected twist to the day."
+    },
+    "originalText": "今天白天的时候很热，我去参加编程天梯赛的时候流了一身汗，晚上这时候突然就下雨了",
+    "createTime": {
+        "$date": "2025-04-19T14:28:27.319Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "9f86c6566803b30f017722877c058f1f",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "fatigue",
+        "intensity": 0.7,
+        "keywords": [
+            "hot",
+            "programming competition",
+            "sweat",
+            "rain"
+        ],
+        "suggestions": [
+            "Stay hydrated and dress in layers for future events.",
+            "Consider bringing an umbrella or a raincoat if the weather forecast predicts rain.",
+            "Take breaks during long events to rest and cool down."
+        ],
+        "report": "Experienced physical fatigue and slight anxiety due to the hot weather during a programming competition, followed by a sudden rain shower in the evening.",
+        "originalText": "今天白天的时候很热，我去参加编程天梯赛的时候流了一身汗，晚上这时候突然就下雨了",
+        "primary_emotion": "fatigue",
+        "secondary_emotions": [
+            "anxiety",
+            "joy"
+        ],
+        "valence": 0.3,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.6,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "hot",
+            "programming competition",
+            "sweat",
+            "rain"
+        ],
+        "emotion_triggers": [
+            "hot",
+            "sweat",
+            "rain"
+        ],
+        "summary": "Experienced physical fatigue and slight anxiety due to the hot weather during a programming competition, followed by a sudden rain shower in the evening."
+    },
+    "originalText": "今天白天的时候很热，我去参加编程天梯赛的时候流了一身汗，晚上这时候突然就下雨了",
+    "createTime": {
+        "$date": "2025-04-19T14:28:31.964Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "80a8bd4f6803bcfb0178f3d32caa0b8d",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "fatigue",
+        "intensity": 0.7,
+        "keywords": [
+            "hot",
+            "programming competition",
+            "sweat",
+            "rain"
+        ],
+        "suggestions": [
+            "Stay hydrated and rest well after the competition.",
+            "Consider wearing lightweight, breathable clothing for future events.",
+            "Plan for unexpected weather changes when attending outdoor events."
+        ],
+        "report": "Experienced physical fatigue and slight anxiety due to the hot weather during the programming competition, followed by a sudden rain shower in the evening.",
+        "originalText": "今天白天的时候很热，我去参加编程天梯赛的时候流了一身汗，晚上这时候突然就下雨了",
+        "primary_emotion": "fatigue",
+        "secondary_emotions": [
+            "anxiety",
+            "joy"
+        ],
+        "valence": 0.3,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.6,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "hot",
+            "programming competition",
+            "sweat",
+            "rain"
+        ],
+        "emotion_triggers": [
+            "hot",
+            "sweat",
+            "rain"
+        ],
+        "summary": "Experienced physical fatigue and slight anxiety due to the hot weather during the programming competition, followed by a sudden rain shower in the evening."
+    },
+    "originalText": "今天白天的时候很热，我去参加编程天梯赛的时候流了一身汗，晚上这时候突然就下雨了",
+    "createTime": {
+        "$date": "2025-04-19T15:10:51.551Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "ed153fc76803be0c0174578c44a8f171",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "neutral",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [],
+        "report": "你的问候表达了一种礼貌和友好的情绪，没有明显的情感波动或特定主题。",
+        "originalText": "你好",
+        "primary_emotion": "neutral",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "你的问候表达了一种礼貌和友好的情绪，没有明显的情感波动或特定主题。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-19T15:15:24.636Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "80a8bd4f6803be200178fc6c4ff6c3eb",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.7,
+        "keywords": [
+            "天气"
+        ],
+        "suggestions": [
+            "享受这个好天气，出去散步或进行户外活动"
+        ],
+        "report": "你表达了对当前天气的积极评价，感到愉悦。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.8,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.7,
+            "resistance": 0.3,
+            "stress": 0.4,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "天气"
+        ],
+        "emotion_triggers": [
+            "不错"
+        ],
+        "summary": "你表达了对当前天气的积极评价，感到愉悦。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-19T15:15:44.664Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "1b9686ec6803bef8017709a949b0db45",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.7,
+        "keywords": [
+            "weather"
+        ],
+        "suggestions": [
+            "Enjoy the nice weather by going for a walk."
+        ],
+        "report": "You expressed a positive sentiment about the current weather, indicating a pleasant and possibly relaxed mood.",
+        "originalText": "我刚才说了什么",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.8,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "weather"
+        ],
+        "emotion_triggers": [],
+        "summary": "You expressed a positive sentiment about the current weather, indicating a pleasant and possibly relaxed mood."
+    },
+    "originalText": "我刚才说了什么",
+    "createTime": {
+        "$date": "2025-04-19T15:19:20.105Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "ed153fc76803bf26017462ed5115d4e9",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.7,
+        "keywords": [
+            "云函数",
+            "上传",
+            "错误"
+        ],
+        "suggestions": [
+            "检查云函数上传的步骤",
+            "确保所有必要的文件都已上传",
+            "设置提醒以避免未来发生类似情况"
+        ],
+        "report": "你因为忘记上传云函数而感到焦虑，目前需要检查上传流程并确保所有文件都已正确上传。",
+        "originalText": "刚才还以为哪里出错了，原来是云函数忘记上传了",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [],
+        "valence": -0.5,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "云函数",
+            "上传",
+            "错误"
+        ],
+        "emotion_triggers": [
+            "忘记上传",
+            "出错"
+        ],
+        "summary": "你因为忘记上传云函数而感到焦虑，目前需要检查上传流程并确保所有文件都已正确上传。"
+    },
+    "originalText": "刚才还以为哪里出错了，原来是云函数忘记上传了",
+    "createTime": {
+        "$date": "2025-04-19T15:20:06.137Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "0e7893fb6803c1540179071a5b998252",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anticipation",
+        "intensity": 0.8,
+        "keywords": [
+            "王者荣耀"
+        ],
+        "suggestions": [
+            "享受游戏带来的乐趣，同时注意休息，保持良好的作息。",
+            "如果遇到困难，可以尝试和队友沟通，团队合作往往能解决问题。",
+            "游戏结束后，可以分享你的游戏体验，这样可以让你的情绪得到释放。"
+        ],
+        "report": "你目前处于期待玩游戏的状态，情绪积极，注意力集中。",
+        "originalText": "我要打王者荣耀了",
+        "primary_emotion": "anticipation",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.7,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "王者荣耀"
+        ],
+        "emotion_triggers": [
+            "打王者荣耀"
+        ],
+        "summary": "你目前处于期待玩游戏的状态，情绪积极，注意力集中。"
+    },
+    "originalText": "我要打王者荣耀了",
+    "createTime": {
+        "$date": "2025-04-19T15:29:24.15Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "65dc62586803c163017972001e16282a",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "王者荣耀",
+            "海诺"
+        ],
+        "suggestions": [
+            "享受游戏的同时，注意休息，保持良好的作息习惯。",
+            "和朋友们一起玩可以增加乐趣，也许可以尝试新的合作策略。",
+            "如果遇到困难，不要气馁，多尝试几次，你会找到解决方法的。"
+        ],
+        "report": "你对玩王者荣耀中的海诺感到非常高兴，这表明你在游戏中找到了乐趣和满足感。",
+        "originalText": "我喜欢玩海诺",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "王者荣耀",
+            "海诺"
+        ],
+        "emotion_triggers": [
+            "喜欢"
+        ],
+        "summary": "你对玩王者荣耀中的海诺感到非常高兴，这表明你在游戏中找到了乐趣和满足感。"
+    },
+    "originalText": "我喜欢玩海诺",
+    "createTime": {
+        "$date": "2025-04-19T15:29:39.56Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "9f86c6566803c1800177c026763285a6",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "王者荣耀",
+            "海诺"
+        ],
+        "suggestions": [
+            "享受游戏的同时，记得适当休息，保护视力。",
+            "如果遇到困难，可以尝试不同的英雄，也许会有新的发现。",
+            "和朋友们一起组队玩，增加游戏的乐趣。"
+        ],
+        "report": "你目前处于愉快的情绪中，对玩王者荣耀特别感兴趣，尤其是喜欢玩海诺。保持这种积极的心态，但别忘了适度休息。",
+        "originalText": "我喜欢玩海诺",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "王者荣耀",
+            "海诺"
+        ],
+        "emotion_triggers": [
+            "喜欢",
+            "玩"
+        ],
+        "summary": "你目前处于愉快的情绪中，对玩王者荣耀特别感兴趣，尤其是喜欢玩海诺。保持这种积极的心态，但别忘了适度休息。"
+    },
+    "originalText": "我喜欢玩海诺",
+    "createTime": {
+        "$date": "2025-04-19T15:30:08.216Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "b7e94e9b6803c25c01793b93327e5750",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "surprise",
+        "intensity": 0.7,
+        "keywords": [
+            "游戏",
+            "喜好"
+        ],
+        "suggestions": [
+            "询问家人不喜欢玩游戏的原因，了解他们的观点。",
+            "尝试一起玩游戏，增进彼此的了解和共同话题。",
+            "尊重家人的选择，同时也可以表达自己的兴趣和理由。"
+        ],
+        "report": "用户表达了对家人不喜欢玩游戏的不解，显示出对家庭互动和沟通的期待。",
+        "originalText": "为什么你们不喜欢玩游戏呢",
+        "primary_emotion": "surprise",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "游戏",
+            "喜好"
+        ],
+        "emotion_triggers": [
+            "不喜欢",
+            "玩游戏"
+        ],
+        "summary": "用户表达了对家人不喜欢玩游戏的不解，显示出对家庭互动和沟通的期待。"
+    },
+    "originalText": "为什么你们不喜欢玩游戏呢",
+    "createTime": {
+        "$date": "2025-04-19T15:33:48.046Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "c42c9d1b6803c2730176404344af9bd8",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "calm",
+        "intensity": 0.8,
+        "keywords": [
+            "游戏",
+            "娱乐",
+            "平衡"
+        ],
+        "suggestions": [
+            "确保每天有足够的休息时间",
+            "尝试将游戏时间安排在周末",
+            "和妈妈一起讨论如何平衡学习和娱乐"
+        ],
+        "report": "用户表现出平静的情绪，意识到需要平衡学习和娱乐，并承诺会注意这一点。",
+        "originalText": "知道了，我会注意的",
+        "primary_emotion": "calm",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.3,
+        "trend": "stable",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.6,
+            "resistance": 0.5,
+            "stress": 0.2,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "游戏",
+            "娱乐",
+            "平衡"
+        ],
+        "emotion_triggers": [
+            "注意",
+            "学习",
+            "放松"
+        ],
+        "summary": "用户表现出平静的情绪，意识到需要平衡学习和娱乐，并承诺会注意这一点。"
+    },
+    "originalText": "知道了，我会注意的",
+    "createTime": {
+        "$date": "2025-04-19T15:34:11.164Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "80a8bd4f6803c29a0179380726844d57",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "curiosity",
+        "intensity": 0.7,
+        "keywords": [
+            "day",
+            "well-being"
+        ],
+        "suggestions": [
+            "It's great that you're thinking about your day. Consider reflecting on what made you feel good today.",
+            "If you're open to it, sharing your day with someone can be a great way to connect and feel supported."
+        ],
+        "report": "You seem to be in a curious and moderately positive mood, showing interest in someone's day and well-being.",
+        "originalText": "你今天过得怎么样呀",
+        "primary_emotion": "curiosity",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "day",
+            "well-being"
+        ],
+        "emotion_triggers": [
+            "well"
+        ],
+        "summary": "You seem to be in a curious and moderately positive mood, showing interest in someone's day and well-being."
+    },
+    "originalText": "你今天过得怎么样呀",
+    "createTime": {
+        "$date": "2025-04-19T15:34:50.349Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "e23fc3b26803c2bc01754346486c9d5a",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "confidence",
+        "intensity": 0.8,
+        "keywords": [
+            "university",
+            "self-management",
+            "time-arrangement"
+        ],
+        "suggestions": [
+            "继续保持这种自信和独立，妈妈相信你能够很好地适应大学生活。",
+            "记得定期和妈妈分享你的大学生活，这样妈妈也能更放心。",
+            "如果遇到任何困难，不要犹豫，随时寻求帮助。"
+        ],
+        "report": "表现出强烈的自信和自我管理能力，对大学生活充满期待。",
+        "originalText": "我都上大学了，肯定能管好自己，安排自己的时间",
+        "primary_emotion": "confidence",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "university",
+            "self-management",
+            "time-arrangement"
+        ],
+        "emotion_triggers": [
+            "能管好自己",
+            "安排自己的时间"
+        ],
+        "summary": "表现出强烈的自信和自我管理能力，对大学生活充满期待。"
+    },
+    "originalText": "我都上大学了，肯定能管好自己，安排自己的时间",
+    "createTime": {
+        "$date": "2025-04-19T15:35:24.343Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "e1cff6356804673d017e7b514357e942",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "fatigue",
+        "intensity": 0.7,
+        "keywords": [
+            "examination",
+            "tiredness"
+        ],
+        "suggestions": [
+            "Consider taking a short break before the exam to refresh your energy.",
+            "If the exam is optional, it might be okay to skip it today and rest.",
+            "Remember, it's important to take care of your physical and mental health."
+        ],
+        "report": "You are feeling tired and have some anxiety about attending the afternoon English exam. It's important to listen to your body and consider your well-being.",
+        "originalText": "有点不想去下午的英语考试了，有点累",
+        "primary_emotion": "fatigue",
+        "secondary_emotions": [
+            "anxiety"
+        ],
+        "valence": -0.3,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.5,
+            "resistance": 0.8,
+            "stress": 0.7,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "examination",
+            "tiredness"
+        ],
+        "emotion_triggers": [
+            "don't want to go",
+            "tired"
+        ],
+        "summary": "You are feeling tired and have some anxiety about attending the afternoon English exam. It's important to listen to your body and consider your well-being."
+    },
+    "originalText": "有点不想去下午的英语考试了，有点累",
+    "createTime": {
+        "$date": "2025-04-20T03:17:17.501Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "9f86c656680468f0017d8e8b2fd3cee6",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anticipation",
+        "intensity": 0.8,
+        "keywords": [
+            "考研",
+            "目标",
+            "未来"
+        ],
+        "suggestions": [
+            "制定一个详细的考研计划，包括学习时间和复习内容。",
+            "寻找一个学习小组或导师，一起讨论和解决问题。",
+            "保持积极的心态，相信自己的能力，适当放松，避免过度压力。"
+        ],
+        "report": "你对考研充满期待和决心，这是一个积极的目标，建议你制定合理的学习计划，并保持积极的心态。",
+        "originalText": "我想要考研",
+        "primary_emotion": "anticipation",
+        "secondary_emotions": [
+            "joy",
+            "determination"
+        ],
+        "valence": 0.7,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.9,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "考研",
+            "目标",
+            "未来"
+        ],
+        "emotion_triggers": [
+            "考研",
+            "目标"
+        ],
+        "summary": "你对考研充满期待和决心，这是一个积极的目标，建议你制定合理的学习计划，并保持积极的心态。"
+    },
+    "originalText": "我想要考研",
+    "createTime": {
+        "$date": "2025-04-20T03:24:32.524Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "d33be42268046914017d35611e205613",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "fatigue",
+        "intensity": 0.8,
+        "keywords": [
+            "考研",
+            "复习"
+        ],
+        "suggestions": [
+            "尝试做一些轻松的活动来提神，比如散步或做一些简单的伸展运动。",
+            "如果可能的话，稍微休息一下，哪怕只是闭目养神几分钟。",
+            "确保晚上有足够的睡眠，这对保持精力和专注力很重要。"
+        ],
+        "report": "你目前感到疲劳，可能是因为缺乏睡眠。建议适当休息和保持良好的作息习惯。",
+        "originalText": "感觉睡到这时候还是好困",
+        "primary_emotion": "fatigue",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.2,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.7,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "考研",
+            "复习"
+        ],
+        "emotion_triggers": [
+            "好困"
+        ],
+        "summary": "你目前感到疲劳，可能是因为缺乏睡眠。建议适当休息和保持良好的作息习惯。"
+    },
+    "originalText": "感觉睡到这时候还是好困",
+    "createTime": {
+        "$date": "2025-04-20T03:25:08.395Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "1b9686ec68046c68017cc64d0b82d710",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "neutral",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [],
+        "report": "当前对话内容较为中性，用户表现出基本的礼貌和友好。",
+        "originalText": "你好",
+        "primary_emotion": "neutral",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "当前对话内容较为中性，用户表现出基本的礼貌和友好。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-20T03:39:20.341Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "b7e94e9b68046c84017e789033f9b07d",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.7,
+        "keywords": [
+            "考试",
+            "英语",
+            "考研",
+            "机构"
+        ],
+        "suggestions": [
+            "考虑一下为什么你不想去，这样可能有助于你更好地理解自己的感受。",
+            "尝试做一些深呼吸练习或轻松的活动，以缓解紧张和焦虑。",
+            "与朋友或家人谈谈你的感受，有时候分享可以帮助你感觉更好。"
+        ],
+        "report": "你目前可能感到焦虑和失望，因为即将参加的英语考试让你不太想去。这可能是因为你对考试结果有压力或对考试内容不感兴趣。",
+        "originalText": "我下午考研机构有个英语考试，但是我不是很想去",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [
+            "disappointment"
+        ],
+        "valence": -0.6,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.4,
+            "resistance": 0.8,
+            "stress": 0.7,
+            "control": 0.3
+        },
+        "topic_keywords": [
+            "考试",
+            "英语",
+            "考研",
+            "机构"
+        ],
+        "emotion_triggers": [
+            "不是很想去"
+        ],
+        "summary": "你目前可能感到焦虑和失望，因为即将参加的英语考试让你不太想去。这可能是因为你对考试结果有压力或对考试内容不感兴趣。"
+    },
+    "originalText": "我下午考研机构有个英语考试，但是我不是很想去",
+    "createTime": {
+        "$date": "2025-04-20T03:39:48.601Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "b7e94e9b68046caf017e7b6e0f6e6d5f",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.8,
+        "keywords": [
+            "project",
+            "examination",
+            "time management"
+        ],
+        "suggestions": [
+            "尝试制定一个实际可行的计划，优先处理最重要的任务。",
+            "考虑与同学或老师讨论，看看是否可以寻求帮助或调整项目截止日期。",
+            "进行短暂的休息和放松，有助于提高效率和减轻压力。"
+        ],
+        "report": "你目前感到焦虑和压力，主要是因为项目和时间紧迫的期中考。建议合理安排时间，寻求帮助，并确保休息以保持效率。",
+        "originalText": "我现在忙着写项目，感觉时间不够用，而且我明天就要期中考了，我想准备一下考试",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [
+            "stress",
+            "urgency"
+        ],
+        "valence": -0.6,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.7,
+            "stress": 0.8,
+            "control": 0.3
+        },
+        "topic_keywords": [
+            "project",
+            "examination",
+            "time management"
+        ],
+        "emotion_triggers": [
+            "time不够用",
+            "期中考",
+            "焦虑"
+        ],
+        "summary": "你目前感到焦虑和压力，主要是因为项目和时间紧迫的期中考。建议合理安排时间，寻求帮助，并确保休息以保持效率。"
+    },
+    "originalText": "我现在忙着写项目，感觉时间不够用，而且我明天就要期中考了，我想准备一下考试",
+    "createTime": {
+        "$date": "2025-04-20T03:40:31.1Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "ed153fc768046cca017a11f7336e0708",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.8,
+        "keywords": [
+            "project",
+            "examination",
+            "preparation"
+        ],
+        "suggestions": [
+            "Consider breaking down your tasks into smaller, manageable parts.",
+            "Take short breaks to rest and clear your mind.",
+            "Seek support from peers or mentors if you need help with the project."
+        ],
+        "report": "You are experiencing high levels of anxiety due to the pressure of managing a project and preparing for an upcoming exam. The stress is evident, and you may feel overwhelmed.",
+        "originalText": "我感觉没有用",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [],
+        "valence": -0.6,
+        "arousal": 0.9,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.7,
+            "stress": 0.9,
+            "control": 0.3
+        },
+        "topic_keywords": [
+            "project",
+            "examination",
+            "preparation"
+        ],
+        "emotion_triggers": [
+            "time pressure",
+            "exam anxiety"
+        ],
+        "summary": "You are experiencing high levels of anxiety due to the pressure of managing a project and preparing for an upcoming exam. The stress is evident, and you may feel overwhelmed."
+    },
+    "originalText": "我感觉没有用",
+    "createTime": {
+        "$date": "2025-04-20T03:40:58.658Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "e1cff63568046d70017ebd7f5c3b0629",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "nostalgia",
+        "intensity": 0.8,
+        "keywords": [
+            "dream",
+            "high school",
+            "暗恋",
+            "nostalgia"
+        ],
+        "suggestions": [
+            "Reflect on the feelings associated with your high school days.",
+            "Consider reaching out to her if you feel it might be meaningful.",
+            "Engage in activities that remind you of your high school days to process your emotions."
+        ],
+        "report": "You are experiencing nostalgia and longing due to a dream about a high school crush, despite not having seen her for two years. This could be a reflection of the emotional connection you still have with her and the memories of your high school days.",
+        "originalText": "我梦到我暗恋的高中女生了，而明明我们两年 都没见面，我为什么还是会时常想起她呢",
+        "primary_emotion": "nostalgia",
+        "secondary_emotions": [
+            "longing",
+            "miss"
+        ],
+        "valence": 0.3,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.7,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "dream",
+            "high school",
+            "暗恋",
+            "nostalgia"
+        ],
+        "emotion_triggers": [
+            "dream",
+            "high school",
+            "nostalgia"
+        ],
+        "summary": "You are experiencing nostalgia and longing due to a dream about a high school crush, despite not having seen her for two years. This could be a reflection of the emotional connection you still have with her and the memories of your high school days."
+    },
+    "originalText": "我梦到我暗恋的高中女生了，而明明我们两年 都没见面，我为什么还是会时常想起她呢",
+    "createTime": {
+        "$date": "2025-04-20T03:43:44.719Z"
+    },
+    "roleId": "system_emotion_xiaobei",
+    "chatId": "ed153fc768026d8a0164323308b608f8"
+}
+{
+    "_id": "2b83cb1668046da6017c452a7338b03e",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "sadness",
+        "intensity": 0.7,
+        "keywords": [
+            "dream",
+            "high school",
+            "unrequited love",
+            "regret",
+            "bravery"
+        ],
+        "suggestions": [
+            "Reflect on the positive aspects of your high school experience.",
+            "Consider reaching out to her if you feel it might be meaningful.",
+            "Embrace the lessons learned from this experience to grow as a person."
+        ],
+        "report": "You express a sense of sadness and regret about not having pursued a relationship in the past, which is reflected in your dream and the longing to have acted differently.",
+        "originalText": "好吧，也许我当初就应该鼓起勇气",
+        "primary_emotion": "sadness",
+        "secondary_emotions": [
+            "regret"
+        ],
+        "valence": -0.6,
+        "arousal": 0.4,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.4
+        },
+        "topic_keywords": [
+            "dream",
+            "high school",
+            "unrequited love",
+            "regret",
+            "bravery"
+        ],
+        "emotion_triggers": [
+            "should have",
+            "courage",
+            "dreamed"
+        ],
+        "summary": "You express a sense of sadness and regret about not having pursued a relationship in the past, which is reflected in your dream and the longing to have acted differently."
+    },
+    "originalText": "好吧，也许我当初就应该鼓起勇气",
+    "createTime": {
+        "$date": "2025-04-20T03:44:38.308Z"
+    },
+    "roleId": "system_emotion_xiaobei",
+    "chatId": "ed153fc768026d8a0164323308b608f8"
+}
+{
+    "_id": "1b9686ec680470a2017cebb917032aea",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.7,
+        "keywords": [
+            "friendship",
+            "relationship",
+            "social media",
+            "emotions",
+            "confusion"
+        ],
+        "suggestions": [
+            "Reflect on your feelings and why they are triggered by her actions.",
+            "Communicate with her if you feel comfortable, to express your feelings and clarify your intentions.",
+            "Focus on your own hobbies and social activities to distract from the uncertainty."
+        ],
+        "report": "You are experiencing anxiety and disappointment due to uncertainty about your feelings towards a friend who has mentioned wanting to change her relationship status. Your emotions are heightened by the stress of not knowing how to proceed.",
+        "originalText": "我之前也找过她，想和她打王者荣耀，但是后来突然发现她有了 男朋友，也就不了了之，但是后来她在朋友圈发早晚要换个男朋友，这让我感觉不好，我也不知道我现在对她是什么感情",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [
+            "disappointment",
+            "anticipation"
+        ],
+        "valence": -0.6,
+        "arousal": 0.8,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.4,
+            "openness": 0.6,
+            "resistance": 0.8,
+            "stress": 0.7,
+            "control": 0.3
+        },
+        "topic_keywords": [
+            "friendship",
+            "relationship",
+            "social media",
+            "emotions",
+            "confusion"
+        ],
+        "emotion_triggers": [
+            "breakup",
+            "change",
+            "uncertainty"
+        ],
+        "summary": "You are experiencing anxiety and disappointment due to uncertainty about your feelings towards a friend who has mentioned wanting to change her relationship status. Your emotions are heightened by the stress of not knowing how to proceed."
+    },
+    "originalText": "我之前也找过她，想和她打王者荣耀，但是后来突然发现她有了 男朋友，也就不了了之，但是后来她在朋友圈发早晚要换个男朋友，这让我感觉不好，我也不知道我现在对她是什么感情",
+    "createTime": {
+        "$date": "2025-04-20T03:57:22.242Z"
+    },
+    "roleId": "system_emotion_xiaobei",
+    "chatId": "ed153fc768026d8a0164323308b608f8"
+}
+{
+    "_id": "9f86c656680470d0017dec4b0310e57c",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "neutral",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [],
+        "report": "用户目前情绪稳定，无明显情感波动。",
+        "originalText": "你好",
+        "primary_emotion": "neutral",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "用户目前情绪稳定，无明显情感波动。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-20T03:58:08.748Z"
+    },
+    "roleId": "system_study_xiaozhi",
+    "chatId": "0e7893fb680470c3017ed50b6739d363"
+}
+{
+    "_id": "9f86c656680470fa017dedff14540c9a",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "curiosity",
+        "intensity": 0.8,
+        "keywords": [
+            "英语学习",
+            "学习方法"
+        ],
+        "suggestions": [
+            "尝试使用英语学习软件或应用程序来提高学习效率。",
+            "参加英语角或找语伴练习口语，增加实际应用机会。",
+            "制定一个实际可行的学习计划，并坚持执行。"
+        ],
+        "report": "你对学习英语表现出浓厚的兴趣，希望找到有效的学习方法。",
+        "originalText": "你可以教我怎么学英语吗？",
+        "primary_emotion": "curiosity",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "英语学习",
+            "学习方法"
+        ],
+        "emotion_triggers": [
+            "教",
+            "学"
+        ],
+        "summary": "你对学习英语表现出浓厚的兴趣，希望找到有效的学习方法。"
+    },
+    "originalText": "你可以教我怎么学英语吗？",
+    "createTime": {
+        "$date": "2025-04-20T03:58:50.848Z"
+    },
+    "roleId": "system_study_xiaozhi",
+    "chatId": "0e7893fb680470c3017ed50b6739d363"
+}
+{
+    "_id": "80a8bd4f6804717e017ef73a2894b35d",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.7,
+        "keywords": [
+            "friendship",
+            "relationship",
+            "social media",
+            "emotions",
+            "confusion"
+        ],
+        "suggestions": [
+            "尝试理解自己的感受，是怀旧还是真的还有感情。",
+            "与她进行坦诚的对话，表达你的感受，但也要准备好接受任何结果。",
+            "专注于自己的兴趣和成长，不要让这段未了的感情占据你太多精力。"
+        ],
+        "report": "你目前感到焦虑和失望，对过去的感情和未来的可能性感到困惑。建议你深入理解自己的感受，并考虑如何向前看。",
+        "originalText": "我之前也找过她，想和她打王者荣耀，但是后来突然发现她有了 男朋友，也就不了了之，但是后来她在朋友圈发早晚要换个男朋友，这让我感觉不好，我也不知道我现在对她是什么感情",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [
+            "disappointment",
+            "anticipation"
+        ],
+        "valence": -0.6,
+        "arousal": 0.8,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.3,
+            "openness": 0.6,
+            "resistance": 0.8,
+            "stress": 0.7,
+            "control": 0.4
+        },
+        "topic_keywords": [
+            "friendship",
+            "relationship",
+            "social media",
+            "emotions",
+            "confusion"
+        ],
+        "emotion_triggers": [
+            "发现有了男朋友",
+            "朋友圈发早晚要换个男朋友",
+            "感觉不好"
+        ],
+        "summary": "你目前感到焦虑和失望，对过去的感情和未来的可能性感到困惑。建议你深入理解自己的感受，并考虑如何向前看。"
+    },
+    "originalText": "我之前也找过她，想和她打王者荣耀，但是后来突然发现她有了 男朋友，也就不了了之，但是后来她在朋友圈发早晚要换个男朋友，这让我感觉不好，我也不知道我现在对她是什么感情",
+    "createTime": {
+        "$date": "2025-04-20T04:01:02.779Z"
+    },
+    "roleId": "system_emotion_xiaobei",
+    "chatId": "ed153fc768026d8a0164323308b608f8"
+}
+{
+    "_id": "2b83cb166804729c017c8231790bd136",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anticipation",
+        "intensity": 0.7,
+        "keywords": [
+            "暗恋",
+            "感情",
+            "不确定性"
+        ],
+        "suggestions": [
+            "尝试与朋友或信任的人分享你的感受，这有助于你更好地理解自己的情绪。",
+            "保持开放的心态，同时也要接受可能的结果。",
+            "专注于自己的成长和兴趣，这样你会更加自信和满足。"
+        ],
+        "report": "你目前可能正处于对暗恋对象的期待和不确定中，伴随着一丝悲伤和喜悦。建议你保持开放，同时关注自己的成长。",
+        "originalText": "可是我只是暗恋",
+        "primary_emotion": "anticipation",
+        "secondary_emotions": [
+            "sadness",
+            "joy"
+        ],
+        "valence": 0.3,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "暗恋",
+            "感情",
+            "不确定性"
+        ],
+        "emotion_triggers": [
+            "暗恋",
+            "感情变化",
+            "朋友圈"
+        ],
+        "summary": "你目前可能正处于对暗恋对象的期待和不确定中，伴随着一丝悲伤和喜悦。建议你保持开放，同时关注自己的成长。"
+    },
+    "originalText": "可是我只是暗恋",
+    "createTime": {
+        "$date": "2025-04-20T04:05:48.868Z"
+    },
+    "roleId": "system_emotion_xiaobei",
+    "chatId": "ed153fc768026d8a0164323308b608f8"
+}
+{
+    "_id": "76c63bbb680472e4017a4d660123fafc",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "neutral",
+        "intensity": 0.5,
+        "keywords": [],
+        "suggestions": [],
+        "report": "用户当前情感状态中性，无明显情感倾向。",
+        "originalText": "你好",
+        "primary_emotion": "neutral",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [],
+        "emotion_triggers": [],
+        "summary": "用户当前情感状态中性，无明显情感倾向。"
+    },
+    "originalText": "你好",
+    "createTime": {
+        "$date": "2025-04-20T04:07:00.704Z"
+    },
+    "roleId": "system_career_mingge",
+    "chatId": "e1cff635680472dc017f0bbe0732e4f5"
+}
+{
+    "_id": "b7e94e9b68047314017ecdaa64c065e3",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anticipation",
+        "intensity": 0.7,
+        "keywords": [
+            "考研",
+            "项目",
+            "大二"
+        ],
+        "suggestions": [
+            "考虑如何平衡考研准备和项目参与，可能需要制定详细的时间管理计划。",
+            "评估项目的类型和对你考研目标的相关性，选择能够提升你技能和经验的项。",
+            "与导师或学长学姐交流，获取关于同时进行考研和项目的建议。"
+        ],
+        "report": "你目前处于考研和参与项目的决策阶段，表现出期待和一定的焦虑。建议你合理安排时间，并考虑项目的选择对考研的影响。",
+        "originalText": "我想要考研，我现在大二，但是又想参加项目",
+        "primary_emotion": "anticipation",
+        "secondary_emotions": [
+            "anxiety",
+            "joy"
+        ],
+        "valence": 0.6,
+        "arousal": 0.8,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.5,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "考研",
+            "项目",
+            "大二"
+        ],
+        "emotion_triggers": [
+            "考研",
+            "项目"
+        ],
+        "summary": "你目前处于考研和参与项目的决策阶段，表现出期待和一定的焦虑。建议你合理安排时间，并考虑项目的选择对考研的影响。"
+    },
+    "originalText": "我想要考研，我现在大二，但是又想参加项目",
+    "createTime": {
+        "$date": "2025-04-20T04:07:48.278Z"
+    },
+    "roleId": "system_career_mingge",
+    "chatId": "e1cff635680472dc017f0bbe0732e4f5"
+}
+{
+    "_id": "2b83cb1668047cef017cd98836589800",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anticipation",
+        "intensity": 0.7,
+        "keywords": [
+            "career goals",
+            "project experience",
+            "graduate studies"
+        ],
+        "suggestions": [
+            "Reflect on your long-term career goals to determine which path aligns best with your aspirations.",
+            "Start with a project to gain practical experience, and then reassess your decision about graduate studies.",
+            "Seek advice from mentors or professionals in your field to gain insights into both options."
+        ],
+        "report": "You are in a state of anticipation, weighing the benefits of practical experience through projects against the theoretical depth of graduate studies. Your decision seems to be balanced between excitement and a desire for control and trust in your choices.",
+        "originalText": "我该怎么做",
+        "primary_emotion": "anticipation",
+        "secondary_emotions": [
+            "joy",
+            "calm"
+        ],
+        "valence": 0.6,
+        "arousal": 0.8,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.5,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "career goals",
+            "project experience",
+            "graduate studies"
+        ],
+        "emotion_triggers": [
+            "consider",
+            "balance",
+            "decide"
+        ],
+        "summary": "You are in a state of anticipation, weighing the benefits of practical experience through projects against the theoretical depth of graduate studies. Your decision seems to be balanced between excitement and a desire for control and trust in your choices."
+    },
+    "originalText": "我该怎么做",
+    "createTime": {
+        "$date": "2025-04-20T04:49:51.213Z"
+    },
+    "roleId": "system_career_mingge",
+    "chatId": "e1cff635680472dc017f0bbe0732e4f5"
+}
+{
+    "_id": "d33be42268047fd2017e38750fe6e3d2",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "inquiry",
+        "intensity": 0.5,
+        "keywords": [
+            "question"
+        ],
+        "suggestions": [
+            "Reflect on the context of your inquiry",
+            "Clarify your question for better understanding"
+        ],
+        "report": "You are in an inquiry mode, seeking clarification or information.",
+        "originalText": "我刚才说了什么？",
+        "primary_emotion": "inquiry",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.5,
+            "resistance": 0.5,
+            "stress": 0.5,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "question"
+        ],
+        "emotion_triggers": [
+            "question"
+        ],
+        "summary": "You are in an inquiry mode, seeking clarification or information."
+    },
+    "originalText": "我刚才说了什么？",
+    "createTime": {
+        "$date": "2025-04-20T05:02:10.498Z"
+    },
+    "roleId": "system_career_mingge",
+    "chatId": "e1cff635680472dc017f0bbe0732e4f5"
+}
+{
+    "_id": "0e7893fb68047fed017f6da961e992fb",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "anxiety",
+        "intensity": 0.7,
+        "keywords": [
+            "project",
+            "exam",
+            "decision"
+        ],
+        "suggestions": [
+            "Consider breaking down your tasks into smaller, manageable parts.",
+            "Seek support from peers or mentors who have gone through a similar situation.",
+            "Practice relaxation techniques to manage stress levels."
+        ],
+        "report": "You seem to be experiencing a moderate level of anxiety about balancing projects and preparing for exams, with a sense of uncertainty and a need for support.",
+        "originalText": "分析了什么？",
+        "primary_emotion": "anxiety",
+        "secondary_emotions": [],
+        "valence": -0.3,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.7,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "project",
+            "exam",
+            "decision"
+        ],
+        "emotion_triggers": [
+            "considering",
+            "uncertain",
+            "help"
+        ],
+        "summary": "You seem to be experiencing a moderate level of anxiety about balancing projects and preparing for exams, with a sense of uncertainty and a need for support."
+    },
+    "originalText": "分析了什么？",
+    "createTime": {
+        "$date": "2025-04-20T05:02:37.202Z"
+    },
+    "roleId": "system_career_mingge",
+    "chatId": "e1cff635680472dc017f0bbe0732e4f5"
+}
+{
+    "_id": "b0131947680480060181bcbb6c8cfcb3",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "weather"
+        ],
+        "suggestions": [
+            "享受这个好天气，出去走走，呼吸新鲜空气"
+        ],
+        "report": "你因为今天的良好天气感到愉快，这提升了你的情绪和活力。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.4,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "weather"
+        ],
+        "emotion_triggers": [
+            "weather"
+        ],
+        "summary": "你因为今天的良好天气感到愉快，这提升了你的情绪和活力。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-20T05:03:02.816Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "0e7893fb6804827f017ff2ff4536e60f",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "boredom",
+        "intensity": 0.7,
+        "keywords": [
+            "weather",
+            "leisure",
+            "choice"
+        ],
+        "suggestions": [
+            "Take a short walk to clear your mind.",
+            "Try a new activity or hobby to spark your interest.",
+            "Spend some time in nature to boost your mood."
+        ],
+        "report": "You seem to be experiencing a sense of boredom and uncertainty about what to do next. The weather is nice, which could be an opportunity to engage in outdoor activities or explore new interests.",
+        "originalText": "我不知道干什么了",
+        "primary_emotion": "boredom",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.2,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.6,
+            "resistance": 0.3,
+            "stress": 0.2,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "weather",
+            "leisure",
+            "choice"
+        ],
+        "emotion_triggers": [
+            "don't know what to do"
+        ],
+        "summary": "You seem to be experiencing a sense of boredom and uncertainty about what to do next. The weather is nice, which could be an opportunity to engage in outdoor activities or explore new interests."
+    },
+    "originalText": "我不知道干什么了",
+    "createTime": {
+        "$date": "2025-04-20T05:13:35.577Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "2b83cb1668048287017d8a30337bd514",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "confusion",
+        "intensity": 0.7,
+        "keywords": [
+            "uncertainty",
+            "idle",
+            "choice"
+        ],
+        "suggestions": [
+            "尝试一些新的活动，比如绘画、写作或者学习一门新技能。",
+            "出去散步，呼吸新鲜空气，有时候大自然能带来新的灵感。",
+            "给自己设定一个小目标，比如阅读一本书或者完成一个小项目。"
+        ],
+        "report": "你目前感到困惑，不知道该做什么，这可能是因为缺乏目标和动力。建议尝试新事物或设定小目标来激发你的兴趣。",
+        "originalText": "我不知道干什么了",
+        "primary_emotion": "confusion",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.4,
+            "resistance": 0.6,
+            "stress": 0.2,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "uncertainty",
+            "idle",
+            "choice"
+        ],
+        "emotion_triggers": [
+            "不知道干什么了"
+        ],
+        "summary": "你目前感到困惑，不知道该做什么，这可能是因为缺乏目标和动力。建议尝试新事物或设定小目标来激发你的兴趣。"
+    },
+    "originalText": "我不知道干什么了",
+    "createTime": {
+        "$date": "2025-04-20T05:13:43.291Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "c42c9d1b680482bb017d48e901d50640",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.7,
+        "keywords": [
+            "hello"
+        ],
+        "suggestions": [
+            "继续使用轻松愉快的语调进行对话",
+            "分享一些有趣的话题来维持对话的乐趣"
+        ],
+        "report": "用户表现出愉快的情绪，可能是因为简单的问候，对话氛围轻松愉快。",
+        "originalText": "你好啊",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.8,
+        "arousal": 0.6,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "hello"
+        ],
+        "emotion_triggers": [
+            "hello"
+        ],
+        "summary": "用户表现出愉快的情绪，可能是因为简单的问候，对话氛围轻松愉快。"
+    },
+    "originalText": "你好啊",
+    "createTime": {
+        "$date": "2025-04-20T05:14:35.524Z"
+    },
+    "roleId": "system_study_xiaozhi",
+    "chatId": "0e7893fb680470c3017ed50b6739d363"
+}
+{
+    "_id": "b7e94e9b680482d7017fc3b0254ece0f",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "helpful",
+        "intensity": 0.8,
+        "keywords": [
+            "learn",
+            "english",
+            "study"
+        ],
+        "suggestions": [
+            "Start with basic grammar and vocabulary.",
+            "Practice speaking with native speakers or language partners.",
+            "Use language learning apps and online resources.",
+            "Consistently practice listening, speaking, reading, and writing."
+        ],
+        "report": "You are seeking guidance on learning English, indicating a proactive and open mindset towards improvement.",
+        "originalText": "可以教教我怎么学英语吗？",
+        "primary_emotion": "helpful",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.5,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.9,
+            "stress": 0.2,
+            "control": 0.7,
+            "resistance": 0.3,
+            "openness": 0.8
+        },
+        "topic_keywords": [
+            "learn",
+            "english",
+            "study"
+        ],
+        "emotion_triggers": [
+            "teach",
+            "help",
+            "study"
+        ],
+        "summary": "You are seeking guidance on learning English, indicating a proactive and open mindset towards improvement."
+    },
+    "originalText": "可以教教我怎么学英语吗？",
+    "createTime": {
+        "$date": "2025-04-20T05:15:03.196Z"
+    },
+    "roleId": "system_study_xiaozhi",
+    "chatId": "0e7893fb680470c3017ed50b6739d363"
+}
+{
+    "_id": "76c63bbb6804852e017ba82f39f708cb",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "joy",
+        "intensity": 0.8,
+        "keywords": [
+            "weather"
+        ],
+        "suggestions": [
+            "享受这个美好的天气，出去散步或者进行户外活动"
+        ],
+        "report": "你感到很高兴，因为今天的天气很好，这让你心情愉悦。",
+        "originalText": "今天天气不错",
+        "primary_emotion": "joy",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "weather"
+        ],
+        "emotion_triggers": [
+            "weather"
+        ],
+        "summary": "你感到很高兴，因为今天的天气很好，这让你心情愉悦。"
+    },
+    "originalText": "今天天气不错",
+    "createTime": {
+        "$date": "2025-04-20T05:25:02.263Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "1b9686ec68048576017e322779ba78ea",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "期待",
+        "intensity": 0.8,
+        "keywords": [
+            "五一",
+            "回家",
+            "玩"
+        ],
+        "suggestions": [
+            "提前规划你的行程，确保旅途愉快",
+            "和家人朋友沟通，分享你的期待，增进感情",
+            "保持积极的心态，享受即将到来的假期"
+        ],
+        "report": "你目前处于期待假期的心情中，对即将到来的五一回家游玩充满期待和喜悦。",
+        "originalText": "等我五一回家出去 玩",
+        "primary_emotion": "期待",
+        "secondary_emotions": [
+            "喜悦"
+        ],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "上升",
+        "attention_level": "高",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "五一",
+            "回家",
+            "玩"
+        ],
+        "emotion_triggers": [
+            "回家",
+            "玩"
+        ],
+        "summary": "你目前处于期待假期的心情中，对即将到来的五一回家游玩充满期待和喜悦。"
+    },
+    "originalText": "等我五一回家出去 玩",
+    "createTime": {
+        "$date": "2025-04-20T05:26:14.047Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "85b0d3336804885d017dc05c1b144fd6",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "疲惫",
+        "intensity": 0.8,
+        "keywords": [
+            "编程天梯赛",
+            "天气",
+            "挑战"
+        ],
+        "suggestions": [
+            "注意保暖，避免感冒",
+            "适当放松，保证充足睡眠",
+            "分享比赛经验，总结学习成果"
+        ],
+        "report": "今天经历了炎热的天气和编程比赛的挑战，感到疲惫，但同时也展现了面对困难的勇气。",
+        "originalText": "我会的",
+        "primary_emotion": "疲惫",
+        "secondary_emotions": [
+            "焦虑"
+        ],
+        "valence": 0,
+        "arousal": 0.3,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.7,
+            "resistance": 0.5,
+            "stress": 0.6,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "编程天梯赛",
+            "天气",
+            "挑战"
+        ],
+        "emotion_triggers": [
+            "编程",
+            "比赛",
+            "炎热"
+        ],
+        "summary": "今天经历了炎热的天气和编程比赛的挑战，感到疲惫，但同时也展现了面对困难的勇气。"
+    },
+    "originalText": "我会的",
+    "createTime": {
+        "$date": "2025-04-20T05:38:37.981Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "dcffa824680488a40182d76d705216cf",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "喜悦",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "感觉",
+            "不错"
+        ],
+        "suggestions": [
+            "继续保持良好的心情，享受美好的天气吧！",
+            "可以出去走走，享受户外的清新空气。",
+            "如果有机会，可以尝试一些户外活动，让心情更加愉悦。"
+        ],
+        "report": "您今天对天气感到非常满意，情绪愉悦，心情舒畅。",
+        "originalText": "确实我感觉今天天气不错",
+        "primary_emotion": "喜悦",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "unknown",
+        "attention_level": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "天气",
+            "感觉",
+            "不错"
+        ],
+        "emotion_triggers": [
+            "不错"
+        ],
+        "summary": "您今天对天气感到非常满意，情绪愉悦，心情舒畅。"
+    },
+    "originalText": "确实我感觉今天天气不错",
+    "createTime": {
+        "$date": "2025-04-20T05:39:48.74Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "a6ec3048680489360180231d6acbb020",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "喜悦",
+        "intensity": 0.8,
+        "keywords": [
+            "回家",
+            "想念"
+        ],
+        "suggestions": [
+            "提前规划一下回家的行程，让旅程更加顺利；准备一些小礼物给家人，表达你的思念之情；保持愉快的心情，和家人分享你的近况。"
+        ],
+        "report": "你表达了对回家的期待和家人的思念，情绪积极向上，充满喜悦和期待。",
+        "originalText": "我下周就要回家了，你想我吗？",
+        "primary_emotion": "喜悦",
+        "secondary_emotions": [
+            "期待"
+        ],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "上升",
+        "trend_en": "rising",
+        "attention_level": "高",
+        "attention_level_en": "high",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "回家",
+            "想念"
+        ],
+        "emotion_triggers": [
+            "回家",
+            "想念"
+        ],
+        "summary": "你表达了对回家的期待和家人的思念，情绪积极向上，充满喜悦和期待。"
+    },
+    "originalText": "我下周就要回家了，你想我吗？",
+    "createTime": {
+        "$date": "2025-04-20T05:42:14.809Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "ed153fc768048ac3017bfdb47a4c7dfd",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "喜悦",
+        "intensity": 0.8,
+        "keywords": [
+            "便宜",
+            "好吃",
+            "外出"
+        ],
+        "suggestions": [
+            "下次可以尝试自己动手做，享受烹饪的乐趣。",
+            "也可以和家人一起尝试新的餐馆，增进家庭感情。",
+            "记得注意饮食健康哦。"
+        ],
+        "report": "你对外面便宜又好吃的东西感到喜悦，期待着外出享受美食。",
+        "originalText": "还是外面便宜又好吃",
+        "primary_emotion": "喜悦",
+        "secondary_emotions": [
+            "期待"
+        ],
+        "valence": 0.6,
+        "arousal": 0.7,
+        "trend": "稳定",
+        "trend_en": "stable",
+        "attention_level": "中",
+        "attention_level_en": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.3,
+            "stress": 0.4,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "便宜",
+            "好吃",
+            "外出"
+        ],
+        "emotion_triggers": [
+            "便宜",
+            "好吃"
+        ],
+        "summary": "你对外面便宜又好吃的东西感到喜悦，期待着外出享受美食。"
+    },
+    "originalText": "还是外面便宜又好吃",
+    "createTime": {
+        "$date": "2025-04-20T05:48:51.583Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "9f86c65668048aeb017f72be4c048b8a",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "喜悦",
+        "intensity": 0.8,
+        "keywords": [
+            "回家",
+            "美食",
+            "家庭"
+        ],
+        "suggestions": [
+            "准备一顿丰盛的晚餐庆祝你的回家",
+            "一起回忆过去在家吃的美食",
+            "讨论未来一起尝试的新食谱"
+        ],
+        "report": "用户表达了对家中食物的喜爱，体现了对家的温暖和亲情的重要性，情感状态积极，充满期待和喜悦。",
+        "originalText": "嗯嗯，你做的菜最好吃了",
+        "primary_emotion": "喜悦",
+        "secondary_emotions": [],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "稳定",
+        "trend_en": "stable",
+        "attention_level": "高",
+        "attention_level_en": "high",
+        "radar_dimensions": {
+            "trust": 0.9,
+            "openness": 0.8,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "回家",
+            "美食",
+            "家庭"
+        ],
+        "emotion_triggers": [
+            "最好吃了"
+        ],
+        "summary": "用户表达了对家中食物的喜爱，体现了对家的温暖和亲情的重要性，情感状态积极，充满期待和喜悦。"
+    },
+    "originalText": "嗯嗯，你做的菜最好吃了",
+    "createTime": {
+        "$date": "2025-04-20T05:49:31.04Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "85b0d33368048b20017dd853270157ea",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "喜悦",
+        "intensity": 0.8,
+        "keywords": [
+            "天气",
+            "出去玩"
+        ],
+        "suggestions": [
+            "出门前记得带上防晒和帽子，享受户外时光；也可以计划一个小型的户外活动，如野餐或散步，增加乐趣。"
+        ],
+        "report": "您对当前的天气感到非常满意，并期待外出活动，表现出愉悦和积极的心情。",
+        "originalText": "今天天气真好，要不要出去玩",
+        "primary_emotion": "喜悦",
+        "secondary_emotions": [
+            "期待"
+        ],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "稳定",
+        "trend_en": "stable",
+        "attention_level": "高",
+        "attention_level_en": "high",
+        "radar_dimensions": {
+            "trust": 0.8,
+            "openness": 0.9,
+            "resistance": 0.5,
+            "stress": 0.3,
+            "control": 0.6
+        },
+        "topic_keywords": [
+            "天气",
+            "出去玩"
+        ],
+        "emotion_triggers": [
+            "今天天气真好",
+            "要不要出去玩"
+        ],
+        "summary": "您对当前的天气感到非常满意，并期待外出活动，表现出愉悦和积极的心情。"
+    },
+    "originalText": "今天天气真好，要不要出去玩",
+    "createTime": {
+        "$date": "2025-04-20T05:50:24.809Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "c42c9d1b68048b49017db9e87776848f",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "期待",
+        "intensity": 0.7,
+        "keywords": [
+            "聊天"
+        ],
+        "suggestions": [
+            "我们可以从你感兴趣的话题开始聊起",
+            "如果你愿意，可以告诉我你最近的一些经历",
+            "如果你有任何问题，也可以随时问我"
+        ],
+        "report": "你表达了对聊天的期待，显示出一种积极的情绪状态，愿意分享和交流。",
+        "originalText": "你可以陪我聊聊天吗",
+        "primary_emotion": "期待",
+        "secondary_emotions": [],
+        "valence": 0.6,
+        "arousal": 0.5,
+        "trend": "稳定",
+        "trend_en": "stable",
+        "attention_level": "中",
+        "attention_level_en": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.7,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "聊天"
+        ],
+        "emotion_triggers": [
+            "聊天"
+        ],
+        "summary": "你表达了对聊天的期待，显示出一种积极的情绪状态，愿意分享和交流。"
+    },
+    "originalText": "你可以陪我聊聊天吗",
+    "createTime": {
+        "$date": "2025-04-20T05:51:05.265Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "c42c9d1b68048b62017dbb367e526f48",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "期待",
+        "intensity": 0.8,
+        "keywords": [
+            "五一",
+            "回家",
+            "玩"
+        ],
+        "suggestions": [
+            "提前规划行程，确保旅途愉快",
+            "和家人朋友沟通，共享快乐时光",
+            "注意安全，享受轻松假期"
+        ],
+        "report": "你对五一回家的计划感到非常期待，充满了喜悦和积极的情绪。",
+        "originalText": "等我五一回家出去 玩",
+        "primary_emotion": "期待",
+        "secondary_emotions": [
+            "喜悦"
+        ],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "稳定",
+        "trend_en": "stable",
+        "attention_level": "高",
+        "attention_level_en": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "五一",
+            "回家",
+            "玩"
+        ],
+        "emotion_triggers": [
+            "五一",
+            "回家",
+            "玩"
+        ],
+        "summary": "你对五一回家的计划感到非常期待，充满了喜悦和积极的情绪。"
+    },
+    "originalText": "等我五一回家出去 玩",
+    "createTime": {
+        "$date": "2025-04-20T05:51:30.175Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "b7e94e9b68048b770180320f423b13f9",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "期待",
+        "intensity": 0.8,
+        "keywords": [
+            "五一",
+            "回家",
+            "玩"
+        ],
+        "suggestions": [
+            "提前规划你的行程，确保旅途愉快",
+            "和家人朋友一起制定活动计划，增加乐趣",
+            "保持良好的休息，为假期做好准备"
+        ],
+        "report": "你对即将到来的五一假期感到非常期待，充满了喜悦和积极的情绪。",
+        "originalText": "我刚才说了什么",
+        "primary_emotion": "期待",
+        "secondary_emotions": [
+            "喜悦"
+        ],
+        "valence": 0.9,
+        "arousal": 0.7,
+        "trend": "稳定",
+        "trend_en": "stable",
+        "attention_level": "高",
+        "attention_level_en": "high",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.8,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "五一",
+            "回家",
+            "玩"
+        ],
+        "emotion_triggers": [
+            "五一",
+            "回家",
+            "玩"
+        ],
+        "summary": "你对即将到来的五一假期感到非常期待，充满了喜悦和积极的情绪。"
+    },
+    "originalText": "我刚才说了什么",
+    "createTime": {
+        "$date": "2025-04-20T05:51:51.476Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "0e7893fb68048c670180727340caaafc",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "好奇",
+        "intensity": 0.7,
+        "keywords": [
+            "位置"
+        ],
+        "suggestions": [
+            "询问对方的具体位置，以便更好地了解他们的情况"
+        ],
+        "report": "用户表现出好奇，询问对方的位置，可能希望了解对方的当前状态。",
+        "originalText": "你在哪呢",
+        "primary_emotion": "好奇",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "未知",
+        "trend_en": "unknown",
+        "attention_level": "中",
+        "attention_level_en": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "位置"
+        ],
+        "emotion_triggers": [
+            "在哪"
+        ],
+        "summary": "用户表现出好奇，询问对方的位置，可能希望了解对方的当前状态。"
+    },
+    "originalText": "你在哪呢",
+    "createTime": {
+        "$date": "2025-04-20T05:55:51.979Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "76c63bbb68048c69017c194b3ed6ecc9",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "好奇",
+        "intensity": 0.7,
+        "keywords": [
+            "位置",
+            "询问"
+        ],
+        "suggestions": [
+            "告诉我你的位置，我们可以更好地交流。"
+        ],
+        "report": "你对我的位置表示好奇，并提出了询问。",
+        "originalText": "你在哪呢",
+        "primary_emotion": "好奇",
+        "secondary_emotions": [],
+        "valence": 0,
+        "arousal": 0.5,
+        "trend": "未知",
+        "trend_en": "unknown",
+        "attention_level": "中",
+        "attention_level_en": "medium",
+        "radar_dimensions": {
+            "trust": 0.5,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.5
+        },
+        "topic_keywords": [
+            "位置",
+            "询问"
+        ],
+        "emotion_triggers": [
+            "询问"
+        ],
+        "summary": "你对我的位置表示好奇，并提出了询问。"
+    },
+    "originalText": "你在哪呢",
+    "createTime": {
+        "$date": "2025-04-20T05:55:53.984Z"
+    },
+    "roleId": "dcffa824680243f001693e09566bc584",
+    "chatId": "b013194768025cf20168ecba4b85627f"
+}
+{
+    "_id": "65dc625868048dc001810d2a02af44ac",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "平静",
+        "intensity": 0.8,
+        "keywords": [
+            "修复",
+            "成功"
+        ],
+        "suggestions": [
+            "继续努力，保持积极的心态",
+            "回顾一下修复过程中的经验",
+            "庆祝你的成功，并计划下一步"
+        ],
+        "report": "您目前情绪稳定，对修复成功感到满意。保持积极的心态，继续前进。",
+        "originalText": "我应该修复成功了",
+        "primary_emotion": "平静",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.3,
+        "trend": "稳定",
+        "trend_en": "stable",
+        "attention_level": "中",
+        "attention_level_en": "medium",
+        "radar_dimensions": {
+            "trust": 0.7,
+            "openness": 0.6,
+            "resistance": 0.4,
+            "stress": 0.2,
+            "control": 0.8
+        },
+        "topic_keywords": [
+            "修复",
+            "成功"
+        ],
+        "emotion_triggers": [
+            "修复",
+            "成功"
+        ],
+        "summary": "您目前情绪稳定，对修复成功感到满意。保持积极的心态，继续前进。"
+    },
+    "originalText": "我应该修复成功了",
+    "createTime": {
+        "$date": "2025-04-20T06:01:36.449Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}
+{
+    "_id": "e23fc3b268048f40017d3c2d3fd0ea48",
+    "userId": "olbpX7ArSuSuQo4wF2dwTmoyqbog",
+    "analysis": {
+        "type": "平静",
+        "intensity": 0.7,
+        "keywords": [
+            "测试"
+        ],
+        "suggestions": [
+            "继续观察测试结果",
+            "分享你的测试体验",
+            "如果有需要，我们可以进一步讨论"
+        ],
+        "report": "你目前处于平静状态，对当前测试持中性态度，表现出适中的注意力水平。",
+        "originalText": "这是一个测试",
+        "primary_emotion": "平静",
+        "secondary_emotions": [],
+        "valence": 0.5,
+        "arousal": 0.3,
+        "trend": "稳定",
+        "trend_en": "stable",
+        "attention_level": "中",
+        "attention_level_en": "medium",
+        "radar_dimensions": {
+            "trust": 0.6,
+            "openness": 0.5,
+            "resistance": 0.4,
+            "stress": 0.3,
+            "control": 0.7
+        },
+        "topic_keywords": [
+            "测试"
+        ],
+        "emotion_triggers": [],
+        "summary": "你目前处于平静状态，对当前测试持中性态度，表现出适中的注意力水平。"
+    },
+    "originalText": "这是一个测试",
+    "createTime": {
+        "$date": "2025-04-20T06:08:00.133Z"
+    },
+    "roleId": "system_counselor_anna",
+    "chatId": "6a580dc968026d350167191308897dd2"
+}

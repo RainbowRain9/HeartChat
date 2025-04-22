@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "emotion-pie": "/components/emotion-pie/emotion-pie"
+  }
+}

@@ -1,0 +1,18 @@
+<!-- packageChat/components/chat-bubble/index.wxml -->
+<view class="chat-bubble-container {{isSender ? 'sender' : 'receiver'}} {{darkMode ? 'dark' : ''}}">
+  <!-- 时间显示 - 根据消息的showTimestamp属性决定是否显示 -->
+  <view class="message-time" wx:if="{{formattedTime && (message.showTimestamp || showTime)}}">{{formattedTime}}</view>
+
+  <!-- 消息气泡 -->
+  <view class="chat-bubble {{isSender ? 'sender-bubble' : 'receiver-bubble'}}" bindlongpress="handleLongPress">
+    <text class="message-content" user-select="true">{{message.content}}</text>
+  </view>
+
+  <!-- 情绪标签容器 -->
+  <view class="emotion-tag-container" wx:if="{{showEmotionTag && message.emotion_type}}">
+    <!-- 情绪标签 -->
+    <view class="emotion-tag">
+      <text class="emotion-text">检测结果： {{message.emotion_type}}</text>
+    </view>
+  </view>
+</view>

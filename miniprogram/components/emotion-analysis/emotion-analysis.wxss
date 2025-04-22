@@ -1,0 +1,383 @@
+/* components/emotion-analysis/emotion-analysis.wxss */
+.emotion-analysis {
+  width: 100%;
+  height: 100%;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.emotion-analysis.dark {
+  background-color: #1C1B1F;
+  color: #E6E1E5;
+}
+
+/* 头部样式 */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30rpx;
+  position: relative;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.emotion-tag {
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  background-color: #E5E7EB;
+  color: #4B5563;
+}
+
+.emotion-tag.joy {
+  background-color: #DCFCE7;
+  color: #166534;
+}
+
+.emotion-tag.sadness {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+
+.emotion-tag.anger {
+  background-color: #FEE2E2;
+  color: #B91C1C;
+}
+
+.emotion-tag.anxiety {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.emotion-tag.neutral {
+  background-color: #E5E7EB;
+  color: #4B5563;
+}
+
+.close-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  color: #9CA3AF;
+  cursor: pointer;
+}
+
+/* 概览部分 */
+.overview-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30rpx;
+  background-color: #F9FAFB;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.dark .overview-section {
+  background-color: #2D2C31;
+}
+
+.overview-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.label {
+  font-size: 24rpx;
+  color: #6B7280;
+  margin-bottom: 8rpx;
+}
+
+.dark .label {
+  color: #A1A1AA;
+}
+
+.value {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #111827;
+}
+
+.dark .value {
+  color: #E6E1E5;
+}
+
+/* 图表部分 */
+.chart-section {
+  margin-bottom: 30rpx;
+  background-color: #F9FAFB;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.dark .chart-section {
+  background-color: #2D2C31;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  color: #374151;
+}
+
+.dark .section-title {
+  color: #E6E1E5;
+}
+
+/* 简化图表容器 */
+.simple-chart-container {
+  width: 100%;
+  padding: 20rpx;
+  background-color: #FFFFFF;
+  border-radius: 8rpx;
+  box-sizing: border-box;
+}
+
+.dark .simple-chart-container {
+  background-color: #1C1B1F;
+}
+
+/* 趋势信息 */
+.trend-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.trend-label {
+  font-size: 24rpx;
+  color: #6B7280;
+}
+
+.dark .trend-label {
+  color: #A1A1AA;
+}
+
+.trend-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #3B82F6;
+}
+
+.dark .trend-value {
+  color: #60A5FA;
+}
+
+/* 进度条 */
+.progress-bar-container {
+  width: 100%;
+  height: 16rpx;
+  background-color: #E5E7EB;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.dark .progress-bar-container {
+  background-color: #3F3F46;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #3B82F6;
+  border-radius: 8rpx;
+  transition: width 0.3s ease;
+}
+
+.dark .progress-bar {
+  background-color: #60A5FA;
+}
+
+/* 维度容器 */
+.dimensions-container {
+  width: 100%;
+  padding: 20rpx;
+  background-color: #FFFFFF;
+  border-radius: 8rpx;
+  box-sizing: border-box;
+}
+
+.dark .dimensions-container {
+  background-color: #1C1B1F;
+}
+
+.dimension-item {
+  margin-bottom: 20rpx;
+}
+
+.dimension-item:last-child {
+  margin-bottom: 0;
+}
+
+.dimension-label {
+  font-size: 24rpx;
+  color: #6B7280;
+  margin-bottom: 8rpx;
+}
+
+.dark .dimension-label {
+  color: #A1A1AA;
+}
+
+.dimension-bar-container {
+  width: 100%;
+  height: 12rpx;
+  background-color: #E5E7EB;
+  border-radius: 6rpx;
+  overflow: hidden;
+  margin-bottom: 4rpx;
+}
+
+.dark .dimension-bar-container {
+  background-color: #3F3F46;
+}
+
+.dimension-bar {
+  height: 100%;
+  background-color: #3B82F6;
+  border-radius: 6rpx;
+  transition: width 0.3s ease;
+}
+
+.dark .dimension-bar {
+  background-color: #60A5FA;
+}
+
+.dimension-value {
+  font-size: 20rpx;
+  color: #9CA3AF;
+  text-align: right;
+}
+
+.dark .dimension-value {
+  color: #71717A;
+}
+
+/* 建议部分 */
+.suggestion-section {
+  margin-bottom: 30rpx;
+  background-color: #F9FAFB;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.dark .suggestion-section {
+  background-color: #2D2C31;
+}
+
+.suggestion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  font-size: 28rpx;
+  color: #4B5563;
+  line-height: 1.5;
+}
+
+.dark .suggestion-item {
+  color: #D1D5DB;
+}
+
+.suggestion-icon {
+  flex-shrink: 0;
+  font-size: 32rpx;
+}
+
+.suggestion-text {
+  flex: 1;
+}
+
+/* 标签部分 */
+.tags-section {
+  margin-bottom: 30rpx;
+  background-color: #F9FAFB;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.dark .tags-section {
+  background-color: #2D2C31;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.tag-item {
+  padding: 8rpx 20rpx;
+  background-color: #EFF6FF;
+  color: #3B82F6;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+}
+
+.dark .tag-item {
+  background-color: #1E3A8A;
+  color: #93C5FD;
+}
+
+/* 操作按钮 */
+.action-section {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  gap: 8rpx;
+  border: none;
+}
+
+.save-btn {
+  background-color: #3B82F6;
+  color: #FFFFFF;
+}
+
+.share-btn {
+  background-color: #F3F4F6;
+  color: #4B5563;
+}
+
+.dark .share-btn {
+  background-color: #374151;
+  color: #E5E7EB;
+}
+
+.btn-icon {
+  font-size: 32rpx;
+}
+
+.btn-text {
+  font-size: 28rpx;
+}

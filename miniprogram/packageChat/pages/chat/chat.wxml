@@ -1,0 +1,167 @@
+<!-- packageChat/pages/chat/chat.wxml -->
+<view class="chat-page {{darkMode ? 'dark' : ''}} {{isKeyboardShow ? 'keyboard-show' : ''}}" style="--keyboard-height: {{keyboardHeight}}px;">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="height: {{statusBarHeight + navBarHeight}}px;">
+    <view class="status-bar" style="height: {{statusBarHeight}}px;"></view>
+    <view class="nav-bar" style="height: {{navBarHeight}}px;">
+      <view class="nav-left">
+        <view class="back-btn" bindtap="handleBack">
+          <image class="back-icon" src="/images/icons/back.png" mode="aspectFit"></image>
+        </view>
+      </view>
+      <view class="nav-center">
+        <!-- 角色名称，当发送消息时显示"对方正在输入..." -->
+        <view class="role-title">
+          <text wx:if="{{!sending}}">{{role.name || '未知角色'}}</text>
+          <view wx:else class="typing-text">
+            <text>对方正在输入</text>
+            <text class="typing-dots">...</text>
+          </view>
+        </view>
+      </view>
+      <view class="nav-right">
+        <!-- 导航栏右侧预留空间 -->
+      </view>
+    </view>
+  </view>
+
+  <!-- 聊天内容 -->
+  <scroll-view class="chat-container"
+               style="margin-top: {{statusBarHeight + navBarHeight + 10}}px;"
+               scroll-y
+               enable-back-to-top
+               scroll-with-animation
+               scroll-anchoring="true"
+               enhanced="true"
+               show-scrollbar="false"
+               bindscrolltoupper="loadMoreHistory"
+               bindscroll="onScroll"
+               refresher-enabled="{{true}}"
+               refresher-threshold="{{80}}"
+               refresher-triggered="{{refreshing}}"
+               bindrefresherrefresh="onRefresh"
+               id="chat-container">
+    <!-- 加载更多 -->
+    <view class="loading-more" wx:if="{{loadingHistory}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载更多...</text>
+    </view>
+
+    <!-- 没有更多历史 -->
+    <view class="no-more-history" wx:if="{{!loadingHistory && !hasMoreHistory && messages.length > 0}}">
+      <text class="no-more-text">没有更多历史消息</text>
+    </view>
+
+    <!-- 消息列表 -->
+    <block wx:for="{{messages}}" wx:key="_id">
+      <!-- 消息气泡 - 已在气泡组件中显示时间 -->
+      <chat-bubble message="{{item}}"
+                  isSender="{{item.sender_type === 'user'}}"
+                  showTime="{{false}}"
+                  showEmotionTag="{{true}}"
+                  darkMode="{{darkMode}}"
+                  bind:delete="handleDeleteMessage"></chat-bubble>
+    </block>
+
+    <!-- 加载中 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- AI正在输入 -->
+    <view class="typing-indicator" wx:if="{{sending}}">
+      <view class="typing-dot"></view>
+      <view class="typing-dot"></view>
+      <view class="typing-dot"></view>
+    </view>
+
+    <!-- 底部空白区域，确保最后一条消息不被输入框遮挡 -->
+    <view class="bottom-space"></view>
+
+    <!-- 滚动锚点 -->
+    <view id="scroll-bottom" class="scroll-anchor"></view>
+  </scroll-view>
+
+  <!-- 情绪分析按钮 - 位于胶囊旁边 -->
+  <view class="emotion-btn-container" style="top: {{statusBarHeight + navBarHeight + 30}}px; right: 0px;">
+    <view class="emotion-btn" bindtap="handleShowEmotionAnalysis">
+      <image class="emotion-icon" src="/images/icons/emotion.png" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <!-- 回到底部按钮 -->
+  <view class="to-bottom-btn {{manualScroll ? 'show' : ''}}" catchtap="scrollToBottom" data-force="true">
+    <image class="to-bottom-icon" src="/images/icons/arrow-down.png" mode="aspectFit"></image>
+  </view>
+
+  <!-- 输入框 -->
+  <view class="input-container">
+    <chat-input placeholder="输入消息..."
+               disabled="{{sending}}"
+               darkMode="{{darkMode}}"
+               bind:send="handleSendMessage"
+               bind:sendVoice="handleSendVoice"
+               bind:focus="handleInputFocus"
+               bind:blur="handleInputBlur"></chat-input>
+  </view>
+
+  <!-- 情绪分析弹窗 -->
+  <view class="emotion-modal {{showEmotionAnalysis ? 'show' : ''}}" bindtap="handleCloseEmotionAnalysis">
+    <view class="emotion-modal-content" catchtap="stopPropagation">
+      <!-- 使用情绪分析仪表盘组件 -->
+      <emotion-dashboard
+        userId="{{openId}}"
+        emotionData="{{emotionAnalysis}}"
+        show="{{showEmotionAnalysis}}"
+        darkMode="{{darkMode}}"
+        bind:close="handleCloseEmotionAnalysis"
+        bind:viewMore="handleViewEmotionDetail"
+      ></emotion-dashboard>
+    </view>
+  </view>
+</view>
+
+<!-- 辅助函数 -->
+<wxs module="formatTime">
+  function format(timestamp) {
+    try {
+      // 将timestamp转换为数字
+      var ts = parseInt(timestamp);
+
+      // 检查timestamp是否有效
+      if (!ts || isNaN(ts)) {
+        console.log('无效时间戳:', timestamp, '转换后:', ts);
+        return '今天';
+      }
+
+      var date = getDate(ts);
+      // 检查date是否有效
+      if (date.toString() === 'Invalid Date') {
+        console.log('无效日期:', timestamp, '转换后:', ts);
+        return '今天';
+      }
+
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+      var hour = date.getHours();
+      var minute = date.getMinutes();
+
+      var now = getDate();
+      var isToday = now.getFullYear() === year && now.getMonth() + 1 === month && now.getDate() === day;
+
+      // 始终返回固定的时间格式
+      return padZero(hour) + ':' + padZero(minute);
+    } catch (e) {
+      // 发生错误时返回空字符串
+      return '';
+    }
+  }
+
+  function padZero(num) {
+    return num < 10 ? '0' + num : '' + num;
+  }
+
+  module.exports = format;
+</wxs>

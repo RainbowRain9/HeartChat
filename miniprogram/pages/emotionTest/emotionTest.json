@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "情感分析测试",
+  "usingComponents": {
+    "emotion-panel": "/components/emotion-panel/emotion-panel",
+    "emotion-history": "/components/emotion-history/emotion-history"
+  }
+}

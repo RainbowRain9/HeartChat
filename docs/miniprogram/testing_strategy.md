@@ -1,0 +1,1 @@
+# Mini Program Testing Strategy

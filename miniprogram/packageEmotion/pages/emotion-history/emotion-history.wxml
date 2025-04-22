@@ -1,0 +1,178 @@
+<!-- packageEmotion/pages/emotion-history/emotion-history.wxml -->
+<view class="container {{darkMode ? 'dark-mode' : ''}}">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav">
+    <view class="status-bar" style="height: {{statusBarHeight}}px"></view>
+    <view class="nav-bar" style="height: {{navBarHeight}}px">
+      <view class="nav-left">
+        <view class="back-btn" bindtap="handleBack">
+          <image class="back-icon" src="/images/icons/back_{{darkMode ? 'dark' : 'light'}}.png" mode="aspectFit"></image>
+        </view>
+      </view>
+      <view class="nav-center">
+        <text class="nav-title">情绪历史</text>
+      </view>
+      <view class="nav-right"></view>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="content-area" style="margin-top: {{statusBarHeight + navBarHeight}}px">
+    <!-- 时间范围选择 -->
+    <view class="time-range-selector">
+      <scroll-view scroll-x enable-flex class="time-range-scroll">
+        <view class="time-range-item {{timeRange === 'week' ? 'active' : ''}}"
+              bindtap="switchTimeRange" data-range="week">一周</view>
+        <view class="time-range-item {{timeRange === 'month' ? 'active' : ''}}"
+              bindtap="switchTimeRange" data-range="month">一个月</view>
+        <view class="time-range-item {{timeRange === 'quarter' ? 'active' : ''}}"
+              bindtap="switchTimeRange" data-range="quarter">三个月</view>
+        <view class="time-range-item {{timeRange === 'halfYear' ? 'active' : ''}}"
+              bindtap="switchTimeRange" data-range="halfYear">半年</view>
+        <view class="time-range-item {{timeRange === 'year' ? 'active' : ''}}"
+              bindtap="switchTimeRange" data-range="year">一年</view>
+      </scroll-view>
+    </view>
+
+    <!-- 加载中提示 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载数据中...</text>
+    </view>
+
+    <!-- 无数据提示 -->
+    <view class="no-data-container" wx:elif="{{!hasData}}">
+      <view class="no-data-icon">
+        <text class="iconfont icon-empty"></text>
+      </view>
+      <text class="no-data-text">暂无情绪历史数据</text>
+      <text class="no-data-tip">与AI角色多聊聊，积累更多情绪数据吧</text>
+    </view>
+
+    <!-- 数据内容 -->
+    <block wx:elif="{{hasData}}">
+      <!-- 情绪趋势图 -->
+      <view class="emotion-card">
+        <view class="card-title">情绪趋势</view>
+        <view class="chart-container">
+          <ec-canvas id="trendChart" canvas-id="trendChart" ec="{{ ec }}"></ec-canvas>
+        </view>
+
+        <view class="legend-container">
+          <view class="legend-item">
+            <view class="legend-color" style="background-color: #5e72e4;"></view>
+            <text class="legend-text">积极情绪</text>
+          </view>
+          <view class="legend-item">
+            <view class="legend-color" style="background-color: #ffc107;"></view>
+            <text class="legend-text">中性情绪</text>
+          </view>
+          <view class="legend-item">
+            <view class="legend-color" style="background-color: #f56565;"></view>
+            <text class="legend-text">消极情绪</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 情绪分布 -->
+      <view class="emotion-card">
+        <view class="card-title">情绪分布</view>
+        <view class="chart-container">
+          <ec-canvas id="distributionChart" canvas-id="distributionChart" ec="{{ ec }}"></ec-canvas>
+        </view>
+      </view>
+
+      <!-- 情绪波动指数 -->
+      <view class="emotion-card">
+        <view class="card-title">情绪波动指数</view>
+        <view class="chart-container volatility-container">
+          <ec-canvas id="volatilityChart" canvas-id="volatilityChart" ec="{{ ec }}"></ec-canvas>
+        </view>
+
+        <view class="volatility-summary">
+          <text>你的情绪波动指数为<text class="volatility-value">{{volatilityIndex.current}}</text>，属于{{volatilityLevel}}水平。</text>
+          <text wx:if="{{volatilityIndex.changePercent !== 0}}">
+            相比上周，波动性<text class="{{volatilityIndex.changePercent > 0 ? 'increase' : 'decrease'}}">
+              {{volatilityIndex.changePercent > 0 ? '增加' : '减少'}}了{{abs(volatilityIndex.changePercent)}}%
+            </text>，
+            {{volatilityReason}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 情绪日历 -->
+      <view class="emotion-card">
+        <view class="card-title">情绪日历</view>
+        <!-- 星期标题 -->
+        <view class="calendar-weekdays">
+          <view class="weekday-item" wx:for="{{weekdays}}" wx:key="index">{{item}}</view>
+        </view>
+
+        <!-- 日历网格 -->
+        <view class="calendar-grid">
+          <view class="calendar-day {{item.current ? '' : 'other-month'}} {{item.emotion ? 'emotion-' + item.emotion : ''}}"
+                wx:for="{{calendarDays}}"
+                wx:key="date"
+                bindtap="onDayClick"
+                data-date="{{item.date}}">
+            <text class="day-number">{{item.day}}</text>
+          </view>
+        </view>
+
+        <!-- 日历图例 -->
+        <view class="calendar-legend">
+          <view class="legend-item">
+            <view class="legend-color" style="background-color: #e6ffec;"></view>
+            <text class="legend-text">积极</text>
+          </view>
+          <view class="legend-item">
+            <view class="legend-color" style="background-color: #e6f7ff;"></view>
+            <text class="legend-text">平静</text>
+          </view>
+          <view class="legend-item">
+            <view class="legend-color" style="background-color: #fff7e6;"></view>
+            <text class="legend-text">中性</text>
+          </view>
+          <view class="legend-item">
+            <view class="legend-color" style="background-color: #ffece6;"></view>
+            <text class="legend-text">消极</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 最近情绪记录 -->
+      <view class="recent-records-section">
+        <view class="section-title">最近情绪记录</view>
+        <view class="records-list">
+          <view class="record-item"
+                wx:for="{{recentRecords}}"
+                wx:key="id"
+                bindtap="viewRecordDetail"
+                data-id="{{item.id}}"
+                data-role-id="{{item.roleId}}"
+                data-chat-id="{{item.chatId}}">
+            <view class="record-icon-container" style="background-color: {{item.iconBg}};">
+              <text class="record-icon {{item.iconName}}"></text>
+            </view>
+            <view class="record-content">
+              <view class="record-emotions">{{item.emotions.join(' & ')}}</view>
+              <view class="record-meta">
+                <text>{{item.time}}</text>
+                <text wx:if="{{item.roleName}}" class="record-role"> · 与 {{item.roleName}} 的对话</text>
+                <text wx:else> · 对话记录</text>
+              </view>
+            </view>
+            <view class="record-arrow">
+              <text class="iconfont icon-right"></text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 加载更多按钮 -->
+        <view class="load-more" wx:if="{{hasMoreRecords}}" bindtap="loadMoreRecords">
+          <text>加载更多</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

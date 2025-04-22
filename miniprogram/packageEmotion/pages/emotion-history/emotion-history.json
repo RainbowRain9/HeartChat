@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "情绪历史",
+  "usingComponents": {
+    "ec-canvas": "/components/ec-canvas/ec-canvas"
+  },
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+}

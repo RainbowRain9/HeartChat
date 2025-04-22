@@ -1,0 +1,46 @@
+<!-- components/interest-tag-cloud/interest-tag-cloud.wxml -->
+<view class="interest-tag-cloud {{darkMode ? 'dark' : ''}}">
+  <view class="tag-cloud-header">
+    <view class="tag-cloud-title" wx:if="{{showTitle}}">兴趣标签</view>
+    <view class="tag-cloud-title-placeholder" wx:else></view>
+    <view class="tag-cloud-refresh" bindtap="handleRefresh" wx:if="{{showRefreshButton}}">
+      <text class="refresh-icon">🔄</text>
+    </view>
+  </view>
+
+  <view class="tag-cloud-content">
+    <block wx:if="{{loading}}">
+      <view class="tag-cloud-loading">
+        <text>加载中...</text>
+      </view>
+    </block>
+
+    <block wx:elif="{{error}}">
+      <view class="tag-cloud-error">
+        <text>{{error}}</text>
+      </view>
+    </block>
+
+    <block wx:elif="{{tags.length === 0}}">
+      <view class="tag-cloud-empty">
+        <text>暂无兴趣标签</text>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="tag-cloud-tags">
+        <view
+          wx:for="{{tags}}"
+          wx:key="name"
+          class="tag-item"
+          style="font-size: {{item.fontSize}}px; color: {{item.color}};"
+          data-tag="{{item}}"
+          bindtap="handleTagClick"
+        >
+          <text>{{item.name}}</text>
+          <text wx:if="{{showCategory && item.category !== '未分类'}}" class="tag-category">({{item.category}})</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

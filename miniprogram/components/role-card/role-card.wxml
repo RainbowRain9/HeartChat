@@ -1,0 +1,40 @@
+<!-- components/role-card/role-card.wxml -->
+<view class="role-card {{selected ? 'selected' : ''}} {{darkMode ? 'dark' : ''}}"
+      bindtap="handleTap"
+      bindlongpress="handleLongPress">
+  <view class="avatar-container">
+    <image class="avatar"
+           src="{{role.avatar || role.avatar_url || defaultAvatar}}"
+           mode="aspectFill"
+           binderror="handleAvatarError"></image>
+
+    <!-- 系统角色标记 -->
+    <view class="system-badge" wx:if="{{role.isSystem || role.creator === 'system'}}">
+      <text>系统</text>
+    </view>
+
+    <!-- 分类标签 -->
+    <view class="category-tag" wx:if="{{role.category || role.role_type}}">
+      <text>{{(role.category || role.role_type) === 'emotion' ? '情感支持' :
+             (role.category || role.role_type) === 'psychology' ? '心理咨询' :
+             (role.category || role.role_type) === 'life' ? '生活伙伴' :
+             (role.category || role.role_type) === 'career' || (role.category || role.role_type) === 'work' ? '职场导师' :
+             (role.category || role.role_type) === 'other' ? '其他' : '其他'}}</text>
+    </view>
+
+    <!-- 推荐角色标记 -->
+    <view class="recommended-badge" wx:if="{{role.isRecommended}}">
+      <text>推荐</text>
+    </view>
+  </view>
+
+  <view class="info-container">
+    <view class="name-container">
+      <text class="name">{{role.name || role.role_name || '未命名角色'}}</text>
+      <view class="usage-count" wx:if="{{role.usage && role.usage.usageCount > 0}}">
+        <text>{{role.usage.usageCount}}次</text>
+      </view>
+    </view>
+    <text class="description">{{role.description || role.role_desc || '暂无描述'}}</text>
+  </view>
+</view>

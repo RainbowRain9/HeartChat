@@ -1,0 +1,27 @@
+<!-- packageChat/pages/emotion-analysis/emotion-analysis.wxml -->
+<view class="container">
+  <view class="content">
+    <block wx:if="{{loading}}">
+      <view class="loading">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
+    </block>
+    <block wx:elif="{{emotionAnalysis}}">
+      <!-- 使用现有的情绪分析组件 -->
+      <emotion-analysis
+        emotion="{{emotionAnalysis}}"
+        show="{{true}}"
+        userId="{{userId}}"
+        roleId="{{roleId}}"
+        darkMode="{{false}}">
+      </emotion-analysis>
+    </block>
+    <block wx:else>
+      <view class="empty">
+        <image src="/images/icons/empty.png" mode="aspectFit" class="empty-icon"></image>
+        <text class="empty-text">暂无情绪分析数据</text>
+      </view>
+    </block>
+  </view>
+</view>

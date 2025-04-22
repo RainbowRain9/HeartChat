@@ -1,0 +1,110 @@
+// components/agent-ui/index.js
+import { checkConfig, randomSelectInitquestion, generateSystemPrompt } from "./tools.js";
+import md5 from "./md5.js";
+Component({
+  properties: {
+    chatMode: {
+      type: String,
+      value: "",
+    },
+    showBotAvatar: {
+      type: Boolean,
+      value: false,
+    },
+    presentationMode: {
+      type: String,
+      value: "",
+    },
+    agentConfig: {
+      type: Object,
+      value: {
+        botId: String,
+        allowUploadFile: Boolean,
+        allowWebSearch: Boolean,
+        allowPullRefresh: Boolean,
+        roleInfo: Object,
+        prompt: String,
+      },
+    },
+    modelConfig: {
+      type: Object,
+      value: {
+        modelProvider: String,
+        quickResponseModel: String,
+        logo: String,
+        welcomeMsg: String,
+      },
+    },
+  },
+
+  observers: {
+    showWebSearchSwitch: function (showWebSearchSwitch) {
+      this.setData({
+        showFeatureList: showWebSearchSwitch,
+      });
+    },
+    showTools: function (isShow) {
+      if (isShow) {
+        this.setData({
+          footerHeight: this.data.footerHeight + 80,
+        });
+      } else {
+        const subHeight = this.data.footerHeight - 80;
+        this.setData({
+          footerHeight: subHeight >= 73 ? subHeight : 73,
+        });
+      }
+    },
+    showFeatureList: function (isShow) {
+      console.log("showFeatureList", isShow);
+      if (isShow) {
+        this.setData({
+          footerHeight: this.data.footerHeight + 30,
+        });
+      } else {
+        const subHeight = this.data.footerHeight - 30;
+        this.setData({
+          footerHeight: subHeight >= 80 ? subHeight : 80,
+        });
+      }
+    },
+  },
+
+  data: {
+    isLoading: true, // 判断是否尚在加载中
+    article: {},
+    windowInfo: wx.getWindowInfo(),
+    bot: {},
+    inputValue: "",
+    output: "",
+    chatRecords: [],
+    scrollTop: 0, // 文字撑起来后能滚动的最大高度
+    setPanelVisibility: false,
+    questions: [],
+    viewTop: 0, // 根据实际情况，可能用户手动滚动，需要记录当前滚动的位置
+    scrollTo: "", // 快速定位到指定元素，置底用
+    scrollTimer: null, // 滚动定时器
+    manualScroll: false, // 当前为手动滚动/自动滚动
+    showTools: false, // 展示底部工具栏
+    showFileList: false, // 展示输入框顶部文件行
+    showTopBar: false, // 展示顶部bar
+    sendFileList: [],
+    footerHeight: 73,
+    lastScrollTop: 0,
+    showUploadFile: true,
+    showUploadImg: false,
+    showWebSearchSwitch: false,
+    showPullRefresh: true,
+    useWebSearch: false,
+    showFeatureList: false,
+    chatStatus: 0, // 页面状态： 0-正常状态，可输入，可发送， 1-发送中 2-思考中 3-输出content中
+    triggered: false,
+    page: 1,
+    size: 10,
+    total: 0,
+    refreshText: "下拉加载历史记录",
+    contentHeightInScrollViewTop: 0, // scroll区域顶部固定区域高度
+    shouldAddScrollTop: false,
+    textareaHeight: 50,
+    curLineCount: 1,
+  },

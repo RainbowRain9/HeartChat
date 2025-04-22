@@ -1,0 +1,233 @@
+---
+description: 自定义组件设计规范
+globs: 
+alwaysApply: false
+---
+# 自定义组件设计规范
+
+## 组件设计原则
+
+1. 单一职责：一个组件只负责一个功能
+2. 高内聚低耦合：组件内部功能紧密相关，与外部的依赖最小化
+3. 可复用性：组件设计应便于在不同场景下复用
+4. 可扩展性：组件应易于扩展和定制
+5. 可测试性：组件应易于测试
+
+## 组件目录结构
+
+```
+components/
+└── component-name/
+    ├── index.js       # 组件逻辑
+    ├── index.json     # 组件配置
+    ├── index.wxml     # 组件模板
+    ├── index.wxss     # 组件样式
+    └── README.md      # 组件文档（可选）
+```
+
+## 组件命名规范
+
+1. 组件目录使用小写字母，多个单词用连字符（-）连接
+2. 组件文件统一使用 index.* 命名
+3. 组件名应当简洁明了，反映组件的用途
+4. 通用组件使用功能描述命名，如 `button`、`card`
+5. 业务组件可使用业务描述命名，如 `user-profile`、`order-list`
+
+## 组件接口设计
+
+### 属性（Properties）
+
+1. 属性名使用驼峰命名法（camelCase）
+2. 为每个属性提供类型和默认值
+3. 使用 observer 监听属性变化
+4. 属性应当是组件的输入，不应被组件内部修改
+5. 为复杂属性提供验证函数
+
+```javascript
+Component({
+  properties: {
+    // 简单属性
+    title: {
+      type: String,
+      value: ''
+    },
+    
+    // 带观察器的属性
+    count: {
+      type: Number,
+      value: 0,
+      observer(newVal, oldVal) {
+        // 处理属性变化
+      }
+    },
+    
+    // 带验证的属性
+    type: {
+      type: String,
+      value: 'default',
+      optionalTypes: [String],
+      observer(newVal) {
+        const validTypes = ['default', 'primary', 'warning', 'danger'];
+        if (!validTypes.includes(newVal)) {
+          console.warn(`Invalid type: ${newVal}, using default instead`);
+          this.setData({ type: 'default' });
+        }
+      }
+    }
+  }
+});
+```
+
+### 事件（Events）
+
+1. 事件名使用连字符命名法（kebab-case）
+2. 使用 `this.triggerEvent()` 触发事件
+3. 事件应当是组件的输出
+4. 为事件提供有意义的参数
+5. 避免过多的事件，保持接口简洁
+
+```javascript
+Component({
+  methods: {
+    handleTap() {
+      // 触发事件
+      this.triggerEvent('item-tap', {
+        id: this.data.id,
+        value: this.data.value
+      });
+    }
+  }
+});
+```
+
+### 插槽（Slots）
+
+1. 使用插槽提供内容定制能力
+2. 为插槽提供默认内容
+3. 使用命名插槽区分不同的内容区域
+4. 在组件文档中说明可用的插槽
+
+```html
+<!-- 默认插槽 -->
+<view class="container">
+  <slot></slot>
+</view>
+
+<!-- 命名插槽 -->
+<view class="card">
+  <view class="card-header">
+    <slot name="header">默认标题</slot>
+  </view>
+  <view class="card-body">
+    <slot name="body">默认内容</slot>
+  </view>
+  <view class="card-footer">
+    <slot name="footer"></slot>
+  </view>
+</view>
+```
+
+## 组件生命周期
+
+1. 在 `created` 中进行初始化工作
+2. 在 `attached` 中设置初始状态和添加事件监听
+3. 在 `detached` 中清理资源和移除事件监听
+4. 使用 `pageLifetimes` 响应页面生命周期
+5. 避免在生命周期函数中执行耗时操作
+
+```javascript
+Component({
+  lifetimes: {
+    created() {
+      // 组件实例刚创建时执行
+    },
+    attached() {
+      // 组件实例进入页面节点树时执行
+      this._initData();
+      this._addEventListeners();
+    },
+    ready() {
+      // 组件在视图层布局完成后执行
+    },
+    detached() {
+      // 组件实例被从页面节点树移除时执行
+      this._removeEventListeners();
+      this._clearData();
+    }
+  },
+  
+  pageLifetimes: {
+    show() {
+      // 页面被展示时执行
+    },
+    hide() {
+      // 页面被隐藏时执行
+    },
+    resize(size) {
+      // 页面尺寸变化时执行
+    }
+  }
+});
+```
+
+## 组件通信
+
+1. 使用属性（properties）进行父到子的通信
+2. 使用事件（events）进行子到父的通信
+3. 使用 `this.selectComponent()` 获取子组件实例
+4. 使用全局状态管理进行跨组件通信
+5. 避免使用事件总线进行通信，除非必要
+
+## 组件样式
+
+1. 使用组件样式隔离，避免样式冲突
+2. 使用 BEM 命名方法组织样式
+3. 提供样式定制接口，如主题色、尺寸等
+4. 使用外部样式类允许外部定制样式
+5. 避免使用 `!important`
+
+```javascript
+Component({
+  options: {
+    // 样式隔离
+    styleIsolation: 'isolated',
+    // 外部样式类
+    externalClasses: ['custom-class', 'header-class', 'body-class']
+  }
+});
+```
+
+```html
+<view class="custom-component custom-class">
+  <view class="custom-component__header header-class">
+    <!-- 头部内容 -->
+  </view>
+  <view class="custom-component__body body-class">
+    <!-- 主体内容 -->
+  </view>
+</view>
+```
+
+## 组件文档
+
+1. 为每个组件提供 README.md 文档
+2. 文档包括组件描述、使用示例、属性说明、事件说明、插槽说明
+3. 提供不同配置的示例
+4. 说明组件的限制和注意事项
+5. 保持文档的更新
+
+## 组件测试
+
+1. 编写单元测试验证组件功能
+2. 测试属性变化和事件触发
+3. 测试边界情况和错误处理
+4. 使用模拟数据进行测试
+5. 进行性能测试，确保组件高效运行
+
+## 最佳实践
+
+1. 保持组件的简单性，避免过于复杂的组件
+2. 使用组合而不是继承扩展组件功能
+3. 提供合理的默认值，减少使用者的配置负担
+4. 处理错误情况，提供友好的错误提示
+5. 定期重构和优化组件

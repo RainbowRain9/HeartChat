@@ -1,0 +1,185 @@
+<!-- components/emotion-dashboard/emotion-dashboard.wxml -->
+<view class="emotion-dashboard {{show ? 'show' : ''}} {{darkMode ? 'dark' : ''}}" bindscroll="onScroll">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="title">情绪分析</view>
+    <view class="close-btn" bindtap="closePanel">×</view>
+  </view>
+
+  <!-- 情绪概览卡片 -->
+  <view class="emotion-card">
+    <view class="card-title">当前情绪状态</view>
+    <view class="emotion-overview">
+      <view class="emotion-item primary">
+        <view class="emotion-icon">
+          <view class="icon-wrapper">
+            <view class="icon-{{emotionIcons[emotion.primary] || 'meh'}}"></view>
+          </view>
+        </view>
+        <view class="emotion-name">{{emotion.primary}}</view>
+        <view class="emotion-label">主要情绪</view>
+      </view>
+      <block wx:if="{{emotion.secondary.length > 0}}">
+        <view class="emotion-item secondary" wx:for="{{emotion.secondary}}" wx:key="index" wx:if="{{index < 2}}">
+          <view class="emotion-icon">
+            <view class="icon-wrapper">
+              <view class="icon-{{emotionIcons[item] || 'meh'}}"></view>
+            </view>
+          </view>
+          <view class="emotion-name">{{item}}</view>
+          <view class="emotion-label">次要情绪</view>
+        </view>
+      </block>
+      <!-- 当没有次要情绪时不显示任何内容 -->
+    </view>
+
+    <!-- 情绪强度 -->
+    <view class="section-title">情绪强度</view>
+    <view class="emotion-progress">
+      <view class="emotion-progress-bar" style="width: {{emotion.intensity}}%"></view>
+    </view>
+    <view class="progress-labels">
+      <text>低</text>
+      <text>中</text>
+      <text>高</text>
+    </view>
+
+    <!-- 情绪波动 -->
+    <view class="section-title">情绪波动</view>
+    <view class="chart-container" style="height: 250px;">
+      <ec-canvas id="emotionChart" canvas-id="emotionCanvas" ec="{{ emotionChartEc }}"></ec-canvas>
+    </view>
+
+    <!-- 情绪分析总结 -->
+    <view class="emotion-summary">
+      <text>{{summary}}</text>
+    </view>
+  </view>
+
+  <!-- 关键词分析 -->
+  <view class="emotion-card">
+    <view class="card-title">关键词分析</view>
+    <view class="keyword-cloud">
+      <block wx:if="{{keywords.length > 0}}">
+        <view class="keyword-tag"
+              wx:for="{{keywords}}"
+              wx:key="index"
+              style="font-size: {{14 + index * 2}}px;">
+          {{item}}
+        </view>
+      </block>
+      <block wx:if="{{triggers.length > 0}}">
+        <view class="keyword-tag trigger"
+              wx:for="{{triggers}}"
+              wx:key="index">
+          {{item}}
+        </view>
+      </block>
+      <block wx:if="{{keywords.length === 0 && triggers.length === 0}}">
+        <view class="empty-keywords">暂无关键词数据</view>
+      </block>
+    </view>
+
+    <view class="keyword-summary" wx:if="{{keywords.length > 0}}">
+      <text>你的对话中频繁提到与{{keywords[0]}}相关的词汇，表明当前的情绪状态可能与此相关。</text>
+    </view>
+  </view>
+
+  <!-- 情绪维度 -->
+  <view class="emotion-card">
+    <view class="card-title">情绪维度</view>
+    <view class="chart-container" style="height: 250px;">
+      <ec-canvas id="radarChart" canvas-id="radarCanvas" ec="{{ radarChartEc }}"></ec-canvas>
+    </view>
+
+    <!-- 维度详情 -->
+    <view class="dimensions-detail">
+      <view class="dimension-item">
+        <view class="dimension-label">信任度</view>
+        <view class="dimension-bar-container">
+          <view class="dimension-bar" style="width: {{radarDimensions.trust}}%"></view>
+        </view>
+        <view class="dimension-value">{{radarDimensions.trust}}%</view>
+      </view>
+      <view class="dimension-item">
+        <view class="dimension-label">开放度</view>
+        <view class="dimension-bar-container">
+          <view class="dimension-bar" style="width: {{radarDimensions.openness}}%"></view>
+        </view>
+        <view class="dimension-value">{{radarDimensions.openness}}%</view>
+      </view>
+      <view class="dimension-item">
+        <view class="dimension-label">控制感</view>
+        <view class="dimension-bar-container">
+          <view class="dimension-bar" style="width: {{radarDimensions.control}}%"></view>
+        </view>
+        <view class="dimension-value">{{radarDimensions.control}}%</view>
+      </view>
+      <view class="dimension-item">
+        <view class="dimension-label">抗拒度</view>
+        <view class="dimension-bar-container">
+          <view class="dimension-bar" style="width: {{radarDimensions.resistance}}%"></view>
+        </view>
+        <view class="dimension-value">{{radarDimensions.resistance}}%</view>
+      </view>
+      <view class="dimension-item">
+        <view class="dimension-label">压力水平</view>
+        <view class="dimension-bar-container">
+          <view class="dimension-bar" style="width: {{radarDimensions.stress}}%"></view>
+        </view>
+        <view class="dimension-value">{{radarDimensions.stress}}%</view>
+      </view>
+    </view>
+
+    <view class="dimension-summary">
+      <text>情绪维度分析显示，你的{{radarDimensions.stress > 70 ? '压力水平较高' : '压力水平适中'}}，{{radarDimensions.trust > 70 ? '信任度较高' : radarDimensions.trust < 30 ? '信任度较低' : '信任度适中'}}。</text>
+    </view>
+  </view>
+
+  <!-- 个性化建议 -->
+  <view class="emotion-card">
+    <view class="card-title">个性化建议</view>
+    <view class="suggestions-list">
+      <block wx:if="{{suggestions.length > 0}}">
+        <view class="suggestion-item" wx:for="{{suggestions}}" wx:key="index">
+          <view class="suggestion-icon">
+            <view class="icon-check-circle"></view>
+          </view>
+          <view class="suggestion-content">
+            <text class="suggestion-text">{{item}}</text>
+          </view>
+        </view>
+      </block>
+      <block wx:if="{{suggestions.length === 0}}">
+        <view class="empty-suggestions">暂无个性化建议</view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 历史对比 -->
+  <view class="emotion-card">
+    <view class="card-title-with-action">
+      <text>情绪历史对比</text>
+      <view class="action-link" bindtap="viewMoreHistory">查看更多</view>
+    </view>
+    <view class="chart-container" style="height: 250px;">
+      <ec-canvas id="historyChart" canvas-id="historyCanvas" ec="{{ historyChartEc }}"></ec-canvas>
+    </view>
+
+    <view class="history-summary">
+      <text>与过去一周相比，你的{{emotion.primary}}情绪{{emotion.trend === 'rising' ? '有所增强' : emotion.trend === 'falling' ? '有所减弱' : '保持稳定'}}。</text>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="action-btn save-btn" bindtap="saveEmotion">
+      <view class="btn-icon icon-save"></view>
+      <text class="btn-text">记录心情</text>
+    </button>
+    <button class="action-btn share-btn" bindtap="shareEmotion">
+      <view class="btn-icon icon-share-alt"></view>
+      <text class="btn-text">分享给TA</text>
+    </button>
+  </view>
+</view>

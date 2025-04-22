@@ -1,0 +1,206 @@
+/* pages/prompt-editor/prompt-editor.wxss */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f5f7fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* 状态栏样式 */
+.status-bar {
+  width: 100%;
+  background-color: #ffffff;
+}
+
+/* 导航栏样式 */
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+  background-color: #ffffff;
+  border-bottom: 1rpx solid #e2e8f0;
+  position: relative;
+  z-index: 100;
+}
+
+.nav-bar-left, .nav-bar-right {
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-bar-left {
+  justify-content: flex-start;
+}
+
+.nav-bar-right {
+  justify-content: flex-end;
+}
+
+.nav-bar-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #000000;
+  text-align: center;
+  flex: 1;
+}
+
+.nav-bar-btn {
+  font-size: 16px;
+  color: #007AFF;
+  padding: 8px;
+  display: block;
+  min-width: 44px; /* 增加最小宽度，提高可点击性 */
+  text-align: center;
+}
+
+.nav-bar-btn.primary {
+  color: #007AFF;
+  font-weight: 500;
+}
+
+/* 内容区域样式 */
+.content {
+  flex: 1;
+  padding: 20rpx 30rpx;
+  overflow-y: auto;
+}
+
+/* 角色信息样式 */
+.role-info {
+  margin-bottom: 30rpx;
+  padding: 20rpx;
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.role-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.role-id {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+/* 提示词编辑区样式 */
+.prompt-editor-container {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.editor-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  font-size: 24rpx;
+  color: #5e72e4;
+  padding: 6rpx 12rpx;
+  border-radius: 6rpx;
+  background-color: rgba(94, 114, 228, 0.1);
+}
+
+.prompt-textarea {
+  width: 100%;
+  min-height: 600rpx;
+  border-radius: 8rpx;
+  background-color: #f5f7fa;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #333333;
+  box-sizing: border-box;
+  border: 1rpx solid #e2e8f0;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-bottom: 20rpx;
+}
+
+/* 提示词说明样式 */
+.prompt-guide {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.guide-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.guide-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.guide-content text {
+  font-size: 24rpx;
+  color: #666666;
+  line-height: 1.5;
+}
+
+/* 底部按钮样式 */
+.bottom-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
+  background-color: #ffffff;
+  border-top: 1rpx solid #e2e8f0;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+}
+
+.bottom-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 10rpx;
+}
+
+.bottom-btn.cancel {
+  background-color: #f5f7fa;
+  color: #666666;
+  border: 1rpx solid #e2e8f0;
+}
+
+.bottom-btn.save {
+  background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(94, 114, 228, 0.3);
+}

@@ -1,0 +1,8 @@
+{
+    "navigationBarTitleText": "每日心情报告",
+    "navigationStyle": "custom",
+    "usingComponents": {
+        "ec-canvas": "../../../components/ec-canvas/ec-canvas"
+    },
+    "enablePullDownRefresh": false
+}

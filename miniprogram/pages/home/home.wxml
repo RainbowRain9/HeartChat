@@ -1,0 +1,102 @@
+<!--pages/home/home.wxml-->
+<view class="container {{darkMode ? 'dark' : ''}}">
+  <!-- 导航栏容器 -->
+  <view class="nav-container">
+    <!-- 状态栏占位 -->
+    <view class="status-bar" style="height: {{statusBarHeight}}px"></view>
+
+    <!-- 自定义导航栏 -->
+    <view class="nav-bar" style="height: {{navBarHeight}}px;">
+    <view class="nav-bar-left">
+      <view class="avatar" bindtap="navigateToProfile">
+        <image src="{{userInfo.avatarUrl || userInfo.avatar_url || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}" mode="aspectFill"></image>
+      </view>
+    </view>
+    <view class="nav-bar-title">
+      <text class="greeting">你好，{{userInfo.username || userInfo.nickname || '朋友'}}</text>
+    </view>
+    <view class="nav-bar-right"></view>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="content-area" style="margin-top: {{navTotalHeight + 10}}px;">
+    <!-- 每日心情卡片 -->
+    <view class="daily-mood-card" bindtap="navigateToDailyReport">
+    <view class="card-content">
+      <view class="card-text">
+        <text class="card-title">今日心情</text>
+        <text class="card-desc">查看你的每日心情报告，了解情绪变化</text>
+        <view class="card-btn">查看报告</view>
+      </view>
+      <view class="card-icon">
+        <text class="icon-sun">☀️</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主要功能区 -->
+  <view class="section-title">主要功能</view>
+  <view class="feature-grid">
+    <view class="feature-card" bindtap="navigateToEmotionVault">
+      <view class="feature-icon emotion-vault-icon">
+        <text class="iconfont">💬</text>
+      </view>
+      <text class="feature-name">心情树洞</text>
+      <text class="feature-desc">与AI角色对话，倾诉心事</text>
+    </view>
+
+    <view class="feature-card" bindtap="navigateToEmotionAnalysis">
+      <view class="feature-icon emotion-analysis-icon">
+        <text class="iconfont">🧠</text>
+      </view>
+      <text class="feature-name">情绪分析</text>
+      <text class="feature-desc">分析你的情感状态</text>
+    </view>
+
+    <view class="feature-card" bindtap="navigateToEmotionHistory">
+      <view class="feature-icon emotion-history-icon">
+        <text class="iconfont">📊</text>
+      </view>
+      <text class="feature-name">情绪追踪</text>
+      <text class="feature-desc">查看你的情绪历史记录</text>
+    </view>
+
+    <view class="feature-card" bindtap="navigateToKeywordTest">
+      <view class="feature-icon keyword-test-icon">
+        <text class="iconfont">🔍</text>
+      </view>
+      <text class="feature-name">关键词提取</text>
+      <text class="feature-desc">提取文本中的关键词</text>
+    </view>
+  </view>
+
+  <!-- 最近对话 -->
+  <view class="section-title">最近对话</view>
+  <view class="recent-chats">
+    <block wx:if="{{recentChats.length > 0}}">
+      <view class="chat-item" wx:for="{{recentChats}}" wx:key="_id"
+            data-chat-id="{{item._id}}" data-role-id="{{item.role_id || item.roleId}}"
+            bindtap="navigateToChat">
+        <view class="chat-avatar">
+          <image src="{{item.role_avatar || item.roleAvatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}" mode="aspectFill"></image>
+        </view>
+        <view class="chat-info">
+          <text class="chat-name">{{item.role_name || item.roleName || '对话角色'}}</text>
+          <text class="chat-message">{{item.last_message_content || item.lastMessageContent || item.last_message || '开始一段新的对话吧'}}</text>
+        </view>
+        <view class="chat-time">
+          <text>{{item.time_text}}</text>
+        </view>
+      </view>
+    </block>
+    <view class="empty-chats" wx:if="{{!loading && recentChats.length === 0}}">
+      <text>暂无最近对话</text>
+      <view class="start-chat-btn" bindtap="navigateToEmotionVault">选择角色聊天</view>
+    </view>
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+  </view>
+  </view>
+</view>

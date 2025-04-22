@@ -1,0 +1,81 @@
+<view class="agreement-page">
+  <view class="agreement-header">
+    <view class="agreement-title">隐私协议</view>
+    <view class="agreement-date">更新日期：2024年3月10日</view>
+  </view>
+
+  <view class="agreement-content">
+    <view class="section">
+      <view class="section-title">1. 引言</view>
+      <view class="section-content">
+        <view class="paragraph">本隐私协议说明了HeartChat如何收集、使用和保护您的个人信息。请您仔细阅读并理解本协议的全部内容。</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">2. 信息收集</view>
+      <view class="section-content">
+        <view class="paragraph">我们收集的信息包括：</view>
+        <view class="list-item">• 账号信息（微信头像、昵称等）</view>
+        <view class="list-item">• 使用数据（对话记录、使用时长等）</view>
+        <view class="list-item">• 设备信息（设备型号、系统版本等）</view>
+        <view class="list-item">• 网络数据（IP地址、访问时间等）</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">3. 信息使用</view>
+      <view class="section-content">
+        <view class="paragraph">我们使用收集的信息用于：</view>
+        <view class="list-item">• 提供和改进服务</view>
+        <view class="list-item">• 个性化用户体验</view>
+        <view class="list-item">• 数据分析和研究</view>
+        <view class="list-item">• 安全防护</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">4. 信息保护</view>
+      <view class="section-content">
+        <view class="paragraph">4.1 我们采用业界标准的安全技术保护您的信息。</view>
+        <view class="paragraph">4.2 我们不会将您的信息用于本协议未载明的其他用途。</view>
+        <view class="paragraph">4.3 我们不会向第三方出售或出租您的个人信息。</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">5. 信息共享</view>
+      <view class="section-content">
+        <view class="paragraph">除以下情况外，我们不会共享您的个人信息：</view>
+        <view class="list-item">• 获得您的明确授权</view>
+        <view class="list-item">• 法律法规要求</view>
+        <view class="list-item">• 保护用户或公众的权益</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">6. 您的权利</view>
+      <view class="section-content">
+        <view class="paragraph">您对个人信息享有以下权利：</view>
+        <view class="list-item">• 访问和查看</view>
+        <view class="list-item">• 更正和补充</view>
+        <view class="list-item">• 删除</view>
+        <view class="list-item">• 撤回授权同意</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">7. Cookie的使用</view>
+      <view class="section-content">
+        <view class="paragraph">我们使用Cookie和类似技术来提供和改进服务。您可以通过浏览器设置管理Cookie。</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">8. 协议更新</view>
+      <view class="section-content">
+        <view class="paragraph">我们可能适时修改本隐私协议，并通过应用内通知或其他方式告知您。继续使用我们的服务表示您同意修改后的协议。</view>
+      </view>
+    </view>
+  </view>
+</view> 

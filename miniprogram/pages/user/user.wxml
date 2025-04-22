@@ -1,0 +1,153 @@
+<view class="user-page {{darkMode ? 'dark' : ''}}">
+  <!-- 导航栏容器 -->
+  <view class="nav-container">
+    <!-- 状态栏占位 -->
+    <view class="status-bar" style="height: {{statusBarHeight}}px"></view>
+
+    <!-- 自定义导航栏 -->
+    <view class="nav-bar" style="height: {{navBarHeight}}px;">
+      <view class="nav-bar-left"></view>
+      <view class="nav-bar-title">个人中心</view>
+      <view class="nav-bar-right"></view>
+    </view>
+  </view>
+  <!-- 内容区域 -->
+  <view class="content-area" style="margin-top: {{navTotalHeight + 10}}px;">
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+
+  <!-- 用户信息 -->
+  <view wx:elif="{{userInfo}}" class="user-content">
+    <!-- 个人资料头部 -->
+    <view class="profile-header" bindtap="navigateToProfile">
+      <image class="profile-avatar" src="{{userInfo.avatarUrl || '/images/system/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="profile-name">{{userInfo.username || '微信用户'}}</view>
+      <view class="profile-bio">探索自我，提升情商</view>
+    </view>
+
+    <!-- 统计数据 -->
+    <view class="profile-stats">
+      <view class="stat-item">
+        <view class="stat-value">{{stats.chatCount}}</view>
+        <view class="stat-label">对话次数</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{stats.activeDay}}</view>
+        <view class="stat-label">活跃天数</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{stats.reportCount}}</view>
+        <view class="stat-label">心情报告</view>
+      </view>
+    </view>
+
+    <!-- 情绪概览 -->
+    <view class="emotion-card">
+      <view class="emotion-title">
+        <text>情绪概览</text>
+        <text class="emotion-more" bindtap="navigateToEmotionHistory">查看详情</text>
+      </view>
+      <view class="emotion-chart">
+        <view class="chart-container">
+          <ec-canvas id="emotionPieChart" canvas-id="emotionPieChart" ec="{{ emotionPieEc }}"></ec-canvas>
+        </view>
+      </view>
+
+      <view class="emotion-summary">
+        <text>过去一周，你的主要情绪是<text class="emotion-highlight">{{emotionData.mainEmotion}}</text>和<text class="emotion-highlight-secondary">{{emotionData.secondEmotion}}</text>，这可能与你的工作状态有关。</text>
+      </view>
+    </view>
+
+    <!-- 个性分析 -->
+    <view class="emotion-card">
+      <view class="emotion-title">个性分析</view>
+      <view class="emotion-chart">
+        <view class="chart-container">
+          <ec-canvas id="personalityRadarChart" canvas-id="personalityRadarChart" ec="{{ personalityRadarEc }}"></ec-canvas>
+        </view>
+      </view>
+
+      <view class="emotion-summary">
+        <text>{{personalityData.summary}}</text>
+      </view>
+    </view>
+
+    <!-- 兴趣标签 -->
+    <view class="emotion-card">
+      <view class="emotion-title">
+        <text>兴趣标签</text>
+        <text class="emotion-more" bindtap="refreshInterestTags">刷新</text>
+      </view>
+      <view class="interest-tag-container">
+        <interest-tag-cloud
+          id="interestTagCloud"
+          userId="{{openId}}"
+          maxTags="30"
+          minFontSize="12"
+          maxFontSize="20"
+          showCategory="{{true}}"
+          darkMode="{{darkMode}}"
+          showTitle="{{false}}"
+          showRefreshButton="{{false}}"
+          bind:tagclick="handleTagClick"
+          bind:loaded="handleTagsLoaded"
+          bind:error="handleTagsError"
+        ></interest-tag-cloud>
+      </view>
+    </view>
+
+    <!-- 功能列表 -->
+    <view class="feature-list">
+      <view class="feature-item" bindtap="navigateToRoleManagement">
+        <view class="feature-icon role-icon">👤</view>
+        <view class="feature-info">
+          <text class="feature-title">角色管理</text>
+          <text class="feature-desc">管理您的AI角色</text>
+        </view>
+        <view class="feature-arrow"></view>
+      </view>
+
+      <view class="feature-item" bindtap="navigateToEmotionHistory">
+        <view class="feature-icon emotion-icon">📊</view>
+        <view class="feature-info">
+          <text class="feature-title">情绪历史</text>
+          <text class="feature-desc">查看情绪变化趋势</text>
+        </view>
+        <view class="feature-arrow"></view>
+      </view>
+
+      <view class="feature-item" bindtap="navigateToSettings">
+        <view class="feature-icon settings-icon">⚙️</view>
+        <view class="feature-info">
+          <text class="feature-title">系统设置</text>
+          <text class="feature-desc">偏好和通知设置</text>
+        </view>
+        <view class="feature-arrow"></view>
+      </view>
+
+      <!-- 退出登录按钮 -->
+      <view class="feature-item logout-item" bindtap="handleLogout">
+        <view class="feature-icon logout-icon">🚪</view>
+        <view class="feature-info">
+          <text class="feature-title logout-title">退出登录</text>
+          <text class="feature-desc">切换到其他账号</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 未登录状态 -->
+  <view wx:else class="not-login">
+    <image class="login-image" src="/images/system/error.png" mode="aspectFit"></image>
+    <text class="login-tip">登录后即可开始聊天</text>
+  </view>
+
+  <!-- 登录组件 -->
+  <login show="{{showLogin}}" auto-login="{{true}}" bind:success="handleLoginSuccess" bind:close="handleLoginClose" />
+
+  </view>
+</view>

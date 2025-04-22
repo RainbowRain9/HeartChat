@@ -1,0 +1,431 @@
+---
+description: 小程序无障碍设计规范
+globs: 
+alwaysApply: false
+---
+# 小程序无障碍设计规范
+
+## 无障碍设计原则
+
+### 可感知性
+
+- 提供文本替代品：为非文本内容提供文本替代，如图像描述
+- 提供多媒体替代品：为音频和视频内容提供替代方式，如字幕
+- 创建可适应的内容：设计能以不同方式呈现的内容，不丢失信息或结构
+- 区分度：使内容易于查看和听取，包括前景与背景的分离
+
+### 可操作性
+
+- 键盘可访问性：使所有功能可通过键盘操作
+- 充足的时间：为用户阅读和使用内容提供足够的时间
+- 避免引起身体不适：不设计已知会导致癫痫发作的内容
+- 可导航性：提供帮助用户导航、查找内容的方法
+
+### 可理解性
+
+- 可读性：使文本内容可读且易于理解
+- 可预测性：以可预测的方式呈现和操作界面
+- 输入辅助：帮助用户避免和纠正错误
+
+### 健壮性
+
+- 兼容性：最大化与当前和未来用户代理的兼容性
+
+## 视觉无障碍
+
+### 色彩对比
+
+- 文本与背景的对比度至少为 4.5:1
+- 大文本（18pt 以上或 14pt 粗体以上）对比度至少为 3:1
+- 界面组件和图形对象的对比度至少为 3:1
+- 使用 WebAIM 对比度检查器等工具验证对比度
+
+```css
+/* 推荐的文本颜色和背景组合 */
+.high-contrast-text {
+  color: #333333; /* 深灰色文本 */
+  background-color: #FFFFFF; /* 白色背景 */
+}
+
+.high-contrast-button {
+  color: #FFFFFF; /* 白色文本 */
+  background-color: #0066CC; /* 蓝色背景 */
+}
+```
+
+### 文本可读性
+
+- 使用清晰、简单的字体
+- 最小字体大小为 12px
+- 避免使用全大写文本
+- 确保文本可以放大至少 200% 而不丢失内容或功能
+
+```css
+/* 推荐的文本样式 */
+.readable-text {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 28rpx; /* 约 14px */
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+}
+```
+
+### 不依赖颜色
+
+- 不仅使用颜色来传达信息
+- 结合使用形状、文本、图案等其他视觉提示
+- 为色盲用户提供替代方式
+
+```html
+<!-- 错误示例：仅使用颜色 -->
+<view class="status-red">状态异常</view>
+
+<!-- 正确示例：结合图标和颜色 -->
+<view class="status-error">
+  <icon type="warn" size="16"></icon>
+  <text>状态异常</text>
+</view>
+```
+
+## 触摸与操作无障碍
+
+### 触摸目标尺寸
+
+- 最小触摸目标尺寸为 44px × 44px
+- 触摸目标之间的最小间距为 8px
+- 确保交互元素有足够大的可点击区域
+
+```css
+/* 推荐的按钮尺寸 */
+.accessible-button {
+  min-width: 88rpx; /* 约 44px */
+  min-height: 88rpx; /* 约 44px */
+  padding: 20rpx; /* 增加可点击区域 */
+}
+```
+
+### 手势替代
+
+- 为复杂手势提供简单替代方式
+- 确保基本功能可通过点击完成
+- 避免依赖特定手势（如三指滑动）
+
+```javascript
+// 提供手势和按钮两种操作方式
+Page({
+  // 手势操作
+  onSwipe(e) {
+    this.deleteItem(e.currentTarget.dataset.id);
+  },
+  
+  // 按钮操作（替代方式）
+  onDeleteTap(e) {
+    this.deleteItem(e.currentTarget.dataset.id);
+  },
+  
+  deleteItem(id) {
+    // 删除逻辑
+  }
+});
+```
+
+### 焦点管理
+
+- 提供明确的视觉焦点指示
+- 确保焦点顺序合理且符合预期
+- 避免自动移动焦点（除非必要）
+
+```css
+/* 明确的焦点样式 */
+.input-focus {
+  border: 2px solid #0066CC;
+  box-shadow: 0 0 4px rgba(0, 102, 204, 0.5);
+}
+```
+
+## 听觉无障碍
+
+### 音频替代
+
+- 为音频内容提供文本转录
+- 为视频提供字幕
+- 不依赖声音传达重要信息
+
+```html
+<!-- 提供音频转录 -->
+<view>
+  <audio src="speech.mp3" controls></audio>
+  <view class="transcript">
+    演讲文字记录：这是演讲的完整文字内容...
+  </view>
+</view>
+```
+
+### 音量控制
+
+- 提供独立的音量控制
+- 允许完全静音
+- 避免自动播放音频
+
+```javascript
+// 音频控制示例
+Page({
+  data: {
+    volume: 50,
+    isMuted: false
+  },
+  
+  onVolumeChange(e) {
+    const volume = e.detail.value;
+    this.setData({ volume });
+    this.updateAudioVolume();
+  },
+  
+  onMuteTap() {
+    this.setData({ isMuted: !this.data.isMuted });
+    this.updateAudioVolume();
+  },
+  
+  updateAudioVolume() {
+    const actualVolume = this.data.isMuted ? 0 : this.data.volume;
+    this.audioContext.volume = actualVolume / 100;
+  }
+});
+```
+
+## 认知无障碍
+
+### 简单语言
+
+- 使用简单、清晰的语言
+- 避免行业术语和复杂词汇
+- 使用简短的句子和段落
+- 提供内容摘要
+
+```html
+<!-- 简单清晰的错误信息 -->
+<view class="error-message">
+  <view class="error-title">无法保存</view>
+  <view class="error-detail">请检查网络连接后再试</view>
+  <button>重试</button>
+</view>
+```
+
+### 一致的导航
+
+- 保持导航元素的位置一致
+- 使用标准的交互模式
+- 避免意外的页面变化
+- 提供明确的返回路径
+
+```html
+<!-- 一致的导航栏 -->
+<view class="nav-bar">
+  <view class="nav-back" bindtap="onBackTap">返回</view>
+  <view class="nav-title">{{pageTitle}}</view>
+  <view class="nav-action" bindtap="onActionTap">{{actionText}}</view>
+</view>
+```
+
+### 错误预防与恢复
+
+- 提供清晰的错误信息
+- 提供错误恢复建议
+- 允许撤销操作
+- 自动保存用户输入
+
+```javascript
+// 表单验证与错误处理
+Page({
+  data: {
+    formData: { name: '', email: '' },
+    errors: { name: '', email: '' },
+    hasSavedDraft: false
+  },
+  
+  onInput(e) {
+    const { field } = e.currentTarget.dataset;
+    const { value } = e.detail;
+    
+    this.setData({
+      [`formData.${field}`]: value,
+      [`errors.${field}`]: ''
+    });
+    
+    // 自动保存草稿
+    this.saveDraft();
+  },
+  
+  validateForm() {
+    let isValid = true;
+    const errors = {};
+    
+    if (!this.data.formData.name) {
+      errors.name = '请输入姓名';
+      isValid = false;
+    }
+    
+    if (!this.data.formData.email) {
+      errors.email = '请输入邮箱';
+      isValid = false;
+    } else if (!/^\S+@\S+\.\S+$/.test(this.data.formData.email)) {
+      errors.email = '请输入有效的邮箱地址';
+      isValid = false;
+    }
+    
+    this.setData({ errors });
+    return isValid;
+  },
+  
+  saveDraft() {
+    wx.setStorage({
+      key: 'formDraft',
+      data: this.data.formData,
+      success: () => {
+        this.setData({ hasSavedDraft: true });
+      }
+    });
+  },
+  
+  loadDraft() {
+    wx.getStorage({
+      key: 'formDraft',
+      success: (res) => {
+        this.setData({ 
+          formData: res.data,
+          hasSavedDraft: true
+        });
+      }
+    });
+  }
+});
+```
+
+## 屏幕阅读器支持
+
+### 语义化结构
+
+- 使用语义化的视图结构
+- 使用适当的 ARIA 角色和属性
+- 确保内容顺序有意义
+- 提供适当的标题层级
+
+```html
+<!-- 语义化结构示例 -->
+<view role="main">
+  <view role="heading" aria-level="1">页面标题</view>
+  <view role="navigation">
+    <view role="link" aria-label="首页" bindtap="navigateToHome">首页</view>
+    <view role="link" aria-label="关于我们" bindtap="navigateToAbout">关于我们</view>
+  </view>
+  <view role="article">
+    <view role="heading" aria-level="2">文章标题</view>
+    <view>文章内容...</view>
+  </view>
+</view>
+```
+
+### 替代文本
+
+- 为所有图像提供替代文本
+- 为功能性图像提供描述其功能的替代文本
+- 为装饰性图像提供空替代文本
+
+```html
+<!-- 功能性图像 -->
+<image src="submit-icon.png" aria-label="提交表单"></image>
+
+<!-- 内容性图像 -->
+<image src="chart.png" aria-label="2023年第一季度销售数据图表，显示销售额增长了20%"></image>
+
+<!-- 装饰性图像 -->
+<image src="decoration.png" aria-hidden="true"></image>
+```
+
+### 表单无障碍
+
+- 为所有表单控件提供标签
+- 将标签与控件关联
+- 提供清晰的错误信息
+- 确保表单可以通过键盘完成
+
+```html
+<!-- 无障碍表单示例 -->
+<form>
+  <view class="form-item">
+    <label id="name-label" for="name">姓名</label>
+    <input id="name" aria-labelledby="name-label" aria-required="true" aria-invalid="{{errors.name ? 'true' : 'false'}}" bindinput="onInput" data-field="name" />
+    <view wx:if="{{errors.name}}" class="error-message" aria-live="polite">{{errors.name}}</view>
+  </view>
+  
+  <view class="form-item">
+    <label id="email-label" for="email">邮箱</label>
+    <input id="email" aria-labelledby="email-label" aria-required="true" aria-invalid="{{errors.email ? 'true' : 'false'}}" bindinput="onInput" data-field="email" />
+    <view wx:if="{{errors.email}}" class="error-message" aria-live="polite">{{errors.email}}</view>
+  </view>
+  
+  <button aria-label="提交表单" bindtap="onSubmit">提交</button>
+</form>
+```
+
+### 动态内容
+
+- 使用 `aria-live` 区域通知内容变化
+- 提供加载状态的通知
+- 确保弹出内容可访问
+
+```html
+<!-- 动态内容示例 -->
+<view aria-live="polite" class="notification-area">
+  {{notification}}
+</view>
+
+<view wx:if="{{isLoading}}" aria-live="polite" class="loading-indicator">
+  正在加载数据，请稍候...
+</view>
+
+<view wx:if="{{showModal}}" role="dialog" aria-labelledby="dialog-title" aria-describedby="dialog-desc">
+  <view id="dialog-title" class="modal-title">确认操作</view>
+  <view id="dialog-desc" class="modal-content">您确定要删除这个项目吗？</view>
+  <view class="modal-buttons">
+    <button aria-label="取消" bindtap="onCancelTap">取消</button>
+    <button aria-label="确认" bindtap="onConfirmTap">确认</button>
+  </view>
+</view>
+```
+
+## 测试与验证
+
+### 自动化测试
+
+- 使用无障碍测试工具
+- 检查颜色对比度
+- 验证标签和 ARIA 属性
+- 检查键盘导航
+
+### 手动测试
+
+- 使用屏幕阅读器测试
+- 仅使用键盘导航测试
+- 在不同缩放级别测试
+- 在高对比度模式下测试
+
+### 用户测试
+
+- 邀请有不同能力的用户测试
+- 收集无障碍相关反馈
+- 优先修复关键无障碍问题
+- 持续改进无障碍性能
+
+## 最佳实践
+
+1. 在设计阶段就考虑无障碍性
+2. 使用语义化结构和适当的 ARIA 属性
+3. 确保足够的色彩对比度
+4. 提供替代文本和多媒体替代品
+5. 确保所有功能可通过键盘操作
+6. 使用简单、清晰的语言
+7. 提供明确的错误信息和恢复方法
+8. 测试不同能力用户的体验
+9. 持续学习和改进无障碍实践
+10. 将无障碍作为产品质量的核心指标

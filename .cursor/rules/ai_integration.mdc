@@ -1,0 +1,314 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# AI服务集成
+
+## 功能概述
+HeartChat作为一个AI情感陪伴应用，核心功能依赖于与多种大型语言模型(LLM)的无缝集成。应用通过云函数实现统一的API调用管理，支持多种AI服务，以提供高质量的对话体验和情感分析功能。
+
+## 相关文件结构
+- [cloudfunctions/httpRequest/](mdc:cloudfunctions/httpRequest/)：HTTP请求云函数，负责与外部AI API交互
+- [cloudfunctions/testBigmodel/](mdc:cloudfunctions/testBigmodel/)：AI大模型测试云函数
+- [cloudfunctions/chat/](mdc:cloudfunctions/chat/)：聊天相关云函数，包含对话逻辑
+
+## 支持的AI服务
+
+### 智谱AI
+根据[智谱AI接口使用文档.md](mdc:docs/使用文档/智谱AI接口使用文档.md)，HeartChat集成了智谱AI提供的大型语言模型服务：
+
+1. **模型支持**
+   - ChatGLM系列模型
+   - 其他智谱自研模型
+
+2. **特性支持**
+   - 流式输出（打字机效果）
+   - 长文本处理
+   - 多轮对话
+   - 知识问答
+
+3. **接口参数**
+```javascript
+// 智谱AI请求参数示例
+{
+  "model": "chatglm_pro", // 模型名称
+  "prompt": [
+    {"role": "system", "content": "角色提示词"},
+    {"role": "user", "content": "用户消息"},
+    {"role": "assistant", "content": "历史回复"},
+    {"role": "user", "content": "当前问题"}
+  ],
+  "temperature": 0.7, // 温度参数，控制回答的随机性
+  "top_p": 0.9, // 核采样阈值
+  "max_tokens": 1024, // 最大生成长度
+  "stream": true // 是否使用流式输出
+}
+```
+
+4. **配置设置**
+```javascript
+// 智谱AI配置
+const ZHIPUAI_CONFIG = {
+  baseUrl: 'https://open.bigmodel.cn/api/paas/v3/model-api',
+  apiKey: process.env.ZHIPUAI_API_KEY,
+  apiSecret: process.env.ZHIPUAI_API_SECRET,
+  defaultModel: 'chatglm_pro'
+};
+```
+
+### 百度文心一言
+HeartChat集成了百度智能云提供的文心一言大语言模型：
+
+1. **模型支持**
+   - ERNIE-Bot系列模型
+   - ERNIE-Bot-turbo（高速版本）
+
+2. **特性支持**
+   - 流式对话
+   - 中文理解优化
+   - 上下文理解能力
+   - 内容创作
+
+3. **接口参数**
+```javascript
+// 文心一言请求参数示例
+{
+  "messages": [
+    {"role": "system", "content": "角色提示词"},
+    {"role": "user", "content": "用户消息"},
+    {"role": "assistant", "content": "历史回复"},
+    {"role": "user", "content": "当前问题"}
+  ],
+  "temperature": 0.7,
+  "top_p": 0.8,
+  "stream": true
+}
+```
+
+### 第三方AI服务
+HeartChat还支持其他第三方AI服务的集成，通过httpRequest云函数实现统一调用：
+
+1. 通用LLM适配接口
+2. 标准化参数映射
+3. 统一的响应格式处理
+
+## HTTP请求云函数
+根据[httpRequest云函数使用文档.md](mdc:docs/使用文档/httpRequest云函数使用文档.md)，httpRequest云函数是HeartChat调用外部AI服务的统一入口：
+
+1. **功能特点**
+   - 统一的API调用接口
+   - 请求参数标准化
+   - 响应格式转换
+   - 错误处理和重试
+   - 请求超时控制
+   - 请求日志记录
+
+2. **调用方式**
+```javascript
+// 调用AI服务示例
+wx.cloud.callFunction({
+  name: 'httpRequest',
+  data: {
+    provider: 'zhipu', // AI提供商
+    action: 'chat', // 操作类型
+    data: {
+      model: 'chatglm_pro',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...contextMessages,
+        { role: 'user', content: userMessage }
+      ],
+      temperature: 0.7,
+      stream: true
+    }
+  }
+});
+```
+
+3. **错误处理**
+```javascript
+try {
+  const result = await wx.cloud.callFunction({
+    name: 'httpRequest',
+    data: requestData
+  });
+  return handleResponse(result.result);
+} catch (error) {
+  console.error('AI服务调用失败', error);
+  
+  // 根据错误类型处理
+  if (error.errCode === 'ETIMEDOUT') {
+    // 超时处理
+    return { error: '请求超时，请稍后再试' };
+  } else if (error.errCode === 'ECONNREFUSED') {
+    // 连接拒绝处理
+    return { error: '服务暂时不可用，请稍后再试' };
+  } else {
+    // 其他错误处理
+    return { error: '请求失败，请重试' };
+  }
+}
+```
+
+## 提示词工程
+AI服务的有效使用依赖于精心设计的提示词：
+
+1. **角色系统提示词**
+   - 基础角色定义
+   - 对话规则设定
+   - 禁止内容界定
+   - 风格语调指导
+
+2. **对话上下文处理**
+   - 上下文窗口管理
+   - 重要信息摘要
+   - 信息压缩与传递
+
+3. **动态提示词调整**
+   - 根据对话进展调整提示词
+   - 特殊场景的提示词增强
+   - 提示词参数优化
+
+4. **流式输出参数控制**
+   - 流式分块大小控制
+   - 流式输出速度调整
+   - 中间状态处理
+
+## AI响应处理
+服务器接收到AI响应后，需要进行适当处理：
+
+1. **非流式响应处理**
+```javascript
+async function handleAIResponse(response) {
+  // 检查响应格式
+  if (!response.data || !response.data.choices) {
+    throw new Error('非法响应格式');
+  }
+  
+  // 提取回复内容
+  const aiMessage = response.data.choices[0].message.content;
+  
+  // 对AI回复进行处理（如敏感内容过滤）
+  const processedMessage = await processMessage(aiMessage);
+  
+  // 存储到数据库
+  await saveMessageToDatabase({
+    role: 'assistant',
+    content: processedMessage,
+    chat_id: chatId,
+    created_at: Date.now()
+  });
+  
+  return processedMessage;
+}
+```
+
+2. **流式响应处理**
+```javascript
+function handleStreamResponse(readableStream, callback) {
+  let buffer = '';
+  let messageId = null;
+  
+  readableStream.on('data', (chunk) => {
+    const lines = chunk.toString().split('\n');
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        const data = JSON.parse(line.slice(6));
+        
+        if (data.choices && data.choices[0].delta.content) {
+          const contentChunk = data.choices[0].delta.content;
+          buffer += contentChunk;
+          
+          // 流式回调，将内容块发送到客户端
+          callback({
+            type: 'content',
+            content: contentChunk
+          });
+        }
+      }
+    }
+  });
+  
+  readableStream.on('end', async () => {
+    // 存储完整消息到数据库
+    messageId = await saveMessageToDatabase({
+      role: 'assistant',
+      content: buffer,
+      chat_id: chatId,
+      created_at: Date.now()
+    });
+    
+    // 结束流式传输
+    callback({
+      type: 'end',
+      messageId
+    });
+  });
+}
+```
+
+## 情感分析
+除了对话功能，HeartChat还使用AI服务进行情感分析：
+
+1. **文本情感分析**
+   - 识别主要情绪类型
+   - 计算情绪强度分数
+   - 提取情感关键词
+
+2. **情绪变化趋势**
+   - 跟踪情绪随时间变化
+   - 识别情绪波动模式
+   - 生成情绪历史报告
+
+```javascript
+// 情感分析请求示例
+const result = await wx.cloud.callFunction({
+  name: 'httpRequest',
+  data: {
+    provider: 'zhipu',
+    action: 'emotion_analysis',
+    data: {
+      text: userMessage,
+      user_id: userId,
+      timestamp: Date.now()
+    }
+  }
+});
+```
+
+## 安全与隐私保护
+在AI服务集成中，安全和隐私是重要考量：
+
+1. **数据安全**
+   - API密钥安全管理
+   - 用户数据传输加密
+   - 敏感信息过滤
+
+2. **内容审核**
+   - 敏感内容过滤
+   - 不当内容检测
+   - 响应内容安全检查
+
+3. **隐私保护**
+   - 用户数据匿名化
+   - 最小数据传输原则
+   - 数据使用透明说明
+
+## 性能优化
+AI服务调用的性能优化至关重要：
+
+1. **缓存策略**
+   - 相似问题的回复缓存
+   - 常见问题预生成
+   - 缓存失效管理
+
+2. **请求优化**
+   - 批量请求聚合
+   - 请求超时管理
+   - 连接池管理
+
+3. **流式输出优化**
+   - 块大小控制
+   - 传输速率调整
+   - 客户端渲染优化

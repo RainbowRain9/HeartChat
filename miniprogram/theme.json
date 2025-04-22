@@ -1,0 +1,76 @@
+{
+  "light": {
+    "backgroundColor": "#f8f9fa",
+    "backgroundColorTop": "#ffffff",
+    "backgroundColorBottom": "#f8f9fa",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#007bff",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "心情对话",
+
+    "tabFontColor": "#6c757d",
+    "tabSelectedColor": "#007bff",
+    "tabBgColor": "#ffffff",
+    "tabBorderStyle": "white",
+
+    "color-primary": "#007bff",
+    "color-success": "#28a745",
+    "color-warning": "#ffc107",
+    "color-danger": "#dc3545",
+    "color-info": "#17a2b8",
+
+    "color-text-base": "#212529",
+    "color-text-secondary": "#6c757d",
+    "color-text-placeholder": "#adb5bd",
+    "color-text-disabled": "#dee2e6",
+
+    "color-bg-base": "#ffffff",
+    "color-bg-light": "#f8f9fa",
+    "color-bg-mask": "rgba(0, 0, 0, 0.45)",
+
+    "color-border-base": "#dee2e6",
+    "color-border-light": "#e9ecef",
+    "color-border-split": "#f8f9fa",
+
+    "shadow-sm": "0 2rpx 12rpx rgba(0, 0, 0, 0.1)",
+    "shadow-md": "0 4rpx 24rpx rgba(0, 0, 0, 0.1)",
+    "shadow-lg": "0 8rpx 48rpx rgba(0, 0, 0, 0.1)"
+  },
+  "dark": {
+    "backgroundColor": "#1a1d20",
+    "backgroundColorTop": "#212529",
+    "backgroundColorBottom": "#1a1d20",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#212529",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "心情对话",
+
+    "tabFontColor": "#8a9aa9",
+    "tabSelectedColor": "#4dabf7",
+    "tabBgColor": "#1a1d20",
+    "tabBorderStyle": "black",
+
+    "color-primary": "#0d6efd",
+    "color-success": "#198754",
+    "color-warning": "#ffc107",
+    "color-danger": "#dc3545",
+    "color-info": "#0dcaf0",
+
+    "color-text-base": "#f8f9fa",
+    "color-text-secondary": "#adb5bd",
+    "color-text-placeholder": "#6c757d",
+    "color-text-disabled": "#495057",
+
+    "color-bg-base": "#212529",
+    "color-bg-light": "#343a40",
+    "color-bg-mask": "rgba(0, 0, 0, 0.75)",
+
+    "color-border-base": "#495057",
+    "color-border-light": "#343a40",
+    "color-border-split": "#212529",
+
+    "shadow-sm": "0 2rpx 12rpx rgba(0, 0, 0, 0.2)",
+    "shadow-md": "0 4rpx 24rpx rgba(0, 0, 0, 0.2)",
+    "shadow-lg": "0 8rpx 48rpx rgba(0, 0, 0, 0.2)"
+  }
+}

@@ -1,0 +1,192 @@
+---
+description: 微信 Server SDK 使用指南
+globs: 
+alwaysApply: false
+---
+# 微信 Server SDK 使用指南
+
+## 初始化
+
+```javascript
+// 引入模块
+const cloud = require('wx-server-sdk');
+
+// 初始化
+cloud.init({
+  env: cloud.DYNAMIC_CURRENT_ENV // 或指定环境 ID
+});
+```
+
+## 数据库操作
+
+### 获取数据库引用
+
+```javascript
+const db = cloud.database();
+```
+
+### 集合操作
+
+```javascript
+// 获取集合引用
+const collection = db.collection('collectionName');
+
+// 查询数据
+const result = await collection.get();
+
+// 条件查询
+const result = await collection.where({
+  field: value
+}).get();
+
+// 添加数据
+const result = await collection.add({
+  data: {
+    // 数据字段
+  }
+});
+
+// 更新数据
+const result = await collection.doc(id).update({
+  data: {
+    // 更新的字段
+  }
+});
+
+// 删除数据
+const result = await collection.doc(id).remove();
+```
+
+### 高级查询
+
+```javascript
+// 分页查询
+const result = await collection
+  .skip(pageIndex * pageSize)
+  .limit(pageSize)
+  .get();
+
+// 排序
+const result = await collection
+  .orderBy('field', 'desc')
+  .get();
+
+// 聚合操作
+const $ = db.command.aggregate;
+const result = await collection
+  .aggregate()
+  .group({
+    _id: '$category',
+    count: $.sum(1)
+  })
+  .end();
+```
+
+### 事务操作
+
+```javascript
+const transaction = await db.startTransaction();
+try {
+  await transaction.collection('collection1').add({
+    data: { /* 数据 */ }
+  });
+  await transaction.collection('collection2').doc(id).update({
+    data: { /* 数据 */ }
+  });
+  await transaction.commit();
+} catch (e) {
+  await transaction.rollback();
+  throw e;
+}
+```
+
+## 云存储操作
+
+### 上传文件
+
+```javascript
+const result = await cloud.uploadFile({
+  cloudPath: 'folder/filename.ext',
+  fileContent: Buffer.from('文件内容')
+});
+```
+
+### 下载文件
+
+```javascript
+const result = await cloud.downloadFile({
+  fileID: 'cloud://env.fileID'
+});
+```
+
+### 删除文件
+
+```javascript
+const result = await cloud.deleteFile({
+  fileList: ['cloud://env.fileID']
+});
+```
+
+### 获取临时链接
+
+```javascript
+const result = await cloud.getTempFileURL({
+  fileList: ['cloud://env.fileID']
+});
+```
+
+## 云函数调用
+
+### 调用其他云函数
+
+```javascript
+const result = await cloud.callFunction({
+  name: 'functionName',
+  data: {
+    // 参数
+  }
+});
+```
+
+## 消息推送
+
+### 发送订阅消息
+
+```javascript
+const result = await cloud.openapi.subscribeMessage.send({
+  touser: 'OPENID',
+  templateId: 'TEMPLATE_ID',
+  page: 'pages/index/index',
+  data: {
+    // 模板数据
+  }
+});
+```
+
+## 错误处理
+
+```javascript
+try {
+  // 操作代码
+} catch (e) {
+  // 错误处理
+  console.error(e);
+  return {
+    success: false,
+    error: e.message
+  };
+}
+```
+
+## 最佳实践
+
+1. 使用 try/catch 捕获异常
+2. 返回统一格式的响应
+3. 合理使用数据库索引提高查询效率
+4. 避免大量数据的一次性查询
+5. 使用事务保证数据一致性
+6. 合理设置云函数超时时间
+7. 记录关键操作日志
+8. 验证用户权限
+9. 避免在云函数中进行耗时操作
+10. 使用缓存减少数据库访问

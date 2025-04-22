@@ -1,0 +1,525 @@
+/* packageEmotion/pages/emotion-history/emotion-history.wxss */
+
+/* 容器样式 */
+.container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding-bottom: 40rpx;
+}
+
+/* 暗黑模式 */
+.container.dark-mode {
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+}
+
+/* 自定义导航栏 */
+.custom-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: #f8f9fa;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  padding-bottom: 10rpx; /* 底部增加一点空间 */
+  transition: all 0.3s ease;
+}
+
+.dark-mode .custom-nav {
+  background-color: #1a1a1a;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+}
+
+/* 状态栏和导航栏 */
+.status-bar, .nav-bar {
+  width: 100%;
+}
+
+/* 状态栏 */
+.status-bar {
+  background-color: #f8f9fa;
+}
+
+.dark-mode .status-bar {
+  background-color: #1a1a1a;
+}
+
+/* 导航栏 */
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+  box-sizing: border-box;
+  padding: 10rpx 30rpx; /* 增加上下内边距 */
+  min-height: 100rpx; /* 确保最小高度 */
+}
+
+.dark-mode .nav-bar {
+  background-color: #1a1a1a;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  min-width: 80rpx;
+  padding: 6rpx 0;
+}
+
+.back-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.nav-center {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10rpx;
+}
+
+.nav-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.dark-mode .nav-title {
+  color: #f8f9fa;
+}
+
+.nav-right {
+  min-width: 80rpx;
+}
+
+/* 内容区域 */
+.content-area {
+  padding: 30rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 时间范围选择器 */
+.time-range-selector {
+  margin-bottom: 30rpx;
+  width: 100%;
+}
+
+.time-range-scroll {
+  white-space: nowrap;
+  display: flex;
+  padding: 10rpx 0;
+}
+
+.time-range-item {
+  display: inline-block;
+  padding: 16rpx 30rpx;
+  margin-right: 20rpx;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 30rpx;
+  font-size: 28rpx;
+  transition: all 0.3s ease;
+}
+
+.time-range-item.active {
+  background-color: #5e72e4;
+  color: white;
+}
+
+.dark-mode .time-range-item {
+  background-color: #333;
+  color: #e0e0e0;
+}
+
+.dark-mode .time-range-item.active {
+  background-color: #5e72e4;
+  color: white;
+}
+
+/* 卡片样式 */
+.emotion-card {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .emotion-card {
+  background-color: #2a2a2a;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.dark-mode .card-title {
+  color: #e0e0e0;
+}
+
+/* 图表容器 */
+.chart-container {
+  width: 100%;
+  height: 500rpx;
+  margin-bottom: 20rpx;
+}
+
+.volatility-container {
+  height: 400rpx;
+}
+
+/* 图例样式 */
+.legend-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20rpx;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 0 20rpx 10rpx;
+}
+
+.legend-color {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  margin-right: 10rpx;
+}
+
+.legend-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.dark-mode .legend-text {
+  color: #aaa;
+}
+
+/* 情绪波动指数摘要 */
+.volatility-summary {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+  margin-top: 20rpx;
+}
+
+.dark-mode .volatility-summary {
+  color: #aaa;
+}
+
+.volatility-value {
+  font-weight: bold;
+  color: #333;
+  margin: 0 6rpx;
+}
+
+.dark-mode .volatility-value {
+  color: #e0e0e0;
+}
+
+.increase {
+  color: #e74c3c;
+  font-weight: bold;
+  margin: 0 6rpx;
+}
+
+.decrease {
+  color: #2ecc71;
+  font-weight: bold;
+  margin: 0 6rpx;
+}
+
+/* 日历样式 */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 10rpx;
+}
+
+.weekday-item {
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+  padding: 10rpx 0;
+}
+
+.dark-mode .weekday-item {
+  color: #777;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10rpx;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  border-radius: 10rpx;
+  position: relative;
+}
+
+.dark-mode .calendar-day {
+  background-color: #333;
+}
+
+.day-number {
+  font-size: 24rpx;
+  color: #333;
+}
+
+.dark-mode .day-number {
+  color: #e0e0e0;
+}
+
+.other-month .day-number {
+  color: #ccc;
+}
+
+.dark-mode .other-month .day-number {
+  color: #666;
+}
+
+/* 情绪日历颜色 */
+.emotion-positive {
+  background-color: #e6ffec; /* 浅绿色 */
+}
+
+.emotion-calm {
+  background-color: #e6f7ff; /* 浅蓝色 */
+}
+
+.emotion-neutral {
+  background-color: #fff7e6; /* 浅黄色 */
+}
+
+.emotion-negative {
+  background-color: #ffece6; /* 浅红色 */
+}
+
+.dark-mode .emotion-positive {
+  background-color: rgba(46, 204, 113, 0.2);
+}
+
+.dark-mode .emotion-calm {
+  background-color: rgba(52, 152, 219, 0.2);
+}
+
+.dark-mode .emotion-neutral {
+  background-color: rgba(241, 196, 15, 0.2);
+}
+
+.dark-mode .emotion-negative {
+  background-color: rgba(231, 76, 60, 0.2);
+}
+
+/* 日历图例 */
+.calendar-legend {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20rpx;
+  flex-wrap: wrap;
+}
+
+/* 最近情绪记录 */
+.recent-records-section {
+  margin-top: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.dark-mode .section-title {
+  color: #e0e0e0;
+}
+
+.records-list {
+  background-color: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .records-list {
+  background-color: #2a2a2a;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.dark-mode .record-item {
+  border-bottom: 1rpx solid #333;
+}
+
+.record-item:last-child {
+  border-bottom: none;
+}
+
+.record-icon-container {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.record-icon {
+  font-size: 40rpx;
+  color: #333;
+}
+
+.record-content {
+  flex: 1;
+}
+
+.record-emotions {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.dark-mode .record-emotions {
+  color: #e0e0e0;
+}
+
+.record-meta {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.dark-mode .record-meta {
+  color: #777;
+}
+
+.record-role {
+  color: #5e72e4;
+  font-weight: 500;
+}
+
+.dark-mode .record-role {
+  color: #7986cb;
+}
+
+.record-arrow {
+  color: #ccc;
+  font-size: 24rpx;
+}
+
+.dark-mode .record-arrow {
+  color: #666;
+}
+
+/* 加载更多 */
+.load-more {
+  text-align: center;
+  padding: 30rpx 0;
+  color: #5e72e4;
+  font-size: 28rpx;
+}
+
+/* 加载中 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 6rpx solid #f3f3f3;
+  border-top: 6rpx solid #5e72e4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.dark-mode .loading-text {
+  color: #777;
+}
+
+/* 无数据提示 */
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+}
+
+.no-data-icon {
+  font-size: 80rpx;
+  color: #ccc;
+  margin-bottom: 20rpx;
+}
+
+.dark-mode .no-data-icon {
+  color: #666;
+}
+
+.no-data-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.dark-mode .no-data-text {
+  color: #aaa;
+}
+
+.no-data-tip {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.dark-mode .no-data-tip {
+  color: #777;
+}

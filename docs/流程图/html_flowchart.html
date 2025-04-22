@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartChat 用户流程图</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #5e72e4;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: auto;
+        }
+        
+        .node {
+            padding: 15px 20px;
+            margin: 10px;
+            border-radius: 8px;
+            min-width: 150px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .process {
+            background-color: #5e72e4;
+            color: white;
+        }
+        
+        .decision {
+            background-color: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        
+        .action {
+            background-color: #48bb78;
+            color: white;
+        }
+        
+        .row {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px;
+        }
+        
+        .arrow {
+            width: 2px;
+            height: 30px;
+            background-color: #a0aec0;
+            margin: 5px 0;
+            position: relative;
+        }
+        
+        .arrow::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -4px;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 8px solid #a0aec0;
+        }
+        
+        .horizontal-arrow {
+            width: 50px;
+            height: 2px;
+            background-color: #a0aec0;
+            margin: 0 5px;
+            position: relative;
+            align-self: center;
+        }
+        
+        .horizontal-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 8px solid #a0aec0;
+        }
+        
+        .label {
+            font-size: 12px;
+            color: #4a5568;
+            margin: 5px;
+            font-weight: normal;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HeartChat 用户流程图</h1>
+        
+        <div class="flowchart">
+            <!-- 第一行 -->
+            <div class="node process">用户打开小程序</div>
+            <div class="arrow"></div>
+            
+            <!-- 第二行 -->
+            <div class="node decision">是否登录?</div>
+            
+            <!-- 第三行 -->
+            <div class="row">
+                <div class="column">
+                    <div class="label">否</div>
+                    <div class="arrow"></div>
+                    <div class="node process">欢迎/登录页面</div>
+                    <div class="arrow"></div>
+                    <div class="node action">微信授权登录</div>
+                    <div class="arrow"></div>
+                </div>
+                <div class="column">
+                    <div class="label">是</div>
+                    <div class="arrow" style="height: 120px;"></div>
+                </div>
+            </div>
+            
+            <!-- 第四行 -->
+            <div class="node process">主页</div>
+            <div class="arrow"></div>
+            
+            <!-- 第五行 - 功能选择 -->
+            <div class="features">
+                <div class="column">
+                    <div class="node action">心情树洞</div>
+                    <div class="arrow"></div>
+                    <div class="node process">角色选择</div>
+                    <div class="arrow"></div>
+                    <div class="node process">聊天界面</div>
+                    <div class="arrow"></div>
+                    <div class="node decision" style="width: 80px; height: 80px;">分析情绪?</div>
+                    <div class="row">
+                        <div class="column">
+                            <div class="label">是</div>
+                            <div class="arrow"></div>
+                            <div class="node action">情绪分析</div>
+                        </div>
+                        <div class="column">
+                            <div class="label">否</div>
+                            <div class="horizontal-arrow" style="transform: rotate(135deg); width: 70px; margin-top: 50px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <div class="node action">情绪跟踪</div>
+                    <div class="arrow"></div>
+                    <div class="node process">情绪历史</div>
+                    <div class="arrow"></div>
+                    <div class="node action">查看详细记录</div>
+                </div>
+                
+                <div class="column">
+                    <div class="node action">每日心情报告</div>
+                    <div class="arrow"></div>
+                    <div class="node process">每日心情总结</div>
+                </div>
+                
+                <div class="column">
+                    <div class="node action">个人资料</div>
+                    <div class="arrow"></div>
+                    <div class="node process">个人设置</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

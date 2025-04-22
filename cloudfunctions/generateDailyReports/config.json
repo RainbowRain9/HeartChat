@@ -1,0 +1,9 @@
+{
+    "triggers": [
+        {
+            "name": "dailyReportTrigger",
+            "type": "timer",
+            "config": "0 0 2 * * * *"
+        }
+    ]
+}

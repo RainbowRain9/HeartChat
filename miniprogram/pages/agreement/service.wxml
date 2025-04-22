@@ -1,0 +1,70 @@
+<view class="agreement-page">
+  <view class="agreement-header">
+    <view class="agreement-title">服务协议</view>
+    <view class="agreement-date">更新日期：2024年3月10日</view>
+  </view>
+
+  <view class="agreement-content">
+    <view class="section">
+      <view class="section-title">1. 协议的范围</view>
+      <view class="section-content">
+        <view class="paragraph">欢迎您使用HeartChat（以下简称"本服务"）。本协议是您与HeartChat之间关于使用本服务所订立的协议。</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">2. 服务内容</view>
+      <view class="section-content">
+        <view class="paragraph">HeartChat是一款基于人工智能的情商训练应用，为用户提供情感交流、情商提升等服务。具体功能包括但不限于：</view>
+        <view class="list-item">• AI对话训练</view>
+        <view class="list-item">• 情感分析</view>
+        <view class="list-item">• 情商提升建议</view>
+        <view class="list-item">• 角色扮演练习</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">3. 账号注册与使用</view>
+      <view class="section-content">
+        <view class="paragraph">3.1 您需要使用微信账号授权登录使用本服务。</view>
+        <view class="paragraph">3.2 您应当对账号的使用和安全负责。</view>
+        <view class="paragraph">3.3 您不得将账号转让或授权他人使用。</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">4. 用户行为规范</view>
+      <view class="section-content">
+        <view class="paragraph">您在使用本服务时应当遵守以下规定：</view>
+        <view class="list-item">• 遵守法律法规</view>
+        <view class="list-item">• 尊重他人权益</view>
+        <view class="list-item">• 维护网络秩序</view>
+        <view class="list-item">• 保护知识产权</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">5. 知识产权</view>
+      <view class="section-content">
+        <view class="paragraph">5.1 本服务的所有内容，包括但不限于文字、图片、音频、视频、软件、程序、数据均受知识产权法律法规保护。</view>
+        <view class="paragraph">5.2 未经授权，您不得复制、修改、传播或使用上述内容。</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">6. 服务变更、中断或终止</view>
+      <view class="section-content">
+        <view class="paragraph">6.1 我们保留随时修改或中断服务的权利。</view>
+        <view class="paragraph">6.2 如您违反本协议，我们有权终止向您提供服务。</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">7. 免责声明</view>
+      <view class="section-content">
+        <view class="paragraph">7.1 本服务按"现状"提供，我们不对服务的适用性、可靠性、准确性等做出任何承诺。</view>
+        <view class="paragraph">7.2 对于因不可抗力、网络问题等导致的服务中断或数据丢失，我们不承担责任。</view>
+      </view>
+    </view>
+  </view>
+</view> 

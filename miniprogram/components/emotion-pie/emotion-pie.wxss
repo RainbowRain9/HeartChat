@@ -1,0 +1,124 @@
+/* components/emotion-pie/emotion-pie.wxss */
+.emotion-pie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20rpx;
+}
+
+/* 饼图容器 */
+.pie-container {
+  position: relative;
+  width: 300rpx;
+  height: 300rpx;
+  margin: 20rpx 0;
+}
+
+/* 情感扇区容器 */
+.emotion-sectors {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* 情感扇区 */
+.emotion-sector {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 100% 100%;
+  transition: all 0.3s ease;
+}
+
+/* 活跃扇区 */
+.emotion-sector.active {
+  transform-origin: 100% 100%;
+  box-shadow: 0 0 10rpx rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+/* 中心圆 */
+.pie-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100rpx;
+  height: 100rpx;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10rpx rgba(0, 0, 0, 0.1);
+  z-index: 20;
+}
+
+/* 强度指示器 */
+.intensity-indicator {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+/* 情感标签容器 */
+.emotion-labels {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 30rpx;
+  width: 100%;
+  max-height: 300rpx;
+  overflow-y: auto;
+}
+
+/* 情感标签 */
+.emotion-label {
+  display: flex;
+  align-items: center;
+  margin: 10rpx 15rpx;
+  padding: 6rpx 12rpx;
+  border-radius: 20rpx;
+  background-color: #f5f5f5;
+  transition: all 0.3s ease;
+}
+
+/* 活跃标签 */
+.emotion-label.active {
+  background-color: #e0e0e0;
+  box-shadow: 0 2rpx 5rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 标签颜色指示器 */
+.label-color {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  margin-right: 8rpx;
+}
+
+/* 当前情感信息 */
+.current-emotion {
+  margin-top: 20rpx;
+  text-align: center;
+}
+
+/* 情感类型 */
+.emotion-type {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-right: 20rpx;
+}
+
+/* 情感强度 */
+.emotion-intensity {
+  font-size: 28rpx;
+  color: #666;
+}

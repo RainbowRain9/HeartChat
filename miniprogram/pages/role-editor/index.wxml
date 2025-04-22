@@ -1,0 +1,217 @@
+<view class="container {{darkMode ? 'dark' : ''}}">
+  <!-- 状态栏占位 -->
+  <view class="status-bar" style="height: {{statusBarHeight}}px"></view>
+
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-bar-left">
+      <text class="nav-bar-btn" bindtap="handleCancel" data-action="cancel">取消</text>
+    </view>
+    <view class="nav-bar-title">{{isEdit ? '编辑角色' : '创建角色'}}</view>
+    <view class="nav-bar-right"></view>
+  </view>
+
+  <!-- 主要内容区域 -->
+  <scroll-view scroll-y="true" class="content-scroll">
+    <view class="content">
+      <!-- 步骤指示器 -->
+      <view class="step-indicator">
+        <view class="step {{currentStep >= 1 ? 'active' : ''}}" bindtap="goToStep" data-step="1">
+          <view class="step-circle">1</view>
+          <text class="step-text">基本信息</text>
+        </view>
+        <view class="step-line {{currentStep >= 2 ? 'active' : ''}}"></view>
+        <view class="step {{currentStep >= 2 ? 'active' : ''}}" bindtap="goToStep" data-step="2">
+          <view class="step-circle">2</view>
+          <text class="step-text">详细背景</text>
+        </view>
+        <view class="step-line {{currentStep >= 3 ? 'active' : ''}}"></view>
+        <view class="step {{currentStep >= 3 ? 'active' : ''}}" bindtap="goToStep" data-step="3">
+          <view class="step-circle">3</view>
+          <text class="step-text">性格特点</text>
+        </view>
+      </view>
+
+      <!-- 第一步：基本信息 -->
+      <view class="step-content" hidden="{{currentStep !== 1}}">
+        <!-- 头像上传 -->
+        <view class="avatar-section">
+          <view class="avatar-container" bindtap="chooseAvatar">
+            <image class="avatar" src="{{form.avatar || defaultAvatar}}" mode="aspectFill"></image>
+            <view class="avatar-overlay">
+              <text class="icon-camera"></text>
+              <text class="upload-text">更换头像</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 基本信息表单 -->
+        <view class="form-card">
+          <view class="form-group">
+            <text class="label required">角色名称</text>
+            <input id="nameInput" class="input" value="{{form.name}}" bindinput="handleInput" data-field="name" placeholder="给这个角色起个名字" maxlength="20" />
+          </view>
+
+          <view class="form-group">
+            <text class="label required">与您的关系</text>
+            <picker mode="selector" range="{{relationshipOptions}}" value="{{relationshipIndex}}" bindchange="handleRelationshipChange">
+              <view class="picker">
+                <text>{{form.relationship || '请选择关系'}}</text>
+                <text class="icon-arrow-down"></text>
+              </view>
+            </picker>
+          </view>
+
+          <!-- 自定义关系输入框 -->
+          <view class="form-group" wx:if="{{showCustomRelationship}}">
+            <text class="label required">请输入具体关系</text>
+            <input class="input" value="{{form.customRelationship}}" bindinput="handleCustomRelationshipInput" placeholder="请输入具体关系名称" maxlength="20" />
+          </view>
+
+          <view class="form-group">
+            <text class="label">角色分类</text>
+            <picker mode="selector" range="{{categoryOptions}}" range-key="name" value="{{categoryIndex}}" bindchange="handleCategoryChange">
+              <view class="picker">
+                <text>{{categoryIndex >= 0 ? categoryOptions[categoryIndex].name : '自动根据关系设置'}}</text>
+                <text class="icon-arrow-down"></text>
+              </view>
+            </picker>
+            <view class="hint-text">默认根据关系自动推荐分类</view>
+          </view>
+
+          <view class="form-group">
+            <text class="label">年龄</text>
+            <input class="input" type="number" value="{{form.age}}" bindinput="handleInput" data-field="age" placeholder="请输入年龄" />
+          </view>
+
+          <view class="form-group">
+            <text class="label">性别</text>
+            <radio-group class="radio-group" bindchange="handleGenderChange">
+              <label class="radio-label {{form.gender === '男' ? 'active' : ''}}">
+                <radio value="男" checked="{{form.gender === '男'}}" color="{{darkMode ? '#4dabf7' : '#5e72e4'}}"/>
+                <text>男</text>
+              </label>
+              <label class="radio-label {{form.gender === '女' ? 'active' : ''}}">
+                <radio value="女" checked="{{form.gender === '女'}}" color="{{darkMode ? '#4dabf7' : '#5e72e4'}}"/>
+                <text>女</text>
+              </label>
+              <label class="radio-label {{form.gender === '其他' ? 'active' : ''}}">
+                <radio value="其他" checked="{{form.gender === '其他'}}" color="{{darkMode ? '#4dabf7' : '#5e72e4'}}"/>
+                <text>其他</text>
+              </label>
+            </radio-group>
+          </view>
+        </view>
+
+        <view class="button-container">
+          <button class="next-button" bindtap="nextStep">下一步</button>
+        </view>
+      </view>
+
+      <!-- 第二步：详细背景 -->
+      <view class="step-content" hidden="{{currentStep !== 2}}">
+        <view class="form-card">
+          <view class="form-group">
+            <text class="label">职业</text>
+            <input class="input" value="{{form.occupation}}" bindinput="handleInput" data-field="occupation" placeholder="角色的职业或工作" />
+          </view>
+
+          <view class="form-group">
+            <text class="label">教育背景</text>
+            <input class="input" value="{{form.education}}" bindinput="handleInput" data-field="education" placeholder="角色的教育经历" />
+          </view>
+
+          <view class="form-group">
+            <text class="label">爱好</text>
+            <input class="input" value="{{form.hobbies}}" bindinput="handleInput" data-field="hobbies" placeholder="角色的爱好，用逗号分隔" />
+          </view>
+
+          <view class="form-group">
+            <text class="label">生活经历</text>
+            <textarea class="textarea background-textarea" value="{{form.background}}" bindinput="handleInput" data-field="background" placeholder="添加角色的生活经历和背景故事，让对话更有代入感" maxlength="500" />
+          </view>
+        </view>
+
+        <view class="button-container">
+          <button class="prev-button" bindtap="prevStep">上一步</button>
+          <button class="next-button" bindtap="nextStep">下一步</button>
+        </view>
+      </view>
+
+      <!-- 第三步：性格特点 -->
+      <view class="step-content" hidden="{{currentStep !== 3}}">
+        <view class="form-card">
+          <view class="form-group">
+            <text class="label">性格特点</text>
+            <input class="input" value="{{form.personality_traits}}" bindinput="handleInput" data-field="personality_traits" placeholder="描述角色的性格特点，用逗号分隔" />
+          </view>
+
+          <view class="form-group">
+            <text class="label">说话风格</text>
+            <textarea class="textarea speaking-style-textarea" value="{{form.communication_style}}" bindinput="handleInput" data-field="communication_style" placeholder="描述角色说话的特点，如：温和有礼、幽默风趣" />
+          </view>
+
+          <view class="form-group">
+            <text class="label">情感倾向</text>
+            <input class="input" value="{{form.emotional_tendency}}" bindinput="handleInput" data-field="emotional_tendency" placeholder="角色的情感倾向，如：乐观、悲观、理性、感性" />
+          </view>
+
+          <view class="form-group">
+            <text class="label">禁忌话题</text>
+            <input class="input" value="{{form.taboo}}" bindinput="handleInput" data-field="taboo" placeholder="设置不想谈论的话题" />
+          </view>
+
+          <view class="form-group prompt-template-group">
+            <text class="label">提示词</text>
+            <view class="prompt-card" bindtap="navigateToPromptEditor">
+              <view class="prompt-card-content">
+                <view class="prompt-card-icon">
+                  <text class="iconfont icon-edit"></text>
+                </view>
+                <view class="prompt-card-text">
+                  <text class="prompt-card-title">{{form.prompt && form.prompt.length > 0 ? '点击编辑提示词' : '点击创建提示词'}}</text>
+                  <text class="prompt-card-desc">{{form.prompt && form.prompt.length > 0 ? '已设置自定义提示词' : '留空将根据角色信息自动生成提示词'}}</text>
+                </view>
+                <view class="prompt-card-arrow">
+                  <text class="iconfont icon-right"></text>
+                </view>
+              </view>
+              <block wx:if="{{form.prompt && form.prompt.length > 0}}">
+                <view class="prompt-card-preview">
+                  <text class="prompt-preview-snippet">{{form.prompt.length > 50 ? form.prompt.substring(0, 50) + '...' : form.prompt}}</text>
+                </view>
+              </block>
+            </view>
+            <view class="hint-text">点击卡片进入提示词专业编辑器</view>
+          </view>
+        </view>
+
+        <view class="button-container">
+          <button class="prev-button" bindtap="prevStep">上一步</button>
+          <button class="preview-button" bindtap="previewPrompt">预览提示词</button>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+
+<!-- 提示词预览弹窗 -->
+<view class="prompt-preview-modal {{darkMode ? 'dark' : ''}}" hidden="{{!showPromptPreview}}">
+  <view class="prompt-preview-content">
+    <view class="prompt-preview-header">
+      <text class="prompt-preview-title">提示词预览</text>
+      <text class="prompt-preview-close" bindtap="closePromptPreview">×</text>
+    </view>
+    <scroll-view scroll-y="true" class="prompt-preview-body">
+      <view class="prompt-preview-text-container">
+        <text class="prompt-preview-text">{{previewPromptText}}</text>
+      </view>
+    </scroll-view>
+    <view class="prompt-preview-footer">
+      <button class="prompt-preview-button" bindtap="closePromptPreview">关闭</button>
+      <button class="prompt-preview-button primary" bindtap="handleSubmit" loading="{{submitting}}">
+        {{submitting ? '保存中...' : '确认并保存角色'}}
+      </button>
+    </view>
+  </view>
+</view>

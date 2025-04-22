@@ -1,0 +1,277 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# HeartChat 项目开发规范
+
+## 项目概述
+
+HeartChat 是一款基于微信小程序云开发的 AI 情感陪伴与情商提升应用。通过与可定制的 AI 角色进行对话，用户可以在安全私密的环境中倾诉心事、整理思绪，并通过实时情感分析获得反馈，逐步提升自我认知和人际交往能力。
+
+## 代码规范
+
+### 通用规范
+
+1. 使用 JavaScript 作为主要开发语言
+2. 代码缩进使用 2 个空格
+3. 使用分号结束语句
+4. 使用单引号表示字符串
+5. 每个文件末尾保留一个空行
+6. 避免使用全局变量
+7. 使用 ES6+ 语法特性
+
+### 命名规范
+
+1. 文件名使用小写字母，多个单词用连字符（-）连接
+2. 变量和函数使用驼峰命名法（camelCase）
+3. 常量使用全大写，多个单词用下划线（_）连接
+4. 组件名使用首字母大写的驼峰命名法（PascalCase）
+5. CSS 类名使用小写字母，多个单词用连字符（-）连接
+
+### 注释规范
+
+1. 每个函数、方法前添加注释，说明功能、参数和返回值
+2. 复杂逻辑添加行内注释
+3. TODO 注释格式：// TODO: 说明
+4. FIXME 注释格式：// FIXME: 说明
+5. 废弃代码不要注释保留，直接删除
+
+## 微信小程序开发规范
+
+### 页面开发规范
+
+1. 遵循小程序页面生命周期函数规范
+2. 页面逻辑与视图分离，复杂业务逻辑封装到单独的函数或模块
+3. 页面样式尽量使用 WXSS，减少内联样式
+4. 合理利用页面参数进行页面间传值
+5. 使用 wx:if 和 wx:for 时注意添加 key 属性
+
+```javascript
+// 推荐的页面结构
+Page({
+  // 页面数据
+  data: {
+    // ...
+  },
+  
+  // 生命周期函数
+  onLoad(options) {
+    // 页面加载时执行
+  },
+  
+  onShow() {
+    // 页面显示时执行
+  },
+  
+  // 事件处理函数
+  handleTap() {
+    // ...
+  },
+  
+  // 业务逻辑函数
+  processData() {
+    // ...
+  }
+});
+```
+
+### 组件开发规范
+
+1. 组件应当职责单一，只负责一个功能点
+2. 明确定义组件的属性、事件和方法
+3. 为组件提供详细的使用文档
+4. 合理使用组件生命周期函数
+5. 使用 properties 定义组件的可配置属性
+
+```javascript
+// 推荐的组件结构
+Component({
+  // 组件属性
+  properties: {
+    myProperty: {
+      type: String,
+      value: '',
+      observer(newVal, oldVal) {
+        // 属性变化时的处理
+      }
+    }
+  },
+  
+  // 组件数据
+  data: {
+    // 私有数据
+  },
+  
+  // 生命周期函数
+  lifetimes: {
+    attached() {
+      // 组件被添加到页面时执行
+    },
+    detached() {
+      // 组件从页面移除时执行
+    }
+  },
+  
+  // 方法列表
+  methods: {
+    handleTap() {
+      // 事件处理
+      this.triggerEvent('myevent', { value: this.data.myValue });
+    }
+  }
+});
+```
+
+### 云函数开发规范
+
+1. 每个云函数只负责一个功能领域
+2. 使用 async/await 处理异步操作
+3. 采用统一的错误处理和返回格式
+4. 添加日志记录，便于调试和排错
+5. 对敏感操作进行权限验证
+
+```javascript
+// 推荐的云函数结构
+const cloud = require('wx-server-sdk');
+cloud.init();
+
+/**
+ * 云函数入口函数
+ * @param {Object} event - 事件参数
+ * @param {Object} context - 上下文
+ * @return {Object} 处理结果
+ */
+exports.main = async (event, context) => {
+  try {
+    // 参数校验
+    if (!event.param) {
+      return {
+        success: false,
+        errCode: 400,
+        errMsg: '缺少必要参数'
+      };
+    }
+    
+    // 业务逻辑处理
+    const result = await processData(event);
+    
+    // 返回成功结果
+    return {
+      success: true,
+      data: result
+    };
+  } catch (error) {
+    // 错误处理
+    console.error('函数执行错误', error);
+    return {
+      success: false,
+      errCode: error.code || 500,
+      errMsg: error.message || '服务器内部错误'
+    };
+  }
+};
+```
+
+## 目录结构规范
+
+遵循以下目录结构组织项目：
+
+1. 分包加载结构，合理拆分业务模块
+2. 公共组件放在 components 目录下
+3. 页面相关文件按功能模块组织
+4. 工具函数放在 utils 目录下
+5. 服务层封装放在 services 目录下
+6. 云函数按功能模块分目录组织
+
+```
+miniprogram/
+  |-- components/       # 公共组件
+  |-- pages/            # 主包页面
+  |-- packageA/         # 分包A
+  |     |-- pages/      # 分包A页面
+  |     |-- components/ # 分包A私有组件
+  |-- packageB/         # 分包B
+  |-- services/         # 服务层
+  |-- utils/            # 工具函数
+  |-- app.js            # 全局应用实例
+  |-- app.json          # 全局配置
+  |-- app.wxss          # 全局样式
+  
+cloudfunctions/
+  |-- moduleA/          # 模块A相关云函数
+  |-- moduleB/          # 模块B相关云函数
+  |-- common/           # 公共代码库
+```
+
+## 性能优化规范
+
+### 小程序性能优化
+
+1. 使用分包加载减小主包体积
+2. 合理使用缓存减少请求次数
+3. 避免频繁操作 DOM
+4. 减少不必要的数据绑定
+5. 图片资源压缩和优化
+6. 避免使用过多的自定义组件嵌套
+
+### 云函数性能优化
+
+1. 减少不必要的数据库查询
+2. 使用索引优化数据库查询
+3. 合理设置云函数超时时间
+4. 对大量数据进行分页处理
+5. 使用缓存减少重复计算
+
+## 安全规范
+
+1. 敏感数据加密存储
+2. 使用云函数处理敏感操作
+3. 避免在客户端存储敏感信息
+4. 使用 HTTPS 进行网络通信
+5. 对用户输入进行验证和过滤
+
+## 测试规范
+
+1. 编写单元测试验证核心功能
+2. 进行界面交互测试
+3. 测试覆盖常见场景和边界情况
+4. 修复 bug 时添加相应的测试用例
+
+```javascript
+// 测试示例
+describe('用户模块测试', () => {
+  it('用户信息格式化函数应正确处理用户数据', () => {
+    const userData = {
+      nickName: 'Test User',
+      gender: 1
+    };
+    const formattedData = formatUserData(userData);
+    expect(formattedData.nickname).toBe('Test User');
+    expect(formattedData.genderText).toBe('男');
+  });
+});
+```
+
+## 文档规范
+
+1. 及时更新项目文档
+2. 文档使用 Markdown 格式
+3. 文档内容包括：项目概述、架构设计、功能说明、API 文档、使用指南
+4. 代码变更时同步更新相关文档
+
+## 版本控制
+
+1. 使用 Git 进行版本控制
+2. 主分支保持稳定，功能开发在特性分支进行
+3. 提交信息格式：`[类型] 简短描述`
+4. 类型包括：feat(新功能)、fix(修复)、docs(文档)、style(格式)、refactor(重构)、test(测试)、chore(构建/工具)
+5. 每次提交尽量只做一件事
+
+## 开发流程
+
+1. 功能开发前先进行需求分析和设计
+2. 遵循"先易后难"的原则，优先实现核心功能
+3. 每个功能完成后进行自测
+4. 定期进行代码审查
+5. 发现 bug 及时修复

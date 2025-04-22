@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartChat - 设置</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- iOS 状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi ml-2"></i>
+            <i class="fas fa-battery-full ml-2"></i>
+        </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content-area">
+        <div class="flex items-center mb-6">
+            <a href="profile.html" class="mr-4">
+                <i class="fas fa-chevron-left text-gray-600"></i>
+            </a>
+            <h1 class="text-xl font-bold">设置</h1>
+        </div>
+
+        <!-- 通用设置 -->
+        <div class="settings-group">
+            <h2 class="settings-group-title">通用</h2>
+            <div class="ios-list">
+                <div class="ios-list-item">
+                    <div>深色模式</div>
+                    <label class="ios-switch">
+                        <input type="checkbox">
+                        <span class="ios-switch-slider"></span>
+                    </label>
+                </div>
+                <div class="ios-list-item">
+                    <div>字体大小</div>
+                    <div class="text-gray-500">中</div>
+                </div>
+                <div class="ios-list-item">
+                    <div>语言</div>
+                    <div class="text-gray-500">简体中文</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 通知设置 -->
+        <div class="settings-group">
+            <h2 class="settings-group-title">通知</h2>
+            <div class="ios-list">
+                <div class="ios-list-item">
+                    <div>推送通知</div>
+                    <label class="ios-switch">
+                        <input type="checkbox" checked>
+                        <span class="ios-switch-slider"></span>
+                    </label>
+                </div>
+                <div class="ios-list-item">
+                    <div>每日心情报告提醒</div>
+                    <label class="ios-switch">
+                        <input type="checkbox" checked>
+                        <span class="ios-switch-slider"></span>
+                    </label>
+                </div>
+                <div class="ios-list-item">
+                    <div>情绪波动提醒</div>
+                    <label class="ios-switch">
+                        <input type="checkbox" checked>
+                        <span class="ios-switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 隐私设置 -->
+        <div class="settings-group">
+            <h2 class="settings-group-title">隐私</h2>
+            <div class="ios-list">
+                <div class="ios-list-item">
+                    <div>数据收集</div>
+                    <label class="ios-switch">
+                        <input type="checkbox" checked>
+                        <span class="ios-switch-slider"></span>
+                    </label>
+                </div>
+                <div class="ios-list-item">
+                    <div>匿名使用统计</div>
+                    <label class="ios-switch">
+                        <input type="checkbox" checked>
+                        <span class="ios-switch-slider"></span>
+                    </label>
+                </div>
+                <div class="ios-list-item">
+                    <div>对话历史保存时间</div>
+                    <div class="text-gray-500">30天</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 聊天设置 -->
+        <div class="settings-group">
+            <h2 class="settings-group-title">聊天</h2>
+            <div class="ios-list">
+                <div class="ios-list-item">
+                    <div>自动情绪分析</div>
+                    <label class="ios-switch">
+                        <input type="checkbox" checked>
+                        <span class="ios-switch-slider"></span>
+                    </label>
+                </div>
+                <div class="ios-list-item">
+                    <div>显示情绪提示</div>
+                    <label class="ios-switch">
+                        <input type="checkbox" checked>
+                        <span class="ios-switch-slider"></span>
+                    </label>
+                </div>
+                <div class="ios-list-item">
+                    <div>自动保存对话</div>
+                    <label class="ios-switch">
+                        <input type="checkbox" checked>
+                        <span class="ios-switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据管理 -->
+        <div class="settings-group">
+            <h2 class="settings-group-title">数据管理</h2>
+            <div class="ios-list">
+                <div class="ios-list-item">
+                    <div>导出数据</div>
+                    <i class="fas fa-chevron-right text-gray-300"></i>
+                </div>
+                <div class="ios-list-item">
+                    <div>清除缓存</div>
+                    <div class="text-gray-500">23.5MB</div>
+                </div>
+                <div class="ios-list-item text-red-500">
+                    <div>清除所有对话记录</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 关于 -->
+        <div class="settings-group">
+            <h2 class="settings-group-title">关于</h2>
+            <div class="ios-list">
+                <div class="ios-list-item">
+                    <div>版本</div>
+                    <div class="text-gray-500">1.0.0</div>
+                </div>
+                <div class="ios-list-item">
+                    <div>隐私政策</div>
+                    <i class="fas fa-chevron-right text-gray-300"></i>
+                </div>
+                <div class="ios-list-item">
+                    <div>用户协议</div>
+                    <i class="fas fa-chevron-right text-gray-300"></i>
+                </div>
+                <div class="ios-list-item">
+                    <div>开源许可</div>
+                    <i class="fas fa-chevron-right text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- iOS 底部导航栏 -->
+    <div class="ios-tab-bar">
+        <a href="home.html" class="tab-item">
+            <div class="tab-icon"><i class="fas fa-home"></i></div>
+            <div class="tab-label">首页</div>
+        </a>
+        <a href="daily-report.html" class="tab-item">
+            <div class="tab-icon"><i class="fas fa-calendar-day"></i></div>
+            <div class="tab-label">心情报告</div>
+        </a>
+        <a href="profile.html" class="tab-item active">
+            <div class="tab-icon"><i class="fas fa-user"></i></div>
+            <div class="tab-label">我的</div>
+        </a>
+    </div>
+</body>
+</html>

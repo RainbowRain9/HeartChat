@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartChat - 主页</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- iOS 状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi ml-2"></i>
+            <i class="fas fa-battery-full ml-2"></i>
+        </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content-area">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">你好，小明</h1>
+            <a href="profile.html">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-10 h-10 rounded-full">
+            </a>
+        </div>
+
+        <!-- 每日心情卡片 -->
+        <div class="ios-card bg-gradient-to-r from-indigo-500 to-purple-500 text-white mb-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">今日心情</h2>
+                    <p class="text-sm opacity-90 mb-4">查看你的每日心情报告，了解情绪变化</p>
+                    <a href="daily-report.html" class="inline-block bg-white text-indigo-600 rounded-lg px-4 py-2 text-sm font-medium">查看报告</a>
+                </div>
+                <div class="text-4xl">
+                    <i class="fas fa-sun"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要功能区 -->
+        <h2 class="text-lg font-semibold mb-4">主要功能</h2>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <a href="role-select.html" class="ios-card bg-blue-50 hover:bg-blue-100 transition">
+                <div class="text-3xl text-blue-500 mb-3">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="font-medium mb-1">心情树洞</h3>
+                <p class="text-xs text-gray-500">与AI角色对话，倾诉心事</p>
+            </a>
+            <a href="emotion-history.html" class="ios-card bg-green-50 hover:bg-green-100 transition">
+                <div class="text-3xl text-green-500 mb-3">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="font-medium mb-1">情绪跟踪</h3>
+                <p class="text-xs text-gray-500">查看情绪变化和趋势</p>
+            </a>
+            <a href="emotion-analysis.html" class="ios-card bg-purple-50 hover:bg-purple-100 transition">
+                <div class="text-3xl text-purple-500 mb-3">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="font-medium mb-1">情感分析</h3>
+                <p class="text-xs text-gray-500">分析你的情感状态</p>
+            </a>
+            <a href="#" class="ios-card bg-yellow-50 hover:bg-yellow-100 transition">
+                <div class="text-3xl text-yellow-500 mb-3">
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+                <h3 class="font-medium mb-1">情商练习</h3>
+                <p class="text-xs text-gray-500">提升情商的互动练习</p>
+            </a>
+        </div>
+
+        <!-- 最近对话 -->
+        <h2 class="text-lg font-semibold mb-4">最近对话</h2>
+        <div class="ios-list">
+            <a href="chat.html" class="ios-list-item">
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="角色头像" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <h3 class="font-medium">知心姐姐</h3>
+                        <p class="text-xs text-gray-500">今天过得怎么样？有什么想分享的吗？</p>
+                    </div>
+                </div>
+                <div class="text-xs text-gray-400">
+                    刚刚
+                </div>
+            </a>
+            <a href="chat.html" class="ios-list-item">
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/86.jpg" alt="角色头像" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <h3 class="font-medium">心理咨询师</h3>
+                        <p class="text-xs text-gray-500">我们上次讨论到了压力管理的问题...</p>
+                    </div>
+                </div>
+                <div class="text-xs text-gray-400">
+                    昨天
+                </div>
+            </a>
+            <a href="chat.html" class="ios-list-item">
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/women/22.jpg" alt="角色头像" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <h3 class="font-medium">闺蜜小美</h3>
+                        <p class="text-xs text-gray-500">那件事后来怎么样了？解决了吗？</p>
+                    </div>
+                </div>
+                <div class="text-xs text-gray-400">
+                    3天前
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- iOS 底部导航栏 -->
+    <div class="ios-tab-bar">
+        <a href="home.html" class="tab-item active">
+            <div class="tab-icon"><i class="fas fa-home"></i></div>
+            <div class="tab-label">首页</div>
+        </a>
+        <a href="daily-report.html" class="tab-item">
+            <div class="tab-icon"><i class="fas fa-calendar-day"></i></div>
+            <div class="tab-label">心情报告</div>
+        </a>
+        <a href="profile.html" class="tab-item">
+            <div class="tab-icon"><i class="fas fa-user"></i></div>
+            <div class="tab-label">我的</div>
+        </a>
+    </div>
+
+    <script src="js/home.js"></script>
+</body>
+</html>
