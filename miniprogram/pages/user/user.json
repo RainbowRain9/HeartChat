@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "个人中心",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "login": "../../components/login/index",
+    "ec-canvas": "../../components/ec-canvas/ec-canvas",
+    "interest-tag-cloud": "../../components/interest-tag-cloud/interest-tag-cloud"
+  }
+}

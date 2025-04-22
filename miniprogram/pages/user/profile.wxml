@@ -1,0 +1,186 @@
+<!-- 用户资料页面 - Material Design 3 风格 -->
+<view class="profile-container {{darkMode ? 'dark' : ''}}">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-bar-content">
+      <view class="nav-back" bindtap="handleBack">
+        <text class="nav-icon">←</text>
+      </view>
+      <text class="nav-title">个人资料</text>
+      <view class="nav-placeholder"></view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 主要内容区域 -->
+  <scroll-view wx:else class="profile-content" scroll-y enable-back-to-top>
+    <!-- 头像区域 -->
+    <view class="avatar-section">
+      <view class="avatar-container" bindtap="chooseAvatar">
+        <image class="avatar" src="{{userInfo.avatarUrl || '/images/system/default-avatar.png'}}" mode="aspectFill"/>
+        <view class="avatar-edit">
+          <text class="avatar-edit-icon">📷</text>
+        </view>
+      </view>
+      <text class="avatar-hint">点击更换头像</text>
+    </view>
+
+    <!-- 表单区域 -->
+    <form bindsubmit="handleSubmit">
+      <!-- 基本信息卡片 -->
+      <view class="card">
+        <view class="card-header">
+          <text class="card-title">基本信息</text>
+        </view>
+        <view class="card-content">
+          <!-- 昵称 -->
+          <view class="form-item">
+            <text class="form-label required">昵称</text>
+            <input 
+              class="form-input {{userInfo.username ? 'filled' : ''}}" 
+              name="username" 
+              value="{{userInfo.username}}" 
+              placeholder="请输入您的昵称"
+              maxlength="20"
+            />
+          </view>
+
+          <!-- 性别 -->
+          <view class="form-item">
+            <text class="form-label">性别</text>
+            <picker 
+              bindchange="handleGenderChange" 
+              value="{{genderIndex}}" 
+              range="{{genderOptions}}"
+            >
+              <view class="form-picker {{userInfo.gender !== undefined ? 'filled' : ''}}">
+                <text>{{genderOptions[genderIndex] || '请选择性别'}}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+
+          <!-- 地区 -->
+          <view class="form-item">
+            <text class="form-label">地区</text>
+            <picker 
+              mode="region" 
+              bindchange="handleRegionChange" 
+              value="{{region}}"
+            >
+              <view class="form-picker {{region[0] ? 'filled' : ''}}">
+                <text>{{region[0] ? region[0] + ' ' + region[1] + ' ' + region[2] : '请选择地区'}}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+
+          <!-- 个人简介 -->
+          <view class="form-item">
+            <text class="form-label">个人简介</text>
+            <textarea 
+              class="form-textarea {{userInfo.bio ? 'filled' : ''}}" 
+              name="bio" 
+              value="{{userInfo.bio}}" 
+              placeholder="介绍一下自己吧"
+              maxlength="200"
+              bindinput="onBioInput"
+            />
+            <text class="textarea-counter">{{bioLength}}/200</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 性格分析卡片 -->
+      <view class="card">
+        <view class="card-header">
+          <text class="card-title">性格分析</text>
+          <text class="card-subtitle">基于您的对话历史分析</text>
+        </view>
+        <view class="card-content">
+          <view wx:if="{{personalityTraits.length > 0}}" class="personality-traits">
+            <view wx:for="{{personalityTraits}}" wx:key="trait" class="trait-item">
+              <text class="trait-name">{{item.trait}}</text>
+              <view class="trait-bar-container">
+                <view class="trait-bar" style="width: {{item.score * 100}}%"></view>
+              </view>
+              <text class="trait-score">{{item.score * 100}}%</text>
+            </view>
+          </view>
+          <view wx:else class="empty-data">
+            <text>继续使用应用，与AI进行更多对话，我们将为您生成个性化的性格分析。</text>
+          </view>
+          
+          <view class="personality-summary">
+            <text>{{personalitySummary || '需要更多对话数据才能生成准确的性格分析。'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 兴趣爱好卡片 -->
+      <view class="card">
+        <view class="card-header">
+          <text class="card-title">兴趣爱好</text>
+          <text class="card-subtitle">根据您的对话内容推测</text>
+        </view>
+        <view class="card-content">
+          <view wx:if="{{interests.length > 0}}" class="interest-tags">
+            <view wx:for="{{interests}}" wx:key="index" class="interest-tag">
+              {{item}}
+            </view>
+          </view>
+          <view wx:else class="empty-data">
+            <text>继续使用应用，我们将根据您的对话内容推测您的兴趣爱好。</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 应用设置卡片 -->
+      <view class="card">
+        <view class="card-header">
+          <text class="card-title">应用设置</text>
+        </view>
+        <view class="card-content">
+          <!-- 深色模式 -->
+          <view class="form-item switch-item">
+            <text class="form-label">深色模式</text>
+            <switch checked="{{settings.darkMode}}" bindchange="handleDarkModeChange" color="#007bff"/>
+          </view>
+
+          <!-- 通知提醒 -->
+          <view class="form-item switch-item">
+            <text class="form-label">通知提醒</text>
+            <switch checked="{{settings.notificationEnabled}}" bindchange="handleNotificationChange" color="#007bff"/>
+          </view>
+
+          <!-- 语言 -->
+          <view class="form-item">
+            <text class="form-label">语言</text>
+            <picker 
+              bindchange="handleLanguageChange" 
+              value="{{languageIndex}}" 
+              range="{{languageOptions}}"
+            >
+              <view class="form-picker {{settings.language ? 'filled' : ''}}">
+                <text>{{languageMap[settings.language] || '请选择语言'}}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+        </view>
+      </view>
+
+      <!-- 提交按钮 -->
+      <view class="submit-button-container">
+        <button class="submit-button" form-type="submit" loading="{{submitting}}">
+          保存修改
+        </button>
+      </view>
+    </form>
+  </scroll-view>
+</view>

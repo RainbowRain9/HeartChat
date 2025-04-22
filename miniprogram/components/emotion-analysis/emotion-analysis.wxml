@@ -1,0 +1,97 @@
+<!-- components/emotion-analysis/emotion-analysis.wxml -->
+<view class="emotion-analysis {{show ? 'show' : ''}} {{darkMode ? 'dark' : ''}}">
+  <view class="header">
+    <view class="title">情感分析</view>
+    <view class="emotion-tag {{currentEmotion.type}}">
+      {{currentEmotion.type || '未知'}}
+    </view>
+    <view class="close-btn" bindtap="closePanel">×</view>
+  </view>
+
+  <!-- 情感概览 -->
+  <view class="overview-section">
+    <view class="overview-item">
+      <view class="label">当前情绪</view>
+      <view class="value">{{currentEmotion.type || '未知'}}</view>
+    </view>
+    <view class="overview-item">
+      <view class="label">情绪强度</view>
+      <view class="value">{{intensityFormatted}}%</view>
+    </view>
+    <view class="overview-item">
+      <view class="label">变化趋势</view>
+      <view class="value">{{currentEmotion.trend || '平稳'}}</view>
+    </view>
+  </view>
+
+  <!-- 情感趋势图 - 简化版 -->
+  <view class="chart-section">
+    <view class="section-title">情感趋势</view>
+    <view class="simple-chart-container">
+      <view class="trend-info">
+        <view class="trend-label">当前情绪强度</view>
+        <view class="trend-value">{{intensityFormatted}}%</view>
+      </view>
+      <view class="progress-bar-container">
+        <view class="progress-bar" style="width: {{intensityFormatted}}%"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 情感维度 - 简化版 -->
+  <view class="chart-section">
+    <view class="section-title">情感分析</view>
+    <view class="dimensions-container">
+      <view class="dimension-item" wx:for="{{emotionDimensions}}" wx:key="index">
+        <view class="dimension-label">{{item}}</view>
+        <view class="dimension-bar-container">
+          <view class="dimension-bar" style="width: {{radarData[index]}}%"></view>
+        </view>
+        <view class="dimension-value">{{radarData[index]}}%</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 情感建议 -->
+  <view class="suggestion-section" wx:if="{{currentEmotion.suggestions && currentEmotion.suggestions.length > 0}}">
+    <view class="section-title">情感建议</view>
+    <view class="suggestion-list">
+      <view class="suggestion-item" wx:for="{{currentEmotion.suggestions}}" wx:key="index">
+        <text class="suggestion-icon">💡</text>
+        <text class="suggestion-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关键词云 -->
+  <view class="tags-section">
+    <view class="section-title">关键词云</view>
+    <view class="tags-container">
+      <block wx:if="{{keywords.length > 0}}">
+        <view class="tag-item"
+              wx:for="{{keywords}}"
+              wx:key="index"
+              style="font-size: {{12 + item.weight * 8}}px; opacity: {{0.6 + item.weight * 0.4}}">
+          {{item.word}}
+        </view>
+      </block>
+      <block wx:else>
+        <view class="tag-item" wx:for="{{['积极思考', '情绪管理', '压力缓解', '自我关怀', '情绪稳定', '共情能力', '自信']}}" wx:key="index">
+          {{item}}
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-section">
+    <button class="action-btn save-btn" bindtap="saveEmotion">
+      <text class="btn-icon">📝</text>
+      <text class="btn-text">记录心情</text>
+    </button>
+    <button class="action-btn share-btn" bindtap="shareEmotion">
+      <text class="btn-icon">💌</text>
+      <text class="btn-text">分享给TA</text>
+    </button>
+  </view>
+</view>

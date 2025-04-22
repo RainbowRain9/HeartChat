@@ -1,0 +1,38 @@
+<!-- packageChat/components/chat-input/index.wxml -->
+<view class="chat-input-container {{darkMode ? 'dark' : ''}}">
+  <!-- 录音状态 -->
+  <view class="recording-container" wx:if="{{isRecording}}">
+    <view class="recording-hint">
+      <view class="recording-icon"></view>
+      <text class="recording-time">{{recordingTime}}s</text>
+    </view>
+    <text class="recording-tip">松开发送，上滑取消</text>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-area" wx:else>
+    <!-- 语音按钮 -->
+    <view class="voice-button" bindtouchstart="recordStart" bindtouchend="recordEnd" bindtouchmove="recordCancel">
+      <image class="voice-icon" src="/images/icons/voice.png" mode="aspectFit"></image>
+    </view>
+
+    <!-- 文本输入框 -->
+    <input class="text-input"
+           type="text"
+           value="{{inputValue}}"
+           placeholder="{{placeholder}}"
+           disabled="{{disabled}}"
+           bindinput="input"
+           bindfocus="onFocus"
+           bindblur="onBlur"
+           adjust-position="{{false}}"
+           cursor-spacing="20"
+           confirm-type="send"
+           bindconfirm="confirm"></input>
+
+    <!-- 发送按钮 -->
+    <view class="send-button {{inputValue ? 'active' : ''}}" bindtap="send">
+      <image class="send-icon" src="/images/icons/send.png" mode="aspectFit"></image>
+    </view>
+  </view>
+</view>

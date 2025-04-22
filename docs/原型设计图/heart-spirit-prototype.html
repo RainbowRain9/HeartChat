@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心语精灵</title>
+    <!-- FontAwesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* 全局样式 */
+        :root {
+            --primary-color: #1E90FF;
+            --secondary-color: #FFB74D;
+            --background-color: #F5F5F5;
+            --text-color: #333333;
+            --light-text: #666666;
+            --lighter-text: #999999;
+            --border-color: #E0E0E0;
+            --success-color: #2ECC71;
+            --warning-color: #F39C12;
+            --danger-color: #E74C3C;
+            --info-color: #3498DB;
+            --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 容器样式 */
+        .container {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 标题栏样式 */
+        .header {
+            background-color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-actions button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            position: relative;
+            width: 100%;
+        }
+
+        /* 标签页导航 */
+        .tab-navigation {
+            display: flex;
+            background-color: white;
+            border-top: 1px solid var(--border-color);
+            position: relative;
+            z-index: 100;
+        }
+
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            color: var(--light-text);
+            transition: all var(--transition-speed);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .tab-item i {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+        .tab-item.active {
+            color: var(--primary-color);
+        }
+
+        /* 页面容器 */
+        .page-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: none;
+            overflow-y: auto;
+            background-color: white;
+            width: 100%;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 聊天页面样式 */
+        .chat-page {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .role-selection {
+            padding: 15px;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .role-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .role-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .role-details h3 {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .role-details p {
+            font-size: 12px;
+            color: var(--light-text);
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .chat-view {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            transition: all var(--transition-speed);
+            min-width: 0;
+            width: 100%;
+        }
+
+        .chat-view-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .analysis-view {
+            flex: 0 0 0;
+            overflow-y: auto;
+            background-color: #F8F9FA;
+            transition: all var(--transition-speed);
+            border-left: 1px solid var(--border-color);
+            padding: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .chat-container.show-analysis {
+            display: flex;
+        }
+
+        .chat-container.show-analysis .chat-view {
+            flex: 0 0 60%;
+            width: 60%;
+        }
+
+        .chat-container.show-analysis .analysis-view {
+            flex: 0 0 40%;
+            width: 40%;
+            padding: 15px;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            max-width: 80%;
+            width: fit-content;
+        }
+
+        .message.received {
+            align-self: flex-start;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+        }
+
+        .message-sender {
+            font-size: 13px;
+            color: var(--light-text);
+            margin-bottom: 3px;
+        }
+
+        .message-bubble {
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+            box-shadow: var(--card-shadow);
+            width: fit-content;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: var(--lighter-text);
+            margin-top: 3px;
+            text-align: right;
+        }
+
+        .received .message-bubble {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-top-left-radius: 4px;
+        }
+
+        .sent .message-bubble {
+            background-color: var(--primary-color);
+            color: white;
+            border-top-right-radius: 4px;
+            align-self: flex-end;
+        }
+
+        .suggestion-container {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: rgba(30, 144, 255, 0.05);
+            border: 1px dashed var(--primary-color);
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        .suggestion-title {
+            font-size: 13px;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .suggestion-list {
+            list-style: none;
+        }
+
+        .suggestion-item {
+            padding: 8px 10px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+            border: 1px solid var(--border-color);
+        }
+
+        .suggestion-item:hover {
+            background-color: #F0F8FF;
+        }
+
+        .suggestion-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .suggestion-actions button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .input-area {
+            padding: 10px 15px;
+            background-color: white;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--background-color);
+            border-radius: 20px;
+            padding: 5px 15px;
+        }
+
+        .input-container button {
+            background: none;
+            border: none;
+            color: var(--light-text);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .input-container input {
+            flex: 1;
+            border: none;
+            padding: 8px 0;
+            background: none;
+            font-size: 14px;
+        }
+
+        .input-container input:focus {
+            outline: none;
+        }
+
+        .input-container .send-btn {
+            color: var(--primary-color);
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .toolbar button {
+            background: none;
+            border: none;
+            color: var(--light-text);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .toolbar button i {
+            font-size: 18px;
+        }
+
+        /* 情感分析视图样式 */
+        .analysis-section {
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .emotion-overview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .emotion-item {
+            flex: 1;
+            min-width: calc(50% - 5px);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+        }
+
+        .emotion-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .emotion-chart {
+            height: 150px;
+            margin-top: 10px;
+            position: relative;
+            background-color: #F8F9FA;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .chart-line {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            width: 100%;
+            height: 90px;
+            padding: 0 10px;
+        }
+
+        .chart-line svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-line path {
+            stroke: var(--primary-color);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .chart-line .area {
+            fill: rgba(30, 144, 255, 0.1);
+        }
+
+        .chart-labels {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 10px;
+            color: var(--lighter-text);
+        }
+
+        .chart-axis {
+            position: absolute;
+            left: 10px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--lighter-text);
+            padding: 5px 0;
+        }
+
+        .radar-chart {
+            height: 200px;
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .radar-chart svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .keyword-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .keyword {
+            padding: 5px 10px;
+            background-color: #F0F8FF;
+            border-radius: 15px;
+            font-size: 12px;
+            color: var(--primary-color);
+        }
+
+        .keyword.highlight {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .strategy-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .strategy-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .strategy-item i {
+            color: var(--primary-color);
+            margin-top: 3px;
+        }
+
+        /* 我的页面样式 */
+        .profile-page {
+            padding: 20px 15px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 30px;
+        }
+
+        .profile-info h2 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .profile-info p {
+            font-size: 13px;
+            color: var(--light-text);
+            margin-top: 3px;
+        }
+
+        .profile-status {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 12px;
+            color: var(--light-text);
+        }
+
+        .status-item i {
+            color: var(--success-color);
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title .more {
+            font-size: 12px;
+            color: var(--primary-color);
+            font-weight: normal;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .stat-item {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--light-text);
+            margin-top: 3px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: #F0F8FF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+
+        .feature-name {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .setting-list {
+            list-style: none;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background-color: #F0F8FF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .setting-name {
+            font-size: 14px;
+        }
+
+        .setting-item i.fa-chevron-right {
+            color: var(--lighter-text);
+            font-size: 12px;
+        }
+
+        /* 视图切换指示器 */
+        .view-indicator {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 60px;
+            background-color: rgba(30, 144, 255, 0.1);
+            border-radius: 0 30px 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* 动画效果 */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .chat-container.show-analysis .chat-view {
+                flex: 0 0 50%;
+            }
+
+            .chat-container.show-analysis .analysis-view {
+                flex: 0 0 50%;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-container.show-analysis .chat-view {
+                flex: 0 0 40%;
+            }
+
+            .chat-container.show-analysis .analysis-view {
+                flex: 0 0 60%;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>心语精灵</h1>
+            <div class="header-actions">
+                <button id="toggle-view-btn"><i class="fas fa-columns"></i></button>
+                <button><i class="fas fa-ellipsis-v"></i></button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="page-container">
+                <!-- 聊天页面 -->
+                <div class="page chat-page active" id="chat-page">
+                    <div class="role-selection">
+                        <div class="role-info">
+                            <div class="role-avatar">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="role-details">
+                                <h3>张经理</h3>
+                                <p>最近互动：2小时前 | 情绪：专注</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-container" id="chat-container">
+                        <div class="view-indicator" id="view-toggle">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+
+                        <div class="chat-view">
+                            <div class="message received">
+                                <div class="message-sender">张经理</div>
+                                <div class="message-bubble">这个项目进度有点慢啊，什么时候能完成？</div>
+                                <div class="message-time">14:30</div>
+                            </div>
+
+                            <div class="suggestion-container">
+                                <div class="suggestion-title">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>推荐回复：</span>
+                                </div>
+                                <ul class="suggestion-list">
+                                    <li class="suggestion-item">是的，我们正在加快进度，预计下周五能完成全部工作。</li>
+                                    <li class="suggestion-item">已经制定了新的计划，我们会在周四前完成主要功能开发。</li>
+                                    <li class="suggestion-item">理解您的担忧，目前进度已达80%，我们正在全力冲刺。</li>
+                                </ul>
+                                <div class="suggestion-actions">
+                                    <button><i class="fas fa-sync-alt"></i> 换一批</button>
+                                    <button><i class="fas fa-edit"></i> 自定义</button>
+                                </div>
+                            </div>
+
+                            <div class="message sent">
+                                <div class="message-sender">我</div>
+                                <div class="message-bubble">理解您的担忧，目前进度已达80%，我们正在全力冲刺，预计下周三就能交付初版。</div>
+                                <div class="message-time">14:31</div>
+                            </div>
+
+                            <div class="message received">
+                                <div class="message-sender">张经理</div>
+                                <div class="message-bubble">下周三？之前不是说本周五就能完成吗？</div>
+                                <div class="message-time">14:32</div>
+                            </div>
+
+                            <div class="suggestion-container">
+                                <div class="suggestion-title">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>推荐回复：</span>
+                                </div>
+                                <ul class="suggestion-list">
+                                    <li class="suggestion-item">非常抱歉，确实有些延期。我们遇到了一些技术难题，但已经在解决中。</li>
+                                    <li class="suggestion-item">您说得对，之前的估计过于乐观。我们会尽全力提前完成。</li>
+                                    <li class="suggestion-item">是的，原计划是本周五，但测试中发现了一些问题需要修复。</li>
+                                </ul>
+                                <div class="suggestion-actions">
+                                    <button><i class="fas fa-sync-alt"></i> 换一批</button>
+                                    <button><i class="fas fa-edit"></i> 自定义</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="analysis-view">
+                            <div class="analysis-section">
+                                <div class="section-title">
+                                    <i class="fas fa-smile"></i>
+                                    <span>情绪概览</span>
+                                </div>
+                                <div class="emotion-overview">
+                                    <div class="emotion-item">
+                                        <i class="fas fa-face-worried"></i>
+                                        <span>当前情绪：急切</span>
+                                    </div>
+                                    <div class="emotion-item">
+                                        <i class="fas fa-arrow-trend-down"></i>
+                                        <span>变化趋势：下降</span>
+                                    </div>
+                                    <div class="emotion-item">
+                                        <i class="fas fa-bolt"></i>
+                                        <span>情绪强度：7/10</span>
+                                    </div>
+                                    <div class="emotion-item">
+                                        <i class="fas fa-bullseye"></i>
+                                        <span>注意度：较高</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="analysis-section">
+                                <div class="section-title">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>情绪曲线</span>
+                                </div>
+                                <div class="emotion-chart">
+                                    <div class="chart-axis">
+                                        <span>积极</span>
+                                        <span>中性</span>
+                                        <span>消极</span>
+                                    </div>
+                                    <div class="chart-line">
+                                        <svg viewBox="0 0 300 100" preserveAspectRatio="none">
+                                            <path
+                                                d="M0,50 C20,40 40,60 60,45 C80,30 100,70 120,60 C140,50 160,30 180,35 C200,40 220,60 240,70 C260,80 280,65 300,75" />
+                                            <path class="area"
+                                                d="M0,50 C20,40 40,60 60,45 C80,30 100,70 120,60 C140,50 160,30 180,35 C200,40 220,60 240,70 C260,80 280,65 300,75 L300,100 L0,100 Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="chart-labels">
+                                        <span>14:30</span>
+                                        <span>14:31</span>
+                                        <span>14:32</span>
+                                        <span>14:33</span>
+                                        <span>现在</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="analysis-section">
+                                <div class="section-title">
+                                    <i class="fas fa-bullseye"></i>
+                                    <span>维度分析</span>
+                                </div>
+                                <div class="radar-chart">
+                                    <svg viewBox="0 0 200 200">
+                                        <!-- 背景网格 -->
+                                        <circle cx="100" cy="100" r="80" fill="none" stroke="#e0e0e0"
+                                            stroke-width="1" />
+                                        <circle cx="100" cy="100" r="60" fill="none" stroke="#e0e0e0"
+                                            stroke-width="1" />
+                                        <circle cx="100" cy="100" r="40" fill="none" stroke="#e0e0e0"
+                                            stroke-width="1" />
+                                        <circle cx="100" cy="100" r="20" fill="none" stroke="#e0e0e0"
+                                            stroke-width="1" />
+
+                                        <line x1="100" y1="20" x2="100" y2="180" stroke="#e0e0e0" stroke-width="1" />
+                                        <line x1="20" y1="100" x2="180" y2="100" stroke="#e0e0e0" stroke-width="1" />
+                                        <line x1="30" y1="30" x2="170" y2="170" stroke="#e0e0e0" stroke-width="1" />
+                                        <line x1="30" y1="170" x2="170" y2="30" stroke="#e0e0e0" stroke-width="1" />
+
+                                        <!-- 标签 -->
+                                        <text x="100" y="10" text-anchor="middle" font-size="10" fill="#666">信任</text>
+                                        <text x="190" y="100" text-anchor="start" font-size="10" fill="#666">开放</text>
+                                        <text x="100" y="195" text-anchor="middle" font-size="10" fill="#666">抗拒</text>
+                                        <text x="5" y="100" text-anchor="end" font-size="10" fill="#666">压力</text>
+
+                                        <!-- 数据多边形 -->
+                                        <polygon points="100,30 160,70 130,150 70,150 40,70"
+                                            fill="rgba(30, 144, 255, 0.2)" stroke="var(--primary-color)"
+                                            stroke-width="2" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="analysis-section">
+                                <div class="section-title">
+                                    <i class="fas fa-tags"></i>
+                                    <span>关键词云</span>
+                                </div>
+                                <div class="keyword-cloud">
+                                    <span class="keyword highlight">#项目进度</span>
+                                    <span class="keyword">#时间压力</span>
+                                    <span class="keyword highlight">#延期</span>
+                                    <span class="keyword">#工作效率</span>
+                                    <span class="keyword">#承诺</span>
+                                    <span class="keyword">#计划</span>
+                                    <span class="keyword">#团队</span>
+                                    <span class="keyword">#质量</span>
+                                </div>
+                            </div>
+
+                            <div class="analysis-section">
+                                <div class="section-title">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>建议策略</span>
+                                </div>
+                                <ul class="strategy-list">
+                                    <li class="strategy-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <div>先认同对方的关切，再解释原因</div>
+                                    </li>
+                                    <li class="strategy-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <div>提供具体的时间点和进度百分比</div>
+                                    </li>
+                                    <li class="strategy-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <div>说明已采取的加速措施</div>
+                                    </li>
+                                    <li class="strategy-item">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <div>避免过度承诺，保持诚实</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-area">
+                        <div class="input-container">
+                            <button><i class="fas fa-microphone"></i></button>
+                            <input type="text" placeholder="请输入对方的话...">
+                            <button><i class="far fa-smile"></i></button>
+                            <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                        <div class="toolbar">
+                            <button>
+                                <i class="fas fa-theater-masks"></i>
+                                <span>场景</span>
+                            </button>
+                            <button>
+                                <i class="fas fa-history"></i>
+                                <span>历史</span>
+                            </button>
+                            <button>
+                                <i class="fas fa-star"></i>
+                                <span>收藏</span>
+                            </button>
+                            <button>
+                                <i class="fas fa-ellipsis-h"></i>
+                                <span>更多</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 我的页面 -->
+                <div class="page profile-page" id="profile-page">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2>张经理</h2>
+                            <p>高级会员 ★★★★★</p>
+                            <div class="profile-status">
+                                <div class="status-item">
+                                    <i class="fas fa-circle"></i>
+                                    <span>在线</span>
+                                </div>
+                                <div class="status-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>企业管理者</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">
+                            <span>使用数据</span>
+                            <a href="#" class="more">查看详情</a>
+                        </div>
+                        <div class="stats-container">
+                            <div class="stat-item">
+                                <div class="stat-value">128</div>
+                                <div class="stat-label">总对话</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">96h</div>
+                                <div class="stat-label">使用时长</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">89</div>
+                                <div class="stat-label">解决问题</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">
+                            <span>本周数据</span>
+                        </div>
+                        <div class="stats-container">
+                            <div class="stat-item">
+                                <div class="stat-value">15</div>
+                                <div class="stat-label">对话数</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">98%</div>
+                                <div class="stat-label">完成率</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">4.9</div>
+                                <div class="stat-label">评分</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">
+                            <span>常用功能</span>
+                        </div>
+                        <div class="feature-grid">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <div class="feature-name">对话记录</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <div class="feature-name">数据报表</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="feature-name">我的收藏</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-folder"></i>
+                                </div>
+                                <div class="feature-name">文件管理</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="feature-name">团队管理</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-bell"></i>
+                                </div>
+                                <div class="feature-name">消息通知</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="feature-name">绩效分析</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-bullseye"></i>
+                                </div>
+                                <div class="feature-name">目标设置</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">
+                            <span>设置</span>
+                        </div>
+                        <ul class="setting-list">
+                            <li class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="setting-name">账号管理</div>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </li>
+                            <li class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <div class="setting-name">隐私设置</div>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </li>
+                            <li class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-palette"></i>
+                                    </div>
+                                    <div class="setting-name">主题外观</div>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </li>
+                            <li class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-palette"></i>
+                                    </div>
+                                    <div class="setting-name">主题外观</div>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </li>
+                            <li class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-bell"></i>
+                                    </div>
+                                    <div class="setting-name">通知设置</div>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </li>
+                            <li class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-database"></i>
+                                    </div>
+                                    <div class="setting-name">存储管理</div>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </li>
+                            <li class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="setting-name">AI助手设置</div>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-navigation">
+            <div class="tab-item active" data-target="chat-page">
+                <i class="fas fa-comment"></i>
+                <span>聊天</span>
+            </div>
+            <div class="tab-item" data-target="profile-page">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面切换功能
+        document.querySelectorAll('.tab-item').forEach(tab => {
+            tab.addEventListener('click', function () {
+                // 移除所有标签页的active类
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                // 为当前点击的标签页添加active类
+                this.classList.add('active');
+
+                // 获取目标页面ID
+                const targetId = this.getAttribute('data-target');
+
+                // 隐藏所有页面
+                document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+
+                // 显示目标页面
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // 双视图切换功能
+        const toggleViewBtn = document.getElementById('toggle-view-btn');
+        const viewToggle = document.getElementById('view-toggle');
+        const chatContainer = document.getElementById('chat-container');
+
+        function toggleAnalysisView() {
+            chatContainer.classList.toggle('show-analysis');
+
+            // 更新切换按钮图标
+            if (chatContainer.classList.contains('show-analysis')) {
+                viewToggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            } else {
+                viewToggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            }
+        }
+
+        toggleViewBtn.addEventListener('click', toggleAnalysisView);
+        viewToggle.addEventListener('click', toggleAnalysisView);
+
+        // 消息发送功能
+        const inputField = document.querySelector('.input-container input');
+        const sendBtn = document.querySelector('.send-btn');
+
+        function sendMessage() {
+            const message = inputField.value.trim();
+            if (message) {
+                // 创建新消息元素
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message sent';
+                messageElement.innerHTML = `
+                                                            <div class="message-sender">我</div>
+                                                            <div class="message-bubble">${message}</div>
+                                                            <div class="message-time">${getCurrentTime()}</div>
+                                                        `;
+
+                // 添加到聊天视图
+                const chatView = document.querySelector('.chat-view');
+                chatView.appendChild(messageElement);
+
+                // 清空输入框
+                inputField.value = '';
+
+                // 滚动到底部
+                chatView.scrollTop = chatView.scrollHeight;
+
+                // 模拟回复（实际应用中这里会调用API）
+                setTimeout(() => {
+                    simulateReply();
+                }, 1000);
+            }
+        }
+
+        // 按下回车键发送消息
+        inputField.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // 点击发送按钮发送消息
+        sendBtn.addEventListener('click', sendMessage);
+
+        // 获取当前时间
+        function getCurrentTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        // 模拟回复消息
+        function simulateReply() {
+            const replies = [
+                "好的，我明白了。",
+                "我们会尽快处理这个问题。",
+                "感谢您的反馈，我们会改进的。",
+                "这个情况我需要进一步了解，能否提供更多细节？"
+            ];
+
+            const randomReply = replies[Math.floor(Math.random() * replies.length)];
+
+            // 创建新消息元素
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message received';
+            messageElement.innerHTML = `
+                                                        <div class="message-sender">张经理</div>
+                                                        <div class="message-bubble">${randomReply}</div>
+                                                        <div class="message-time">${getCurrentTime()}</div>
+                                                    `;
+
+            // 添加到聊天视图
+            const chatView = document.querySelector('.chat-view');
+            chatView.appendChild(messageElement);
+
+            // 滚动到底部
+            chatView.scrollTop = chatView.scrollHeight;
+
+            // 模拟建议回复
+            setTimeout(() => {
+                simulateSuggestions();
+            }, 500);
+        }
+
+        // 模拟建议回复
+        function simulateSuggestions() {
+            const suggestions = [
+                "非常感谢您的理解和支持。",
+                "我们会认真考虑您的建议，并尽快采取行动。",
+                "您提出的问题很有价值，我们会深入研究。"
+            ];
+
+            // 创建建议容器
+            const suggestionContainer = document.createElement('div');
+            suggestionContainer.className = 'suggestion-container';
+            suggestionContainer.innerHTML = `
+                                                        <div class="suggestion-title">
+                                                            <i class="fas fa-lightbulb"></i>
+                                                            <span>推荐回复：</span>
+                                                        </div>
+                                                        <ul class="suggestion-list">
+                                                            ${suggestions.map(suggestion => `<li class="suggestion-item">${suggestion}</li>`).join('')}
+                                                        </ul>
+                                                        <div class="suggestion-actions">
+                                                            <button><i class="fas fa-sync-alt"></i> 换一批</button>
+                                                            <button><i class="fas fa-edit"></i> 自定义</button>
+                                                        </div>
+                                                    `;
+
+            // 添加到聊天视图
+            const chatView = document.querySelector('.chat-view');
+            chatView.appendChild(suggestionContainer);
+
+            // 滚动到底部
+            chatView.scrollTop = chatView.scrollHeight;
+
+            // 为建议添加点击事件
+            suggestionContainer.querySelectorAll('.suggestion-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    inputField.value = this.textContent;
+                });
+            });
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function () {
+            // 默认显示聊天页面
+            document.getElementById('chat-page').classList.add('active');
+
+            // 为建议添加点击事件
+            document.querySelectorAll('.suggestion-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    inputField.value = this.textContent;
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

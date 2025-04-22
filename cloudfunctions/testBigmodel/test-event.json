@@ -1,0 +1,15 @@
+{
+  "textForEmotion": "今天项目上线了，非常激动和开心！但也感觉有点累。",
+  "textForKeywords": "这个基于大模型的AI助手可以进行情感识别和文本摘要。",
+  "textForClustering": "苹果、香蕉、橘子都是水果。蔬菜有菠菜、白菜、胡萝卜。",
+  "textsForEmbedding": [
+    "探索AI的可能性",
+    "感受科技的魅力",
+    "创造更美好的未来"
+  ],
+  "userMessagesForInterest": [
+    "周末想去看画展，对艺术很感兴趣。",
+    "最近在学习Python编程。",
+    "喜欢听古典音乐放松心情。"
+  ]
+}

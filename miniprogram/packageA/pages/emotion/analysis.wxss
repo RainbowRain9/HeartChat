@@ -1,0 +1,279 @@
+/* packageA/pages/emotion/analysis.wxss */
+
+/* 容器 */
+.container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+/* 输入区域 */
+.input-area {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
+  margin-bottom: 30rpx;
+}
+
+.input {
+  width: 100%;
+  min-height: 200rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
+  transition: border-color 0.3s;
+}
+
+.input:focus {
+  border-color: #007bff;
+}
+
+.btn-area {
+  margin-top: 30rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.analyze-btn {
+  background: #e9ecef;
+  color: #868e96;
+  font-size: 28rpx;
+  padding: 16rpx 40rpx;
+  border-radius: 30rpx;
+  transition: all 0.3s;
+}
+
+.analyze-btn.active {
+  background: #007bff;
+  color: #fff;
+}
+
+/* 结果卡片 */
+.result-card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
+  margin-bottom: 30rpx;
+  animation: slideIn 0.5s ease;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 30rpx;
+}
+
+.emotion-type {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.emotion-type .label {
+  font-size: 28rpx;
+  color: #495057;
+  margin-right: 20rpx;
+}
+
+.emotion-type .value {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.emotion-type.positive .value {
+  color: #28a745;
+}
+
+.emotion-type.negative .value {
+  color: #dc3545;
+}
+
+.emotion-type.neutral .value {
+  color: #6c757d;
+}
+
+.analysis {
+  margin-bottom: 20rpx;
+}
+
+.analysis .label {
+  font-size: 28rpx;
+  color: #495057;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.analysis .content {
+  font-size: 28rpx;
+  color: #212529;
+  line-height: 1.6;
+}
+
+.suggestions {
+  margin-top: 30rpx;
+}
+
+.suggestions .label {
+  font-size: 28rpx;
+  color: #495057;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.suggestion-list {
+  padding-left: 20rpx;
+}
+
+.suggestion-item {
+  font-size: 28rpx;
+  color: #212529;
+  line-height: 1.6;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+/* 历史记录 */
+.history-section {
+  margin-top: 40rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 20rpx;
+}
+
+.history-list {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.history-item {
+  padding: 20rpx;
+  border-bottom: 2rpx solid #e9ecef;
+  transition: background-color 0.3s;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item:active {
+  background-color: #f8f9fa;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.item-header .date {
+  font-size: 24rpx;
+  color: #868e96;
+}
+
+.item-header .emotion {
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+.item-header .emotion.positive {
+  background: #e8f5e9;
+  color: #28a745;
+}
+
+.item-header .emotion.negative {
+  background: #ffebee;
+  color: #dc3545;
+}
+
+.item-header .emotion.neutral {
+  background: #f8f9fa;
+  color: #6c757d;
+}
+
+.history-item .content {
+  font-size: 28rpx;
+  color: #495057;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.empty {
+  padding: 60rpx 0;
+  text-align: center;
+  color: #868e96;
+  font-size: 28rpx;
+}
+
+/* 加载动画 */
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.loading-dots {
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #007bff;
+  margin: 0 8rpx;
+  animation: bounce 0.5s infinite alternate;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-20rpx);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

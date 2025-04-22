@@ -1,0 +1,205 @@
+<!-- packageEmotion/pages/daily-report/daily-report.wxml -->
+<view class="container {{darkMode ? 'dark' : ''}}">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav">
+    <!-- 状态栏占位 -->
+    <view class="status-bar" style="height: {{statusBarHeight}}px"></view>
+
+    <!-- 导航栏内容 -->
+    <view class="nav-bar" style="height: {{navBarHeight}}px">
+      <view class="nav-left">
+        <view class="back-btn" bindtap="handleBack">
+          <image class="back-icon" src="/images/icons/back.png" mode="aspectFit"></image>
+        </view>
+      </view>
+      <view class="nav-center">
+        <text class="nav-title">每日心情报告</text>
+      </view>
+      <view class="nav-right"></view>
+    </view>
+  </view>
+
+  <!-- 顶部日期选择和分享 -->
+  <view class="header" style="margin-top: {{statusBarHeight + navBarHeight}}px">
+    <picker mode="date" value="{{date}}" end="{{today}}" bindchange="bindDateChange">
+      <view class="date-picker">
+        <text class="date-text">{{formattedDate}}</text>
+        <text class="date-icon">▼</text>
+      </view>
+    </picker>
+    <view class="action-buttons">
+      <button class="btn-refresh" bindtap="regenerateReport" size="mini">
+        <text class="icon-refresh">↻</text>
+      </button>
+      <button class="btn-share" bindtap="shareReport" size="mini">
+        <text class="icon-share">分享</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading">
+      <text class="loading-text">正在生成心情报告...</text>
+    </view>
+  </view>
+
+  <!-- 错误提示 -->
+  <view class="error-container" wx:elif="{{error}}">
+    <view class="error">
+      <text class="error-text">{{error}}</text>
+      <button class="btn-retry" bindtap="regenerateReport">重新生成</button>
+    </view>
+  </view>
+
+  <!-- 报告内容 -->
+  <scroll-view scroll-y="true" class="report-container" wx:elif="{{report}}">
+    <!-- 今日心情总结 -->
+    <view class="section summary-section">
+      <view class="section-title">今日心情总结</view>
+      <view class="summary-content">
+        <text>{{report.emotionSummary}}</text>
+      </view>
+    </view>
+
+    <!-- 情绪分布 -->
+    <view class="section chart-section">
+      <view class="section-title">情绪分布</view>
+      <view class="chart-container">
+        <ec-canvas id="emotionPieChart" canvas-id="emotionPieChart" ec="{{ ec }}"></ec-canvas>
+      </view>
+      <view class="emotion-stats">
+        <view class="emotion-stat-item" wx:for="{{report.chartData.emotionDistribution}}" wx:key="type">
+          <view class="emotion-color" style="background-color: {{emotionColorMap[item.type] || '#CCCCCC'}}"></view>
+          <view class="emotion-name">{{item.type}}</view>
+          <view class="emotion-value">{{item.percentage}}%</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 情绪波动 -->
+    <view class="section chart-section" wx:if="{{report.chartData.intensityTrend.length > 0}}">
+      <view class="section-title">情绪波动</view>
+      <view class="volatility-meter">
+        <view class="volatility-label">波动指数</view>
+        <view class="volatility-value">{{report.emotionalVolatility}}</view>
+        <view class="volatility-bar">
+          <view class="volatility-progress" style="width: {{report.emotionalVolatility}}%"></view>
+        </view>
+        <view class="volatility-scale">
+          <text>平稳</text>
+          <text>波动</text>
+        </view>
+      </view>
+      <view class="chart-container">
+        <ec-canvas id="intensityChart" canvas-id="intensityChart" ec="{{ ec }}"></ec-canvas>
+      </view>
+    </view>
+
+    <!-- 关键词云 -->
+    <view class="section keyword-section">
+      <view class="section-title">关键词分析</view>
+      <view class="keyword-cloud" wx:if="{{report.keywords.length > 0}}">
+        <view
+          wx:for="{{keywordTags}}"
+          wx:key="word"
+          class="keyword-tag"
+          style="font-size: {{item.fontSize}}px; color: {{item.color}};"
+        >
+          <text>{{item.word}}</text>
+        </view>
+      </view>
+      <view class="empty-keywords" wx:if="{{!report.keywords || report.keywords.length === 0}}">
+        <text>暂无关键词数据</text>
+      </view>
+    </view>
+
+    <!-- 关注点分析 -->
+    <view class="section focus-section" wx:if="{{report.focusPoints && report.focusPoints.length > 0}}">
+      <view class="section-title">关注点分析</view>
+      <view class="chart-container">
+        <ec-canvas id="focusChart" canvas-id="focusChart" ec="{{ ec }}"></ec-canvas>
+      </view>
+      <view class="focus-list">
+        <view class="focus-item" wx:for="{{report.focusPoints}}" wx:key="category" style="border-left: 6rpx solid {{categoryColors[item.category] || '#ccc'}}">
+          <view class="focus-header">
+            <view class="focus-category-container">
+              <view class="focus-color-dot" style="background-color: {{categoryColors[item.category] || '#ccc'}}"></view>
+              <text class="focus-category">{{item.category}}</text>
+            </view>
+            <text class="focus-percentage" style="color: {{categoryColors[item.category] || '#5e72e4'}}">{{item.percentage}}%</text>
+          </view>
+          <view class="focus-keywords">
+            <text class="focus-keyword"
+              wx:for="{{item.keywords}}"
+              wx:for-item="keyword"
+              wx:key="*this"
+              style="background-color: {{categoryColors[item.category] ? categoryColors[item.category] + '20' : '#e2e8f0'}}; color: {{categoryColors[item.category] || '#4a5568'}};"
+            >{{keyword}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 洞察 -->
+    <view class="section insights-section">
+      <view class="section-title">情绪洞察</view>
+      <view class="insights-list">
+        <view class="insight-item" wx:for="{{report.insights}}" wx:key="index">
+          <text class="insight-number">{{index + 1}}.</text>
+          <text class="insight-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 今日运势 -->
+    <view class="section fortune-section">
+      <view class="section-title">今日运势</view>
+      <view class="fortune-content">
+        <view class="fortune-row">
+          <view class="fortune-label">宜:</view>
+          <view class="fortune-items">
+            <view class="fortune-item" wx:for="{{report.fortune.good || defaultFortune.good}}" wx:key="index">{{item}}</view>
+          </view>
+        </view>
+        <view class="fortune-row">
+          <view class="fortune-label">忌:</view>
+          <view class="fortune-items">
+            <view class="fortune-item" wx:for="{{report.fortune.bad || defaultFortune.bad}}" wx:key="index">{{item}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 小建议 -->
+    <view class="section suggestions-section">
+      <view class="section-title">小建议</view>
+      <view class="suggestions-list">
+        <view class="suggestion-item" wx:for="{{report.suggestions}}" wx:key="index">
+          <text class="suggestion-number">{{index + 1}}.</text>
+          <text class="suggestion-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 鼓励语 -->
+    <view class="section encouragement-section">
+      <view class="encouragement-content">
+        <text class="encouragement-text">{{report.encouragement}}</text>
+      </view>
+    </view>
+
+    <!-- 底部信息 -->
+    <view class="footer">
+      <text class="footer-text">生成于 {{report.generatedAt ? (report.generatedAt.toLocaleString ? report.generatedAt.toLocaleString() : report.generatedAt) : '未知时间'}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 无报告提示 -->
+  <view class="no-report-container" wx:else>
+    <view class="no-report">
+      <text class="no-report-text">暂无心情报告</text>
+      <button class="btn-generate" bindtap="regenerateReport">生成报告</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,59 @@
+<view class="emotion-card">
+  <!-- 主要情绪 -->
+  <view class="primary-emotion" bindtap="toggleExpand">
+    <view class="emotion-icon" style="background-color: {{emotionColors[emotion.primary.type]}}">
+      {{emotion.primary.type}}
+    </view>
+    <view class="emotion-info">
+      <text class="emotion-type">{{emotion.primary.type}}</text>
+      <text class="emotion-score">{{formatScore(emotion.primary.score)}}</text>
+    </view>
+    <view class="expand-icon {{isExpanded ? 'expanded' : ''}}"></view>
+  </view>
+
+  <!-- 详细信息 -->
+  <view class="emotion-details {{isExpanded ? 'expanded' : ''}}">
+    <!-- 情绪分布 -->
+    <view class="emotion-distribution">
+      <view class="distribution-title">情绪分布</view>
+      <view class="distribution-list">
+        <view 
+          class="distribution-item" 
+          wx:for="{{emotion.details}}" 
+          wx:key="type"
+          style="background-color: {{emotionColors[item.type]}}">
+          <text class="item-type">{{item.type}}</text>
+          <text class="item-score">{{formatScore(item.score)}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 情绪建议 -->
+    <view class="emotion-suggestions">
+      <view class="suggestions-title">建议</view>
+      <view class="suggestions-list">
+        <view 
+          class="suggestion-item" 
+          wx:for="{{emotion.suggestions}}" 
+          wx:key="*this">
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button 
+        class="action-button details" 
+        bindtap="viewDetails"
+        wx:if="{{showDetails}}">
+        查看详细分析
+      </button>
+      <button 
+        class="action-button practice" 
+        bindtap="startPractice">
+        开始练习
+      </button>
+    </view>
+  </view>
+</view>

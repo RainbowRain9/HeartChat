@@ -1,0 +1,235 @@
+/* 情绪卡片组件样式 */
+.emotion-card {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 主要情绪 */
+.main-emotion {
+  display: flex;
+  align-items: center;
+}
+
+/* 情绪图标 */
+.emotion-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 20rpx;
+}
+
+/* 情绪信息 */
+.emotion-info {
+  flex: 1;
+}
+
+/* 情绪名称 */
+.emotion-name {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+/* 情绪强度 */
+.emotion-intensity {
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 展开图标 */
+.expand-icon {
+  width: 32rpx;
+  height: 32rpx;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.expand-icon::before,
+.expand-icon::after {
+  content: '';
+  position: absolute;
+  background-color: #999;
+  border-radius: 4rpx;
+}
+
+.expand-icon::before {
+  width: 100%;
+  height: 4rpx;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.expand-icon::after {
+  width: 4rpx;
+  height: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: transform 0.3s ease;
+}
+
+.expand-icon.expanded::after {
+  transform: translateX(-50%) scaleY(0);
+}
+
+/* 详细信息 */
+.emotion-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.emotion-details.expanded {
+  max-height: 300rpx;
+  margin-top: 24rpx;
+}
+
+/* 详细信息项 */
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+/* 详细信息标签 */
+.detail-label {
+  width: 120rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 进度条 */
+.progress-bar {
+  flex: 1;
+  height: 12rpx;
+  background-color: #f5f5f5;
+  border-radius: 6rpx;
+  margin: 0 20rpx;
+  overflow: hidden;
+}
+
+/* 进度条内部 */
+.progress-inner {
+  height: 100%;
+  background-color: #409EFF;
+  border-radius: 6rpx;
+  transition: width 0.3s ease;
+}
+
+/* 详细信息值 */
+.detail-value {
+  width: 80rpx;
+  font-size: 24rpx;
+  color: #999;
+  text-align: right;
+}
+
+/* 情绪分布 */
+.emotion-distribution {
+  padding: 30rpx;
+  border-top: 2rpx solid var(--border-color, #eee);
+}
+
+.distribution-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: var(--text-color, #333);
+  margin-bottom: 20rpx;
+}
+
+.distribution-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.distribution-item {
+  flex: 1;
+  min-width: 200rpx;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  color: #fff;
+}
+
+.item-type {
+  font-size: 24rpx;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.item-score {
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 情绪建议 */
+.emotion-suggestions {
+  padding: 30rpx;
+  border-top: 2rpx solid var(--border-color, #eee);
+}
+
+.suggestions-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: var(--text-color, #333);
+  margin-bottom: 20rpx;
+}
+
+.suggestion-item {
+  font-size: 26rpx;
+  color: var(--text-color, #333);
+  line-height: 1.6;
+  margin-bottom: 16rpx;
+  padding-left: 20rpx;
+  position: relative;
+}
+
+.suggestion-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 16rpx;
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background-color: var(--primary-color, #07c160);
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  padding: 30rpx;
+  border-top: 2rpx solid var(--border-color, #eee);
+}
+
+.action-button {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border: 2rpx solid var(--border-color, #eee);
+  color: var(--text-color, #333);
+}
+
+.action-button.details {
+  background-color: var(--primary-color, #07c160);
+  border-color: var(--primary-color, #07c160);
+  color: #fff;
+}
+
+.action-button.practice {
+  background-color: var(--bg-color, #f5f5f5);
+  border-color: var(--bg-color, #f5f5f5);
+  color: var(--text-color, #333);
+} 

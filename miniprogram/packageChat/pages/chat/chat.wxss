@@ -1,0 +1,455 @@
+/* packageChat/pages/chat/chat.wxss */
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #ededed; /* 参考微信背景色 */
+  position: relative;
+  overflow: hidden;
+}
+
+/* 暗夜模式 */
+.dark {
+  background-color: #1a1d20;
+  color: #f8f9fa;
+}
+
+/* 键盘弹出时的样式 */
+.keyboard-show {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 自定义导航栏 */
+.custom-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #ededed;
+  z-index: 1000;
+  /* 添加阴影增强层次感 */
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+}
+
+.dark .custom-nav {
+  background-color: #1a1d20;
+}
+
+.status-bar {
+  width: 100%;
+}
+
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+.nav-left {
+  width: 87rpx;
+  display: flex;
+  align-items: center;
+}
+
+.back-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.role-title {
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #000000;
+  text-align: center;
+}
+
+.dark .role-title {
+  color: #f8f9fa;
+}
+
+.typing-text {
+  font-size: 30rpx;
+  color: #666666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark .typing-text {
+  color: #adb5bd;
+}
+
+.typing-dots {
+  display: inline-block;
+  animation: typingDots 1.5s infinite;
+  margin-left: 2rpx;
+}
+
+@keyframes typingDots {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.nav-right {
+  width: 87rpx;
+}
+
+/* 情绪分析按钮容器 */
+.emotion-btn-container {
+  position: fixed;
+  z-index: 1001;
+}
+
+/* 情绪分析按钮样式 */
+.emotion-btn {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.dark .emotion-btn {
+  background-color: rgba(33, 37, 41, 0.85);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+}
+
+.emotion-btn:active {
+  transform: scale(0.95);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .emotion-btn:active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.emotion-icon {
+  width: 48rpx;
+  height: 48rpx;
+  opacity: 0.8;
+}
+
+.dark .emotion-icon {
+  opacity: 0.9;
+  filter: brightness(1.2);
+}
+
+/* 聊天内容 */
+.chat-container {
+  flex: 1;
+  padding: 20rpx 10rpx; /* 稍微增加左右内边距，使消息气泡与屏幕边缘有一定间距 */
+  /* 调整顶部距离，适应新的自定义导航栏高度 - 在WXML中设置 */
+  margin-bottom: 0; /* 移除底部边距，使聊天内容与输入框无缝衔接 */
+  box-sizing: border-box;
+  width: 100%; /* 确保容器占满全宽 */
+  padding-bottom: 20rpx; /* 减少底部内边距，使聊天内容与输入框无缝衔接 */
+  position: relative; /* 添加相对定位，使其能够正确定位 */
+  z-index: 1; /* 确保在导航栏之下，输入框之上 */
+  height: auto; /* 使用自适应高度，而不是固定高度 */
+  overflow-y: auto; /* 添加滚动条 */
+  transition: padding-bottom 0.3s ease; /* 添加过渡效果 */
+}
+
+/* 键盘弹出时的聊天容器样式 */
+.keyboard-show .chat-container {
+  padding-bottom: 120rpx; /* 保持固定的底部内边距 */
+  margin-bottom: var(--keyboard-height, 0px);
+}
+
+.dark .chat-container {
+  background-color: #1a1d20;
+}
+
+/* 时间分割线 */
+.time-divider {
+  display: flex;
+  justify-content: center;
+  margin: 20rpx 0;
+  width: 100%;
+  height: 40rpx;
+}
+
+.time-text {
+  font-size: 26rpx;
+  color: #333333;
+  background-color: #f0f0f0;
+  padding: 10rpx 30rpx;
+  border-radius: 30rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  min-width: 120rpx;
+  text-align: center;
+  border: 1rpx solid #dddddd;
+  line-height: 1.2;
+}
+
+.dark .time-text {
+  color: #f8f9fa;
+  background-color: #343a40;
+  border-color: #495057;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.3);
+}
+
+/* 加载更多 */
+.loading-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 0;
+  width: 100%;
+  height: 80rpx;
+  background-color: transparent;
+  margin: 10rpx 0;
+}
+
+.loading-spinner {
+  width: 40rpx;
+  height: 40rpx;
+  border: 4rpx solid #f3f3f3;
+  border-top: 4rpx solid #5e72e4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 10rpx;
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: #999999;
+  margin-left: 10rpx;
+}
+
+.dark .loading-text {
+  color: #adb5bd;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 没有更多历史 */
+.no-more-history {
+  display: flex;
+  justify-content: center;
+  padding: 20rpx 0;
+}
+
+.no-more-text {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.dark .no-more-text {
+  color: #adb5bd;
+}
+
+/* 加载中 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+}
+
+/* AI正在输入 */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background-color: #f0f0f0;
+  border-radius: 18rpx;
+  width: fit-content;
+  margin-bottom: 20rpx;
+}
+
+.dark .typing-indicator {
+  background-color: #343a40;
+}
+
+/* 底部空白区域 */
+.bottom-space {
+  height: 120rpx; /* 增加高度，确保最后一条消息不被输入框遮挡 */
+  width: 100%;
+}
+
+/* 键盘弹出时的底部空白区域 */
+.keyboard-show .bottom-space {
+  height: calc(var(--keyboard-height, 0px) + 120rpx); /* 键盘弹出时增加高度 */
+}
+
+.typing-dot {
+  width: 10rpx;
+  height: 10rpx;
+  background-color: #999999;
+  border-radius: 50%;
+  margin: 0 6rpx;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.dark .typing-dot {
+  background-color: #adb5bd;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-10rpx); }
+}
+
+/* 输入框 */
+.input-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-top: 1rpx solid #e2e8f0;
+  padding: 20rpx 30rpx;
+  /* 添加安全区域适配，但限制最大值 */
+  padding-bottom: calc(20rpx + min(env(safe-area-inset-bottom), 20rpx));
+  box-sizing: border-box;
+  z-index: 100; /* 确保输入框始终在最上层 */
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05); /* 添加阴影，增强层次感 */
+  /* 添加过渡效果，使键盘弹出时更平滑 */
+  transition: all 0.3s ease;
+}
+
+/* 键盘弹出时的输入框样式 */
+.keyboard-show .input-container {
+  position: fixed;
+  bottom: var(--keyboard-height, 0px);
+  left: 0;
+  right: 0;
+  z-index: 1001; /* 确保在最上层 */
+  transition: bottom 0.3s ease; /* 添加平滑过渡效果 */
+}
+
+.dark .input-container {
+  background-color: #212529;
+  border-top: 1rpx solid #343a40;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.2);
+}
+
+/* 移除旧的键盘弹出样式 */
+/* 键盘弹出时输入框样式 - 已合并到上面的样式中，此处移除 */
+
+/* 情绪分析弹窗样式 */
+.emotion-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.emotion-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.emotion-modal-content {
+  width: 85%;
+  max-height: 85%;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+}
+
+.dark .emotion-modal-content {
+  background-color: #212529;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+}
+
+.emotion-modal.show .emotion-modal-content {
+  transform: scale(1);
+}
+
+/* 回到底部按钮 */
+.to-bottom-btn {
+  position: fixed;
+  right: 0rpx;
+  bottom: 200rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: rgba(74, 108, 247, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  z-index: 900;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+
+.to-bottom-btn.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.dark .to-bottom-btn {
+  background-color: rgba(74, 108, 247, 0.7);
+}
+
+.to-bottom-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+/* 滚动锚点 - 不可见但可用于滚动定位 */
+.scroll-anchor {
+  height: 1px;
+  width: 100%;
+  opacity: 0;
+}

@@ -1,0 +1,14 @@
+{
+    "name": "generateDailyReports",
+    "version": "1.0.0",
+    "description": "定时生成用户每日心情报告",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "wx-server-sdk": "~2.6.3"
+    }
+}

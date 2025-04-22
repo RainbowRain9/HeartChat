@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #F9FAFB;
+    padding: 30rpx;
+    box-sizing: border-box;
+  }
+  
+  .input-area {
+    margin-bottom: 30rpx;
+  }
+  
+  .input {
+    width: 100%;
+    min-height: 200rpx;
+    background-color: #FFFFFF;
+    border-radius: 16rpx;
+    padding: 20rpx;
+    box-sizing: border-box;
+    font-size: 28rpx;
+    color: #111827;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20rpx;
+  }
+  
+  .btn-area {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .analyze-btn {
+    width: 80%;
+    height: 88rpx;
+    border-radius: 44rpx;
+    background-color: #E5E7EB;
+    color: #9CA3AF;
+    font-size: 30rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  
+  .analyze-btn.active {
+    background-color: #3B82F6;
+    color: #FFFFFF;
+  }

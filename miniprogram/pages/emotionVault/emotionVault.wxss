@@ -1,0 +1,1905 @@
+/* =================================================================
+ * emotionVault.wxss - 情感仓库页面样式
+ *
+ * Material Design 3 设计规范：
+ * - 使用动态颜色系统(Material You)
+ * - 自然的层次和深度
+ * - 圆润的形状设计
+ * - 富有表现力的交互
+ *
+ * 颜色变量说明：
+ * --md-sys-color-primary: 主题色
+ * --md-sys-color-surface: 表面色
+ * --md-sys-color-surface-variant: 表面变体色
+ * --md-sys-color-on-surface: 文字色
+ * --md-sys-color-outline: 轮廓色
+ *
+ * 阴影变量说明：
+ * --md-sys-elevation-1: 轻微阴影
+ * --md-sys-elevation-2: 中等阴影
+ * --md-sys-elevation-3: 较重阴影
+ * ================================================================= */
+
+/* =====================
+ * 基础容器样式
+ *
+ * Material Design 3 特性：
+ * - 动态背景色适应
+ * - 平滑的主题切换
+ * - 响应式布局支持
+ *
+ * 使用示例：
+ * <view class="container {{isDark ? 'dark' : ''}}">
+ *   <!-- 页面内容 -->
+ * </view>
+ * ===================== */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* =====================
+ * 用户信息区域
+ *
+ * Material Design 3 特性：
+ * - 卡片式设计
+ * - 自然的阴影效果
+ * - 优雅的头像展示
+ * - 清晰的信息层级
+ *
+ * 使用示例：
+ * <view class="user-info">
+ *   <image class="user-avatar" src="{{userAvatar}}" />
+ *   <text class="user-name">{{userName}}</text>
+ * </view>
+ * ===================== */
+.user-info {
+  display: flex;
+  /* 弹性布局，水平排列头像和名称 */
+  align-items: center;
+  /* 垂直居中对齐 */
+  padding: 24rpx 32rpx;
+  /* 内边距：上下24rpx，左右32rpx */
+  background: var(--md-sys-color-surface-container);
+  /* MD3 表面容器色 */
+  margin: 16rpx 24rpx;
+  /* 外边距 */
+  border-radius: 28rpx;
+  /* MD3 大圆角 */
+  box-shadow: var(--md-sys-elevation-1);
+  /* MD3 轻微阴影 */
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  /* MD3 动画 */
+}
+
+/* 用户头像 */
+.user-avatar {
+  width: 88rpx;
+  /* 头像宽度 */
+  height: 88rpx;
+  /* 头像高度 */
+  border-radius: 44rpx;
+  /* 圆形头像 */
+  margin-right: 24rpx;
+  /* 右侧间距 */
+  border: 4rpx solid var(--md-sys-color-surface);
+  /* MD3 边框 */
+  box-shadow: var(--md-sys-elevation-1);
+  /* MD3 阴影 */
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+  /* 变换过渡 */
+}
+
+/* 用户名称 */
+.user-name {
+  font-size: 32rpx;
+  /* 文字大小 */
+  font-weight: 500;
+  /* Medium字重 */
+  color: var(--md-sys-color-on-surface);
+  /* MD3 文字色 */
+  transition: color 0.2s;
+  /* 颜色过渡 */
+}
+
+/* 用户信息区域悬停效果 */
+.user-info:active {
+  background: var(--md-sys-color-surface-container-high);
+  /* MD3 高层表面色 */
+  transform: scale(0.98);
+  /* 轻微缩小 */
+}
+
+/* 头像悬停效果 */
+.user-info:active .user-avatar {
+  transform: scale(1.05);
+  /* 头像放大 */
+}
+
+/* =====================
+ * 登录提示
+ *
+ * Material Design 3 特性：
+ * - 醒目的提示信息
+ * - 优雅的按钮设计
+ * - 清晰的视觉层级
+ *
+ * 使用示例：
+ * <view class="login-tip">
+ *   <text>请先登录</text>
+ *   <button class="login-btn">登录</button>
+ * </view>
+ * ===================== */
+.login-tip {
+  display: flex;
+  /* 弹性布局 */
+  flex-direction: column;
+  /* 垂直排列 */
+  align-items: center;
+  /* 水平居中 */
+  justify-content: center;
+  /* 垂直居中 */
+  padding: 48rpx 32rpx;
+  /* 内边距 */
+  margin: 24rpx;
+  /* 外边距 */
+  background: var(--md-sys-color-surface-container);
+  /* MD3 表面容器色 */
+  border-radius: 32rpx;
+  /* MD3 大圆角 */
+  box-shadow: var(--md-sys-elevation-1);
+  /* MD3 阴影 */
+}
+
+/* 提示文本 */
+.login-tip text {
+  font-size: 28rpx;
+  /* 文字大小 */
+  color: var(--md-sys-color-on-surface-variant);
+  /* MD3 次要文字色 */
+  margin-bottom: 24rpx;
+  /* 底部间距 */
+}
+
+/* 登录按钮 */
+.login-btn {
+  min-width: 240rpx;
+  /* 最小宽度 */
+  height: 88rpx;
+  /* 按钮高度 */
+  line-height: 88rpx;
+  /* 文字行高 */
+  text-align: center;
+  /* 文字居中 */
+  background: var(--md-sys-color-primary);
+  /* MD3 主题色 */
+  color: var(--md-sys-color-on-primary);
+  /* MD3 文字色 */
+  border-radius: 44rpx;
+  /* 圆角 */
+  font-size: 28rpx;
+  /* 文字大小 */
+  font-weight: 500;
+  /* Medium字重 */
+  border: none;
+  /* 移除边框 */
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  /* MD3 动画 */
+  box-shadow: var(--md-sys-elevation-2);
+  /* MD3 阴影 */
+}
+
+/* 登录按钮点击态 */
+.login-btn:active {
+  transform: scale(0.96);
+  /* 轻微缩小 */
+  background: var(--md-sys-color-primary-container);
+  /* MD3 主题色容器 */
+  color: var(--md-sys-color-on-primary-container);
+  /* MD3 文字色 */
+  box-shadow: var(--md-sys-elevation-1);
+  /* 降低阴影 */
+}
+
+/* 暗黑模式适配 */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: var(--md-sys-color-surface-dark);
+    /* 深色背景 */
+  }
+
+  .user-info {
+    background: var(--md-sys-color-surface-container-dark);
+    /* 深色容器 */
+  }
+
+  .user-info:active {
+    background: var(--md-sys-color-surface-container-high-dark);
+    /* 深色高层容器 */
+  }
+
+  .login-tip {
+    background: var(--md-sys-color-surface-container-dark);
+    /* 深色容器 */
+  }
+
+  .login-btn {
+    background: var(--md-sys-color-primary-dark);
+    /* 深色主题色 */
+    color: var(--md-sys-color-on-primary-dark);
+    /* 深色文字 */
+  }
+
+  .login-btn:active {
+    background: var(--md-sys-color-primary-container-dark);
+    /* 深色主题容器 */
+    color: var(--md-sys-color-on-primary-container-dark);
+    /* 深色文字 */
+  }
+}
+
+/* 响应式适配 */
+@media screen and (max-width: 375px) {
+  .user-info {
+    margin: 12rpx 16rpx;
+    /* 减小外边距 */
+    padding: 20rpx 24rpx;
+    /* 减小内边距 */
+  }
+
+  .user-avatar {
+    width: 72rpx;
+    /* 减小头像尺寸 */
+    height: 72rpx;
+    border-radius: 36rpx;
+  }
+
+  .user-name {
+    font-size: 28rpx;
+    /* 减小文字大小 */
+  }
+
+  .login-btn {
+    min-width: 200rpx;
+    /* 减小按钮宽度 */
+    height: 80rpx;
+    /* 减小按钮高度 */
+    line-height: 80rpx;
+    font-size: 26rpx;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .user-info {
+    max-width: 600rpx;
+    /* 限制最大宽度 */
+    margin: 24rpx auto;
+    /* 水平居中 */
+  }
+
+  .login-tip {
+    max-width: 600rpx;
+    /* 限制最大宽度 */
+    margin: 32rpx auto;
+    /* 水平居中 */
+  }
+}
+
+/* =====================
+ * 角色选择器弹窗
+ *
+ * Material Design 3 设计规范：
+ * - 使用大圆角设计
+ * - 自然的阴影层次
+ * - 平滑的动画过渡
+ * - 支持动态主题色
+ * ===================== */
+.role-selector {
+  position: fixed;
+  /* 固定定位 */
+  top: 0;
+  /* 全屏覆盖 */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(var(--md-sys-color-scrim-rgb), 0.32);
+  /* MD3 遮罩颜色 */
+  backdrop-filter: blur(12px);
+  /* 背景模糊效果增强 */
+  z-index: 1000;
+  /* 保持在最上层 */
+  display: flex;
+  /* 弹性布局 */
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
+  visibility: hidden;
+  /* 默认隐藏 */
+  opacity: 0;
+  /* 默认透明 */
+  transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+  /* MD3标准缓动曲线 */
+}
+
+/* 显示状态 */
+.role-selector.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 弹窗容器 */
+.role-list-container {
+  width: 92%;
+  /* 适当增加宽度 */
+  max-width: 680rpx;
+  /* 最大宽度调整 */
+  max-height: 85vh;
+  /* 最大高度调整 */
+  background: var(--md-sys-color-surface-container-high);
+  /* MD3 表面容器色 */
+  border-radius: 32rpx;
+  /* MD3 大圆角 */
+  overflow: hidden;
+  /* 隐藏溢出 */
+  transform: scale(0.95);
+  /* 初始缩放 */
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  /* MD3动画 */
+  box-shadow: var(--md-sys-elevation-3);
+  /* MD3 阴影 */
+}
+
+/* 显示状态容器动画 */
+.role-selector.show .role-list-container {
+  transform: scale(1);
+}
+
+/* 头部样式 */
+.role-header {
+  padding: 24rpx 28rpx;
+  /* 调整内边距 */
+  display: flex;
+  /* 弹性布局 */
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: space-between;
+  /* 两端对齐 */
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  /* MD3 分隔线 */
+}
+
+/* 标题文字 */
+.role-title {
+  font-size: 34rpx;
+  /* 更大的字号 */
+  font-weight: 500;
+  /* Medium字重 */
+  color: var(--md-sys-color-on-surface);
+  /* MD3 文字颜色 */
+  margin: 0;
+  /* 移除外边距 */
+}
+
+/* 头部按钮容器 */
+.header-btns {
+  display: flex;
+  /* 弹性布局 */
+  gap: 16rpx;
+  /* 按钮间距 */
+}
+
+/* 关闭按钮 */
+.close-btn {
+  width: 48rpx;
+  /* 标准触控尺寸 */
+  height: 48rpx;
+  padding: 0;
+  /* 移除内边距 */
+  background: transparent;
+  /* 透明背景 */
+  border: none;
+  /* 移除边框 */
+  display: flex;
+  /* 弹性布局 */
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
+  border-radius: 24rpx;
+  /* 圆形按钮 */
+  transition: background-color 0.2s;
+  /* 背景色过渡 */
+}
+
+/* 关闭按钮图标 */
+.close-btn image {
+  width: 32rpx;
+  /* 图标尺寸 */
+  height: 32rpx;
+  opacity: 0.85;
+  /* 不透明度 */
+}
+
+/* 关闭按钮点击态 */
+.close-btn:active {
+  background: var(--md-sys-color-surface-variant);
+  /* MD3 状态层 */
+}
+
+/* 角色网格 */
+.role-grid {
+  display: flex;           /* 改为flex布局 */
+  flex-direction: column;  /* 垂直排列 */
+  gap: 32rpx;             /* 分类间距 */
+  padding: 24rpx;         /* 内边距 */
+  max-height: calc(85vh - 180rpx);  /* 最大高度 */
+  overflow-y: auto;       /* 允许滚动 */
+  -webkit-overflow-scrolling: touch;  /* 平滑滚动 */
+}
+
+/* 角色分类 */
+.role-category {
+  display: flex;          /* 弹性布局 */
+  flex-direction: column; /* 垂直排列 */
+  gap: 16rpx;            /* 元素间距 */
+}
+
+/* 分类标题 */
+.category-title {
+  font-size: 28rpx;      /* 文字大小 */
+  color: var(--md-sys-color-on-surface-variant);  /* MD3 次要文字色 */
+  padding: 8rpx 16rpx;   /* 内边距 */
+  font-weight: 500;      /* Medium字重 */
+}
+
+/* 分类内容 */
+.category-content {
+  display: grid;         /* 网格布局 */
+  grid-template-columns: repeat(auto-fill, minmax(160rpx, 1fr));  /* 响应式列数 */
+  gap: 16rpx;           /* 网格间距 */
+  padding: 0 8rpx;      /* 左右内边距 */
+}
+
+/* 单个角色项 */
+.role-item {
+  background: var(--md-sys-color-surface-container-low);  /* MD3 表面容器色 */
+  border-radius: 24rpx;  /* 圆角 */
+  padding: 20rpx 16rpx;  /* 内边距 */
+  display: flex;         /* 弹性布局 */
+  flex-direction: column;/* 垂直排列 */
+  align-items: center;   /* 居中对齐 */
+  gap: 12rpx;           /* 元素间距 */
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);  /* MD3动画 */
+  position: relative;    /* 相对定位 */
+  cursor: pointer;      /* 手型光标 */
+}
+
+/* 角色项激活状态 */
+.role-item.active {
+  background: var(--md-sys-color-primary-container);  /* MD3 主题色容器 */
+  transform: translateY(-2rpx);  /* 轻微上浮 */
+  box-shadow: var(--md-sys-elevation-2);  /* MD3 阴影 */
+}
+
+/* 角色头像 */
+.role-avatar {
+  width: 96rpx;         /* 头像尺寸 */
+  height: 96rpx;
+  border-radius: 48rpx; /* 圆形 */
+  border: 4rpx solid var(--md-sys-color-surface);  /* MD3 边框 */
+  box-shadow: var(--md-sys-elevation-1);  /* MD3 阴影 */
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);  /* MD3动画 */
+}
+
+/* 激活状态头像 */
+.role-item.active .role-avatar {
+  transform: scale(1.05);  /* 放大效果 */
+  border-color: var(--md-sys-color-primary);  /* MD3 主题色 */
+}
+
+/* 角色信息区域 */
+.role-info {
+  width: 100%;          /* 占满宽度 */
+  text-align: center;   /* 文字居中 */
+}
+
+/* 角色名称 */
+.role-name {
+  font-size: 26rpx;     /* 文字大小 */
+  color: var(--md-sys-color-on-surface);  /* MD3 文字颜色 */
+  font-weight: 500;     /* Medium字重 */
+  margin-bottom: 4rpx;  /* 底部间距 */
+  transition: color 0.2s;  /* 颜色过渡 */
+}
+
+/* 角色关系标签 */
+.role-relation {
+  font-size: 22rpx;     /* 文字大小 */
+  color: var(--md-sys-color-on-surface-variant);  /* MD3 次要文字色 */
+  background: var(--md-sys-color-surface-variant);  /* MD3 表面变体色 */
+  padding: 2rpx 12rpx;  /* 内边距 */
+  border-radius: 10rpx; /* 圆角 */
+  margin-bottom: 6rpx;  /* 底部间距 */
+}
+
+/* 使用次数标签 */
+.role-usage {
+  font-size: 20rpx;     /* 文字大小 */
+  color: var(--md-sys-color-on-surface-variant);  /* MD3 次要文字色 */
+  display: flex;        /* 弹性布局 */
+  align-items: center;  /* 垂直居中 */
+  gap: 4rpx;           /* 图标间距 */
+}
+
+/* 使用次数图标 */
+.role-usage::before {
+  content: "❤";       /* 爱心图标 */
+  color: var(--md-sys-color-error);  /* MD3 错误色 */
+}
+
+/* 空状态提示 */
+.empty-role-tip {
+  padding: 60rpx 40rpx;
+  /* 内边距 */
+  text-align: center;
+  /* 文字居中 */
+  color: var(--md-sys-color-on-surface-variant);
+  /* MD3 次要文字色 */
+}
+
+/* 创建角色按钮 */
+.create-role-btn {
+  margin-top: 32rpx;
+  /* 顶部间距 */
+  padding: 20rpx 40rpx;
+  /* 内边距 */
+  background: var(--md-sys-color-primary);
+  /* MD3 主题色 */
+  color: var(--md-sys-color-on-primary);
+  /* MD3 文字色 */
+  border-radius: 20rpx;
+  /* 圆角 */
+  font-size: 28rpx;
+  /* 文字大小 */
+  border: none;
+  /* 移除边框 */
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  /* MD3动画 */
+}
+
+/* 创建角色按钮点击态 */
+.create-role-btn:active {
+  transform: scale(0.98);
+  /* 轻微缩小 */
+  background: var(--md-sys-color-primary-variant);
+  /* MD3 主题色变体 */
+}
+
+/* 暗黑模式适配 */
+@media (prefers-color-scheme: dark) {
+  .role-selector {
+    background: rgba(0, 0, 0, 0.4);
+    /* 深色遮罩 */
+  }
+
+  .role-list-container {
+    background: var(--md-sys-color-surface-container-high-dark);
+    /* MD3 深色表面 */
+  }
+
+  .role-item {
+    background: var(--md-sys-color-surface-container-low-dark);
+    /* MD3 深色表面 */
+  }
+
+  .role-item.active {
+    background: var(--md-sys-color-primary-container-dark);
+    /* MD3 深色主题容器 */
+  }
+
+  .role-relation {
+    background: var(--md-sys-color-surface-variant-dark);
+    /* MD3 深色表面变体 */
+    color: var(--md-sys-color-on-surface-variant-dark);  /* 深色文字 */
+  }
+
+  .category-title {
+    color: var(--md-sys-color-on-surface-variant-dark);  /* 深色文字 */
+  }
+}
+
+/* 响应式适配 */
+@media screen and (max-width: 375px) {
+  .role-grid {
+    gap: 24rpx;        /* 减小间距 */
+  }
+
+  .category-content {
+    grid-template-columns: repeat(2, 1fr);  /* 小屏两列 */
+  }
+
+  .role-avatar {
+    width: 80rpx;      /* 减小头像 */
+    height: 80rpx;
+    border-radius: 40rpx;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .role-list-container {
+    max-width: 880rpx;
+    /* 大屏更宽 */
+  }
+
+  .role-grid {
+    gap: 40rpx;        /* 增加间距 */
+  }
+
+  .category-content {
+    grid-template-columns: repeat(auto-fill, minmax(180rpx, 1fr));  /* 更大的卡片 */
+  }
+
+  .role-avatar {
+    width: 112rpx;     /* 增大头像 */
+    height: 112rpx;
+    border-radius: 56rpx;
+  }
+}
+
+/* =====================
+ * 角色选择相关样式
+ *
+ * 使用示例：
+ * <view class="role-section">
+ *   <view class="current-role" bindtap="showRoleSelector">
+ *     <image class="role-avatar" src="{{currentRole.avatar}}" />
+ *     <view class="role-info">
+ *       <text class="role-name">{{currentRole.name}}</text>
+ *       <text class="role-type">{{currentRole.type}}</text>
+ *     </view>
+ *     <view class="role-arrow"></view>
+ *   </view>
+ * </view>
+ * ===================== */
+.role-section {
+  padding: 20rpx;
+  /* 内边距 */
+  background: #fff;
+  /* 白色背景 */
+  margin-bottom: 20rpx;
+  /* 底部间距 */
+}
+
+/* 当前选中角色展示区 */
+.current-role {
+  display: flex;
+  /* 开启flex布局 */
+  align-items: center;
+  /* 垂直居中 */
+  padding: 20rpx;
+  /* 内边距 */
+  background: #f8f8f8;
+  /* 浅灰色背景 */
+  border-radius: 12rpx;
+  /* 圆角 */
+}
+
+/* 角色头像 */
+.role-avatar {
+  width: 80rpx;
+  /* 头像宽度 */
+  height: 80rpx;
+  /* 头像高度 */
+  border-radius: 50%;
+  /* 圆形头像 */
+  margin-right: 20rpx;
+  /* 右侧间距 */
+}
+
+/* 角色信息区域 */
+.role-info {
+  flex: 1;
+  /* 占据剩余空间 */
+}
+
+/* 角色名称 */
+.role-name {
+  font-size: 32rpx;
+  /* 文字大小 */
+  color: #333;
+  /* 文字颜色 */
+  font-weight: 500;
+  /* 字体粗细 */
+}
+
+/* 角色类型 */
+.role-type {
+  font-size: 24rpx;
+  /* 文字大小 */
+  color: #666;
+  /* 文字颜色 */
+  margin-top: 4rpx;
+  /* 顶部间距 */
+}
+
+/* 箭头指示器 */
+.role-arrow {
+  width: 16rpx;
+  /* 箭头宽度 */
+  height: 16rpx;
+  /* 箭头高度 */
+  border-right: 4rpx solid #999;
+  /* 右边框 */
+  border-bottom: 4rpx solid #999;
+  /* 底部边框 */
+  transform: rotate(45deg);
+  /* 旋转45度形成箭头 */
+}
+
+/* =====================
+ * 底部固定输入框和角色信息
+ *
+ * 说明：这些样式当前被隐藏，但保留以供后续可能的使用
+ * ===================== */
+.footer-input-area {
+  display: none;
+  /* 隐藏元素 */
+}
+
+.current-role-info-bar {
+  display: none;
+  /* 隐藏元素 */
+}
+
+.mini-role-avatar {
+  display: none;
+  /* 隐藏元素 */
+}
+
+.mini-role-name {
+  display: none;
+  /* 隐藏元素 */
+}
+
+/* =====================
+ * 新的紧凑型角色选择器
+ *
+ * 使用示例：
+ * <view class="role-selector-compact">
+ *   <view class="selector-header">
+ *     <text class="header-title">选择角色</text>
+ *     <button class="theme-btn">
+ *       <image src="/images/theme.png" />
+ *     </button>
+ *   </view>
+ *   <scroll-view class="role-scroll-compact" scroll-x>
+ *     <view class="role-list">
+ *       <!-- 角色列表 -->
+ *     </view>
+ *   </scroll-view>
+ * </view>
+ * ===================== */
+.role-selector-compact {
+  background: rgba(255, 255, 255, 0.95);
+  /* 半透明白色背景 */
+  backdrop-filter: blur(10px);
+  /* 背景模糊效果 */
+  padding: 8rpx 0;
+  /* 上下内边距 */
+  position: relative;
+  /* 相对定位 */
+  z-index: 100;
+  /* 层级 */
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  /* 阴影效果 */
+}
+
+/* 选择器头部 */
+.selector-header {
+  display: flex;
+  /* 开启flex布局 */
+  justify-content: space-between;
+  /* 两端对齐 */
+  align-items: center;
+  /* 垂直居中 */
+  padding: 0 24rpx 8rpx;
+  /* 内边距 */
+}
+
+/* 头部标题 */
+.header-title {
+  font-size: 24rpx;
+  /* 文字大小 */
+  color: #666;
+  /* 文字颜色 */
+  font-weight: normal;
+  /* 字体粗细 */
+}
+
+/* 主题切换按钮 */
+.theme-btn {
+  width: 48rpx;
+  /* 按钮宽度 */
+  height: 48rpx;
+  /* 按钮高度 */
+  padding: 0;
+  /* 移除内边距 */
+  margin: 0;
+  /* 移除外边距 */
+  background: transparent;
+  /* 透明背景 */
+  display: flex;
+  /* 开启flex布局 */
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
+}
+
+/* 移除按钮默认边框 */
+.theme-btn::after {
+  border: none;
+}
+
+/* 主题切换按钮图标 */
+.theme-btn image {
+  width: 36rpx;
+  /* 图标宽度 */
+  height: 36rpx;
+  /* 图标高度 */
+  opacity: 0.7;
+  /* 透明度 */
+}
+
+/* 角色列表横向滚动区域 */
+.role-scroll-compact {
+  white-space: nowrap;
+  /* 禁止换行 */
+}
+
+/* =====================
+ * 暗黑模式适配补充
+ *
+ * 说明：为新增的组件提供暗黑模式样式
+ * ===================== */
+.dark .role-section {
+  background: #2d2d2d;
+  /* 深色背景 */
+}
+
+.dark .current-role {
+  background: #333;
+  /* 深色背景 */
+}
+
+.dark .role-name {
+  color: #fff;
+  /* 白色文字 */
+}
+
+.dark .role-type {
+  color: #aaa;
+  /* 浅灰色文字 */
+}
+
+.dark .role-arrow {
+  border-color: #666;
+  /* 深色箭头 */
+}
+
+.dark .role-selector-compact {
+  background: rgba(45, 45, 45, 0.95);
+  /* 深色半透明背景 */
+}
+
+.dark .header-title {
+  color: #aaa;
+  /* 浅灰色文字 */
+}
+
+.dark .theme-btn image {
+  opacity: 0.8;
+  /* 调整图标透明度 */
+}
+
+/* =====================
+ * 响应式适配补充
+ *
+ * 说明：确保在不同屏幕尺寸下的正确显示
+ * ===================== */
+@media screen and (max-width: 375px) {
+
+  /* 小屏幕适配 */
+  .role-avatar {
+    width: 60rpx;
+    /* 减小头像尺寸 */
+    height: 60rpx;
+  }
+
+  .role-name {
+    font-size: 28rpx;
+    /* 减小文字大小 */
+  }
+
+  .role-type {
+    font-size: 22rpx;
+  }
+}
+
+@media screen and (min-width: 768px) {
+
+  /* 大屏幕适配 */
+  .role-section {
+    max-width: 600rpx;
+    /* 限制最大宽度 */
+    margin: 20rpx auto;
+    /* 水平居中 */
+  }
+
+  .role-selector-compact {
+    max-width: 600rpx;
+    margin: 0 auto;
+  }
+}
+
+/* =====================
+ * 交互动效补充
+ *
+ * 说明：添加更多交互反馈效果
+ * ===================== */
+.current-role:active {
+  opacity: 0.8;
+  /* 点击时降低透明度 */
+  transform: scale(0.98);
+  /* 轻微缩小 */
+}
+
+.theme-btn:active {
+  opacity: 0.6;
+  /* 点击时降低透明度 */
+  transform: scale(0.95);
+  /* 轻微缩小 */
+}
+
+/* 角色切换动画 */
+@keyframes roleSwitch {
+  from {
+    opacity: 0;
+    transform: translateY(-10rpx);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.role-info {
+  animation: roleSwitch 0.3s ease;
+  /* 角色切换时的动画效果 */
+}
+
+/* =====================
+ * 角色列表样式
+ *
+ * 使用示例：
+ * <scroll-view class="role-scroll-compact" scroll-x>
+ *   <view class="role-list">
+ *     <view class="role-item {{isActive ? 'active' : ''}}">
+ *       <image class="role-avatar" src="{{avatar}}" />
+ *       <view class="role-brief">
+ *         <text class="role-name">{{name}}</text>
+ *         <text class="role-count">已聊{{count}}次</text>
+ *       </view>
+ *     </view>
+ *   </view>
+ * </scroll-view>
+ * ===================== */
+.role-list {
+  display: inline-flex;
+  /* 内联flex布局，允许水平滚动 */
+  padding: 0 16rpx;
+  /* 左右内边距 */
+  gap: 16rpx;
+  /* 角色项间距 */
+}
+
+/* 单个角色项 */
+.role-item {
+  display: inline-flex;
+  /* 内联flex布局 */
+  align-items: center;
+  /* 垂直居中 */
+  padding: 8rpx 16rpx;
+  /* 内边距 */
+  background: #f5f7fa;
+  /* 浅灰色背景 */
+  border-radius: 32rpx;
+  /* 圆角 */
+  transition: all 0.3s ease;
+  /* 过渡效果 */
+}
+
+/* 激活状态的角色项 */
+.role-item.active {
+  background: rgba(54, 179, 126, 0.1);
+  /* 主题色半透明背景 */
+  border: 1px solid rgba(54, 179, 126, 0.2);
+  /* 主题色边框 */
+}
+
+/* 角色头像 */
+.role-item .role-avatar {
+  width: 48rpx;
+  /* 头像宽度 */
+  height: 48rpx;
+  /* 头像高度 */
+  border-radius: 24rpx;
+  /* 圆角 */
+  margin-right: 12rpx;
+  /* 右侧间距 */
+  border: 2rpx solid #fff;
+  /* 白色边框 */
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+  /* 阴影效果 */
+}
+
+/* 角色简要信息 */
+.role-brief {
+  display: flex;
+  /* 开启flex布局 */
+  flex-direction: column;
+  /* 垂直排列 */
+  justify-content: center;
+  /* 垂直居中 */
+}
+
+/* 角色名称 */
+.role-name {
+  font-size: 24rpx;
+  /* 文字大小 */
+  color: #333;
+  /* 文字颜色 */
+  line-height: 1.2;
+  /* 行高 */
+}
+
+/* 角色使用次数 */
+.role-count {
+  font-size: 20rpx;
+  /* 文字大小 */
+  color: #666;
+  /* 文字颜色 */
+  margin-top: 2rpx;
+  /* 顶部间距 */
+}
+
+/* =====================
+ * 角色选择按钮
+ *
+ * 使用示例：
+ * <view class="role-select-btn" bindtap="showRoleSelector">
+ *   <image class="current-role-avatar" src="{{currentRole.avatar}}" />
+ *   <view class="current-role-info">
+ *     <text class="current-role-name">{{currentRole.name}}</text>
+ *     <text class="current-role-hint">点击切换角色</text>
+ *   </view>
+ *   <view class="role-arrow"></view>
+ * </view>
+ * ===================== */
+.role-select-btn {
+  display: flex;
+  /* 开启flex布局 */
+  align-items: center;
+  /* 垂直居中 */
+  padding: 24rpx 32rpx;
+  /* 内边距 */
+  background: #fff;
+  /* 白色背景 */
+  margin: 20rpx;
+  /* 外边距 */
+  border-radius: 16rpx;
+  /* 圆角 */
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  /* 阴影效果 */
+  transition: all 0.3s ease;
+  /* 过渡效果 */
+}
+
+/* 按钮点击效果 */
+.role-select-btn:active {
+  transform: scale(0.98);
+  /* 轻微缩小 */
+  background: #f8f9fa;
+  /* 变更背景色 */
+}
+
+/* 当前角色头像 */
+.current-role-avatar {
+  width: 80rpx;
+  /* 头像宽度 */
+  height: 80rpx;
+  /* 头像高度 */
+  border-radius: 40rpx;
+  /* 圆角 */
+  margin-right: 20rpx;
+  /* 右侧间距 */
+  border: 2rpx solid #fff;
+  /* 白色边框 */
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+  /* 阴影效果 */
+}
+
+/* 当前角色信息 */
+.current-role-info {
+  flex: 1;
+  /* 占据剩余空间 */
+  display: flex;
+  /* 开启flex布局 */
+  flex-direction: column;
+  /* 垂直排列 */
+}
+
+/* 当前角色名称 */
+.current-role-name {
+  font-size: 32rpx;
+  /* 文字大小 */
+  color: #333;
+  /* 文字颜色 */
+  font-weight: 500;
+  /* 字体粗细 */
+  margin-bottom: 4rpx;
+  /* 底部间距 */
+}
+
+/* 角色切换提示文本 */
+.current-role-hint {
+  font-size: 24rpx;
+  /* 文字大小 */
+  color: #999;
+  /* 文字颜色 */
+}
+
+/* 箭头指示器 */
+.role-arrow {
+  width: 16rpx;
+  /* 箭头宽度 */
+  height: 16rpx;
+  /* 箭头高度 */
+  border-right: 4rpx solid #999;
+  /* 右边框 */
+  border-bottom: 4rpx solid #999;
+  /* 底部边框 */
+  width: 16rpx;
+  /* 箭头宽度 */
+  height: 16rpx;
+  /* 箭头高度 */
+  border-right: 4rpx solid #999;
+  /* 右边框 */
+  border-bottom: 4rpx solid #999;
+  /* 底部边框 */
+  transform: rotate(-45deg);
+  /* 旋转-45度形成箭头 */
+  margin-left: 16rpx;
+  /* 左侧间距 */
+}
+
+/* =====================
+ * 暗黑模式适配
+ *
+ * 说明：为所有角色选择相关组件提供暗黑模式样式
+ * ===================== */
+/* 暗黑模式下的角色选择按钮 */
+.dark .role-select-btn {
+  background: #2d2d2d;
+  /* 深色背景 */
+}
+
+/* 暗黑模式下的角色名称 */
+.dark .current-role-name {
+  color: #fff;
+  /* 白色文字 */
+}
+
+/* 暗黑模式下的提示文本 */
+.dark .current-role-hint {
+  color: #666;
+  /* 深灰色文字 */
+}
+
+/* 暗黑模式下的箭头 */
+.dark .role-arrow {
+  border-color: #666;
+  /* 深灰色边框 */
+}
+
+/* 暗黑模式下的角色列表项 */
+@media (prefers-color-scheme: dark) {
+  .role-selector-compact {
+    background: rgba(0, 0, 0, 0.85);
+    /* 深色半透明背景 */
+  }
+
+  .header-title {
+    color: #999;
+    /* 浅灰色文字 */
+  }
+
+  .role-item {
+    background: rgba(255, 255, 255, 0.1);
+    /* 浅色半透明背景 */
+  }
+
+  .role-item.active {
+    background: rgba(88, 169, 255, 0.15);
+    /* 主题色半透明背景 */
+    border-color: rgba(88, 169, 255, 0.2);
+    /* 主题色边框 */
+  }
+
+  .role-name {
+    color: #fff;
+    /* 白色文字 */
+  }
+
+  .role-count {
+    color: #999;
+    /* 浅灰色文字 */
+  }
+}
+
+/* =====================
+ * 双视图容器
+ *
+ * Material Design 3 特性：
+ * - 流畅的视图切换
+ * - 自然的层次感
+ * - 优雅的手势交互
+ * ===================== */
+.dual-view-container {
+  position: relative;         /* 相对定位 */
+  display: flex;             /* 弹性布局 */
+  width: 100%;               /* 占满宽度 */
+  height: calc(100vh - 240rpx);  /* 减去顶部区域高度 */
+  background: var(--md-sys-color-surface);  /* MD3 表面色 */
+  overflow: hidden;          /* 隐藏溢出 */
+}
+
+/* 聊天视图 */
+.chat-view {
+  flex: 1;                 /* 占据剩余空间 */
+  min-width: 0;           /* 防止flex子项溢出 */
+  background: var(--md-sys-color-surface);  /* MD3 表面色 */
+  transition: width 0.3s cubic-bezier(0.2, 0, 0, 1);  /* MD3 动画 */
+  position: relative;      /* 相对定位 */
+  height: 100%;           /* 占满高度 */
+  overflow: hidden;       /* 隐藏溢出 */
+}
+
+/* 聊天视图收缩状态 */
+.chat-view.shrink {
+  box-shadow: 4rpx 0 16rpx rgba(0, 0, 0, 0.08);  /* 右侧阴影 */
+}
+
+/* 聊天容器 */
+.chat-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 情感分析视图 */
+.analysis-view {
+  position: relative;      /* 相对定位 */
+  height: 100%;           /* 占满高度 */
+  min-width: 0;           /* 防止flex子项溢出 */
+  background: var(--md-sys-color-surface);  /* MD3 表面色 */
+  transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);  /* MD3 标准缓动 */
+  overflow: hidden;       /* 隐藏溢出 */
+  border-left: 1px solid var(--md-sys-color-outline-variant);  /* 左侧分隔线 */
+}
+
+/* 展开状态 */
+.analysis-view.expand {
+  box-shadow: -4rpx 0 16rpx rgba(0, 0, 0, 0.08);  /* 左侧阴影 */
+}
+
+/* 情感分析面板 */
+.emotion-panel {
+  height: 100%;           /* 占满高度 */
+  padding: 24rpx;         /* 内边距 */
+  box-sizing: border-box; /* 盒模型 */
+  display: flex;          /* 弹性布局 */
+  flex-direction: column; /* 垂直排列 */
+  gap: 24rpx;            /* 元素间距 */
+  overflow-y: auto;      /* 允许滚动 */
+  -webkit-overflow-scrolling: touch;  /* 平滑滚动 */
+}
+
+/* 视图切换手柄 */
+.view-handle {
+  position: absolute;     /* 绝对定位 */
+  left: 0;               /* 靠左对齐 */
+  top: 50%;              /* 垂直居中 */
+  transform: translateY(-50%);  /* 居中偏移 */
+  width: 24rpx;          /* 手柄宽度 */
+  height: 80rpx;         /* 手柄高度 */
+  background: var(--md-sys-color-surface-variant);  /* MD3 表面变体色 */
+  border-radius: 0 12rpx 12rpx 0;  /* 右侧圆角 */
+  display: flex;         /* 弹性布局 */
+  align-items: center;   /* 垂直居中 */
+  justify-content: center;  /* 水平居中 */
+  z-index: 10;          /* 保持在内容之上 */
+  transition: all 0.2s;  /* 过渡效果 */
+}
+
+/* 分屏指示器 */
+.view-indicator {
+  position: fixed;       /* 固定定位 */
+  top: 120rpx;          /* 顶部间距 */
+  left: 50%;            /* 水平居中 */
+  transform: translateX(-50%);  /* 居中偏移 */
+  display: flex;        /* 弹性布局 */
+  gap: 12rpx;          /* 点点间距 */
+  padding: 8rpx 12rpx; /* 内边距 */
+  background: var(--md-sys-color-surface-container-highest);  /* MD3 表面容器色 */
+  border-radius: 16rpx;  /* 圆角 */
+  box-shadow: var(--md-sys-elevation-1);  /* MD3 阴影 */
+  z-index: 100;        /* 保持在最上层 */
+}
+
+/* 情感分析面板 */
+.emotion-panel {
+  padding: 24rpx;
+  /* 内边距 */
+  height: 100%;
+  /* 占满高度 */
+  box-sizing: border-box;
+  /* 盒模型 */
+  display: flex;
+  /* 弹性布局 */
+  flex-direction: column;
+  /* 垂直排列 */
+  gap: 24rpx;
+  /* 元素间距 */
+}
+
+/* 面板头部 */
+.emotion-header {
+  display: flex;
+  /* 弹性布局 */
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: space-between;
+  /* 两端对齐 */
+  padding-bottom: 16rpx;
+  /* 底部内边距 */
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  /* MD3 分隔线 */
+}
+
+/* 情感标题 */
+.emotion-title {
+  font-size: 34rpx;
+  /* 标题大小 */
+  font-weight: 500;
+  /* 字重 */
+  color: var(--md-sys-color-on-surface);
+  /* MD3 文字色 */
+}
+
+/* 情感类型标签 */
+.emotion-type {
+  font-size: 24rpx;
+  /* 文字大小 */
+  padding: 4rpx 16rpx;
+  /* 内边距 */
+  background: var(--md-sys-color-secondary-container);
+  /* MD3 次要容器色 */
+  color: var(--md-sys-color-on-secondary-container);
+  /* MD3 文字色 */
+  border-radius: 16rpx;
+  /* 圆角 */
+}
+
+/* 情感类型颜色 */
+.emotion-type.joy {
+  background-color: rgba(46, 204, 113, 0.2);
+  color: #2ECC71;
+}
+
+.emotion-type.sadness {
+  background-color: rgba(52, 152, 219, 0.2);
+  color: #3498DB;
+}
+
+.emotion-type.anger {
+  background-color: rgba(231, 76, 60, 0.2);
+  color: #E74C3C;
+}
+
+.emotion-type.anxiety {
+  background-color: rgba(241, 196, 15, 0.2);
+  color: #F1C40F;
+}
+
+.emotion-type.neutral {
+  background-color: rgba(149, 165, 166, 0.2);
+  color: #95A5A6;
+}
+
+/* 情绪趋势区域 */
+.emotion-trend {
+  background: var(--md-sys-color-surface-container-low);
+  /* MD3 表面容器色 */
+  border-radius: 24rpx;
+  /* 圆角 */
+  padding: 20rpx;
+  /* 内边距 */
+  box-shadow: var(--md-sys-elevation-1);
+  /* MD3 阴影 */
+}
+
+/* 趋势标题 */
+.trend-title {
+  font-size: 28rpx;
+  /* 文字大小 */
+  color: var(--md-sys-color-on-surface);
+  /* MD3 文字色 */
+  margin-bottom: 16rpx;
+  /* 底部间距 */
+}
+
+/* 趋势图表容器 */
+.trend-chart {
+  height: 300rpx;
+  /* 图表高度 */
+  width: 100%;
+  /* 占满宽度 */
+}
+
+/* 情感强度区域 */
+.emotion-intensity {
+  background: var(--md-sys-color-surface-container-lowest);
+  /* MD3 表面容器色 */
+  border-radius: 20rpx;
+  /* 圆角 */
+  padding: 16rpx 20rpx;
+  /* 内边距 */
+  display: flex;
+  /* 弹性布局 */
+  flex-direction: column;
+  /* 垂直排列 */
+  gap: 12rpx;
+  /* 元素间距 */
+}
+
+/* 强度文本 */
+.emotion-intensity text {
+  font-size: 26rpx;
+  /* 文字大小 */
+  color: var(--md-sys-color-on-surface);
+  /* MD3 文字色 */
+}
+
+/* 情感报告区域 */
+.emotion-report {
+  margin-top: 24rpx;
+  /* 上边距 */
+  background: var(--md-sys-color-surface-container-low);
+  /* MD3 表面容器色 */
+  border-radius: 24rpx;
+  /* 圆角 */
+  padding: 20rpx;
+  /* 内边距 */
+  box-shadow: var(--md-sys-elevation-1);
+  /* MD3 阴影 */
+}
+
+/* 报告标题 */
+.report-title {
+  font-size: 28rpx;
+  /* 文字大小 */
+  color: var(--md-sys-color-on-surface);
+  /* MD3 文字色 */
+  margin-bottom: 16rpx;
+  /* 底部间距 */
+  display: block;
+  /* 块级元素 */
+  font-weight: 500;
+  /* 字重 */
+}
+
+/* 报告内容 */
+.report-content {
+  font-size: 28rpx;
+  /* 文字大小 */
+  color: var(--md-sys-color-on-surface-variant);
+  /* MD3 文字色变体 */
+  line-height: 1.5;
+  /* 行高 */
+  padding: 8rpx 0;
+  /* 上下内边距 */
+}
+
+/* 建议区域 */
+.emotion-suggestions {
+  flex: 1;
+  /* 占据剩余空间 */
+  overflow-y: auto;
+  /* 允许滚动 */
+  padding: 16rpx;
+  /* 内边距 */
+  background: var(--md-sys-color-surface-container);
+  /* MD3 表面容器色 */
+  border-radius: 24rpx;
+  /* 圆角 */
+}
+
+/* 建议标题 */
+.suggestions-title {
+  font-size: 28rpx;
+  /* 文字大小 */
+  color: var(--md-sys-color-on-surface);
+  /* MD3 文字色 */
+  margin-bottom: 16rpx;
+  /* 底部间距 */
+  display: block;
+  /* 块级元素 */
+}
+
+/* 建议项 */
+.suggestion-item {
+  display: flex;
+  /* 弹性布局 */
+  align-items: flex-start;
+  /* 顶部对齐 */
+  gap: 12rpx;
+  /* 元素间距 */
+  padding: 12rpx 16rpx;
+  /* 内边距 */
+  background: var(--md-sys-color-surface-container-high);
+  /* MD3 表面容器色 */
+  border-radius: 16rpx;
+  /* 圆角 */
+  margin-bottom: 12rpx;
+  /* 底部间距 */
+  transition: transform 0.2s;
+  /* 变换过渡 */
+}
+
+/* 建议图标 */
+.suggestion-icon {
+  font-size: 32rpx;
+  /* 图标大小 */
+}
+
+/* 建议文本 */
+.suggestion-text {
+  font-size: 26rpx;
+  /* 文字大小 */
+  color: var(--md-sys-color-on-surface);
+  /* MD3 文字色 */
+  line-height: 1.5;
+  /* 行高 */
+  flex: 1;
+  /* 占据剩余空间 */
+}
+
+/* 快捷操作区域 */
+.quick-actions {
+  display: flex;
+  /* 弹性布局 */
+  gap: 16rpx;
+  /* 按钮间距 */
+  padding-top: 16rpx;
+  /* 顶部内边距 */
+  flex-wrap: wrap;
+  /* 允许换行 */
+}
+
+/* 情感饥图容器 */
+.emotion-pie-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20rpx 0;
+  padding: 10rpx;
+  background: var(--md-sys-color-surface-container-low);
+  /* MD3 表面容器色 */
+  border-radius: 24rpx;
+  /* 圆角 */
+  box-shadow: var(--md-sys-elevation-1);
+  /* MD3 阴影 */
+}
+
+
+
+/* 操作按钮 */
+.action-btn {
+  flex: 1;
+  /* 平均分配空间 */
+  height: 88rpx;
+  /* 按钮高度 */
+  background: var(--md-sys-color-primary-container);
+  /* MD3 主题色容器 */
+  color: var(--md-sys-color-on-primary-container);
+  /* MD3 文字色 */
+  border-radius: 44rpx;
+  /* 圆角 */
+  border: none;
+  /* 移除边框 */
+  display: flex;
+  /* 弹性布局 */
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
+  gap: 8rpx;
+  /* 图标间距 */
+  font-size: 28rpx;
+  /* 文字大小 */
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  /* MD3 动画 */
+}
+
+/* 按钮图标 */
+.action-icon {
+  font-size: 36rpx;
+  /* 图标大小 */
+}
+
+/* 按钮点击态 */
+.action-btn:active {
+  transform: scale(0.98);
+  /* 轻微缩小 */
+  background: var(--md-sys-color-primary);
+  /* MD3 主题色 */
+  color: var(--md-sys-color-on-primary);
+  /* MD3 文字色 */
+}
+
+/* 暗黑模式适配 */
+@media (prefers-color-scheme: dark) {
+  .analysis-view {
+    background: var(--md-sys-color-surface-dark);
+    /* 深色背景 */
+  }
+
+  .emotion-trend,
+  .emotion-intensity,
+  .emotion-suggestions {
+    background: var(--md-sys-color-surface-container-low-dark);
+    /* 深色容器 */
+  }
+
+  .suggestion-item {
+    background: var(--md-sys-color-surface-container-high-dark);
+    /* 深色容器 */
+  }
+
+  .action-btn {
+    background: var(--md-sys-color-primary-container-dark);
+    /* 深色主题容器 */
+    color: var(--md-sys-color-on-primary-container-dark);
+    /* 深色文字 */
+  }
+
+  .action-btn:active {
+    background: var(--md-sys-color-primary-dark);
+    /* 深色主题色 */
+    color: var(--md-sys-color-on-primary-dark);
+    /* 深色文字 */
+  }
+}
+
+/* 响应式适配 */
+@media screen and (max-width: 375px) {
+  .emotion-panel {
+    padding: 16rpx;
+    /* 减小内边距 */
+    gap: 16rpx;
+    /* 减小间距 */
+  }
+
+  .trend-chart {
+    height: 240rpx;
+    /* 减小图表高度 */
+  }
+
+  .action-btn {
+    height: 80rpx;
+    /* 减小按钮高度 */
+    font-size: 26rpx;
+    /* 减小文字大小 */
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .emotion-panel {
+    padding: 32rpx;
+    /* 增加内边距 */
+    gap: 32rpx;
+    /* 增加间距 */
+  }
+
+  .trend-chart {
+    height: 360rpx;
+    /* 增加图表高度 */
+  }
+
+  .suggestion-item {
+    padding: 16rpx 24rpx;
+    /* 增加内边距 */
+  }
+}
+
+.tool-icon {
+  width: 48rpx;
+  height: 48rpx;
+  padding: 16rpx;
+  border-radius: 50%;
+  background-color: rgba(95, 95, 95, 0.05);
+  transition: all 0.2s;
+  flex-shrink: 0;
+  display: block;
+}
+
+.result-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+  display: block;
+}
+
+.feature-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+  display: block;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 24rpx 40rpx;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: var(--weui-BG-2);
+  box-sizing: border-box;
+}
+
+.webSearchSwitch {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 24rpx;
+  border-radius: 32rpx;
+  background-color: rgba(95, 95, 95, 0.05);
+  transition: all 0.2s;
+}
+
+.tool-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.tool-text {
+  font-size: 24rpx;
+  color: var(--weui-FG-1);
+}
+
+.feature-list {
+  padding: 16rpx 32rpx;
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+
+@media screen and (min-width: 768px) {
+  .feature-item {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .input-container {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .send-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .tool-icon {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .tool-item:active .tool-icon {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.tooltip {
+  position: absolute;
+  background-color: var(--md-sys-color-inverse-surface);
+  color: var(--md-sys-color-inverse-on-surface);
+  padding: 16rpx 24rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  box-shadow: var(--md-sys-elevation-2);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(8rpx);
+  transition: all 0.2s;
+  pointer-events: none;
+}
+
+@media screen and (min-width: 768px) {
+  .main {
+    padding-left: 40rpx;
+    padding-right: 40rpx;
+  }
+
+  .system_content,
+  .user_content {
+    max-width: 70%;
+  }
+
+  .input_box {
+    width: calc(100% - 160rpx);
+  }
+}
+
+.link-item {
+  font-size: 28rpx;
+  padding: 16rpx 0;
+}
+
+/* 情感分析按钮 */
+.emotion-analyze-btn {
+  position: fixed;
+  right: 30rpx;
+  bottom: 180rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100rpx;
+  height: 100rpx;
+  background-color: var(--md-sys-color-primary-container, #E8DEF8);
+  color: var(--md-sys-color-on-primary-container, #21005E);
+  border-radius: 50%;
+  box-shadow: var(--md-sys-elevation-2, 0 2px 4px rgba(0,0,0,0.2));
+  z-index: 100;
+  transition: all 0.3s ease;
+  font-size: 20rpx;
+}
+
+.emotion-analyze-btn:active {
+  transform: scale(0.95);
+  box-shadow: var(--md-sys-elevation-1, 0 1px 2px rgba(0,0,0,0.2));
+}
+
+.emotion-icon {
+  font-size: 36rpx;
+  margin-bottom: 4rpx;
+}
+
+/* 暗色模式下的情感分析按钮 */
+.dark .emotion-analyze-btn {
+  background-color: var(--md-sys-color-secondary-container, #4F378B);
+  color: var(--md-sys-color-on-secondary-container, #E8DEF8);
+}

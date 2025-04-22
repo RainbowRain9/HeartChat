@@ -1,0 +1,183 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# 欢迎页面设计
+
+## 功能概述
+HeartChat的欢迎页面是用户进入应用的第一个界面，负责引导用户登录、展示应用核心功能以及提供初始化设置选项。欢迎页面设计注重用户体验，通过简洁明了的界面展示应用价值主张。
+
+## 相关文件位置
+- [miniprogram/pages/welcome/](mdc:miniprogram/pages/welcome/)：欢迎页面目录
+  - [index.js](mdc:miniprogram/pages/welcome/index.js)：页面逻辑
+  - [index.wxml](mdc:miniprogram/pages/welcome/index.wxml)：页面结构
+  - [index.wxss](mdc:miniprogram/pages/welcome/index.wxss)：页面样式
+  - [index.json](mdc:miniprogram/pages/welcome/index.json)：页面配置
+
+## 页面设计
+根据[欢迎页面.md](mdc:docs/使用文档/欢迎页面.md)，欢迎页面包含以下元素：
+
+1. 应用Logo和名称展示
+2. 简短的应用介绍文案
+3. 核心功能点展示
+4. 用户登录/注册按钮
+5. 快速开始体验按钮
+6. 隐私政策链接
+7. 可选的引导轮播
+
+## 引导轮播设计
+欢迎页面的引导轮播通常包含3-5个页面，每个页面展示应用的一个核心功能：
+
+1. 第一页：AI对话助手介绍
+2. 第二页：情感分析功能展示
+3. 第三页：个性化角色定制
+4. 第四页：情绪历史记录和报告
+5. 第五页：开始使用引导
+
+轮播使用swiper组件实现，每个轮播项包含图片说明和文字描述。
+
+## 登录流程
+欢迎页面处理用户登录的基本流程：
+
+1. 检查本地存储中是否有登录态
+2. 如有，进行登录态验证
+3. 验证成功则直接进入主页
+4. 验证失败或无登录态则展示登录选项
+5. 用户点击登录后，调用微信登录接口
+6. 获取用户信息并存储
+7. 登录成功后进入应用主页
+
+```javascript
+// 登录流程示例代码
+Page({
+  onLoad: function() {
+    this.checkLoginStatus();
+  },
+  
+  checkLoginStatus: function() {
+    const token = wx.getStorageSync('token');
+    if (token) {
+      // 验证token有效性
+      this.verifyToken(token);
+    } else {
+      // 显示登录按钮
+      this.setData({
+        showLoginButton: true
+      });
+    }
+  },
+  
+  verifyToken: function(token) {
+    wx.cloud.callFunction({
+      name: 'login',
+      data: {
+        action: 'verify',
+        token: token
+      },
+      success: res => {
+        if (res.result.valid) {
+          this.navigateToHome();
+        } else {
+          this.setData({
+            showLoginButton: true
+          });
+        }
+      },
+      fail: err => {
+        console.error('Token验证失败', err);
+        this.setData({
+          showLoginButton: true
+        });
+      }
+    });
+  },
+  
+  handleLogin: function() {
+    wx.showLoading({
+      title: '登录中...',
+    });
+    
+    wx.login({
+      success: res => {
+        if (res.code) {
+          // 获取微信登录code
+          this.getOpenID(res.code);
+        } else {
+          wx.hideLoading();
+          wx.showToast({
+            title: '登录失败',
+            icon: 'none'
+          });
+        }
+      },
+      fail: err => {
+        wx.hideLoading();
+        console.error('微信登录失败', err);
+      }
+    });
+  },
+  
+  getOpenID: function(code) {
+    wx.cloud.callFunction({
+      name: 'login',
+      data: {
+        action: 'login',
+        code: code
+      },
+      success: res => {
+        wx.hideLoading();
+        if (res.result.success) {
+          wx.setStorageSync('token', res.result.token);
+          wx.setStorageSync('userInfo', res.result.userInfo);
+          this.navigateToHome();
+        } else {
+          wx.showToast({
+            title: '登录失败',
+            icon: 'none'
+          });
+        }
+      },
+      fail: err => {
+        wx.hideLoading();
+        console.error('云函数调用失败', err);
+      }
+    });
+  },
+  
+  navigateToHome: function() {
+    wx.switchTab({
+      url: '/pages/home/index',
+    });
+  }
+});
+```
+
+## 智能欢迎语
+根据[智能欢迎语与历史记录加载优化说明.md](mdc:docs/使用文档/智能欢迎语与历史记录加载优化说明.md)，HeartChat支持智能欢迎语功能：
+
+1. 根据用户历史使用情况和时间生成个性化欢迎语
+2. 根据用户历史情绪数据调整欢迎语风格
+3. 首次使用时提供引导性欢迎语
+4. 长时间未使用后返回提供"欢迎回来"类型的欢迎语
+
+## 页面转场
+用户完成登录后，通常会有以下转场方式：
+
+1. 新用户：转到个性化设置或角色选择页面
+2. 老用户：直接转到主界面或上次访问的页面
+3. 体验模式：跳过登录，使用临时数据进入应用
+
+## 性能优化
+- 预加载主页面资源
+- 异步处理登录逻辑
+- 压缩欢迎页面图片资源
+- 延迟加载非关键资源
+- 使用骨架屏减少等待感
+
+## 与App.js的关系
+欢迎页面与App.js中的启动逻辑配合，在应用启动时进行初始化工作：
+
+1. App.js中进行全局配置和云开发初始化
+2. 欢迎页面负责用户登录和引导
+3. 两者协同确保应用正常启动和用户数据加载

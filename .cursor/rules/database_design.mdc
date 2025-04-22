@@ -1,0 +1,150 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 数据库设计
+
+## 概述
+HeartChat使用微信小程序云开发提供的云数据库（NoSQL数据库）存储应用数据。数据库设计遵循文档型数据库的最佳实践，合理设计集合结构和索引。
+
+## 数据库设计原则
+根据[database_design.md](mdc:database_design.md)文件，HeartChat的数据库设计遵循以下原则：
+- 合理拆分集合，避免单一集合过大
+- 优先考虑查询场景，设计适合查询需求的数据结构
+- 适当冗余数据，减少多集合查询
+- 建立必要索引，提高查询性能
+- 考虑数据增长趋势，预留扩展空间
+
+## 主要集合
+
+### users - 用户集合
+存储用户基本信息
+```javascript
+{
+  _id: "用户ID",
+  openid: "微信OpenID",
+  nickname: "用户昵称",
+  avatar: "头像URL",
+  created_at: "创建时间",
+  last_active: "最后活跃时间",
+  settings: {
+    // 用户设置项
+  }
+}
+```
+
+### chats - 聊天集合
+存储聊天会话信息
+```javascript
+{
+  _id: "会话ID",
+  user_id: "用户ID",
+  role_id: "角色ID",
+  title: "会话标题",
+  created_at: "创建时间",
+  updated_at: "更新时间",
+  message_count: 消息数量
+}
+```
+
+### messages - 消息集合
+存储聊天消息内容
+```javascript
+{
+  _id: "消息ID",
+  chat_id: "会话ID",
+  role: "user/assistant", // 消息角色
+  content: "消息内容",
+  created_at: "创建时间",
+  emotion: "情感标签",
+  emotion_score: 情感分数
+}
+```
+
+### roles - 角色集合
+存储AI角色信息
+```javascript
+{
+  _id: "角色ID",
+  name: "角色名称",
+  avatar: "头像URL",
+  description: "角色描述",
+  personality: "性格特点",
+  expertise: "专长领域",
+  is_system: true/false, // 是否为系统角色
+  created_by: "创建者ID", // 若为用户创建
+  prompt_template: "提示词模板",
+  created_at: "创建时间",
+  updated_at: "更新时间"
+}
+```
+
+### emotions - 情感记录集合
+存储用户情感分析记录
+```javascript
+{
+  _id: "记录ID",
+  user_id: "用户ID",
+  timestamp: "记录时间",
+  message_id: "关联消息ID",
+  primary_emotion: "主要情绪",
+  emotion_scores: {
+    // 各情绪类别的分数
+    "joy": 0.7,
+    "sadness": 0.1,
+    // ...其他情绪
+  },
+  tags: ["标签1", "标签2"], // 情绪标签
+  notes: "备注信息" // 用户添加的备注
+}
+```
+
+### daily_reports - 每日报告集合
+存储用户每日情绪报告
+```javascript
+{
+  _id: "报告ID",
+  user_id: "用户ID",
+  date: "报告日期",
+  summary: "总结文字",
+  emotion_stats: {
+    // 情绪统计数据
+  },
+  highlights: [
+    // 当日情绪亮点
+  ],
+  suggestions: [
+    // 基于情绪的建议
+  ],
+  created_at: "创建时间"
+}
+```
+
+### user_preferences - 用户偏好集合
+存储用户个性化设置
+```javascript
+{
+  _id: "用户ID",
+  theme: "主题设置",
+  notification_settings: {
+    // 通知设置
+  },
+  privacy_settings: {
+    // 隐私设置
+  },
+  favorite_roles: ["角色ID1", "角色ID2"], // 收藏的角色
+  updated_at: "更新时间"
+}
+```
+
+## 索引设计
+- users集合：openid字段创建唯一索引
+- messages集合：chat_id字段创建索引，加速会话消息查询
+- emotions集合：user_id和timestamp字段创建复合索引，加速用户情绪历史查询
+- daily_reports集合：user_id和date字段创建复合索引
+
+## 数据备份策略
+- 定期导出关键数据（如用户数据、角色定义等）
+- 重要数据操作前进行备份
+- 利用云开发提供的自动备份能力

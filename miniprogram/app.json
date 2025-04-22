@@ -1,0 +1,95 @@
+{
+  "pages": [
+    "pages/welcome/welcome",
+    "pages/home/home",
+    "pages/role-select/role-select",
+    "pages/user/user",
+    "pages/emotionVault/emotionVault",
+    "pages/user/role/index",
+    "pages/user/role/edit/index",
+    "pages/user/profile/profile",
+    "pages/user/profile",
+    "pages/emotionTest/emotionTest",
+    "pages/emotionAnalysis/emotionAnalysis",
+    "pages/keywordTest/keywordTest",
+    "pages/agreement/service",
+    "pages/agreement/privacy",
+    "pages/role-editor/index",
+    "pages/prompt-editor/prompt-editor"
+  ],
+  "subpackages": [
+    {
+      "root": "packageEmotion",
+      "name": "emotionPackage",
+      "pages": [
+        "pages/daily-report/daily-report",
+        "pages/emotion-history/emotion-history"
+      ]
+    },
+    {
+      "root": "packageChat",
+      "name": "chatPackage",
+      "pages": [
+        "pages/chat/chat",
+        "pages/emotion-analysis/emotion-analysis"
+      ]
+    }
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "HeartChat",
+    "navigationBarTextStyle": "black"
+  },
+
+  "tabBar": {
+    "custom": false,
+    "color": "@tabFontColor",
+    "selectedColor": "@tabSelectedColor",
+    "backgroundColor": "@tabBgColor",
+    "borderStyle": "@tabBorderStyle",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "images/tabbar/home.png",
+        "selectedIconPath": "images/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/role-select/role-select",
+        "text": "心情树洞",
+        "iconPath": "images/navigation/tabbar/emotion.png",
+        "selectedIconPath": "images/navigation/tabbar/emotion-active.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "我的",
+        "iconPath": "images/tabbar/user.png",
+        "selectedIconPath": "images/tabbar/user-active.png"
+      }
+    ]
+  },
+  "usingComponents": {
+    "emotion-card": "/components/emotion-card/index",
+    "emotion-pie": "/components/emotion-pie/emotion-pie",
+    "emotion-panel": "/components/emotion-panel/emotion-panel",
+    "emotion-history": "/components/emotion-history/emotion-history",
+    "emotion-analysis": "/components/emotion-analysis/emotion-analysis",
+    "agent-ui": "/pages/emotionVault/agent-ui/index",
+    "markdownPreview": "/pages/emotionVault/agent-ui/wd-markdown/index",
+    "FoldedCard": "/pages/emotionVault/agent-ui/collapse/index",
+    "chatFile": "/pages/emotionVault/agent-ui/chatFile/index",
+    "role-card": "/components/role-card/role-card",
+    "ec-canvas": "/components/ec-canvas/ec-canvas"
+  },
+  "requiredPrivateInfos": [],
+  "requiredBackgroundModes": [
+    "audio"
+  ],
+  "lazyCodeLoading": "requiredComponents",
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "darkmode": true,
+  "themeLocation": "theme.json",
+  "debug": false
+}

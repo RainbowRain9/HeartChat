@@ -1,0 +1,141 @@
+/* packageChat/components/chat-input/index.wxss */
+.chat-input-container {
+  width: 100%;
+  background-color: #ffffff;
+  border-top: 0.5rpx solid #e5e5ea; /* 更细的边框，符合iOS风格 */
+  padding: 16rpx 20rpx;
+  box-sizing: border-box;
+  /* 适配底部安全区域，但限制最大值 */
+  padding-bottom: calc(16rpx + min(env(safe-area-inset-bottom), 20rpx));
+  box-shadow: 0 -1rpx 3rpx rgba(0, 0, 0, 0.02); /* 添加轻微阴影 */
+}
+
+/* 暗夜模式 - 输入容器 */
+.dark.chat-input-container {
+  background-color: #212529;
+  border-top: 0.5rpx solid #343a40;
+  box-shadow: 0 -1rpx 3rpx rgba(0, 0, 0, 0.1);
+}
+
+.input-area {
+  display: flex;
+  align-items: center;
+}
+
+.voice-button {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.voice-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.text-input {
+  flex: 1;
+  height: 72rpx;
+  background-color: #f5f5f7; /* 更浅的背景色，符合iOS风格 */
+  border-radius: 36rpx;
+  padding: 0 24rpx;
+  margin: 0 20rpx;
+  font-size: 28rpx;
+  color: #333333;
+  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.03) inset; /* 内阴影增强层次感 */
+}
+
+/* 暗夜模式 - 输入框 */
+.dark .text-input {
+  background-color: #343a40;
+  color: #f8f9fa;
+  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1) inset;
+}
+
+.send-button {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+  background-color: #f5f5f7; /* 与输入框背景色一致 */
+  border-radius: 32rpx; /* 圆形按钮 */
+}
+
+/* 暗夜模式 - 发送按钮 */
+.dark .send-button {
+  background-color: #343a40;
+}
+
+.send-button.active {
+  opacity: 1;
+  background-color: #4a6cf7; /* 激活时使用主色调 */
+}
+
+.send-icon {
+  width: 36rpx;
+  height: 36rpx;
+  color: #ffffff; /* 激活时图标为白色 */
+}
+
+.recording-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200rpx;
+}
+
+.recording-hint {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.recording-icon {
+  width: 20rpx;
+  height: 20rpx;
+  background-color: #ff4d4f;
+  border-radius: 50%;
+  margin-right: 10rpx;
+  animation: pulse 1s infinite;
+}
+
+.recording-time {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+/* 暗夜模式 - 录音时间 */
+.dark .recording-time {
+  color: #f8f9fa;
+}
+
+.recording-tip {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+/* 暗夜模式 - 录音提示 */
+.dark .recording-tip {
+  color: #adb5bd;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

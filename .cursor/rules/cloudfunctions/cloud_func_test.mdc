@@ -1,0 +1,157 @@
+---
+description: 云函数测试规范
+globs: 
+alwaysApply: false
+---
+# 云函数测试规范
+
+## 测试环境设置
+
+1. 使用独立的测试环境，避免影响生产数据
+2. 在本地模拟云函数环境进行单元测试
+3. 使用 Jest 或 Mocha 等测试框架
+4. 设置自动化测试流程
+5. 准备测试数据和测试用例
+
+## 单元测试
+
+### 测试文件组织
+
+```
+cloudfunctions/
+└── functionName/
+    ├── index.js          # 云函数入口
+    ├── package.json      # 依赖配置
+    └── __test__/         # 测试目录
+        ├── index.test.js # 测试文件
+        └── mock/         # 模拟数据
+```
+
+### 基本测试结构
+
+```javascript
+const cloud = require('wx-server-sdk-mock');
+const functionName = require('../index');
+
+describe('functionName', () => {
+  beforeEach(() => {
+    // 设置测试环境
+    cloud.init();
+  });
+
+  test('should do something', async () => {
+    // 准备测试数据
+    const event = { /* 测试参数 */ };
+    const context = { /* 上下文 */ };
+    
+    // 模拟数据库操作
+    cloud.database().collection('collection').mockGet([
+      { /* 模拟数据 */ }
+    ]);
+    
+    // 执行函数
+    const result = await functionName.main(event, context);
+    
+    // 断言结果
+    expect(result).toEqual(/* 期望结果 */);
+    
+    // 验证数据库操作
+    expect(cloud.database().collection('collection').get).toHaveBeenCalled();
+  });
+});
+```
+
+## 集成测试
+
+1. 测试云函数与数据库的交互
+2. 测试云函数之间的调用
+3. 测试云函数与云存储的交互
+4. 测试云函数与外部 API 的交互
+5. 测试错误处理和边界情况
+
+## 性能测试
+
+1. 测试云函数执行时间
+2. 测试并发请求处理能力
+3. 测试内存使用情况
+4. 测试数据库查询性能
+5. 测试网络请求性能
+
+## 安全测试
+
+1. 测试权限控制
+2. 测试输入验证
+3. 测试敏感数据处理
+4. 测试异常情况下的安全性
+5. 测试防注入措施
+
+## 模拟技术
+
+### 模拟数据库
+
+```javascript
+// 模拟数据库查询
+cloud.database().collection('users').mockGet([
+  { _id: 'user1', name: 'User 1' },
+  { _id: 'user2', name: 'User 2' }
+]);
+
+// 模拟数据库添加
+cloud.database().collection('logs').mockAdd({ _id: 'log1' });
+
+// 模拟数据库更新
+cloud.database().collection('users').doc('user1').mockUpdate(true);
+
+// 模拟数据库删除
+cloud.database().collection('temp').doc('temp1').mockRemove(true);
+```
+
+### 模拟云函数调用
+
+```javascript
+// 模拟云函数调用
+cloud.callFunction.mockImplementation(({ name, data }) => {
+  if (name === 'otherFunction') {
+    return Promise.resolve({ result: { /* 模拟结果 */ } });
+  }
+  return Promise.reject(new Error('Function not mocked'));
+});
+```
+
+### 模拟云存储
+
+```javascript
+// 模拟文件上传
+cloud.uploadFile.mockImplementation(() => {
+  return Promise.resolve({ fileID: 'cloud://test-env.test/file.jpg' });
+});
+
+// 模拟文件下载
+cloud.downloadFile.mockImplementation(() => {
+  return Promise.resolve({ tempFilePath: '/tmp/file.jpg' });
+});
+```
+
+## 测试报告
+
+1. 生成测试覆盖率报告
+2. 记录测试执行时间
+3. 记录测试成功和失败用例
+4. 分析测试结果，找出潜在问题
+5. 根据测试结果优化代码
+
+## 持续集成
+
+1. 设置自动化测试流程
+2. 在代码提交时触发测试
+3. 测试失败时阻止代码合并
+4. 生成测试报告和覆盖率报告
+5. 定期执行完整测试套件
+
+## 最佳实践
+
+1. 编写可测试的代码，避免副作用
+2. 使用依赖注入简化测试
+3. 模拟外部依赖，专注测试业务逻辑
+4. 测试覆盖正常路径和异常路径
+5. 定期更新测试用例，保持与代码同步

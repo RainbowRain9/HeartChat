@@ -1,0 +1,56 @@
+<!--pages/emotionTest/emotionTest.wxml-->
+<view class="container {{darkMode ? 'dark' : ''}}">
+  <!-- 页面头部 -->
+  <view class="header">
+    <text class="title">情感分析测试</text>
+    <view class="theme-toggle" bindtap="toggleTheme">
+      <text class="toggle-icon">{{darkMode ? '🌙' : '☀️'}}</text>
+    </view>
+  </view>
+
+  <!-- 当前角色 -->
+  <view class="current-role" wx:if="{{currentRole}}">
+    <text class="role-label">当前角色:</text>
+    <text class="role-name">{{currentRole.role_name}}</text>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <textarea class="text-input"
+              placeholder="请输入文本进行情感分析..."
+              value="{{text}}"
+              bindinput="onInputChange"
+              maxlength="500"
+              auto-height></textarea>
+    <view class="char-count">{{text.length}}/500</view>
+  </view>
+
+  <!-- 按钮区域 -->
+  <view class="button-area">
+    <button class="analyze-btn"
+            bindtap="analyzeEmotion"
+            loading="{{loading}}">
+      分析情感
+    </button>
+    <button class="history-btn" bindtap="onViewHistory">
+      历史记录
+    </button>
+  </view>
+
+  <!-- 情感分析面板 -->
+  <emotion-panel emotion="{{emotion}}"
+                show="{{showEmotionPanel}}"
+                darkMode="{{darkMode}}"
+                bind:close="closeEmotionPanel"
+                bind:switchRole="onSwitchRole"
+                bind:save="onSaveEmotion"
+                bind:history="onViewHistory"></emotion-panel>
+
+  <!-- 情感历史记录 -->
+  <emotion-history show="{{showEmotionHistory}}"
+                  userId="{{userInfo.openId || userInfo._openid}}"
+                  roleId="{{currentRole._id}}"
+                  darkMode="{{darkMode}}"
+                  bind:close="closeEmotionHistory"
+                  bind:detail="onViewRecordDetail"></emotion-history>
+</view>

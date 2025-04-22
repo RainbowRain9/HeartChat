@@ -1,0 +1,742 @@
+/* =================================================================
+ * agent-ui/index.wxss - 聊天界面UI组件样式
+ *
+ * 文件说明：
+ * 该文件定义了聊天界面的所有样式，包括布局、颜色、动画等。
+ * 采用 Material Design 3 设计规范，实现了现代化的视觉效果和交互体验。
+ *
+ * 主要功能：
+ * 1. 实现了自适应的聊天界面布局
+ * 2. 包含了丰富的动画和交互效果
+ * 3. 针对不同设备尺寸进行了优化
+ *
+ * 使用方法：
+ * 1. 在组件的wxml中引用对应的类名
+ * 2. 可通过修改CSS变量来自定义主题
+ * 3. 支持响应式布局，自动适应不同屏幕
+ *
+ * CSS变量说明：
+ * --weui-BG-2: 背景色变量
+ * --md-sys-elevation-1: 阴影效果变量
+ * --md-sys-color-primary: 主色调变量
+ * --md-sys-color-surface-variant: 表面变体色变量
+ * ================================================================= */
+
+/**
+ * agent-ui 组件样式
+ * 遵循 Material Design 3 设计规范
+ * 支持自适应布局、主题切换、动画效果
+ * 针对不同设备进行了优化
+ */
+
+/* 容器 - 整个聊天界面的最外层容器 */
+.agent-ui {
+  /* 使用绝对定位铺满整个屏幕 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* 使用flex布局 */
+  display: flex;
+  /* 垂直方向排列 */
+  flex-direction: column;
+  /* 设置背景色 */
+  background-color: var(--weui-BG-2);
+  /* 防止内容溢出 */
+  overflow: hidden;
+}
+
+/* 主要内容区 - 消息列表滚动区域 */
+.main {
+  /* 使用flex布局自动填充剩余空间 */
+  flex: 1;
+  /* 允许内容滚动 */
+  overflow-y: auto;
+  /* 启用弹性滚动 */
+  -webkit-overflow-scrolling: touch;
+  /* 内容区域padding */
+  padding: 24rpx 32rpx;
+  /* 使用border-box盒模型 */
+  box-sizing: border-box;
+  /* 设置背景色 */
+  background-color: var(--weui-BG-2);
+  /* 相对定位 */
+  position: relative;
+  /* 设置最小高度 */
+  min-height: 200rpx;
+}
+
+/* 手动滚动模式 - 禁用平滑滚动效果 */
+.manual-scroll {
+  scroll-behavior: auto;
+}
+
+/* 系统消息容器 - 提高优先级并移除头像 */
+.system {
+  display: flex !important;
+  gap: 24rpx !important;
+  margin: 24rpx 0 !important;
+  padding-right: 80rpx !important;
+  padding-left: 32rpx !important;
+  width: 100% !important;
+}
+
+/* 隐藏系统消息的头像 */
+.system .avatar-left {
+  display: none !important;
+}
+
+/* 系统消息内容 - 调整边距 */
+.system .message-content {
+  margin-left: 0 !important;
+  width: 100% !important;
+}
+
+.system .message-content .main-content {
+  margin-left: 0 !important;
+  padding: 24rpx 32rpx !important;
+  border-radius: 32rpx !important;
+  font-size: 32rpx !important;
+  line-height: 1.6 !important;
+  box-sizing: border-box !important;
+  max-width: 90% !important;
+  word-wrap: break-word !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%) !important;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1) !important;
+  position: relative !important;
+  transition: all 0.3s ease !important;
+  color: var(--weui-FG-0) !important;
+  z-index: 1 !important;
+}
+
+/* 移除系统消息气泡的尾巴 */
+.system .message-content .main-content::after {
+  display: none !important;
+}
+
+/* 头像容器 - 左侧头像区域 */
+.avatar-left {
+  /* 防止头像被压缩 */
+  flex-shrink: 0;
+  /* 右侧内边距 */
+  padding-right: 16rpx;
+  /* 使用弹性布局居中 */
+  display: flex;
+  justify-content: center;
+  /* 头像顶部对齐 */
+  align-items: flex-start;
+  /* 微调头像位置 */
+  padding-top: 8rpx;
+}
+
+/* 消息头像 - 圆形头像样式 */
+.message-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+  border: 4rpx solid var(--weui-BG-2);
+}
+
+/* =====================
+ * 导航栏样式
+ *
+ * 说明：
+ * - 实现了固定在顶部的导航栏
+ * - 包含了标题、返回按钮等元素
+ * - 添加了阴影效果增强层次感
+ *
+ * 使用：
+ * <view class="navBar">...</view>
+ * ===================== */
+.navBar {
+  /* 不使用fixed定位，而是作为flex子项 */
+  position: relative;
+  width: 100%;
+  height: 112rpx;
+  background-color: var(--weui-BG-2);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+/* 导航栏内容布局 */
+.nav-content {
+  display: flex;
+  align-items: center;
+  padding: 0 32rpx;
+  height: 100%;
+}
+
+/* 导航栏信息区域 */
+.nav-info {
+  flex: 1;
+  margin-left: 24rpx;
+}
+
+/* 机器人名称样式 */
+.bot-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: var(--weui-FG-0);
+  display: block;
+}
+
+/* 在线状态文本样式 */
+.bot-status {
+  font-size: 24rpx;
+  color: var(--weui-FG-1);
+  display: block;
+  margin-top: 4rpx;
+}
+
+/* 导航栏操作按钮容器 */
+.nav-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+/* 导航栏操作按钮样式 */
+.nav-action-btn {
+  width: 48rpx;
+  height: 48rpx;
+  padding: 8rpx;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+/* 按钮点击状态样式 */
+.nav-action-btn:active {
+  background-color: rgba(0, 0, 0, 0.05);
+  /* 点击时添加背景色 */
+}
+
+/* 机器人头像样式 */
+.bot-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  border: 4rpx solid var(--weui-BG-2);
+  box-shadow: var(--md-sys-elevation-1);
+}
+
+/* =====================
+ * 主聊天区域样式
+ *
+ * 说明：
+ * - 实现了消息列表的滚动和布局
+ * - 优化了滚动体验
+ * - 合理控制内容区域的间距
+ *
+ * 使用：
+ * <scroll-view class="main">...</scroll-view>
+ * ===================== */
+
+
+/* 下拉刷新提示文本 */
+.tips {
+  width: 100%;
+  height: 50rpx;
+  margin-top: 40rpx;
+  color: var(--weui-FG-1);
+  font-size: 28rpx;
+  text-align: center;
+}
+
+/* =====================
+ * 消息气泡样式
+ *
+ * 说明：
+ * - 定义了用户和系统消息的气泡样式
+ * - 包含了不同状态的样式变化
+ * - 支持长文本自动换行
+ *
+ * 使用：
+ * <view class="system">...</view>
+ * <view class="user">...</view>
+ * ===================== */
+
+/* 用户消息容器 */
+.user-message {
+  display: flex;
+  justify-content: flex-end;
+  margin: 24rpx 0;
+  padding-right: 24rpx;
+}
+
+/* 用户消息气泡 */
+.message-bubble {
+  padding: 24rpx 32rpx;
+  border-radius: 32rpx 32rpx 0 32rpx;
+  font-size: 32rpx;
+  line-height: 1.6;
+  box-sizing: border-box;
+  max-width: 90%;
+  word-wrap: break-word;
+  background: linear-gradient(135deg, #95ec69 0%, #7dcd5f 100%);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: all 0.3s ease;
+  color: #000000;
+}
+
+/* 系统消息气泡 */
+.system_content {
+  padding: 24rpx 32rpx;
+  border-radius: 32rpx 32rpx 32rpx 0;
+  font-size: 32rpx;
+  line-height: 1.6;
+  box-sizing: border-box;
+  max-width: 90%;
+  word-wrap: break-word;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin-left: 24rpx;
+  transition: all 0.3s ease;
+}
+
+/* 发送状态容器 */
+.sending-status {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 12rpx 24rpx;
+  margin-bottom: 8rpx;
+}
+
+/* 状态图标 */
+.status-icon {
+  width: 32rpx;
+  height: 32rpx;
+  animation: rotate 1s linear infinite;
+}
+
+/* 状态文本 */
+.status-text {
+  font-size: 28rpx;
+  color: var(--weui-FG-1);
+}
+
+/* 旋转动画 */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 文件列表容器 */
+.fileBar {
+  width: 100%;
+  padding-left: 80rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-right: 24rpx;
+}
+
+/* 文件列表样式 */
+.file_list {
+  padding: 0 40rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 链接容器样式 */
+.link-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 推荐问题容器 - Material Design 3 风格 */
+.recommended-questions {
+  display: flex;
+  flex-direction: column;
+  margin: 32rpx 0 24rpx 0;
+  padding: 0 24rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 问题标题 */
+.questions-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--md-sys-color-primary, #006E1C);
+  margin-bottom: 16rpx;
+  padding-left: 8rpx;
+}
+
+/* 问题容器 */
+.questions-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  width: 100%;
+}
+
+/* 问题项 - Material Design 3 风格的卡片 */
+.question-item {
+  padding: 12rpx 24rpx;
+  border-radius: 20rpx;
+  background-color: var(--md-sys-color-secondary-container, #D0F5C3);
+  box-shadow: var(--md-sys-elevation-1, 0 1px 2px rgba(0,0,0,0.1));
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  margin-bottom: 8rpx;
+}
+
+/* 问题文本 */
+.question-text {
+  font-size: 28rpx;
+  color: var(--md-sys-color-on-secondary-container, #0C2000);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* 点击效果 */
+.question-item:active {
+  background-color: var(--md-sys-color-tertiary-container, #95EC69);
+  transform: scale(0.98);
+  box-shadow: var(--md-sys-elevation-0, none);
+}
+
+/* =====================
+ * 底部输入区域样式
+ *
+ * 说明：
+ * - 实现了固定在底部的输入区域
+ * - 包含输入框和功能按钮
+ * - 支持文件上传和表情选择
+ *
+ * 使用：
+ * <view class="footer">...</view>
+ * ===================== */
+
+/* 底部输入区域 - 自适应高度 */
+.footer {
+  position: relative;
+  background-color: var(--weui-BG-2);
+  border-top: 2rpx solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  box-sizing: border-box;
+  transform: translateZ(0);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  height: auto;
+}
+
+/* 输入区域 - 自适应内容 */
+.input-area {
+  width: 100%;
+  padding: 12rpx 32rpx;
+  box-sizing: border-box;
+  background-color: var(--weui-BG-2);
+}
+
+/* 输入框容器 - 自适应高度 */
+.input-container {
+  display: flex;
+  align-items: flex-end;
+  background-color: rgba(95, 95, 95, 0.05);
+  min-height: 88rpx;
+  max-height: 320rpx;
+  border-radius: 44rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* 输入框 - 文本输入区域 */
+.input-box {
+  /* 自动填充剩余空间 */
+  flex: 1;
+  /* 最小高度 */
+  min-height: 72rpx;
+  /* 最大高度，超出后可滚动 */
+  max-height: 280rpx;
+  /* 允许垂直滚动 */
+  overflow-y: auto;
+  /* 右侧外边距 */
+  margin-right: 16rpx;
+  /* 使用border-box盒模型 */
+  box-sizing: border-box;
+  /* 防止内容溢出 */
+  word-wrap: break-word;
+  /* 添加过渡效果 */
+  transition: height 0.2s;
+}
+
+/* 输入框文本样式 */
+.input {
+  /* 宽度100% */
+  width: 100%;
+  /* 最小高度 */
+  min-height: 72rpx;
+  /* 字体大小 */
+  font-size: 32rpx;
+  /* 行高 */
+  line-height: 1.5;
+  /* 文本颜色 */
+  color: var(--weui-FG-0);
+  /* 内边距 */
+  padding: 10rpx 25rpx;
+  /* 使用border-box盒模型 */
+  box-sizing: border-box;
+  /* 允许换行 */
+  white-space: pre-wrap;
+  /* 自动换行 */
+  word-wrap: break-word;
+  /* 防止文本被遮挡 */
+  margin-bottom: 0;
+}
+
+.input-actions {
+  gap: 24rpx;
+  padding: 0 24rpx;
+}
+
+.action-icon {
+  width: 48rpx;
+  height: 48rpx;
+  flex-shrink: 0;
+  display: block;
+}
+
+.file-icon {
+  position: relative;
+  left: 109rpx;
+  top: 59rpx
+}
+
+.send-btn {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-color, #1976d2);
+  margin-left: 16rpx;
+  transition: all 0.2s;
+}
+
+.send-btn:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+.send-icon {
+  width: 40rpx;
+  height: 40rpx;
+  filter: brightness(0) invert(1);
+}
+
+/* 工具栏 - 底部功能按钮区域 */
+.toolbar {
+  padding: 12rpx 40rpx;
+  border-top: 2rpx solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--weui-BG-2);
+  box-sizing: border-box;
+}
+
+.tool-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.tool-icon {
+  width: 48rpx;
+  height: 48rpx;
+  padding: 16rpx;
+  border-radius: 50%;
+  background-color: rgba(95, 95, 95, 0.05);
+  transition: all 0.2s;
+  flex-shrink: 0;
+  display: block;
+}
+
+.tool-item:active .tool-icon {
+  background-color: rgba(95, 95, 95, 0.1);
+  transform: scale(0.95);
+}
+
+.tool-text {
+  font-size: 24rpx;
+  color: var(--weui-FG-1);
+}
+
+/* 分享按钮重置 */
+.share-btn {
+  background: none;
+  padding: 0;
+  margin: 0;
+  line-height: normal;
+}
+
+.share-btn::after {
+  display: none;
+}
+
+/* 联网搜索开关 */
+.webSearchSwitch {
+  padding: 12rpx 24rpx;
+  border-radius: 32rpx;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  background-color: rgba(95, 95, 95, 0.05);
+  color: var(--weui-FG-1);
+  transition: all 0.2s;
+}
+
+.feature_enable {
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+/* =====================
+ * 响应式布局样式
+ *
+ * 说明：
+ * - 针对不同屏幕尺寸优化布局
+ * - 调整内容区域的宽度和间距
+ * - 优化大屏设备的显示效果
+ *
+ * 使用：
+ * 自动根据屏幕尺寸调整
+ * ===================== */
+@media screen and (min-width: 768px) {
+  .main {
+    padding-left: 40rpx;
+    padding-right: 40rpx;
+  }
+
+  .system_content,
+  .message-bubble {
+    max-width: 70%;
+  }
+
+  .input_box {
+    width: calc(100% - 160rpx);
+  }
+}
+
+/* 图标基础样式 */
+.action-icon {
+  width: 48rpx;
+  height: 48rpx;
+  flex-shrink: 0;
+  display: block;
+}
+
+.result-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+  display: block;
+}
+
+.feature-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* 消息操作按钮组样式 */
+.message-actions {
+  gap: 32rpx;
+  margin-top: 16rpx;
+  padding: 8rpx 0;
+}
+
+.action-btn {
+  padding: 12rpx;
+  border-radius: 50%;
+}
+
+.tool-text {
+  font-size: 24rpx;
+  color: var(--weui-FG-1);
+}
+
+/* 功能列表样式 */
+.feature-list {
+  width: calc(100% - 80rpx);
+  margin: 20rpx auto;
+  gap: 20rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.webSearchSwitch {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 24rpx;
+  border-radius: 32rpx;
+  background-color: rgba(95, 95, 95, 0.05);
+  transition: all 0.2s;
+}
+
+/* 回到底部按钮样式 */
+.to-bottom-btn {
+  position: fixed;
+  right: 32rpx;
+  bottom: 280rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: var(--weui-BG-2);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.to-bottom-icon {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+/* 添加响应式调整 */
+@media screen and (max-width: 375px) {
+  .input-area {
+    padding: 12rpx 24rpx;
+  }
+
+  .input-container {
+    min-height: 80rpx;
+    padding: 8rpx 12rpx;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .input-area {
+    padding: 16rpx 40rpx;
+  }
+
+  .input-container {
+    min-height: 96rpx;
+    padding: 12rpx 20rpx;
+  }
+}

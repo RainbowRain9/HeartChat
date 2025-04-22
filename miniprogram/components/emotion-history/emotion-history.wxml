@@ -1,0 +1,61 @@
+<!--components/emotion-history/emotion-history.wxml-->
+<view class="history-container {{show ? 'show' : ''}} {{darkMode ? 'dark' : ''}}">
+  <view class="history-mask" bindtap="closeHistory"></view>
+  <view class="history-panel" catchtap="stopPropagation">
+    <!-- 面板头部 -->
+    <view class="panel-header">
+      <text class="panel-title">情感历史记录</text>
+      <view class="close-btn" bindtap="closeHistory">×</view>
+    </view>
+    
+    <!-- 加载中 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+    
+    <!-- 历史记录列表 -->
+    <scroll-view class="history-list" scroll-y wx:if="{{!loading}}">
+      <!-- 无记录提示 -->
+      <view class="empty-tip" wx:if="{{historyRecords.length === 0}}">
+        <text>暂无历史记录</text>
+      </view>
+      
+      <!-- 记录列表 -->
+      <view class="record-item" 
+            wx:for="{{historyRecords}}" 
+            wx:key="_id"
+            data-index="{{index}}"
+            bindtap="viewRecordDetail">
+        <!-- 记录时间 -->
+        <view class="record-time">{{item.formattedTime}}</view>
+        
+        <!-- 记录内容 -->
+        <view class="record-content">
+          <!-- 角色信息 -->
+          <view class="record-role" wx:if="{{item.roleName}}">
+            <text class="role-label">角色:</text>
+            <text class="role-name">{{item.roleName}}</text>
+          </view>
+          
+          <!-- 情感类型 -->
+          <view class="record-emotion">
+            <text class="emotion-label">情感:</text>
+            <view class="emotion-type" style="background-color: {{emotionColors[item.analysis.type]}}">
+              {{emotionLabels[item.analysis.type]}}
+            </view>
+            <text class="emotion-intensity">强度: {{item.analysis.intensity * 100}}%</text>
+          </view>
+        </view>
+        
+        <!-- 记录摘要 -->
+        <view class="record-summary" wx:if="{{item.analysis.report}}">
+          <text class="summary-text">{{item.analysis.report}}</text>
+        </view>
+        
+        <!-- 查看详情按钮 -->
+        <view class="detail-btn">查看详情</view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

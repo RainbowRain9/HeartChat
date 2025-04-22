@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "情绪分析",
+  "navigationStyle": "default",
+  "usingComponents": {
+    "emotion-analysis": "/components/emotion-analysis/emotion-analysis"
+  }
+}

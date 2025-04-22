@@ -1,0 +1,408 @@
+---
+description: 小程序设计系统规范
+globs: 
+alwaysApply: false
+---
+# 小程序设计系统规范
+
+## 设计原则
+
+1. **一致性**：保持视觉和交互的一致性，减少用户学习成本
+2. **简洁性**：简化界面，减少不必要的元素，突出重要内容
+3. **易用性**：设计易于理解和使用的界面，降低操作难度
+4. **反馈性**：为用户操作提供及时、清晰的反馈
+5. **效率性**：减少用户完成任务所需的步骤和时间
+6. **适应性**：适应不同设备和屏幕尺寸，提供良好的体验
+
+## 颜色系统
+
+### 主色调
+
+- **主色**：`#4A90E2` (蓝色)
+- **辅助色**：`#50E3C2` (青色)
+- **强调色**：`#FF6B6B` (红色)
+
+### 中性色
+
+- **文本主色**：`#333333`
+- **文本次色**：`#666666`
+- **文本提示色**：`#999999`
+- **分割线/边框**：`#E5E5E5`
+- **背景色**：`#F8F8F8`
+- **卡片背景**：`#FFFFFF`
+
+### 功能色
+
+- **成功**：`#52C41A`
+- **警告**：`#FAAD14`
+- **错误**：`#F5222D`
+- **信息**：`#1890FF`
+
+### 颜色变量
+
+```css
+/* app.wxss */
+page {
+  /* 主色调 */
+  --color-primary: #4A90E2;
+  --color-primary-light: #6BA6E8;
+  --color-primary-dark: #3A7BC8;
+  
+  /* 辅助色 */
+  --color-secondary: #50E3C2;
+  --color-secondary-light: #7EEBD1;
+  --color-secondary-dark: #3DBEA0;
+  
+  /* 强调色 */
+  --color-accent: #FF6B6B;
+  --color-accent-light: #FF8F8F;
+  --color-accent-dark: #E55757;
+  
+  /* 中性色 */
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-hint: #999999;
+  --color-divider: #E5E5E5;
+  --color-background: #F8F8F8;
+  --color-card: #FFFFFF;
+  
+  /* 功能色 */
+  --color-success: #52C41A;
+  --color-warning: #FAAD14;
+  --color-error: #F5222D;
+  --color-info: #1890FF;
+}
+```
+
+## 排版系统
+
+### 字体
+
+- **系统默认字体**：使用微信小程序默认字体
+- **中文字体**：PingFang SC, Hiragino Sans GB, Microsoft YaHei
+- **英文字体**：SF Pro Text, Helvetica Neue, Arial
+
+### 字号
+
+- **特大标题**：36rpx (18px)
+- **大标题**：32rpx (16px)
+- **中标题**：28rpx (14px)
+- **小标题**：24rpx (12px)
+- **正文**：28rpx (14px)
+- **辅助文字**：24rpx (12px)
+- **说明文字**：20rpx (10px)
+
+### 行高
+
+- **紧凑**：1.2
+- **标准**：1.5
+- **宽松**：1.8
+
+### 字重
+
+- **常规**：400
+- **中等**：500
+- **加粗**：600
+
+### 排版变量
+
+```css
+/* app.wxss */
+page {
+  /* 字号 */
+  --font-size-xxl: 40rpx;
+  --font-size-xl: 36rpx;
+  --font-size-lg: 32rpx;
+  --font-size-md: 28rpx;
+  --font-size-sm: 24rpx;
+  --font-size-xs: 20rpx;
+  
+  /* 行高 */
+  --line-height-compact: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-loose: 1.8;
+  
+  /* 字重 */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+}
+```
+
+## 间距系统
+
+### 基础间距
+
+- **基础单位**：8rpx (4px)
+- **超小间距**：8rpx (4px)
+- **小间距**：16rpx (8px)
+- **中间距**：24rpx (12px)
+- **大间距**：32rpx (16px)
+- **超大间距**：48rpx (24px)
+- **特大间距**：64rpx (32px)
+
+### 间距变量
+
+```css
+/* app.wxss */
+page {
+  /* 间距 */
+  --spacing-xxs: 8rpx;
+  --spacing-xs: 16rpx;
+  --spacing-sm: 24rpx;
+  --spacing-md: 32rpx;
+  --spacing-lg: 48rpx;
+  --spacing-xl: 64rpx;
+  --spacing-xxl: 80rpx;
+}
+```
+
+## 圆角系统
+
+### 基础圆角
+
+- **无圆角**：0
+- **小圆角**：4rpx (2px)
+- **中圆角**：8rpx (4px)
+- **大圆角**：16rpx (8px)
+- **超大圆角**：24rpx (12px)
+- **全圆角**：50%
+
+### 圆角变量
+
+```css
+/* app.wxss */
+page {
+  /* 圆角 */
+  --radius-none: 0;
+  --radius-sm: 4rpx;
+  --radius-md: 8rpx;
+  --radius-lg: 16rpx;
+  --radius-xl: 24rpx;
+  --radius-circle: 50%;
+}
+```
+
+## 阴影系统
+
+### 基础阴影
+
+- **无阴影**：none
+- **小阴影**：0 2rpx 8rpx rgba(0, 0, 0, 0.1)
+- **中阴影**：0 4rpx 16rpx rgba(0, 0, 0, 0.1)
+- **大阴影**：0 8rpx 24rpx rgba(0, 0, 0, 0.1)
+- **超大阴影**：0 16rpx 48rpx rgba(0, 0, 0, 0.1)
+
+### 阴影变量
+
+```css
+/* app.wxss */
+page {
+  /* 阴影 */
+  --shadow-none: none;
+  --shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 16rpx 48rpx rgba(0, 0, 0, 0.1);
+}
+```
+
+## 组件规范
+
+### 按钮
+
+#### 按钮类型
+
+- **主要按钮**：用于页面主要操作
+- **次要按钮**：用于次要操作
+- **文本按钮**：用于辅助操作
+- **图标按钮**：用于常见操作的快捷方式
+
+#### 按钮尺寸
+
+- **大按钮**：高度 88rpx (44px)，用于页面主要操作
+- **中按钮**：高度 72rpx (36px)，用于一般操作
+- **小按钮**：高度 56rpx (28px)，用于辅助操作
+
+#### 按钮状态
+
+- **默认状态**
+- **按下状态**：降低透明度至 0.8
+- **禁用状态**：降低透明度至 0.5，不可点击
+
+### 输入框
+
+#### 输入框类型
+
+- **单行输入框**：用于输入单行文本
+- **多行输入框**：用于输入多行文本
+- **搜索输入框**：用于搜索功能
+
+#### 输入框状态
+
+- **默认状态**
+- **聚焦状态**：显示聚焦边框
+- **禁用状态**：降低透明度，不可编辑
+- **错误状态**：显示错误边框和提示信息
+
+### 卡片
+
+#### 卡片类型
+
+- **基础卡片**：包含标题和内容
+- **媒体卡片**：包含图片和内容
+- **操作卡片**：包含可操作的元素
+
+#### 卡片样式
+
+- **圆角**：16rpx (8px)
+- **内边距**：24rpx (12px)
+- **阴影**：var(--shadow-md)
+
+### 列表
+
+#### 列表类型
+
+- **基础列表**：显示简单的文本内容
+- **头像列表**：显示头像和文本内容
+- **图标列表**：显示图标和文本内容
+- **操作列表**：包含可操作的元素
+
+#### 列表样式
+
+- **项目高度**：88rpx (44px)
+- **内边距**：水平 32rpx (16px)，垂直 24rpx (12px)
+- **分割线**：1px solid var(--color-divider)
+
+### 对话框
+
+#### 对话框类型
+
+- **提示对话框**：显示提示信息
+- **确认对话框**：需要用户确认的操作
+- **输入对话框**：需要用户输入信息
+
+#### 对话框样式
+
+- **圆角**：16rpx (8px)
+- **内边距**：32rpx (16px)
+- **阴影**：var(--shadow-lg)
+
+### 标签
+
+#### 标签类型
+
+- **基础标签**：显示简单的文本内容
+- **可关闭标签**：可以关闭的标签
+- **可选择标签**：可以选择的标签
+
+#### 标签样式
+
+- **圆角**：8rpx (4px)
+- **内边距**：水平 16rpx (8px)，垂直 8rpx (4px)
+- **字体大小**：24rpx (12px)
+
+## 图标系统
+
+### 图标尺寸
+
+- **小图标**：32rpx (16px)
+- **中图标**：40rpx (20px)
+- **大图标**：48rpx (24px)
+
+### 图标颜色
+
+- **主要图标**：var(--color-text-primary)
+- **次要图标**：var(--color-text-secondary)
+- **提示图标**：var(--color-text-hint)
+- **功能图标**：使用对应的功能色
+
+## 动画系统
+
+### 过渡时间
+
+- **快速过渡**：150ms
+- **标准过渡**：300ms
+- **慢速过渡**：450ms
+
+### 过渡曲线
+
+- **标准曲线**：ease-in-out
+- **加速曲线**：ease-in
+- **减速曲线**：ease-out
+- **弹性曲线**：cubic-bezier(0.68, -0.55, 0.27, 1.55)
+
+### 动画变量
+
+```css
+/* app.wxss */
+page {
+  /* 过渡时间 */
+  --transition-fast: 150ms;
+  --transition-normal: 300ms;
+  --transition-slow: 450ms;
+  
+  /* 过渡曲线 */
+  --easing-standard: ease-in-out;
+  --easing-accelerate: ease-in;
+  --easing-decelerate: ease-out;
+  --easing-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+```
+
+## 响应式设计
+
+### 断点
+
+- **小屏幕**：< 375px
+- **中屏幕**：375px - 414px
+- **大屏幕**：> 414px
+
+### 适配方法
+
+- 使用 rpx 单位进行响应式布局
+- 使用 flex 布局适应不同屏幕尺寸
+- 针对特殊情况使用条件渲染
+
+## 主题系统
+
+### 亮色主题
+
+```css
+/* app.wxss */
+page {
+  /* 亮色主题 */
+  --theme-background: #F8F8F8;
+  --theme-card: #FFFFFF;
+  --theme-text-primary: #333333;
+  --theme-text-secondary: #666666;
+  --theme-text-hint: #999999;
+  --theme-divider: #E5E5E5;
+}
+```
+
+### 暗色主题
+
+```css
+/* dark-theme.wxss */
+page {
+  /* 暗色主题 */
+  --theme-background: #121212;
+  --theme-card: #1E1E1E;
+  --theme-text-primary: #FFFFFF;
+  --theme-text-secondary: #B3B3B3;
+  --theme-text-hint: #737373;
+  --theme-divider: #2C2C2C;
+}
+```
+
+## 最佳实践
+
+1. 使用变量系统保持一致性
+2. 遵循微信小程序设计规范
+3. 保持视觉层次清晰
+4. 提供足够的视觉反馈
+5. 确保界面在不同设备上的适配性
+6. 使用组件化思想构建界面
+7. 定期检查和优化设计系统
+8. 保持设计系统的文档更新

@@ -1,0 +1,96 @@
+<!--components/emotion-panel/emotion-panel.wxml-->
+<view class="emotion-panel-container {{show ? 'show' : ''}} {{darkMode ? 'dark' : ''}}">
+  <view class="panel-mask" bindtap="closePanel"></view>
+  <view class="emotion-panel {{emotionData.type}}" catchtap="stopPropagation">
+    <!-- 面板头部 -->
+    <view class="panel-header">
+      <text class="panel-title">情感分析</text>
+      <view class="close-btn" bindtap="closePanel">×</view>
+    </view>
+
+    <!-- 情感饼图 -->
+    <view class="emotion-pie-container">
+      <emotion-pie emotion="{{emotionData}}" darkMode="{{darkMode}}" bind:select="onEmotionSelect"></emotion-pie>
+    </view>
+
+    <!-- 情感报告 -->
+    <view class="emotion-report">
+      <text class="report-title">情感报告</text>
+      <text class="report-content">{{emotionData.summary || emotionData.report}}</text>
+    </view>
+
+    <!-- 情感详情 -->
+    <view class="emotion-details">
+      <text class="details-title">情感详情</text>
+
+      <view class="details-item">
+        <text class="detail-label">主要情感：</text>
+        <text class="detail-value">{{emotionLabels[emotionData.primary_emotion || emotionData.type] || emotionData.primary_emotion || emotionData.type}}</text>
+      </view>
+
+      <view class="details-item" wx:if="{{emotionData.secondary_emotions && emotionData.secondary_emotions.length}}">
+        <text class="detail-label">次要情感：</text>
+        <view class="detail-tags">
+          <text wx:for="{{emotionData.secondary_emotions}}" wx:key="index" class="detail-tag">{{emotionLabels[item] || item}}</text>
+        </view>
+      </view>
+
+      <view class="details-item">
+        <text class="detail-label">情感强度：</text>
+        <text class="detail-value">{{intensityText}}</text>
+      </view>
+
+      <view class="details-item" wx:if="{{emotionData.valence !== undefined}}">
+        <text class="detail-label">情感极性：</text>
+        <text class="detail-value">{{polarityText}}</text>
+      </view>
+
+      <view class="details-item" wx:if="{{emotionData.trend && emotionData.trend !== 'unknown'}}">
+        <text class="detail-label">情绪趋势：</text>
+        <text class="detail-value">{{trendText}}</text>
+      </view>
+
+      <view class="details-item">
+        <text class="detail-label">主题关键词：</text>
+        <view class="detail-tags">
+          <text wx:for="{{emotionData.topic_keywords || emotionData.keywords}}" wx:key="index" class="detail-tag">{{item}}</text>
+          <text wx:if="{{!hasKeywords}}" class="no-data">无关键词</text>
+        </view>
+      </view>
+
+      <view class="details-item" wx:if="{{emotionData.emotion_triggers && emotionData.emotion_triggers.length}}">
+        <text class="detail-label">情绪触发词：</text>
+        <view class="detail-tags">
+          <text wx:for="{{emotionData.emotion_triggers}}" wx:key="index" class="detail-tag">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 建议列表 -->
+    <view class="emotion-suggestions">
+      <text class="suggestions-title">建议</text>
+      <view class="suggestions-list">
+        <view class="suggestion-item" wx:for="{{emotionData.suggestions}}" wx:key="index">
+          <text class="suggestion-icon">💡</text>
+          <text class="suggestion-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button class="action-btn switch-role-btn" bindtap="switchRole">
+        <text class="btn-icon">👤</text>
+        <text class="btn-text">切换角色</text>
+      </button>
+      <button class="action-btn save-btn" bindtap="saveEmotion">
+        <text class="btn-icon">💾</text>
+        <text class="btn-text">保存记录</text>
+      </button>
+      <button class="action-btn history-btn" bindtap="viewHistory">
+        <text class="btn-icon">📊</text>
+        <text class="btn-text">历史记录</text>
+      </button>
+    </view>
+  </view>
+</view>

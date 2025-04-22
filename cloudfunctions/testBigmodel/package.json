@@ -1,0 +1,15 @@
+{
+  "name": "testBigmodel",
+  "version": "1.0.0",
+  "description": "智谱AI (BigModel) 模块测试云函数",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3",
+    "axios": "^1.4.0"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "name": "heart-chat",
+  "version": "1.0.0",
+  "description": "情商提升助手小程序",
+  "main": "app.js",
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "cross-env NODE_ENV=development",
+    "build": "cross-env NODE_ENV=production && npm run build:npm",
+    "build:npm": "node ./build/build-npm.js",
+    "test": "jest",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:fix": "eslint . --ext .js,.ts --fix",
+    "format": "prettier --write \"**/*.{js,ts,json,md,wxml,wxss}\"",
+    "prepare": "husky install",
+    "clean": "rimraf miniprogram_npm"
+  },
+  "keywords": [
+    "wechat",
+    "miniprogram",
+    "emotion",
+    "chat",
+    "ai"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@vant/weapp": "^1.11.1",
+    "dayjs": "^1.11.10",
+    "echarts": "^5.6.0"
+  },
+  "devDependencies": {
+    "@types/wechat-miniprogram": "^3.4.7",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.1",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,wxml,wxss}": [
+      "prettier --write"
+    ]
+  }
+}

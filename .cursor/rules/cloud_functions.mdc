@@ -1,0 +1,86 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# 云函数开发规范
+
+## 功能概述
+HeartChat使用微信小程序云开发提供的云函数作为后端服务，处理数据操作、第三方API调用和业务逻辑。
+
+## 云函数目录结构
+- [cloudfunctions/](mdc:cloudfunctions/)：云函数根目录
+  - [chat/](mdc:cloudfunctions/chat/)：聊天相关云函数
+  - [emotion/](mdc:cloudfunctions/emotion/)：情感分析相关云函数
+  - [user/](mdc:cloudfunctions/user/)：用户管理相关云函数
+  - [roles/](mdc:cloudfunctions/roles/)：角色管理相关云函数
+  - [analysis/](mdc:cloudfunctions/analysis/)：数据分析相关云函数
+  - [generateDailyReports/](mdc:cloudfunctions/generateDailyReports/)：生成每日报告云函数
+  - [httpRequest/](mdc:cloudfunctions/httpRequest/)：HTTP请求相关云函数
+  - [testBigmodel/](mdc:cloudfunctions/testBigmodel/)：大模型测试云函数
+  - [login/](mdc:cloudfunctions/login/)：用户登录云函数
+  - [clearDatabase/](mdc:cloudfunctions/clearDatabase/)：清理数据库云函数
+  - [initReportCollections/](mdc:cloudfunctions/initReportCollections/)：初始化报告集合云函数
+
+## 代码规范
+- 使用 JavaScript 作为开发语言
+- 使用async/await处理异步操作
+- 使用try-catch处理异常
+- 函数入口统一为index.js中的main函数
+- 遵循单一职责原则，每个云函数只负责一个功能领域
+- 合理使用模块化，将复杂逻辑拆分为多个文件
+- 对敏感操作进行权限验证
+
+## 常用云开发资源
+- 云数据库：存储应用数据
+- 云存储：存储文件（如用户头像、语音消息等）
+- 云调用：调用微信开放能力
+- 定时触发器：定时执行云函数（如生成每日报告）
+
+## 错误处理规范
+云函数应当返回统一格式的响应：
+```javascript
+// 成功响应
+return {
+  success: true,
+  data: result,
+  message: "操作成功"
+}
+
+// 错误响应
+return {
+  success: false,
+  error: error.message,
+  code: errorCode
+}
+```
+
+## 主要云函数功能
+
+### 聊天相关
+- 发送消息：将用户消息发送到AI服务并返回回复
+- 获取历史记录：查询和返回聊天历史记录
+- 消息管理：删除、标记等操作
+
+### 情感分析相关
+- 文本情感分析：分析文本的情感倾向
+- 情绪历史记录：记录和查询用户的情绪变化
+- 情绪报告生成：生成情绪分析报告
+
+### 用户管理相关
+- 用户注册：创建新用户记录
+- 用户信息管理：更新、查询用户信息
+- 用户行为统计：统计用户使用情况
+
+### 角色管理相关
+- 角色列表：获取可用的AI角色列表
+- 角色创建：创建自定义AI角色
+- 角色更新：更新AI角色设置
+
+## 安全与性能
+- 敏感操作需进行身份验证
+- 避免在云函数中存储敏感信息（如API密钥）
+- 合理设置云函数超时时间
+- 优化数据库查询性能
+- 使用缓存减少重复计算
+- 对大量数据进行分页处理

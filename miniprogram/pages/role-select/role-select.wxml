@@ -1,0 +1,271 @@
+<!-- pages/role-select/role-select.wxml -->
+<view class="role-select-container {{darkMode ? 'dark' : ''}}">
+  <!-- 状态栏占位 -->
+  <view class="status-bar" style="height: {{statusBarHeight}}px"></view>
+
+  <!-- 自定义导航栏 -->
+  <view class="nav-bar" style="height: {{navBarHeight}}px;">
+    <view class="nav-bar-left">
+      <!-- 移除返回按钮，因为现在是tab页面 -->
+    </view>
+    <view class="nav-bar-title">选择对话角色</view>
+    <view class="nav-bar-right"></view>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-box">
+    <image class="search-icon" src="/images/icons/search.png" mode="aspectFit"></image>
+    <input class="search-input"
+           type="text"
+           placeholder="搜索角色..."
+           value="{{searchValue}}"
+           bindinput="handleSearchInput"></input>
+    <view class="clear-button" bindtap="handleClearSearch" wx:if="{{searchValue}}">
+      <image class="clear-icon" src="/images/icons/clear.png" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <!-- 角色分类 -->
+  <scroll-view class="category-scroll" scroll-x enable-flex>
+    <view class="category-list">
+      <view class="category-item {{activeCategory === category.id ? 'active' : ''}}"
+            wx:for="{{categories}}"
+            wx:key="id"
+            wx:for-item="category"
+            data-category="{{category.id}}"
+            bindtap="handleCategoryChange">
+        {{category.name}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 角色列表容器 -->
+  <view class="role-list-container">
+    <!-- 加载中 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 内容区域 -->
+    <scroll-view class="role-list-scroll" scroll-y enable-back-to-top wx:if="{{!loading}}">
+      <!-- 推荐角色 -->
+      <block wx:if="{{activeCategory === 'all' && recommendedRoles.length > 0}}">
+        <view class="section-title">推荐角色</view>
+        <view class="role-grid">
+          <role-card wx:for="{{recommendedRoles}}"
+                    wx:key="_id"
+                    role="{{item}}"
+                    selected="{{selectedRoleId === item._id}}"
+                    darkMode="{{darkMode}}"
+                    bind:select="handleSelectRole"
+                    bind:longpress="handleLongPressRole"></role-card>
+        </view>
+      </block>
+
+      <!-- 系统角色 -->
+      <view class="section-title">系统角色</view>
+      <view class="role-grid">
+        <block wx:if="{{systemRoles.length > 0}}">
+          <role-card wx:for="{{systemRoles}}"
+                    wx:key="_id"
+                    wx:if="{{activeCategory === 'all' || item.category === activeCategory || item.role_type === activeCategory}}"
+                    role="{{item}}"
+                    selected="{{selectedRoleId === item._id}}"
+                    darkMode="{{darkMode}}"
+                    bind:select="handleSelectRole"
+                    bind:longpress="handleLongPressRole"></role-card>
+        </block>
+        <view class="empty-tip" wx:else>
+          <image class="empty-icon" src="/images/icons/empty.png" mode="aspectFit"></image>
+          <text class="empty-text">{{activeCategory !== 'all' ? '该分类下暂无系统角色' : '暂无系统角色'}}</text>
+        </view>
+      </view>
+
+      <!-- 我的角色 -->
+      <view class="section-title">我的角色</view>
+      <view class="role-grid">
+        <block wx:if="{{userRoles.length > 0}}">
+          <role-card wx:for="{{userRoles}}"
+                    wx:key="_id"
+                    wx:if="{{activeCategory === 'all' || item.category === activeCategory || item.role_type === activeCategory}}"
+                    role="{{item}}"
+                    selected="{{selectedRoleId === item._id}}"
+                    darkMode="{{darkMode}}"
+                    bind:select="handleSelectRole"
+                    bind:longpress="handleLongPressRole"></role-card>
+        </block>
+        <view class="empty-tip" wx:else>
+          <image class="empty-icon" src="/images/icons/empty.png" mode="aspectFit"></image>
+          <text class="empty-text">{{activeCategory !== 'all' ? '该分类下暂无自定义角色' : '暂无自定义角色'}}</text>
+        </view>
+      </view>
+
+      <!-- 测试按钮 -->
+      <view class="debug-section" wx:if="{{roles.length === 0}}">
+        <button class="debug-button" bindtap="createTestRoles">加载测试数据</button>
+      </view>
+
+      <!-- 调试信息 -->
+      <view class="debug-info" wx:if="{{false}}">
+        <text>roles数量: {{roles.length}}</text>
+        <text>recommendedRoles数量: {{recommendedRoles.length}}</text>
+        <text>过滤后数量: {{filteredRoles.length}}</text>
+        <text>当前分类: {{activeCategory}}</text>
+        <button class="debug-button" bindtap="createTestRoles">加载测试数据</button>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-buttons">
+    <button class="create-button" bindtap="handleCreateRole">创建新角色</button>
+    <button class="start-button {{!selectedRoleId ? 'disabled' : ''}}" bindtap="handleStartChat">开始对话</button>
+  </view>
+
+  <!-- 角色详情弹窗 -->
+  <view class="role-detail-modal {{showRoleDetail ? 'show' : ''}}">
+    <view class="role-detail-content" wx:if="{{currentRole}}">
+      <view class="role-detail-header">
+        <view class="header-placeholder"></view>
+        <text class="role-detail-title">{{currentRole.name || currentRole.role_name || '未命名角色'}}</text>
+        <view class="close-button" bindtap="closeRoleDetail">
+          <image class="close-icon" src="/images/icons/close.png" mode="aspectFit"></image>
+        </view>
+      </view>
+
+      <scroll-view class="role-detail-body" scroll-y>
+        <view class="role-avatar-container">
+          <image class="role-avatar" src="{{currentRole.avatar || currentRole.avatar_url || '/images/avatars/default-avatar.png'}}" mode="aspectFill"></image>
+        </view>
+
+        <view class="role-info-section">
+          <!-- 基本信息 -->
+          <view class="role-info-group">
+            <view class="role-info-row">
+              <view class="role-info-item">
+                <text class="role-info-label">分类：</text>
+                <text class="role-info-value">{{(currentRole.category || currentRole.role_type) === 'emotion' ? '情感支持' :
+                                          (currentRole.category || currentRole.role_type) === 'psychology' ? '心理咨询' :
+                                          (currentRole.category || currentRole.role_type) === 'life' ? '生活伙伴' :
+                                          (currentRole.category || currentRole.role_type) === 'career' || (currentRole.category || currentRole.role_type) === 'work' ? '职场导师' :
+                                          (currentRole.category || currentRole.role_type) === 'other' ? '其他' : '未分类'}}</text>
+              </view>
+            </view>
+
+            <view class="role-info-row">
+              <view class="role-info-item">
+                <text class="role-info-label">关系：</text>
+                <text class="role-info-value">{{currentRole.relationship || '无'}}</text>
+              </view>
+            </view>
+
+            <view class="role-info-row">
+              <view class="role-info-item" wx:if="{{currentRole.age}}">
+                <text class="role-info-label">年龄：</text>
+                <text class="role-info-value">{{currentRole.age}}岁</text>
+              </view>
+
+              <view class="role-info-item" wx:if="{{currentRole.gender}}">
+                <text class="role-info-label">性别：</text>
+                <text class="role-info-value">{{currentRole.gender}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 描述信息 -->
+          <view class="role-info-group">
+            <view class="role-info-row">
+              <view class="role-info-item description-item">
+                <text class="role-info-label">描述：</text>
+                <text class="role-info-value">{{currentRole.description || currentRole.role_desc || '暂无描述'}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 职业和教育背景 -->
+          <view class="role-info-group">
+            <view class="role-info-row" wx:if="{{currentRole.occupation}}">
+              <view class="role-info-item">
+                <text class="role-info-label">职业：</text>
+                <text class="role-info-value">{{currentRole.occupation}}</text>
+              </view>
+            </view>
+
+            <view class="role-info-row" wx:if="{{currentRole.education}}">
+              <view class="role-info-item">
+                <text class="role-info-label">教育背景：</text>
+                <text class="role-info-value">{{currentRole.education}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 个性特征 -->
+          <view class="role-info-group">
+            <view class="role-info-row" wx:if="{{currentRole.hobbies && currentRole.hobbies.length > 0}}">
+              <view class="role-info-item">
+                <text class="role-info-label">爱好：</text>
+                <text class="role-info-value">{{Array.isArray(currentRole.hobbies) ? currentRole.hobbies.join(', ') : currentRole.hobbies}}</text>
+              </view>
+            </view>
+
+            <view class="role-info-row" wx:if="{{currentRole.personality_traits && currentRole.personality_traits.length > 0}}">
+              <view class="role-info-item">
+                <text class="role-info-label">性格特点：</text>
+                <text class="role-info-value">{{Array.isArray(currentRole.personality_traits) ? currentRole.personality_traits.join(', ') : currentRole.personality_traits}}</text>
+              </view>
+            </view>
+
+            <view class="role-info-row" wx:if="{{currentRole.emotional_tendency}}">
+              <view class="role-info-item">
+                <text class="role-info-label">情感倾向：</text>
+                <text class="role-info-value short-text">{{currentRole.emotional_tendency}}</text>
+              </view>
+            </view>
+
+            <view class="role-info-row" wx:if="{{currentRole.communication_style}}">
+              <view class="role-info-item background-item">
+                <text class="role-info-label">说话风格：</text>
+                <text class="role-info-value">{{currentRole.communication_style}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 背景故事 -->
+          <view class="role-info-group" wx:if="{{currentRole.background}}">
+            <view class="role-info-row">
+              <view class="role-info-item background-item">
+                <text class="role-info-label">背景故事：</text>
+                <text class="role-info-value">{{currentRole.background}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 使用统计 -->
+          <view class="role-info-group">
+            <view class="role-info-row">
+              <view class="role-info-item">
+                <text class="role-info-label">使用次数：</text>
+                <text class="role-info-value">{{currentRole.usage && currentRole.usage.usageCount ? currentRole.usage.usageCount : 0}}次</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="role-detail-footer">
+        <view class="system-role-tag" wx:if="{{currentRole.isSystem || currentRole.creator === 'system'}}">
+          <text class="system-role-text">系统预设角色</text>
+        </view>
+
+        <view class="footer-buttons">
+          <view class="button-row">
+            <button class="detail-button edit" bindtap="editRole" data-role="{{currentRole}}" wx:if="{{!currentRole.isSystem && currentRole.creator !== 'system'}}">编辑角色</button>
+            <button class="detail-button delete" bindtap="deleteRole" data-role="{{currentRole}}" wx:if="{{!currentRole.isSystem && currentRole.creator !== 'system'}}">删除角色</button>
+            <button class="detail-button edit chat-btn" bindtap="handleSelectAndChat" data-role="{{currentRole}}">开始对话</button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

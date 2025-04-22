@@ -1,0 +1,21 @@
+{
+  "desc": "配置小程序页面是否允许被索引",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "pages/user/index"
+    },
+    {
+      "action": "allow",
+      "page": "packageA/pages/emotion/analysis"
+    },
+    {
+      "action": "allow",
+      "page": "packageA/pages/emotion/practice"
+    },
+    {
+      "action": "disallow",
+      "page": "*"
+    }
+  ]
+}

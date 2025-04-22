@@ -1,0 +1,179 @@
+<view class="profile-container {{darkMode ? 'dark' : ''}}">
+  <!-- 自定义导航栏 -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-bar-content">
+      <view class="nav-back" bindtap="handleBack">
+        <text class="nav-icon">←</text>
+      </view>
+      <view class="nav-title">个人资料</view>
+      <view class="nav-placeholder"></view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="profile-content" wx:else>
+    <!-- 头像区域 -->
+    <view class="avatar-section">
+      <view class="avatar-container" bindtap="chooseAvatar">
+        <image class="avatar" src="{{userInfo.avatarUrl || '/images/avatars/default-avatar.png'}}"></image>
+        <view class="avatar-edit">
+          <text class="avatar-edit-icon">✎</text> 更换头像
+        </view>
+      </view>
+      <view class="user-name">{{userInfo.nickName || '未设置昵称'}}</view>
+      <view class="user-id">ID: {{userId || '未登录'}}</view>
+    </view>
+
+    <!-- 基本信息卡片 -->
+    <view class="card">
+      <view class="card-header">
+        <image class="card-icon" src="/images/icons/user-info.png"></image>
+        <text class="card-title">基本信息</text>
+      </view>
+      <view class="card-content">
+        <view class="form-item">
+          <text class="form-label required">昵称</text>
+          <input class="form-input {{userInfo.nickName ? 'filled' : ''}}"
+                 value="{{userInfo.nickName}}"
+                 placeholder="请输入昵称"
+                 bindinput="handleNicknameInput" />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">性别</text>
+          <picker class="form-picker {{userInfo.gender ? 'filled' : ''}}"
+                  range="{{genderOptions}}"
+                  value="{{genderIndex}}"
+                  bindchange="handleGenderChange">
+            <view style="padding-right: 40rpx;">{{genderOptions[genderIndex] || '请选择性别'}}</view>
+            <text class="picker-arrow">▼</text>
+          </picker>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">年龄</text>
+          <picker class="form-picker {{userInfo.age ? 'filled' : ''}}"
+                  mode="selector"
+                  range="{{ageOptions}}"
+                  value="{{ageIndex}}"
+                  bindchange="handleAgeChange">
+            <view style="padding-right: 40rpx;">{{userInfo.age ? userInfo.age + '岁' : '请选择年龄'}}</view>
+            <text class="picker-arrow">▼</text>
+          </picker>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">个人简介</text>
+          <textarea class="form-textarea {{userInfo.bio ? 'filled' : ''}}"
+                    value="{{userInfo.bio}}"
+                    placeholder="介绍一下自己吧..."
+                    maxlength="200"
+                    bindinput="handleBioInput"></textarea>
+          <view class="textarea-counter">{{bioLength}}/200</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 性格分析卡片 -->
+    <view class="card">
+      <view class="card-header">
+        <image class="card-icon" src="/images/icons/personality.png"></image>
+        <text class="card-title">性格分析</text>
+        <text class="card-subtitle">基于您的聊天内容分析</text>
+      </view>
+      <view class="card-content">
+        <view wx:if="{{personalityTraits && personalityTraits.length > 0}}">
+          <view class="personality-traits">
+            <view class="trait-item" wx:for="{{personalityTraits}}" wx:key="name">
+              <text class="trait-name">{{item.name}}</text>
+              <view class="trait-bar-container">
+                <view class="trait-bar" style="width: {{item.score}}%;"></view>
+              </view>
+              <text class="trait-score">{{item.score}}%</text>
+            </view>
+          </view>
+
+          <view class="divider"></view>
+
+          <view class="personality-summary">
+            {{personalitySummary || '您的性格特点是开朗、乐观，善于与人沟通。在面对挑战时，您表现出较强的适应能力和解决问题的能力。'}}
+          </view>
+        </view>
+        <view class="empty-data" wx:else>
+          <view class="empty-data-icon">📊</view>
+          <view>暂无性格分析数据，多与AI对话可以获得更准确的分析</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 兴趣标签卡片 -->
+    <view class="card">
+      <view class="card-header">
+        <image class="card-icon" src="/images/icons/interests.png"></image>
+        <text class="card-title">兴趣标签</text>
+      </view>
+      <view class="card-content">
+        <view class="interest-tags" wx:if="{{interestTags && interestTags.length > 0}}">
+          <view class="interest-tag" wx:for="{{interestTags}}" wx:key="*this">{{item}}</view>
+        </view>
+        <view class="empty-data" wx:else>
+          <view class="empty-data-icon">🏷️</view>
+          <view>暂无兴趣标签，多与AI对话可以发现您的兴趣爱好</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 设置卡片 -->
+    <view class="card">
+      <view class="card-header">
+        <image class="card-icon" src="/images/icons/settings.png"></image>
+        <text class="card-title">设置</text>
+      </view>
+      <view class="card-content" style="padding: 0;">
+        <view class="setting-item" bindtap="toggleDarkMode">
+          <image class="setting-icon" src="/images/icons/dark-mode.png"></image>
+          <view class="setting-content">
+            <view class="setting-label">暗黑模式</view>
+            <view class="setting-desc">切换应用的显示主题</view>
+          </view>
+          <view class="setting-action">
+            <switch checked="{{darkMode}}" color="#4a6cf7" bindchange="toggleDarkMode"></switch>
+          </view>
+        </view>
+
+        <view class="setting-item" bindtap="clearChatHistory">
+          <image class="setting-icon" src="/images/icons/clear-history.png"></image>
+          <view class="setting-content">
+            <view class="setting-label">清除聊天记录</view>
+            <view class="setting-desc">删除所有的聊天历史</view>
+          </view>
+          <view class="setting-action">
+            <image class="setting-arrow" src="/images/icons/arrow-right.png"></image>
+          </view>
+        </view>
+
+        <view class="setting-item" bindtap="showAbout">
+          <image class="setting-icon" src="/images/icons/about.png"></image>
+          <view class="setting-content">
+            <view class="setting-label">关于我们</view>
+            <view class="setting-desc">了解更多信息</view>
+          </view>
+          <view class="setting-action">
+            <image class="setting-arrow" src="/images/icons/arrow-right.png"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-button-container">
+      <button class="submit-button" bindtap="saveProfile">保存资料</button>
+    </view>
+  </view>
+</view>

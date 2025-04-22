@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartChat - 聊天</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* 修复在iframe中显示时的输入框位置问题 */
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .ios-status-bar {
+            flex-shrink: 0;
+        }
+        
+        .chat-header {
+            flex-shrink: 0;
+        }
+        
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            padding-bottom: 80px; /* 为输入框留出空间 */
+        }
+        
+        .chat-input-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 12px;
+            display: flex;
+            z-index: 100;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            background-color: #f7fafc;
+            margin-right: 8px;
+        }
+        
+        .send-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #5e72e4;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS 状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">9:41</div>
+        <div class="status-right">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi ml-2"></i>
+            <i class="fas fa-battery-full ml-2"></i>
+        </div>
+    </div>
+
+    <!-- 聊天头部 -->
+    <div class="chat-header bg-white border-b border-gray-200 p-4 flex items-center justify-between sticky top-0 z-10">
+        <div class="flex items-center">
+            <a href="role-select.html" class="mr-3">
+                <i class="fas fa-chevron-left text-gray-600"></i>
+            </a>
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="知心姐姐" class="w-10 h-10 rounded-full mr-3">
+            <div>
+                <h2 class="font-semibold">知心姐姐</h2>
+                <p class="text-xs text-green-500">在线</p>
+            </div>
+        </div>
+        <div>
+            <button class="p-2" onclick="showEmotionAnalysis()">
+                <i class="fas fa-chart-pie text-indigo-500"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 聊天内容区域 -->
+    <div class="chat-container" id="chatContainer">
+        <!-- 时间分割线 -->
+        <div class="text-center text-xs text-gray-500 my-4">今天 14:30</div>
+
+        <!-- AI消息 -->
+        <div class="chat-bubble ai">
+            <p>你好，我是知心姐姐。今天感觉怎么样？有什么想和我分享的吗？</p>
+        </div>
+
+        <!-- 用户消息 -->
+        <div class="chat-bubble user">
+            <p>最近工作压力有点大，感觉很疲惫。</p>
+        </div>
+
+        <!-- AI消息 -->
+        <div class="chat-bubble ai">
+            <p>听到你感到疲惫，我很理解。工作压力确实会影响我们的情绪和身体状态。能具体说说是什么让你感到压力特别大吗？</p>
+        </div>
+
+        <!-- 用户消息 -->
+        <div class="chat-bubble user">
+            <p>项目deadline很紧，而且我还要同时处理多个任务，感觉时间不够用。</p>
+        </div>
+
+        <!-- AI消息 -->
+        <div class="chat-bubble ai">
+            <p>多任务并行确实很具挑战性，特别是在deadline紧张的情况下。你有尝试过制定优先级或者寻求团队支持吗？有时候适当地与领导沟通，调整期望也是必要的。</p>
+        </div>
+
+        <!-- 情绪分析提示 -->
+        <div class="text-center text-xs text-indigo-500 my-4">
+            <span class="bg-indigo-100 px-3 py-1 rounded-full">检测到情绪：压力、疲惫 <i class="fas fa-info-circle ml-1"></i></span>
+        </div>
+
+        <!-- 用户消息 -->
+        <div class="chat-bubble user">
+            <p>我试过列清单，但事情总是比预期的多。我担心如果向领导反映，会显得我能力不足。</p>
+        </div>
+
+        <!-- AI消息 -->
+        <div class="chat-bubble ai">
+            <p>这种担忧很常见，但请记住，承认自己的极限并不是能力不足的表现，而是自我认知和专业态度的体现。</p>
+            <p class="mt-2">或许你可以尝试：</p>
+            <ol class="mt-1 ml-5 list-decimal">
+                <li>重新评估任务优先级，区分紧急和重要</li>
+                <li>与领导进行建设性沟通，提出具体的解决方案</li>
+                <li>每天给自己安排短暂的休息时间，提高效率</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- 聊天输入区域 -->
+    <div class="chat-input-container">
+        <input type="text" class="chat-input" id="messageInput" placeholder="输入消息...">
+        <button class="send-button" onclick="sendMessage()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+
+    <!-- 情感分析弹窗 -->
+    <div id="emotionAnalysisModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl w-5/6 max-h-5/6 overflow-y-auto">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="font-semibold text-lg">情绪分析</h3>
+                <button onclick="hideEmotionAnalysis()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="emotion-card">
+                    <h4 class="emotion-title">当前情绪状态</h4>
+                    <div class="flex justify-between mb-4">
+                        <div class="text-center">
+                            <div class="text-3xl text-yellow-500 mb-1">
+                                <i class="fas fa-tired"></i>
+                            </div>
+                            <div class="text-sm font-medium">疲惫</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl text-red-500 mb-1">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <div class="text-sm font-medium">压力</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl text-blue-500 mb-1">
+                                <i class="fas fa-frown"></i>
+                            </div>
+                            <div class="text-sm font-medium">担忧</div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="text-sm font-medium mb-2">情绪强度</h4>
+                    <div class="emotion-progress">
+                        <div class="emotion-progress-bar bg-yellow-500" style="width: 75%"></div>
+                    </div>
+                    
+                    <h4 class="text-sm font-medium mb-2">关键词</h4>
+                    <div class="keyword-cloud">
+                        <span class="keyword-tag bg-red-100 text-red-700">压力</span>
+                        <span class="keyword-tag bg-yellow-100 text-yellow-700">疲惫</span>
+                        <span class="keyword-tag bg-blue-100 text-blue-700">工作</span>
+                        <span class="keyword-tag bg-green-100 text-green-700">deadline</span>
+                        <span class="keyword-tag bg-purple-100 text-purple-700">多任务</span>
+                        <span class="keyword-tag bg-pink-100 text-pink-700">担忧</span>
+                    </div>
+                    
+                    <h4 class="text-sm font-medium mt-4 mb-2">建议</h4>
+                    <ul class="text-sm space-y-2">
+                        <li class="flex">
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                            <span>尝试番茄工作法，每25分钟工作后休息5分钟</span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                            <span>练习深呼吸或简短冥想，缓解压力</span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                            <span>与同事或领导进行坦诚沟通，寻求支持</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <a href="emotion-analysis.html" class="ios-button block mt-4">查看详细分析</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 发送消息
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                // 创建用户消息气泡
+                const chatContainer = document.getElementById('chatContainer');
+                const userBubble = document.createElement('div');
+                userBubble.className = 'chat-bubble user';
+                userBubble.innerHTML = `<p>${message}</p>`;
+                chatContainer.appendChild(userBubble);
+                
+                // 清空输入框
+                messageInput.value = '';
+                
+                // 滚动到底部
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                
+                // 模拟AI回复
+                setTimeout(() => {
+                    // 创建AI消息气泡
+                    const aiBubble = document.createElement('div');
+                    aiBubble.className = 'chat-bubble ai';
+                    
+                    // 根据用户消息内容生成回复
+                    let reply = '';
+                    if (message.includes('谢谢') || message.includes('感谢')) {
+                        reply = '不用谢，随时都可以来找我聊天。希望我的建议对你有所帮助！';
+                    } else if (message.includes('好') || message.includes('行') || message.includes('可以')) {
+                        reply = '很高兴你愿意尝试！记得在实践过程中保持耐心，改变需要时间。有任何进展或困难都可以随时告诉我。';
+                    } else {
+                        reply = '我理解你的感受。压力和疲惫确实会影响我们的生活质量。不妨尝试给自己一些小奖励，或者安排一些放松活动，比如散步、听音乐或与朋友聊天。这些小事可能会帮助你缓解压力。';
+                    }
+                    
+                    aiBubble.innerHTML = `<p>${reply}</p>`;
+                    chatContainer.appendChild(aiBubble);
+                    
+                    // 滚动到底部
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                    
+                    // 模拟情绪分析
+                    setTimeout(() => {
+                        const emotionHint = document.createElement('div');
+                        emotionHint.className = 'text-center text-xs text-indigo-500 my-4';
+                        emotionHint.innerHTML = `<span class="bg-indigo-100 px-3 py-1 rounded-full">检测到情绪：${getRandomEmotion()} <i class="fas fa-info-circle ml-1"></i></span>`;
+                        chatContainer.appendChild(emotionHint);
+                        
+                        // 滚动到底部
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    }, 1000);
+                }, 1500);
+            }
+        }
+        
+        // 随机情绪
+        function getRandomEmotion() {
+            const emotions = ['压力', '焦虑', '担忧', '疲惫', '平静', '希望', '困惑'];
+            return emotions[Math.floor(Math.random() * emotions.length)];
+        }
+        
+        // 显示情感分析弹窗
+        function showEmotionAnalysis() {
+            document.getElementById('emotionAnalysisModal').classList.remove('hidden');
+        }
+        
+        // 隐藏情感分析弹窗
+        function hideEmotionAnalysis() {
+            document.getElementById('emotionAnalysisModal').classList.add('hidden');
+        }
+        
+        // 监听回车键发送消息
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // 页面加载完成后滚动到底部
+        window.onload = function() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<view class="login-container {{show ? 'show' : ''}}">
+  <view class="login-box">
+    <!-- Logo -->
+    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    
+    <!-- 品牌名称 -->
+    <view class="brand">HeartChat</view>
+    
+    <!-- 标语 -->
+    <view class="slogan">你的AI情商助手</view>
+
+    <!-- 错误提示 -->
+    <view class="error-tip" wx:if="{{error}}">{{error}}</view>
+
+    <!-- 协议区域 -->
+    <view class="agreement-box">
+      <checkbox-group bindchange="handleAgreementChange">
+        <label class="agreement-label">
+          <checkbox value="agreed" />
+          <text class="agreement-text">我已阅读并同意</text>
+          <navigator url="/pages/agreement/service" class="link">《服务协议》</navigator>
+          <text class="agreement-text">和</text>
+          <navigator url="/pages/agreement/privacy" class="link">《隐私协议》</navigator>
+        </label>
+      </checkbox-group>
+    </view>
+
+    <!-- 登录按钮 -->
+    <button 
+      class="login-btn {{!agreed ? 'disabled' : ''}}"
+      loading="{{loading}}"
+      disabled="{{!agreed || loading}}"
+      bindtap="handleLogin"
+    >
+      一键微信登录
+    </button>
+  </view>
+</view> 
