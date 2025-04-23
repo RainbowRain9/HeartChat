@@ -162,6 +162,11 @@ Page({
         darkMode: newDarkMode
       });
       console.log('用户页面更新暗黑模式为:', newDarkMode, '类型:', typeof newDarkMode);
+
+      // 更新TabBar样式
+      if (app.updateTheme) {
+        app.updateTheme(newDarkMode);
+      }
     }
 
     // 检查是否需要刷新

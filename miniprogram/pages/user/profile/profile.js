@@ -501,6 +501,11 @@ Page({
     wx.setStorageSync('darkMode', newDarkMode);
     console.log('已保存到本地存储 darkMode:', newDarkMode);
 
+    // 更新TabBar样式
+    if (app.updateTheme) {
+      app.updateTheme(newDarkMode);
+    }
+
     // 刷新当前页面样式
     this.updatePageStyle(newDarkMode);
   },

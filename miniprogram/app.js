@@ -49,6 +49,9 @@ App({
 
         // 将布尔值存回缓存，确保类型一致
         wx.setStorageSync('darkMode', darkModeValue);
+
+        // 根据本地缓存设置主题
+        this.updateTheme(darkModeValue);
       } else {
         // 如果本地缓存中没有设置，则使用系统主题
         this.globalData.darkMode = systemInfo.theme === 'dark';
@@ -56,6 +59,9 @@ App({
 
         // 将系统主题设置存入缓存
         wx.setStorageSync('darkMode', this.globalData.darkMode);
+
+        // 根据系统主题设置主题
+        this.updateTheme(this.globalData.darkMode);
       }
     } catch (e) {
       console.error('获取系统信息失败:', e);
@@ -78,6 +84,9 @@ App({
 
       // 将系统主题设置存入缓存
       wx.setStorageSync('darkMode', darkModeValue);
+
+      // 更新主题
+      this.updateTheme(darkModeValue);
     });
 
     // 检查登录状态
@@ -192,6 +201,49 @@ App({
     } catch (error) {
       console.error('Check login status failed:', error);
       return false;
+    }
+  },
+
+  /**
+   * 更新主题设置
+   * @param {boolean} isDarkMode - 是否为暗黑模式
+   */
+  updateTheme(isDarkMode) {
+    try {
+      // 获取当前页面路径
+      const pages = getCurrentPages();
+      if (pages.length === 0) {
+        console.log('当前没有页面，不设置TabBar样式');
+        return;
+      }
+
+      const currentPage = pages[pages.length - 1];
+      const currentRoute = currentPage.route;
+
+      // 检查当前页面是否是TabBar页面
+      const tabBarPages = ['pages/home/home', 'pages/role-select/role-select', 'pages/user/user'];
+      const isTabBarPage = tabBarPages.some(page => currentRoute === page);
+
+      if (!isTabBarPage) {
+        console.log('当前页面不是TabBar页面，不设置TabBar样式:', currentRoute);
+        return;
+      }
+
+      // 设置当前页面的主题
+      wx.setTabBarStyle({
+        color: isDarkMode ? '#8a9aa9' : '#6c757d',
+        selectedColor: isDarkMode ? '#4dabf7' : '#007bff',
+        backgroundColor: isDarkMode ? '#1a1d20' : '#ffffff',
+        borderStyle: isDarkMode ? 'black' : 'white',
+        success: () => {
+          console.log('设置TabBar样式成功，暗黑模式:', isDarkMode);
+        },
+        fail: (error) => {
+          console.error('设置TabBar样式失败:', error);
+        }
+      });
+    } catch (error) {
+      console.error('更新主题设置失败:', error);
     }
   }
 });

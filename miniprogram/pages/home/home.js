@@ -80,6 +80,11 @@ Page({
       this.setData({
         darkMode: app.globalData.darkMode
       });
+
+      // 更新TabBar样式
+      if (app.updateTheme) {
+        app.updateTheme(app.globalData.darkMode);
+      }
     }
 
     // 检查用户信息变化
