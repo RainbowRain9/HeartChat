@@ -1,0 +1,332 @@
+# HeartChat外部API调用流程图
+
+本文档展示了HeartChat项目中外部API的调用流程，特别是智谱AI API的调用过程。
+
+## 1. 智谱AI GLM-4-Flash API调用流程
+
+```mermaid
+sequenceDiagram
+    participant Client as 小程序前端
+    participant CloudFunc as 云函数
+    participant ZhipuAI as 智谱AI服务
+    participant Cache as 本地缓存
+    
+    Client->>CloudFunc: 发送请求
+    CloudFunc->>CloudFunc: 验证参数
+    CloudFunc->>CloudFunc: 构建提示词
+    
+    alt 使用缓存
+        CloudFunc->>Cache: 检查缓存
+        Cache-->>CloudFunc: 返回缓存结果
+    else 调用API
+        CloudFunc->>ZhipuAI: 发送API请求
+        ZhipuAI-->>CloudFunc: 返回API响应
+        CloudFunc->>Cache: 缓存结果
+    end
+    
+    CloudFunc->>CloudFunc: 处理响应
+    CloudFunc-->>Client: 返回结果
+```
+
+## 2. 聊天功能API调用详细流程
+
+```mermaid
+sequenceDiagram
+    participant User as 用户
+    participant ChatUI as 聊天界面
+    participant CloudFunc as chat云函数
+    participant DB as 数据库
+    participant ZhipuAI as 智谱AI GLM-4-Flash
+    
+    User->>ChatUI: 发送消息
+    ChatUI->>ChatUI: 显示用户消息
+    ChatUI->>CloudFunc: 调用chat云函数
+    
+    CloudFunc->>DB: 保存用户消息
+    CloudFunc->>DB: 获取角色信息
+    DB-->>CloudFunc: 返回角色信息
+    CloudFunc->>DB: 获取聊天历史
+    DB-->>CloudFunc: 返回聊天历史
+    
+    CloudFunc->>CloudFunc: 构建提示词
+    CloudFunc->>ZhipuAI: 调用GLM-4-Flash API
+    
+    alt 流式响应
+        ZhipuAI-->>CloudFunc: 返回流式响应
+        loop 每个响应片段
+            CloudFunc-->>ChatUI: 发送响应片段
+            ChatUI->>ChatUI: 更新显示
+        end
+    else 完整响应
+        ZhipuAI-->>CloudFunc: 返回完整响应
+        CloudFunc-->>ChatUI: 发送完整响应
+        ChatUI->>ChatUI: 显示AI回复
+    end
+    
+    CloudFunc->>DB: 保存AI回复
+    CloudFunc->>CloudFunc: 触发情感分析
+```
+
+## 3. 情感分析API调用流程
+
+```mermaid
+sequenceDiagram
+    participant ChatUI as 聊天界面
+    participant CloudFunc as analysis云函数
+    participant DB as 数据库
+    participant ZhipuAI_GLM as 智谱AI GLM-4-Flash
+    participant ZhipuAI_Embedding as 智谱AI Embedding-3
+    
+    ChatUI->>CloudFunc: 调用analysis云函数
+    CloudFunc->>CloudFunc: 准备分析提示词
+    
+    CloudFunc->>ZhipuAI_GLM: 调用GLM-4-Flash API
+    ZhipuAI_GLM-->>CloudFunc: 返回情感分析结果
+    
+    CloudFunc->>CloudFunc: 提取关键词
+    CloudFunc->>ZhipuAI_Embedding: 获取关键词向量
+    ZhipuAI_Embedding-->>CloudFunc: 返回词向量
+    
+    CloudFunc->>CloudFunc: 聚类关键词
+    CloudFunc->>CloudFunc: 关联情感和关键词
+    
+    CloudFunc->>DB: 保存情感分析结果
+    CloudFunc->>DB: 更新用户兴趣
+    
+    CloudFunc-->>ChatUI: 返回分析结果
+    ChatUI->>ChatUI: 显示情感分析
+```
+
+## 4. 用户画像生成API调用流程
+
+```mermaid
+sequenceDiagram
+    participant ProfileUI as 用户画像界面
+    participant CloudFunc as user云函数
+    participant DB as 数据库
+    participant ZhipuAI as 智谱AI GLM-4-Flash
+    
+    ProfileUI->>CloudFunc: 调用user云函数
+    CloudFunc->>DB: 获取用户消息历史
+    DB-->>CloudFunc: 返回消息历史
+    CloudFunc->>DB: 获取情感记录
+    DB-->>CloudFunc: 返回情感记录
+    CloudFunc->>DB: 获取用户兴趣
+    DB-->>CloudFunc: 返回用户兴趣
+    
+    CloudFunc->>CloudFunc: 准备分析数据
+    CloudFunc->>CloudFunc: 构建分析提示词
+    
+    CloudFunc->>ZhipuAI: 调用GLM-4-Flash API
+    ZhipuAI-->>CloudFunc: 返回分析结果
+    
+    CloudFunc->>CloudFunc: 提取性格特征
+    CloudFunc->>CloudFunc: 生成个性总结
+    
+    CloudFunc->>DB: 保存用户画像
+    CloudFunc-->>ProfileUI: 返回用户画像
+    ProfileUI->>ProfileUI: 显示用户画像
+```
+
+## 5. 角色提示词生成API调用流程
+
+```mermaid
+sequenceDiagram
+    participant RoleUI as 角色编辑界面
+    participant CloudFunc as roles云函数
+    participant ZhipuAI as 智谱AI GLM-4-Flash
+    participant DB as 数据库
+    
+    RoleUI->>RoleUI: 用户输入角色信息
+    RoleUI->>CloudFunc: 调用roles云函数(generatePrompt)
+    
+    CloudFunc->>CloudFunc: 构建提示词生成提示
+    CloudFunc->>ZhipuAI: 调用GLM-4-Flash API
+    ZhipuAI-->>CloudFunc: 返回生成的提示词
+    
+    CloudFunc->>CloudFunc: 格式化提示词
+    CloudFunc-->>RoleUI: 返回生成的提示词
+    RoleUI->>RoleUI: 显示生成的提示词
+    
+    alt 用户保存角色
+        RoleUI->>CloudFunc: 调用roles云函数(createRole/updateRole)
+        CloudFunc->>DB: 保存角色信息
+        DB-->>CloudFunc: 返回保存结果
+        CloudFunc-->>RoleUI: 返回操作结果
+    end
+```
+
+## 6. 每日报告生成API调用流程
+
+```mermaid
+sequenceDiagram
+    participant Trigger as 定时触发器
+    participant CloudFunc as generateDailyReports云函数
+    participant DB as 数据库
+    participant ZhipuAI as 智谱AI GLM-4-Flash
+    participant Notification as 消息通知
+    
+    Trigger->>CloudFunc: 触发云函数
+    CloudFunc->>DB: 获取活跃用户列表
+    DB-->>CloudFunc: 返回用户列表
+    
+    loop 每个用户
+        CloudFunc->>DB: 获取当日情绪记录
+        DB-->>CloudFunc: 返回情绪记录
+        
+        alt 有足够数据
+            CloudFunc->>CloudFunc: 聚合情绪数据
+            CloudFunc->>CloudFunc: 提取关键词
+            CloudFunc->>CloudFunc: 准备报告提示词
+            
+            CloudFunc->>ZhipuAI: 调用GLM-4-Flash API
+            ZhipuAI-->>CloudFunc: 返回生成的报告内容
+            
+            CloudFunc->>CloudFunc: 格式化报告
+            CloudFunc->>DB: 保存报告
+            CloudFunc->>Notification: 发送通知
+        end
+    end
+    
+    CloudFunc->>CloudFunc: 生成统计数据
+    CloudFunc->>DB: 保存执行记录
+```
+
+## 7. API调用错误处理流程
+
+```mermaid
+sequenceDiagram
+    participant Client as 小程序前端
+    participant CloudFunc as 云函数
+    participant API as 外部API
+    participant Fallback as 降级服务
+    participant Log as 日志服务
+    
+    Client->>CloudFunc: 发送请求
+    
+    CloudFunc->>API: 调用API
+    
+    alt API调用成功
+        API-->>CloudFunc: 返回成功响应
+        CloudFunc-->>Client: 返回结果
+    else API调用失败
+        API-->>CloudFunc: 返回错误
+        CloudFunc->>Log: 记录错误
+        
+        alt 可重试错误
+            CloudFunc->>CloudFunc: 等待重试
+            CloudFunc->>API: 重新调用API
+            
+            alt 重试成功
+                API-->>CloudFunc: 返回成功响应
+                CloudFunc-->>Client: 返回结果
+            else 重试失败
+                API-->>CloudFunc: 返回错误
+                CloudFunc->>Fallback: 启用降级服务
+            end
+        else 不可重试错误
+            CloudFunc->>Fallback: 启用降级服务
+        end
+        
+        Fallback-->>CloudFunc: 返回降级结果
+        CloudFunc-->>Client: 返回降级结果
+    end
+```
+
+## 8. API密钥管理流程
+
+```mermaid
+flowchart TD
+    Start[开始] --> LoadConfig[加载配置]
+    LoadConfig --> GetKey[获取API密钥]
+    
+    GetKey --> KeySource{密钥来源?}
+    KeySource -->|环境变量| GetEnv[从环境变量获取]
+    KeySource -->|云配置| GetCloud[从云配置获取]
+    KeySource -->|本地配置| GetLocal[从本地配置获取]
+    
+    GetEnv --> ValidateKey[验证密钥]
+    GetCloud --> ValidateKey
+    GetLocal --> ValidateKey
+    
+    ValidateKey --> IsValid{是否有效?}
+    IsValid -->|是| UseKey[使用密钥]
+    IsValid -->|否| HandleInvalid[处理无效密钥]
+    
+    HandleInvalid --> TryBackup[尝试备用密钥]
+    TryBackup --> HasBackup{有备用密钥?}
+    HasBackup -->|是| GetBackup[获取备用密钥]
+    HasBackup -->|否| ReportError[报告错误]
+    
+    GetBackup --> ValidateKey
+    ReportError --> End[结束]
+    
+    UseKey --> MaskKey[掩码处理密钥]
+    MaskKey --> CallAPI[调用API]
+    CallAPI --> End
+```
+
+## 9. 智谱AI API参数配置
+
+```mermaid
+flowchart TD
+    Start[开始] --> PrepareParams[准备API参数]
+    
+    PrepareParams --> ConfigModel[配置模型]
+    ConfigModel --> SetGLM4[设置GLM-4-Flash]
+    
+    PrepareParams --> ConfigTemp[配置温度]
+    ConfigTemp --> SetTemp[设置temperature=0.7]
+    
+    PrepareParams --> ConfigTop[配置top_p]
+    ConfigTop --> SetTop[设置top_p=0.9]
+    
+    PrepareParams --> ConfigMax[配置最大长度]
+    ConfigMax --> SetMax[设置max_tokens=2000]
+    
+    PrepareParams --> ConfigStream[配置流式输出]
+    ConfigStream --> SetStream[设置stream=true/false]
+    
+    PrepareParams --> BuildMessages[构建消息数组]
+    BuildMessages --> AddSystem[添加系统消息]
+    AddSystem --> AddHistory[添加历史消息]
+    AddHistory --> AddUser[添加用户消息]
+    
+    PrepareParams --> ConfigTools[配置工具]
+    ConfigTools --> HasTools{需要工具?}
+    HasTools -->|是| AddTools[添加工具定义]
+    HasTools -->|否| SkipTools[跳过工具配置]
+    
+    AddTools --> SetTools[设置tools参数]
+    SkipTools --> FinalizeParams[完成参数配置]
+    SetTools --> FinalizeParams
+    
+    AddUser --> FinalizeParams
+    FinalizeParams --> CallAPI[调用API]
+    CallAPI --> End[结束]
+```
+
+## 10. 智谱AI Embedding API调用流程
+
+```mermaid
+sequenceDiagram
+    participant Client as 小程序前端
+    participant CloudFunc as 云函数
+    participant ZhipuAI as 智谱AI Embedding-3
+    participant Cache as 向量缓存
+    
+    Client->>CloudFunc: 发送关键词列表
+    
+    CloudFunc->>Cache: 检查缓存
+    alt 缓存命中
+        Cache-->>CloudFunc: 返回缓存的向量
+    else 缓存未命中
+        CloudFunc->>ZhipuAI: 调用Embedding API
+        ZhipuAI-->>CloudFunc: 返回词向量
+        CloudFunc->>Cache: 缓存词向量
+    end
+    
+    CloudFunc->>CloudFunc: 计算相似度
+    CloudFunc->>CloudFunc: 执行聚类
+    CloudFunc-->>Client: 返回聚类结果
+```

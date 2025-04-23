@@ -16,9 +16,10 @@
 
 /* 键盘弹出时的样式 */
 .keyboard-show {
-  height: 100vh;
+  height: calc(100vh - var(--keyboard-height, 0px)); /* 动态调整高度 */
   position: relative;
   overflow: hidden;
+  transition: height 0.3s ease; /* 添加平滑过渡效果 */
 }
 
 /* 自定义导航栏 */
@@ -180,7 +181,8 @@
 /* 键盘弹出时的聊天容器样式 */
 .keyboard-show .chat-container {
   padding-bottom: 120rpx; /* 保持固定的底部内边距 */
-  margin-bottom: var(--keyboard-height, 0px);
+  height: calc(100vh - var(--keyboard-height) - 120rpx); /* 动态调整高度，减去键盘高度和输入框高度 */
+  transition: height 0.3s ease; /* 添加平滑过渡效果 */
 }
 
 .dark .chat-container {
@@ -296,13 +298,15 @@
 
 /* 底部空白区域 */
 .bottom-space {
-  height: 120rpx; /* 增加高度，确保最后一条消息不被输入框遮挡 */
+  height: 150rpx; /* 增加高度，确保最后一条消息不被输入框遮挡 */
   width: 100%;
+  transition: height 0.3s ease; /* 添加平滑过渡效果 */
 }
 
 /* 键盘弹出时的底部空白区域 */
 .keyboard-show .bottom-space {
-  height: calc(var(--keyboard-height, 0px) + 120rpx); /* 键盘弹出时增加高度 */
+  height: 200rpx; /* 键盘弹出时使用固定高度，确保最后一条消息不被键盘遮挡 */
+  transition: height 0.3s ease; /* 添加平滑过渡效果 */
 }
 
 .typing-dot {
@@ -361,6 +365,8 @@
   right: 0;
   z-index: 1001; /* 确保在最上层 */
   transition: bottom 0.3s ease; /* 添加平滑过渡效果 */
+  transform: translateZ(0); /* 启用硬件加速，使过渡更平滑 */
+  will-change: bottom; /* 提前告知浏览器属性将变化，优化性能 */
 }
 
 .dark .input-container {

@@ -1393,9 +1393,20 @@ Page({
       manualScroll: false // 输入框获取焦点时重置为自动滚动
     });
 
-    // 滚动到底部
+    // 滚动到底部，使用多次延时滚动确保滚动到正确位置
     wx.nextTick(() => {
-      this.scrollToBottom(100);
+      // 第一次滚动，快速响应
+      this.scrollToBottom(50, true);
+
+      // 第二次滚动，等待键盘开始弹出
+      setTimeout(() => {
+        this.scrollToBottom(50, true);
+      }, 200);
+
+      // 第三次滚动，等待键盘完全弹出
+      setTimeout(() => {
+        this.scrollToBottom(50, true);
+      }, 400);
     });
   },
 
@@ -1409,9 +1420,15 @@ Page({
       isKeyboardShow: false
     });
 
-    // 滚动到底部
+    // 滚动到底部，使用多次延时滚动确保滚动到正确位置
     wx.nextTick(() => {
-      this.scrollToBottom(100);
+      // 第一次滚动，快速响应
+      this.scrollToBottom(50, true);
+
+      // 第二次滚动，等待键盘开始收起
+      setTimeout(() => {
+        this.scrollToBottom(100, true);
+      }, 200);
     });
   },
 
@@ -1705,15 +1722,23 @@ Page({
 
       // 键盘弹出或收起后，滚动到底部
       if (isKeyboardShow) {
+        // 键盘弹出时，等待页面重新渲染后再滚动
         wx.nextTick(() => {
+          // 使用多次延时滚动，确保滚动到底部
           setTimeout(() => {
-            this.scrollToBottom(50);
+            this.scrollToBottom(50, true); // 强制滚动到底部
           }, 100);
+
+          // 再次滚动，确保在键盘完全显示后滚动到底部
+          setTimeout(() => {
+            this.scrollToBottom(50, true);
+          }, 300);
         });
       } else {
+        // 键盘收起时，等待页面重新渲染后再滚动
         wx.nextTick(() => {
           setTimeout(() => {
-            this.scrollToBottom(100);
+            this.scrollToBottom(100, true); // 强制滚动到底部
           }, 200);
         });
       }
@@ -1790,6 +1815,7 @@ Page({
         force = forceParam;
       }
     }
+
     // 如果是从缓存加载的数据，增加延迟时间确保渲染完成
     const actualDelay = this.data.fromCache ? 300 : delay;
 
@@ -1798,7 +1824,9 @@ Page({
       delay,
       force,
       actualDelay,
-      manualScroll: this.data.manualScroll
+      manualScroll: this.data.manualScroll,
+      isKeyboardShow: this.data.isKeyboardShow,
+      keyboardHeight: this.data.keyboardHeight
     });
 
     // 如果是手动滚动模式且不是强制滚动，则不执行滚动
@@ -1826,16 +1854,35 @@ Page({
             const containerHeight = res[0].height;
             console.log('滚动容器高度:', containerHeight);
 
-            // 直接使用 wx.pageScrollTo 滚动到底部
+            // 获取滚动元素
             const scrollView = wx.createSelectorQuery().select('#chat-container');
             scrollView.node().exec(nodeRes => {
               if (nodeRes && nodeRes[0] && nodeRes[0].node) {
                 console.log('使用 scrollView 滚动到底部');
                 const node = nodeRes[0].node;
-                node.scrollTo({
-                  top: 100000, // 使用一个很大的值
-                  behavior: 'smooth'
-                });
+
+                // 如果键盘弹出，考虑键盘高度
+                if (this.data.isKeyboardShow && this.data.keyboardHeight > 0) {
+                  // 先滚动到底部
+                  node.scrollTo({
+                    top: 100000, // 使用一个很大的值
+                    behavior: 'smooth'
+                  });
+
+                  // 等待一段时间后再次滚动，确保滚动到正确位置
+                  setTimeout(() => {
+                    node.scrollTo({
+                      top: 100000, // 使用一个很大的值
+                      behavior: 'smooth'
+                    });
+                  }, 150);
+                } else {
+                  // 正常滚动到底部
+                  node.scrollTo({
+                    top: 100000, // 使用一个很大的值
+                    behavior: 'smooth'
+                  });
+                }
               } else {
                 console.log('使用 pageScrollTo 滚动到底部');
                 // 如果无法获取节点，则使用页面滚动
