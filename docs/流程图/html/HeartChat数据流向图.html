@@ -41,6 +41,7 @@
             margin-bottom: 20px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
         }
         .note {
             background-color: #f8f9fa;
@@ -68,8 +69,143 @@
             background-color: #f8f9fa;
             border-radius: 3px;
         }
+        .export-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .export-btn:hover {
+            background-color: #2980b9;
+        }
+        .export-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            position: relative;
+            background-color: #f8f9fa;
+            margin: 2% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1010;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        .modal-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            color: #2c3e50;
+        }
+        .modal-diagram {
+            position: relative;
+            overflow: auto;
+            max-height: 70vh;
+        }
+        .modal .mermaid {
+            text-align: center;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            transform-origin: center center;
+        }
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1010;
+        }
+        .zoom-control-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .zoom-control-btn:hover {
+            background-color: #2980b9;
+        }
+        .zoom-level {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .zoom-btn {
+            position: absolute;
+            top: 20px;
+            right: 70px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .zoom-btn:hover {
+            background-color: #2980b9;
+        }
+        .zoom-btn svg {
+            width: 16px;
+            height: 16px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             mermaid.initialize({
@@ -81,14 +217,204 @@
                     curve: 'basis'
                 }
             });
+
+            // 创建模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="modal-close">&times;</span>
+                    <h3 class="modal-title"></h3>
+                    <div class="modal-diagram"></div>
+                    <div class="zoom-controls">
+                        <button class="zoom-control-btn zoom-in">+</button>
+                        <div class="zoom-level">100%</div>
+                        <button class="zoom-control-btn zoom-out">-</button>
+                        <button class="zoom-control-btn zoom-reset">R</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // 关闭模态框
+            modal.querySelector('.modal-close').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // 点击模态框外部关闭
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // 缩放变量
+            let currentScale = 1;
+            const minScale = 0.5;
+            const maxScale = 3;
+            const scaleStep = 0.1;
+
+            // 缩放控制按钮
+            const zoomInBtn = modal.querySelector('.zoom-in');
+            const zoomOutBtn = modal.querySelector('.zoom-out');
+            const zoomResetBtn = modal.querySelector('.zoom-reset');
+            const zoomLevelDisplay = modal.querySelector('.zoom-level');
+
+            // 放大按钮点击事件
+            zoomInBtn.addEventListener('click', function() {
+                if (currentScale < maxScale) {
+                    currentScale += scaleStep;
+                    updateZoom();
+                }
+            });
+
+            // 缩小按钮点击事件
+            zoomOutBtn.addEventListener('click', function() {
+                if (currentScale > minScale) {
+                    currentScale -= scaleStep;
+                    updateZoom();
+                }
+            });
+
+            // 重置缩放按钮点击事件
+            zoomResetBtn.addEventListener('click', function() {
+                currentScale = 1;
+                updateZoom();
+            });
+
+            // 更新缩放
+            function updateZoom() {
+                const mermaidDiv = modal.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    mermaidDiv.style.transform = `scale(${currentScale})`;
+                    zoomLevelDisplay.textContent = `${Math.round(currentScale * 100)}%`;
+                }
+            }
+
+            // 鼠标滚轮缩放
+            modal.querySelector('.modal-diagram').addEventListener('wheel', function(event) {
+                event.preventDefault();
+                if (event.deltaY < 0 && currentScale < maxScale) {
+                    // 向上滚动，放大
+                    currentScale += scaleStep;
+                } else if (event.deltaY > 0 && currentScale > minScale) {
+                    // 向下滚动，缩小
+                    currentScale -= scaleStep;
+                }
+                updateZoom();
+            });
+
+            // 为每个流程图添加导出按钮和放大按钮
+            document.querySelectorAll('.section').forEach(function(section, index) {
+                const mermaidDiv = section.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    // 添加导出按钮
+                    const exportBtn = document.createElement('button');
+                    exportBtn.className = 'export-btn';
+                    exportBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        导出图片
+                    `;
+                    exportBtn.addEventListener('click', function() {
+                        exportDiagram(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(exportBtn);
+
+                    // 添加放大按钮
+                    const zoomBtn = document.createElement('button');
+                    zoomBtn.className = 'zoom-btn';
+                    zoomBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            <line x1="11" y1="8" x2="11" y2="14"></line>
+                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                        放大查看
+                    `;
+                    zoomBtn.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(zoomBtn);
+
+                    // 点击流程图也可以放大
+                    mermaidDiv.style.cursor = 'pointer';
+                    mermaidDiv.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                }
+            });
         });
+
+        // 打开放大模态框
+        function openZoomModal(mermaidDiv, title) {
+            const modal = document.querySelector('.modal');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalDiagram = modal.querySelector('.modal-diagram');
+
+            // 重置缩放
+            currentScale = 1;
+
+            // 设置模态框标题
+            modalTitle.textContent = title;
+
+            // 清空并复制流程图
+            modalDiagram.innerHTML = '';
+            const clonedDiagram = mermaidDiv.cloneNode(true);
+            modalDiagram.appendChild(clonedDiagram);
+
+            // 显示模态框
+            modal.style.display = 'block';
+
+            // 重新渲染Mermaid图表
+            mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+
+            // 更新缩放显示
+            modal.querySelector('.zoom-level').textContent = '100%';
+
+            // 重置图表缩放比例（在渲染完成后调用）
+            setTimeout(function() {
+                const mermaidDiv = modal.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    mermaidDiv.style.transform = 'scale(1)';
+                }
+            }, 100);
+        }
+
+        // 导出流程图为图片
+        function exportDiagram(mermaidDiv, title) {
+            // 设置导出选项
+            const options = {
+                scale: 2, // 提高导出图片的清晰度
+                backgroundColor: '#f8f9fa',
+                logging: false,
+                allowTaint: true,
+                useCORS: true
+            };
+
+            // 使用html2canvas将流程图转换为图片
+            html2canvas(mermaidDiv, options).then(function(canvas) {
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.download = 'HeartChat-' + title.replace(/[^\w\u4e00-\u9fa5]/g, '-') + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(function(error) {
+                console.error('导出图片失败:', error);
+                alert('导出图片失败，请重试或检查控制台错误信息。');
+            });
+        }
     </script>
 </head>
 <body>
     <a href="HeartChat流程图总览.html" class="back-link">← 返回流程图总览</a>
-    
+
     <h1>HeartChat数据流向图</h1>
-    
+
     <div class="section">
         <p>本文档展示了HeartChat项目中各个功能模块之间的数据流向和交互关系。</p>
     </div>
@@ -102,7 +428,7 @@
                 CloudFunctions <--> Database[(云数据库)]
                 CloudFunctions <--> ExternalAPI[外部API]
                 Frontend <--> LocalStorage[(本地缓存)]
-                
+
                 subgraph 前端模块
                     Home[首页]
                     Chat[聊天页面]
@@ -112,7 +438,7 @@
                     UserProfile[用户资料页面]
                     DailyReport[每日报告页面]
                 end
-                
+
                 subgraph 云函数模块
                     Login[login云函数]
                     ChatFunc[chat云函数]
@@ -122,7 +448,7 @@
                     GetEmotionHistory[getEmotionHistory云函数]
                     GenerateDailyReports[generateDailyReports云函数]
                 end
-                
+
                 subgraph 数据库集合
                     Users[(users集合)]
                     Roles_DB[(roles集合)]
@@ -132,20 +458,20 @@
                     UserInterests[(userInterests集合)]
                     UserReports[(userReports集合)]
                 end
-                
+
                 subgraph 外部API
                     ZhipuAI_GLM4[智谱AI GLM-4-Flash]
                     ZhipuAI_Embedding[智谱AI Embedding-3]
                     WeChatAPI[微信API]
                 end
-                
+
                 subgraph 本地缓存
                     UserInfo_Cache[(用户信息缓存)]
                     ChatHistory_Cache[(聊天历史缓存)]
                     EmotionData_Cache[(情绪数据缓存)]
                     RoleData_Cache[(角色数据缓存)]
                 end
-                
+
                 %% 前端到云函数的数据流
                 Home --> Login
                 Home --> GetEmotionHistory
@@ -156,7 +482,7 @@
                 EmotionHistory --> GetEmotionHistory
                 UserProfile --> User
                 DailyReport --> GenerateDailyReports
-                
+
                 %% 云函数到数据库的数据流
                 Login <--> Users
                 ChatFunc <--> Chats
@@ -170,7 +496,7 @@
                 GetEmotionHistory <--> EmotionRecords
                 GenerateDailyReports <--> EmotionRecords
                 GenerateDailyReports <--> UserReports
-                
+
                 %% 云函数到外部API的数据流
                 Login <--> WeChatAPI
                 ChatFunc <--> ZhipuAI_GLM4
@@ -179,7 +505,7 @@
                 Roles <--> ZhipuAI_GLM4
                 User <--> ZhipuAI_GLM4
                 GenerateDailyReports <--> ZhipuAI_GLM4
-                
+
                 %% 前端到本地缓存的数据流
                 Home <--> UserInfo_Cache
                 Home <--> EmotionData_Cache
@@ -195,7 +521,7 @@
 
     <div class="section">
         <h2>详细数据流向图</h2>
-        
+
         <h3>1. 用户登录数据流</h3>
         <div class="mermaid">
             flowchart TD
@@ -211,7 +537,7 @@
                 CreateUser --> GetUser
                 GetUser --> ReturnUser[返回用户信息]
                 ReturnUser --> SaveCache[保存到本地缓存]
-                
+
                 subgraph 数据流向
                     direction LR
                     d1[code] --> d2[openid]
@@ -233,7 +559,7 @@
                 AIReply --> SaveAIMsg[保存AI回复]
                 SaveAIMsg --> ReturnReply[返回AI回复]
                 ReturnReply --> DisplayReply[显示AI回复]
-                
+
                 subgraph 数据流向
                     direction LR
                     d1[用户消息] --> d2[角色信息]
@@ -242,7 +568,7 @@
                     d4 --> d5[保存的消息]
                     d5 --> d6[前端显示]
                 end
-                
+
                 subgraph 数据存储
                     direction TB
                     s1[(chats集合)] <--> s2[(messages集合)]
@@ -262,7 +588,7 @@
                 LinkEmotions --> SaveResults[保存分析结果]
                 SaveResults --> ReturnResults[返回分析结果]
                 ReturnResults --> DisplayResults[显示分析结果]
-                
+
                 subgraph 数据流向
                     direction LR
                     d1[文本内容] --> d2[情感类型和强度]
@@ -272,7 +598,7 @@
                     d5 --> d6[保存的记录]
                     d6 --> d7[前端显示]
                 end
-                
+
                 subgraph 数据存储
                     direction TB
                     s1[(emotionRecords集合)] <--> s2[(userInterests集合)]
@@ -293,7 +619,7 @@
                 GenerateSummary --> SavePerception[保存用户画像]
                 SavePerception --> ReturnPerception[返回用户画像]
                 ReturnPerception --> DisplayPerception[显示用户画像]
-                
+
                 subgraph 数据流向
                     direction LR
                     d1[历史消息] --> d2[情感记录]
@@ -302,7 +628,7 @@
                     d4 --> d5[用户画像]
                     d5 --> d6[前端显示]
                 end
-                
+
                 subgraph 数据存储
                     direction TB
                     s1[(messages集合)] <--> s2[(emotionRecords集合)]
@@ -323,7 +649,7 @@
                 CalcVolatility --> GenerateCharts[生成图表数据]
                 GenerateCharts --> ReturnData[返回历史数据]
                 ReturnData --> DisplayHistory[显示情绪历史]
-                
+
                 subgraph 数据流向
                     direction LR
                     d1[查询参数] --> d2[原始情绪记录]
@@ -332,7 +658,7 @@
                     d4 --> d5[图表数据]
                     d5 --> d6[前端显示]
                 end
-                
+
                 subgraph 数据存储
                     direction TB
                     s1[(emotionRecords集合)] <--> s2[(本地缓存)]
@@ -353,7 +679,7 @@
                 CallAI --> GenerateContent[生成报告内容]
                 GenerateContent --> SaveReport[保存报告]
                 SaveReport --> SendNotification[发送通知]
-                
+
                 subgraph 数据流向
                     direction LR
                     d1[用户列表] --> d2[情绪记录]
@@ -364,7 +690,7 @@
                     d6 --> d7[保存的报告]
                     d7 --> d8[通知消息]
                 end
-                
+
                 subgraph 数据存储
                     direction TB
                     s1[(users集合)] <--> s2[(emotionRecords集合)]

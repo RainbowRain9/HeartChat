@@ -41,6 +41,7 @@
             margin-bottom: 20px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
         }
         .note {
             background-color: #f8f9fa;
@@ -68,8 +69,31 @@
             background-color: #f8f9fa;
             border-radius: 3px;
         }
+        .export-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .export-btn:hover {
+            background-color: #2980b9;
+        }
+        .export-btn svg {
+            width: 16px;
+            height: 16px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             mermaid.initialize({
@@ -79,22 +103,173 @@
                     useMaxWidth: true,
                     htmlLabels: true,
                     curve: 'basis'
-                },
-                er: {
-                    useMaxWidth: true
-                },
-                classDiagram: {
-                    useMaxWidth: true
+                }
+            });
+
+            // 创建模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="modal-close">&times;</span>
+                    <h3 class="modal-title"></h3>
+                    <div class="modal-diagram"></div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // 关闭模态框
+            modal.querySelector('.modal-close').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // 点击模态框外部关闭
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // 为每个流程图添加导出按钮和放大按钮
+            document.querySelectorAll('.section').forEach(function(section, index) {
+                const mermaidDiv = section.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    // 添加导出按钮
+                    const exportBtn = document.createElement('button');
+                    exportBtn.className = 'export-btn';
+                    exportBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        导出图片
+                    `;
+                    exportBtn.addEventListener('click', function() {
+                        exportDiagram(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(exportBtn);
+
+                    // 添加放大按钮
+                    const zoomBtn = document.createElement('button');
+                    zoomBtn.className = 'zoom-btn';
+                    zoomBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            <line x1="11" y1="8" x2="11" y2="14"></line>
+                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                        放大查看
+                    `;
+                    zoomBtn.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(zoomBtn);
+
+                    // 点击流程图也可以放大
+                    mermaidDiv.style.cursor = 'pointer';
+                    mermaidDiv.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                }
+            });
+                    section.appendChild(zoomBtn);
+
+                    // 点击流程图也可以放大
+                    mermaidDiv.style.cursor = 'pointer';
+                    mermaidDiv.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
                 }
             });
         });
+
+        // 打开放大模态框
+        function openZoomModal(mermaidDiv, title) {
+            const modal = document.querySelector('.modal');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalDiagram = modal.querySelector('.modal-diagram');
+
+            // 重置缩放
+            currentScale = 1;
+
+            // 设置模态框标题
+            modalTitle.textContent = title;
+
+            // 清空并复制流程图
+            modalDiagram.innerHTML = '';
+            const clonedDiagram = mermaidDiv.cloneNode(true);
+            modalDiagram.appendChild(clonedDiagram);
+
+            // 显示模态框
+            modal.style.display = 'block';
+
+            // 重新渲染Mermaid图表
+            mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+
+            // 更新缩放显示
+            modal.querySelector('.zoom-level').textContent = '100%';
+
+            // 重置图表缩放比例（在渲染完成后调用）
+            setTimeout(function() {
+                const mermaidDiv = modal.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    mermaidDiv.style.transform = 'scale(1)';
+                }
+            }, 100);
+        }
+
+        // 导出流程图为图片
+        function exportDiagram(mermaidDiv, title) {
+            const modal = document.querySelector('.modal');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalDiagram = modal.querySelector('.modal-diagram');
+
+            // 设置模态框标题
+            modalTitle.textContent = title;
+
+            // 清空并复制流程图
+            modalDiagram.innerHTML = '';
+            const clonedDiagram = mermaidDiv.cloneNode(true);
+            modalDiagram.appendChild(clonedDiagram);
+
+            // 显示模态框
+            modal.style.display = 'block';
+
+            // 重新渲染Mermaid图表
+            mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+        }
+
+        function exportDiagram(mermaidDiv, title) {
+            // 设置导出选项
+            const options = {
+                scale: 2, // 提高导出图片的清晰度
+                backgroundColor: '#f8f9fa',
+                logging: false,
+                allowTaint: true,
+                useCORS: true
+            };
+
+            // 使用html2canvas将流程图转换为图片
+            html2canvas(mermaidDiv, options).then(function(canvas) {
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.download = 'HeartChat-' + title.replace(/[^\w\u4e00-\u9fa5]/g, '-') + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(function(error) {
+                console.error('导出图片失败:', error);
+                alert('导出图片失败，请重试或检查控制台错误信息。');
+            });
+        }
     </script>
 </head>
 <body>
     <a href="HeartChat流程图总览.html" class="back-link">← 返回流程图总览</a>
-    
+
     <h1>HeartChat数据库结构图</h1>
-    
+
     <div class="section">
         <p>本文档展示了HeartChat项目的数据库结构，包括各个集合的字段和关系。</p>
     </div>
@@ -111,23 +286,23 @@
                 users ||--o{ chats : "创建"
                 users ||--o{ emotionRecords : "拥有"
                 users ||--o{ userReports : "拥有"
-                
+
                 roles ||--o{ chats : "使用"
                 roles ||--o{ roleUsage : "记录"
-                
+
                 chats ||--o{ messages : "包含"
-                
+
                 emotionRecords ||--o{ userReports : "汇总"
-                
+
                 user_interests ||--o{ emotionRecords : "关联"
         </div>
     </div>
 
     <div class="section">
         <h2>数据库集合详细结构</h2>
-        
+
         <h3>1. 用户相关集合</h3>
-        
+
         <h4>1.1 users 集合</h4>
         <div class="mermaid">
             classDiagram
@@ -138,13 +313,13 @@
                     created_at: Date
                     updated_at: Date
                 }
-                
+
                 class stats {
                     openid: String
                     session_key: String
                     unionid: String
                 }
-                
+
                 users *-- stats
         </div>
 
@@ -182,13 +357,13 @@
                     created_at: Date
                     updated_at: Date
                 }
-                
+
                 class personality {
                     traits: Array
                     summary: String
                     analysis: String
                 }
-                
+
                 user_profile *-- personality
         </div>
 
@@ -219,13 +394,13 @@
                     created_at: Date
                     updated_at: Date
                 }
-                
+
                 class privacy {
                     share_emotion: Boolean
                     share_profile: Boolean
                     data_collection: Boolean
                 }
-                
+
                 user_config *-- privacy
         </div>
 
@@ -240,20 +415,20 @@
                     created_at: Date
                     updated_at: Date
                 }
-                
+
                 class keyword {
                     word: String
                     weight: Number
                     category: String
                     emotions: Array
                 }
-                
+
                 class category {
                     name: String
                     count: Number
                     weight: Number
                 }
-                
+
                 user_interests *-- keyword
                 user_interests *-- category
         </div>
@@ -261,7 +436,7 @@
 
     <div class="section">
         <h3>2. 角色相关集合</h3>
-        
+
         <h4>2.1 roles 集合</h4>
         <div class="mermaid">
             classDiagram
@@ -301,7 +476,7 @@
 
     <div class="section">
         <h3>3. 聊天相关集合</h3>
-        
+
         <h4>3.1 chats 集合</h4>
         <div class="mermaid">
             classDiagram
@@ -338,7 +513,7 @@
 
     <div class="section">
         <h3>4. 情感相关集合</h3>
-        
+
         <h4>4.1 emotionRecords 集合</h4>
         <div class="mermaid">
             classDiagram
@@ -354,7 +529,7 @@
                     timestamp: Date
                     created_at: Date
                 }
-                
+
                 class emotions {
                     joy: Number
                     sadness: Number
@@ -366,13 +541,13 @@
                     primary: String
                     secondary: String
                 }
-                
+
                 class keyword {
                     word: String
                     weight: Number
                     emotion: String
                 }
-                
+
                 emotionRecords *-- emotions
                 emotionRecords *-- keyword
         </div>
@@ -380,7 +555,7 @@
 
     <div class="section">
         <h3>5. 报告相关集合</h3>
-        
+
         <h4>5.1 userReports 集合</h4>
         <div class="mermaid">
             classDiagram
@@ -395,20 +570,20 @@
                     keyword_summary: Array
                     created_at: Date
                 }
-                
+
                 class emotion_summary {
                     primary: String
                     distribution: Object
                     volatility: Number
                     trend: String
                 }
-                
+
                 class keyword_summary {
                     category: String
                     keywords: Array
                     count: Number
                 }
-                
+
                 userReports *-- emotion_summary
                 userReports *-- keyword_summary
         </div>
@@ -423,21 +598,21 @@
                     UI2[stats.openid]
                     UI3[created_at]
                 end
-                
+
                 subgraph user_base集合索引
                     UBI1[userId]
                     UBI2[username]
                 end
-                
+
                 subgraph user_profile集合索引
                     UPI1[userId]
                 end
-                
+
                 subgraph user_interests集合索引
                     UII1[userId]
                     UII2[userId + categories.name]
                 end
-                
+
                 subgraph roles集合索引
                     RI1[creator]
                     RI2[is_system]
@@ -445,21 +620,21 @@
                     RI4[category]
                     RI5[usage_count]
                 end
-                
+
                 subgraph chats集合索引
                     CI1[userId]
                     CI2[roleId]
                     CI3[userId + roleId]
                     CI4[last_message_time]
                 end
-                
+
                 subgraph messages集合索引
                     MI1[chatId]
                     MI2[userId]
                     MI3[timestamp]
                     MI4[emotion_analyzed]
                 end
-                
+
                 subgraph emotionRecords集合索引
                     EI1[userId]
                     EI2[chatId]
@@ -467,7 +642,7 @@
                     EI4[timestamp]
                     EI5[userId + timestamp]
                 end
-                
+
                 subgraph userReports集合索引
                     URI1[userId]
                     URI2[date]

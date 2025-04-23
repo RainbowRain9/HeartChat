@@ -41,6 +41,7 @@
             margin-bottom: 20px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
         }
         .note {
             background-color: #f8f9fa;
@@ -68,8 +69,214 @@
             background-color: #f8f9fa;
             border-radius: 3px;
         }
+        .export-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .export-btn:hover {
+            background-color: #2980b9;
+        }
+        .export-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            position: relative;
+            background-color: #f8f9fa;
+            margin: 2% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        .modal-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            color: #2c3e50;
+        }
+        .modal .mermaid {
+            text-align: center;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            overflow: auto;
+        }
+        .zoom-btn {
+            position: absolute;
+            top: 20px;
+            right: 70px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .zoom-btn:hover {
+            background-color: #2980b9;
+        }
+        .zoom-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            position: relative;
+            background-color: #f8f9fa;
+            margin: 2% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1010;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        .modal-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            color: #2c3e50;
+        }
+        .modal-diagram {
+            position: relative;
+            overflow: auto;
+            max-height: 70vh;
+        }
+        .modal .mermaid {
+            text-align: center;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            transform-origin: center center;
+        }
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1010;
+        }
+        .zoom-control-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .zoom-control-btn:hover {
+            background-color: #2980b9;
+        }
+        .zoom-level {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .zoom-btn {
+            position: absolute;
+            top: 20px;
+            right: 70px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .zoom-btn:hover {
+            background-color: #2980b9;
+        }
+        .zoom-btn svg {
+            width: 16px;
+            height: 16px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             mermaid.initialize({
@@ -81,14 +288,171 @@
                     curve: 'basis'
                 }
             });
+
+            // 创建模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="modal-close">&times;</span>
+                    <h3 class="modal-title"></h3>
+                    <div class="modal-diagram"></div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // 关闭模态框
+            modal.querySelector('.modal-close').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // 点击模态框外部关闭
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // 为每个流程图添加导出按钮和放大按钮
+            document.querySelectorAll('.section').forEach(function(section, index) {
+                const mermaidDiv = section.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    // 添加导出按钮
+                    const exportBtn = document.createElement('button');
+                    exportBtn.className = 'export-btn';
+                    exportBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        导出图片
+                    `;
+                    exportBtn.addEventListener('click', function() {
+                        exportDiagram(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(exportBtn);
+
+                    // 添加放大按钮
+                    const zoomBtn = document.createElement('button');
+                    zoomBtn.className = 'zoom-btn';
+                    zoomBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            <line x1="11" y1="8" x2="11" y2="14"></line>
+                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                        放大查看
+                    `;
+                    zoomBtn.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(zoomBtn);
+
+                    // 点击流程图也可以放大
+                    mermaidDiv.style.cursor = 'pointer';
+                    mermaidDiv.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                }
+            });
+                    section.appendChild(zoomBtn);
+
+                    // 点击流程图也可以放大
+                    mermaidDiv.style.cursor = 'pointer';
+                    mermaidDiv.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                }
+            });
         });
+
+        // 打开放大模态框
+        function openZoomModal(mermaidDiv, title) {
+            const modal = document.querySelector('.modal');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalDiagram = modal.querySelector('.modal-diagram');
+
+            // 重置缩放
+            currentScale = 1;
+
+            // 设置模态框标题
+            modalTitle.textContent = title;
+
+            // 清空并复制流程图
+            modalDiagram.innerHTML = '';
+            const clonedDiagram = mermaidDiv.cloneNode(true);
+            modalDiagram.appendChild(clonedDiagram);
+
+            // 显示模态框
+            modal.style.display = 'block';
+
+            // 重新渲染Mermaid图表
+            mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+
+            // 更新缩放显示
+            modal.querySelector('.zoom-level').textContent = '100%';
+
+            // 重置图表缩放比例（在渲染完成后调用）
+            setTimeout(function() {
+                const mermaidDiv = modal.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    mermaidDiv.style.transform = 'scale(1)';
+                }
+            }, 100);
+        }
+
+        // 导出流程图为图片
+        function exportDiagram(mermaidDiv, title) {
+            const modal = document.querySelector('.modal');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalDiagram = modal.querySelector('.modal-diagram');
+
+            // 设置模态框标题
+            modalTitle.textContent = title;
+
+            // 清空并复制流程图
+            modalDiagram.innerHTML = '';
+            const clonedDiagram = mermaidDiv.cloneNode(true);
+            modalDiagram.appendChild(clonedDiagram);
+
+            // 显示模态框
+            modal.style.display = 'block';
+
+            // 重新渲染Mermaid图表
+            mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+        }
+
+        function exportDiagram(mermaidDiv, title) {
+            // 设置导出选项
+            const options = {
+                scale: 2, // 提高导出图片的清晰度
+                backgroundColor: '#f8f9fa',
+                logging: false,
+                allowTaint: true,
+                useCORS: true
+            };
+
+            // 使用html2canvas将流程图转换为图片
+            html2canvas(mermaidDiv, options).then(function(canvas) {
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.download = 'HeartChat-' + title.replace(/[^\w\u4e00-\u9fa5]/g, '-') + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(function(error) {
+                console.error('导出图片失败:', error);
+                alert('导出图片失败，请重试或检查控制台错误信息。');
+            });
+        }
     </script>
 </head>
 <body>
     <a href="HeartChat流程图总览.html" class="back-link">← 返回流程图总览</a>
-    
+
     <h1>HeartChat系统架构图</h1>
-    
+
     <div class="section">
         <p>本文档展示了HeartChat项目的系统架构，包括前端、后端、数据库和外部服务的组织结构。</p>
     </div>
@@ -101,7 +465,7 @@
                 Frontend --> Backend[后端]
                 Backend --> Database[(数据库)]
                 Backend --> ExternalServices[外部服务]
-                
+
                 subgraph 前端层
                     FE1[微信小程序]
                     FE2[页面]
@@ -110,13 +474,13 @@
                     FE5[服务类]
                     FE6[本地缓存]
                 end
-                
+
                 subgraph 后端层
                     BE1[云函数]
                     BE2[云存储]
                     BE3[云调用]
                 end
-                
+
                 subgraph 数据库层
                     DB1[(用户数据)]
                     DB2[(角色数据)]
@@ -124,29 +488,29 @@
                     DB4[(情感数据)]
                     DB5[(报告数据)]
                 end
-                
+
                 subgraph 外部服务层
                     ES1[智谱AI服务]
                     ES2[微信服务]
                 end
-                
+
                 Frontend --- FE1
                 FE1 --- FE2
                 FE1 --- FE3
                 FE1 --- FE4
                 FE1 --- FE5
                 FE1 --- FE6
-                
+
                 Backend --- BE1
                 Backend --- BE2
                 Backend --- BE3
-                
+
                 Database --- DB1
                 Database --- DB2
                 Database --- DB3
                 Database --- DB4
                 Database --- DB5
-                
+
                 ExternalServices --- ES1
                 ExternalServices --- ES2
         </div>
@@ -160,10 +524,10 @@
                 Frontend --> Backend[后端]
                 Backend --> Database[(数据库)]
                 Backend --> ExternalServices[外部服务]
-                
+
                 subgraph 前端层
                     direction TB
-                    
+
                     subgraph 页面
                         P1[欢迎页面]
                         P2[首页]
@@ -174,7 +538,7 @@
                         P7[每日报告页面]
                         P8[用户资料页面]
                     end
-                    
+
                     subgraph 组件
                         C1[聊天气泡组件]
                         C2[聊天输入组件]
@@ -186,7 +550,7 @@
                         C8[兴趣标签云组件]
                         C9[关键词情感统计组件]
                     end
-                    
+
                     subgraph 工具类
                         U1[auth.js]
                         U2[date.js]
@@ -195,7 +559,7 @@
                         U5[stats.js]
                         U6[storage.js]
                     end
-                    
+
                     subgraph 服务类
                         S1[emotionService.js]
                         S2[personalityService.js]
@@ -204,7 +568,7 @@
                         S5[cloudFuncCaller.js]
                         S6[eventBus.js]
                     end
-                    
+
                     subgraph 本地缓存
                         L1[用户信息缓存]
                         L2[聊天历史缓存]
@@ -212,10 +576,10 @@
                         L4[角色数据缓存]
                     end
                 end
-                
+
                 subgraph 后端层
                     direction TB
-                    
+
                     subgraph 云函数
                         CF1[login]
                         CF2[chat]
@@ -225,20 +589,20 @@
                         CF6[getEmotionHistory]
                         CF7[generateDailyReports]
                     end
-                    
+
                     subgraph 云存储
                         CS1[用户头像]
                         CS2[角色头像]
                     end
-                    
+
                     subgraph 云调用
                         CC1[订阅消息]
                     end
                 end
-                
+
                 subgraph 数据库层
                     direction TB
-                    
+
                     subgraph 用户数据
                         UD1[(users)]
                         UD2[(user_base)]
@@ -247,41 +611,41 @@
                         UD5[(user_config)]
                         UD6[(user_interests)]
                     end
-                    
+
                     subgraph 角色数据
                         RD1[(roles)]
                         RD2[(roleUsage)]
                     end
-                    
+
                     subgraph 聊天数据
                         CD1[(chats)]
                         CD2[(messages)]
                     end
-                    
+
                     subgraph 情感数据
                         ED1[(emotionRecords)]
                     end
-                    
+
                     subgraph 报告数据
                         RPD1[(userReports)]
                     end
                 end
-                
+
                 subgraph 外部服务层
                     direction TB
-                    
+
                     subgraph 智谱AI服务
                         AI1[GLM-4-Flash]
                         AI2[Embedding-3]
                     end
-                    
+
                     subgraph 微信服务
                         WX1[登录服务]
                         WX2[用户信息服务]
                         WX3[订阅消息服务]
                     end
                 end
-                
+
                 %% 连接前端组件和页面
                 P4 --- C1
                 P4 --- C2
@@ -292,13 +656,13 @@
                 P5 --- C7
                 P8 --- C8
                 P8 --- C9
-                
+
                 %% 连接前端服务和工具
                 P4 --- S1
                 P8 --- S2
                 P8 --- S3
                 P5 --- S4
-                
+
                 %% 连接前端和后端
                 P1 --- CF1
                 P4 --- CF2
@@ -307,7 +671,7 @@
                 P8 --- CF5
                 P6 --- CF6
                 P7 --- CF7
-                
+
                 %% 连接后端和数据库
                 CF1 --- UD1
                 CF1 --- UD2
@@ -315,22 +679,22 @@
                 CF5 --- UD4
                 CF5 --- UD5
                 CF5 --- UD6
-                
+
                 CF4 --- RD1
                 CF4 --- RD2
-                
+
                 CF2 --- CD1
                 CF2 --- CD2
-                
+
                 CF3 --- ED1
-                
+
                 CF7 --- RPD1
-                
+
                 %% 连接后端和外部服务
                 CF1 --- WX1
                 CF1 --- WX2
                 CF7 --- WX3
-                
+
                 CF2 --- AI1
                 CF3 --- AI1
                 CF3 --- AI2
@@ -347,7 +711,7 @@
                 App[小程序应用] --> MainPackage[主包]
                 App --> SubPackageA[分包A: packageEmotion]
                 App --> SubPackageB[分包B: packageChat]
-                
+
                 subgraph 主包
                     MP1[欢迎页面]
                     MP2[首页]
@@ -358,35 +722,35 @@
                     MP7[工具类]
                     MP8[服务类]
                 end
-                
+
                 subgraph 分包A: packageEmotion
                     SPA1[情绪历史页面]
                     SPA2[每日报告页面]
                     SPA3[情绪相关组件]
                 end
-                
+
                 subgraph 分包B: packageChat
                     SPB1[聊天页面]
                     SPB2[情绪分析页面]
                     SPB3[聊天相关组件]
                 end
-                
+
                 %% 连接主包和分包
                 MP2 --> SPA1
                 MP2 --> SPA2
                 MP2 --> SPB1
                 MP2 --> SPB2
-                
+
                 MP3 --> SPB1
-                
+
                 MP6 --> SPA3
                 MP6 --> SPB3
-                
+
                 MP7 --> SPA1
                 MP7 --> SPA2
                 MP7 --> SPB1
                 MP7 --> SPB2
-                
+
                 MP8 --> SPA1
                 MP8 --> SPA2
                 MP8 --> SPB1

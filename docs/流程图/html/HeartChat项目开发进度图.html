@@ -41,6 +41,7 @@
             margin-bottom: 20px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
         }
         .note {
             background-color: #f8f9fa;
@@ -68,41 +69,218 @@
             background-color: #f8f9fa;
             border-radius: 3px;
         }
+        .export-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .export-btn:hover {
+            background-color: #2980b9;
+        }
+        .export-btn svg {
+            width: 16px;
+            height: 16px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             mermaid.initialize({
                 startOnLoad: true,
                 theme: 'default',
-                gantt: {
-                    titleTopMargin: 25,
-                    barHeight: 20,
-                    barGap: 4,
-                    topPadding: 50,
-                    leftPadding: 75,
-                    gridLineStartPadding: 35,
-                    fontSize: 12,
-                    fontFamily: '"Open-Sans", "sans-serif"',
-                    numberSectionStyles: 4
-                },
-                pie: {
-                    useWidth: true
-                },
                 flowchart: {
                     useMaxWidth: true,
                     htmlLabels: true,
                     curve: 'basis'
                 }
             });
+            
+            // 创建模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="modal-close">&times;</span>
+                    <h3 class="modal-title"></h3>
+                    <div class="modal-diagram"></div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // 关闭模态框
+            modal.querySelector('.modal-close').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // 点击模态框外部关闭
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // 为每个流程图添加导出按钮和放大按钮
+            document.querySelectorAll('.section').forEach(function(section, index) {
+                const mermaidDiv = section.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    // 添加导出按钮
+                    const exportBtn = document.createElement('button');
+                    exportBtn.className = 'export-btn';
+                    exportBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        导出图片
+                    `;
+                    exportBtn.addEventListener('click', function() {
+                        exportDiagram(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(exportBtn);
+                    
+                    // 添加放大按钮
+                    const zoomBtn = document.createElement('button');
+                    zoomBtn.className = 'zoom-btn';
+                    zoomBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            <line x1="11" y1="8" x2="11" y2="14"></line>
+                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                        放大查看
+                    `;
+                    zoomBtn.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(zoomBtn);
+                    
+                    // 点击流程图也可以放大
+                    mermaidDiv.style.cursor = 'pointer';
+                    mermaidDiv.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                }
+            });
+            section.appendChild(zoomBtn);
+            
+            // 点击流程图也可以放大
+            mermaidDiv.style.cursor = 'pointer';
+            mermaidDiv.addEventListener('click', function() {
+                openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+            });
+        }
+    });
+
+            // 为每个流程图添加导出按钮
+            document.querySelectorAll('.section').forEach(function(section, index) {
+                const mermaidDiv = section.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    const exportBtn = document.createElement('button');
+                    exportBtn.className = 'export-btn';
+                    exportBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        导出图片
+                    `;
+                    exportBtn.addEventListener('click', function() {
+                        exportDiagram(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(exportBtn);
+                }
+            });
         });
+
+        // 导出流程图为图片
+        function exportDiagram(mermaidDiv, title) {
+    const modal = document.querySelector('.modal');
+    const modalTitle = modal.querySelector('.modal-title');
+    const modalDiagram = modal.querySelector('.modal-diagram');
+    
+    // 重置缩放
+    currentScale = 1;
+    updateZoom();
+    
+    // 设置模态框标题
+    modalTitle.textContent = title;
+    
+    // 清空并复制流程图
+    modalDiagram.innerHTML = '';
+    const clonedDiagram = mermaidDiv.cloneNode(true);
+    modalDiagram.appendChild(clonedDiagram);
+    
+    // 显示模态框
+    modal.style.display = 'block';
+    
+    // 重新渲染Mermaid图表
+    mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+}
+
+// 打开放大模态框
+        function openZoomModal(mermaidDiv, title) {
+            const modal = document.querySelector('.modal');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalDiagram = modal.querySelector('.modal-diagram');
+            
+            // 设置模态框标题
+            modalTitle.textContent = title;
+            
+            // 清空并复制流程图
+            modalDiagram.innerHTML = '';
+            const clonedDiagram = mermaidDiv.cloneNode(true);
+            modalDiagram.appendChild(clonedDiagram);
+            
+            // 显示模态框
+            modal.style.display = 'block';
+            
+            // 重新渲染Mermaid图表
+            mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+        }
+        
+        function exportDiagram(mermaidDiv, title) {
+            // 设置导出选项
+            const options = {
+                scale: 2, // 提高导出图片的清晰度
+                backgroundColor: '#f8f9fa',
+                logging: false,
+                allowTaint: true,
+                useCORS: true
+            };
+
+            // 使用html2canvas将流程图转换为图片
+            html2canvas(mermaidDiv, options).then(function(canvas) {
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.download = 'HeartChat-' + title.replace(/[^\w\u4e00-\u9fa5]/g, '-') + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(function(error) {
+                console.error('导出图片失败:', error);
+                alert('导出图片失败，请重试或检查控制台错误信息。');
+            });
+        }
     </script>
 </head>
 <body>
     <a href="HeartChat流程图总览.html" class="back-link">← 返回流程图总览</a>
-    
+
     <h1>HeartChat项目开发进度图</h1>
-    
+
     <div class="section">
         <p>本文档展示了HeartChat项目的开发进度和未来规划。</p>
     </div>
@@ -118,54 +296,54 @@
                 云开发环境搭建        :done, cloud, 2023-09-08, 5d
                 分包结构设计          :done, subpackage, 2023-09-13, 3d
                 组件化架构实现        :done, component, 2023-09-16, 5d
-                
+
                 section 用户系统
                 用户登录与授权        :done, login, 2023-09-21, 4d
                 用户资料管理          :done, profile, 2023-09-25, 5d
                 用户中心页面          :done, usercenter, 2023-09-30, 4d
-                
+
                 section 角色系统
                 角色数据结构设计      :done, roledesign, 2023-10-04, 3d
                 角色选择页面          :done, roleselect, 2023-10-07, 4d
                 角色创建与编辑        :done, roleedit, 2023-10-11, 5d
                 提示词编辑器          :done, prompteditor, 2023-10-16, 6d
-                
+
                 section 聊天系统
                 聊天界面设计          :done, chatdesign, 2023-10-22, 4d
                 消息发送与接收        :done, message, 2023-10-26, 5d
                 历史消息加载          :done, history, 2023-10-31, 4d
                 聊天记录本地缓存      :done, chatcache, 2023-11-04, 3d
-                
+
                 section 情感分析系统
                 情感分析算法设计      :done, emotiondesign, 2023-11-07, 5d
                 情感分析API集成       :done, emotionapi, 2023-11-12, 4d
                 情感可视化组件        :done, emotionvis, 2023-11-16, 6d
                 情绪历史记录          :done, emotionhistory, 2023-11-22, 5d
-                
+
                 section 用户画像系统
                 用户画像设计          :done, perceptiondesign, 2023-11-27, 4d
                 关键词提取与分类      :done, keyword, 2023-12-01, 6d
                 用户兴趣分析          :done, interest, 2023-12-07, 5d
                 个性特征分析          :done, personality, 2023-12-12, 6d
-                
+
                 section UI优化
                 暗黑模式支持          :done, darkmode, 2023-12-18, 7d
                 自定义导航栏          :done, navbar, 2023-12-25, 4d
                 UI组件库优化          :done, uikit, 2023-12-29, 5d
                 动画与交互优化        :done, animation, 2024-01-03, 6d
-                
+
                 section 性能优化
                 数据加载优化          :done, dataload, 2024-01-09, 5d
                 本地缓存策略          :done, cachestrategy, 2024-01-14, 4d
                 网络请求优化          :done, network, 2024-01-18, 3d
                 启动性能优化          :done, startup, 2024-01-21, 4d
-                
+
                 section 功能扩展
                 每日心情报告          :active, dailyreport, 2024-01-25, 7d
                 情绪干预建议          :active, intervention, 2024-02-01, 8d
                 社交分享功能          :todo, share, 2024-02-09, 6d
                 情绪日记功能          :todo, diary, 2024-02-15, 8d
-                
+
                 section 未来规划
                 多模态交互            :todo, multimodal, 2024-02-23, 10d
                 个性化推荐            :todo, recommendation, 2024-03-04, 9d
@@ -261,7 +439,7 @@
 
     <div class="section">
         <h2>未来开发计划</h2>
-        
+
         <h3>短期计划（1-2个月）</h3>
         <div class="mermaid">
             graph TD
@@ -269,35 +447,35 @@
                 B --> C[完成情绪干预建议]
                 C --> D[开发社交分享功能]
                 D --> E[开发情绪日记功能]
-                
+
                 subgraph 每日心情报告
                     B1[设计报告模板]
                     B2[实现数据聚合]
                     B3[集成AI生成内容]
                     B4[实现报告推送]
                 end
-                
+
                 subgraph 情绪干预建议
                     C1[设计干预算法]
                     C2[建立干预策略库]
                     C3[实现个性化建议]
                     C4[开发交互界面]
                 end
-                
+
                 subgraph 社交分享功能
                     D1[设计分享卡片]
                     D2[实现图片生成]
                     D3[集成微信分享]
                     D4[添加隐私控制]
                 end
-                
+
                 subgraph 情绪日记功能
                     E1[设计日记界面]
                     E2[实现日记编辑]
                     E3[添加情绪标签]
                     E4[集成回顾功能]
                 end
-                
+
                 B --> B1 --> B2 --> B3 --> B4
                 C --> C1 --> C2 --> C3 --> C4
                 D --> D1 --> D2 --> D3 --> D4
@@ -310,28 +488,28 @@
                 A[短期计划完成] --> B[开发多模态交互]
                 B --> C[实现个性化推荐]
                 C --> D[开发情绪预测]
-                
+
                 subgraph 多模态交互
                     B1[添加语音输入]
                     B2[实现图片识别]
                     B3[支持表情分析]
                     B4[优化多模态体验]
                 end
-                
+
                 subgraph 个性化推荐
                     C1[设计推荐算法]
                     C2[实现角色推荐]
                     C3[实现话题推荐]
                     C4[实现活动推荐]
                 end
-                
+
                 subgraph 情绪预测
                     D1[设计预测模型]
                     D2[收集训练数据]
                     D3[实现预测算法]
                     D4[开发预警机制]
                 end
-                
+
                 B --> B1 --> B2 --> B3 --> B4
                 C --> C1 --> C2 --> C3 --> C4
                 D --> D1 --> D2 --> D3 --> D4
@@ -343,28 +521,28 @@
                 A[中期计划完成] --> B[开发H5网页版]
                 B --> C[开发小程序插件]
                 C --> D[探索商业化模式]
-                
+
                 subgraph H5网页版
                     B1[设计响应式界面]
                     B2[实现核心功能]
                     B3[优化跨平台体验]
                     B4[实现数据同步]
                 end
-                
+
                 subgraph 小程序插件
                     C1[设计插件架构]
                     C2[封装核心功能]
                     C3[开发示例应用]
                     C4[编写开发文档]
                 end
-                
+
                 subgraph 商业化探索
                     D1[设计会员体系]
                     D2[开发企业版]
                     D3[开发专业版]
                     D4[建立合作生态]
                 end
-                
+
                 B --> B1 --> B2 --> B3 --> B4
                 C --> C1 --> C2 --> C3 --> C4
                 D --> D1 --> D2 --> D3 --> D4
