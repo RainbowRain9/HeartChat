@@ -49,15 +49,27 @@ page {
   padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
 }
 
-/* 导航栏 */
-.nav-bar {
+/* 导航栏容器 */
+.nav-container {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  z-index: 1000;
   background-color: var(--card-bg);
-  z-index: 100;
   box-shadow: var(--shadow-sm);
+}
+
+/* 状态栏 */
+.status-bar {
+  width: 100%;
+  background-color: var(--card-bg);
+}
+
+/* 导航栏 */
+.nav-bar {
+  width: 100%;
+  background-color: var(--card-bg);
 }
 
 .nav-bar-content {
@@ -125,7 +137,7 @@ page {
 /* 内容区域 */
 .profile-content {
   padding: 24rpx;
-  padding-top: calc(44px + env(safe-area-inset-top) + 24rpx);
+  padding-top: calc(var(--nav-total-height, 88px) + 24rpx);
 }
 
 /* 头像区域 */
@@ -133,7 +145,7 @@ page {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 40rpx 0 60rpx;
+  margin: 120rpx 0 60rpx; /* 增加上边距，避免被导航栏遮挡 */
 }
 
 .avatar-container {

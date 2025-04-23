@@ -64,10 +64,28 @@ Page({
   onLoad() {
     // 获取系统信息，检测暗黑模式
     const systemInfo = wx.getSystemInfoSync();
-    const darkMode = systemInfo.theme === 'dark';
+
+    // 优先使用本地缓存中的 darkMode 设置
+    const localDarkMode = wx.getStorageSync('darkMode');
+    let darkMode;
+
+    if (localDarkMode !== undefined && localDarkMode !== null) {
+      // 确保 darkMode 是布尔值
+      darkMode = typeof localDarkMode === 'boolean' ? localDarkMode : localDarkMode === 'true';
+      console.log('用户页面从本地缓存读取暗黑模式设置:', darkMode, '原始值:', localDarkMode, '类型:', typeof localDarkMode);
+
+      // 将布尔值存回缓存，确保类型一致
+      wx.setStorageSync('darkMode', darkMode);
+    } else {
+      darkMode = systemInfo.theme === 'dark';
+      console.log('用户页面使用系统主题设置暗黑模式:', darkMode);
+
+      // 将系统主题设置存入缓存
+      wx.setStorageSync('darkMode', darkMode);
+    }
 
     // 从全局状态获取暗黑模式设置
-    const appDarkMode = app.globalData.darkMode || false;
+    const appDarkMode = app.globalData.darkMode;
 
     // 获取胶囊按钮位置信息
     const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
@@ -86,12 +104,17 @@ Page({
     console.log('导航栏高度:', navBarHeight);
     console.log('导航栏总高度:', navTotalHeight);
 
+    // 确保使用布尔值
+    const finalDarkMode = typeof darkMode === 'boolean' ? darkMode : darkMode === 'true';
+
     this.setData({
-      darkMode: appDarkMode || darkMode,
+      darkMode: finalDarkMode,
       statusBarHeight: systemInfo.statusBarHeight,
       navBarHeight: navBarHeight,
       navTotalHeight: navTotalHeight
     });
+
+    console.log('用户页面设置暗黑模式为:', finalDarkMode, '类型:', typeof finalDarkMode);
 
     this.checkLoginStatus()
   },
@@ -110,10 +133,35 @@ Page({
     console.log('页面显示, needRefresh:', this.data.needRefresh)
 
     // 检查暗夜模式变化
-    if (this.data.darkMode !== app.globalData.darkMode) {
+    const localDarkMode = wx.getStorageSync('darkMode');
+    let shouldUpdateDarkMode = false;
+    let newDarkMode = this.data.darkMode;
+
+    if (localDarkMode !== undefined && localDarkMode !== null) {
+      // 确保 localDarkMode 是布尔值
+      const darkModeValue = typeof localDarkMode === 'boolean' ? localDarkMode : localDarkMode === 'true';
+
+      // 如果有本地缓存设置，使用本地缓存设置
+      shouldUpdateDarkMode = this.data.darkMode !== darkModeValue;
+      if (shouldUpdateDarkMode) {
+        console.log('从本地缓存更新暗黑模式为:', darkModeValue, '原始值:', localDarkMode, '类型:', typeof localDarkMode);
+        newDarkMode = darkModeValue;
+
+        // 将布尔值存回缓存，确保类型一致
+        wx.setStorageSync('darkMode', darkModeValue);
+      }
+    } else if (this.data.darkMode !== app.globalData.darkMode) {
+      // 如果没有本地缓存设置，使用全局状态
+      shouldUpdateDarkMode = true;
+      newDarkMode = app.globalData.darkMode;
+      console.log('从全局状态更新暗黑模式为:', newDarkMode);
+    }
+
+    if (shouldUpdateDarkMode) {
       this.setData({
-        darkMode: app.globalData.darkMode
+        darkMode: newDarkMode
       });
+      console.log('用户页面更新暗黑模式为:', newDarkMode, '类型:', typeof newDarkMode);
     }
 
     // 检查是否需要刷新
@@ -735,8 +783,9 @@ Page({
 
   // 导航到设置页面
   navigateToSettings() {
+    // 由于设置页面还没有实现，暂时导航到个人资料页面
     wx.navigateTo({
-      url: '/pages/user/settings/index'
+      url: '/pages/user/profile/profile'
     })
   },
 

@@ -38,6 +38,11 @@ page {
   transition: all 0.3s ease;
 }
 
+.light .nav-container {
+  background-color: #f8f9fa;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
 .dark .nav-container {
   background-color: #1a202c;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
@@ -50,6 +55,10 @@ page {
 
 /* 状态栏 */
 .status-bar {
+  background-color: #f8f9fa;
+}
+
+.light .status-bar {
   background-color: #f8f9fa;
 }
 
@@ -66,6 +75,10 @@ page {
   box-sizing: border-box;
   padding: 10rpx 30rpx; /* 增加上下内边距 */
   min-height: 100rpx; /* 确保最小高度 */
+}
+
+.light .nav-bar {
+  background-color: #f8f9fa;
 }
 
 .dark .nav-bar {
@@ -88,6 +101,10 @@ page {
   padding: 0 10rpx;
   font-size: 36rpx;
   font-weight: bold;
+  color: #333333;
+}
+
+.light .nav-bar-title {
   color: #333333;
 }
 

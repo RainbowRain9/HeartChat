@@ -1,5 +1,4 @@
 // 图片资源服务
-// 不在模块顶层调用getApp()
 
 // 云环境ID
 const ENV_ID = 'rainbowrain-2gt3j8hda726e4fe'; // 云环境ID
@@ -12,11 +11,18 @@ const IMAGE_MAP = {
   'icons/voice': 'cloud://'+ENV_ID+'.icons/voice.png',
   'icons/send': 'cloud://'+ENV_ID+'.icons/send.png',
   'icons/close': 'cloud://'+ENV_ID+'.icons/close.png',
+  'icons/personality': 'cloud://'+ENV_ID+'.icons/personality.png',
+  'icons/user-info': 'cloud://'+ENV_ID+'.icons/user-info.png',
+  'icons/interests': 'cloud://'+ENV_ID+'.icons/interests.png',
+  'icons/settings': 'cloud://'+ENV_ID+'.icons/settings.png',
+  'icons/dark-mode': 'cloud://'+ENV_ID+'.icons/dark-mode.png',
+  'icons/clear-history': 'cloud://'+ENV_ID+'.icons/clear-history.png',
+  'icons/arrow-right': 'cloud://'+ENV_ID+'.icons/arrow-right.png',
+  'icons/about': 'cloud://'+ENV_ID+'.icons/about.png',
 
   // 头像
   'avatars/default-avatar': 'cloud://'+ENV_ID+'.avatars/default-avatar.png',
 
-  // 可以添加更多图片...
 };
 
 // 本地图片映射表（作为备用）
@@ -27,6 +33,14 @@ const LOCAL_IMAGE_MAP = {
   'icons/send': '/images/icons/send.png',
   'icons/close': '/images/icons/close.png',
   'avatars/default-avatar': '/images/avatars/default-avatar.png',
+  'icons/personality': '/images/icons/personality.png',
+  'icons/user-info': '/images/icons/user-info.png',
+  'icons/interests': '/images/icons/interests.png',
+  'icons/settings': '/images/icons/settings.png',
+  'icons/dark-mode': '/images/icons/dark-mode.png',
+  'icons/clear-history': '/images/icons/clear-history.png',
+  'icons/arrow-right': '/images/icons/arrow-right.png',
+  'icons/about': '/images/icons/about.png',
 };
 
 // 默认头像
@@ -351,3 +365,4 @@ export default {
   getDefaultAvatar,
   clearImageCache
 };
+

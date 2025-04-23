@@ -38,14 +38,46 @@ App({
     try {
       const systemInfo = wx.getSystemInfoSync();
       this.globalData.systemInfo = systemInfo;
-      this.globalData.darkMode = systemInfo.theme === 'dark';
+
+      // 优先使用本地缓存中的 darkMode 设置
+      const localDarkMode = wx.getStorageSync('darkMode');
+      if (localDarkMode !== undefined && localDarkMode !== null) {
+        // 确保 localDarkMode 是布尔值
+        const darkModeValue = typeof localDarkMode === 'boolean' ? localDarkMode : localDarkMode === 'true';
+        this.globalData.darkMode = darkModeValue;
+        console.log('从本地缓存读取暗黑模式设置:', darkModeValue, '原始值:', localDarkMode, '类型:', typeof localDarkMode);
+
+        // 将布尔值存回缓存，确保类型一致
+        wx.setStorageSync('darkMode', darkModeValue);
+      } else {
+        // 如果本地缓存中没有设置，则使用系统主题
+        this.globalData.darkMode = systemInfo.theme === 'dark';
+        console.log('使用系统主题设置暗黑模式:', this.globalData.darkMode);
+
+        // 将系统主题设置存入缓存
+        wx.setStorageSync('darkMode', this.globalData.darkMode);
+      }
     } catch (e) {
       console.error('获取系统信息失败:', e);
     }
 
     // 监听主题变化
     wx.onThemeChange && wx.onThemeChange((result) => {
-      this.globalData.darkMode = result.theme === 'dark';
+      // 检查本地缓存中是否有手动设置的暗黑模式
+      const localDarkMode = wx.getStorageSync('darkMode');
+      if (localDarkMode !== undefined && localDarkMode !== null) {
+        // 如果有手动设置，则不响应系统主题变化
+        console.log('存在手动设置的暗黑模式，不响应系统主题变化');
+        return;
+      }
+
+      // 如果没有手动设置，则响应系统主题变化
+      const darkModeValue = result.theme === 'dark';
+      this.globalData.darkMode = darkModeValue;
+      console.log('系统主题变化，更新暗黑模式为:', darkModeValue);
+
+      // 将系统主题设置存入缓存
+      wx.setStorageSync('darkMode', darkModeValue);
     });
 
     // 检查登录状态
