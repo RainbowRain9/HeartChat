@@ -18,7 +18,7 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function () {
     console.log('首页加载，用户信息：', app.globalData.userInfo);
     // 获取系统信息和导航栏高度
     this.getSystemInfo();
@@ -112,30 +112,112 @@ Page({
     // 优先使用userId，其次是_id，最后是openid
     const userId = userInfo.userId || userInfo.user_id || userInfo._id || userInfo.openid;
 
-    if (!userId) {
-      console.log('无法获取用户ID，用户信息：', userInfo);
+    // 从用户信息中获取openid，先检查顶层，再检查stats对象
+    let openid = userInfo.openid;
+    if (!openid && userInfo.stats && userInfo.stats.openid) {
+      openid = userInfo.stats.openid;
+    }
+
+    // 如果还是没有，尝试从本地缓存中获取
+    if (!openid) {
+      try {
+        const cachedOpenid = wx.getStorageSync('openid');
+        if (cachedOpenid) {
+          openid = cachedOpenid;
+        }
+      } catch (e) {
+        console.error('从缓存获取openid失败:', e);
+      }
+    }
+
+    if (!userId && !openid) {
+      console.log('无法获取用户ID或openid，用户信息：', userInfo);
       this.setData({ loading: false });
       return;
     }
 
-    console.log('使用用户ID加载最近对话：', userId);
+    console.log('使用用户ID加载最近对话：', userId, '，openid:', openid);
 
     // 直接从数据库查询最近对话
     const db = wx.cloud.database();
-    const _ = db.command;
-    db.collection('chats')
-      .where(_.or([
-        { user_id: userId },
-        { userId: userId },
-        { _openid: userInfo.openid }
-      ]))
-      .orderBy('last_message_time', 'desc')
-      .limit(3)
-      .get()
-      .then(res => {
-        const chats = res.data || [];
 
-        // 处理时间显示和角色ID
+    // 构建查询条件，确保只查询当前用户的聊天记录
+    // 直接使用简单的查询条件，不使用复杂的组合查询
+    let query = {};
+
+    // 优先使用openid查询，因为这是最可靠的标识
+    if (openid) {
+      console.log('使用openid查询聊天记录:', openid);
+      query = { openId: openid };
+    }
+    // 如果没有openid，则使用userId
+    else if (userId) {
+      console.log('使用userId查询聊天记录:', userId);
+      query = { userId: userId };
+    }
+
+    console.log('最终查询条件:', query);
+
+    // 直接获取所有聊天记录，不使用查询条件，然后在前端过滤
+    // 这是一种应急方案，可以确保能看到所有聊天记录
+    db.collection('chats')
+      .orderBy('last_message_time', 'desc')
+      .limit(10) // 增加限制数量，确保能获取到足够的记录
+      .get()
+      .then(async res => {
+        let chats = res.data || [];
+        console.log('获取到的原始聊天数据:', chats);
+
+        // 在前端过滤当前用户的聊天记录
+        if (openid) {
+          chats = chats.filter(chat => chat.openId === openid);
+          console.log('根据openId过滤后的聊天数据:', chats);
+        } else if (userId) {
+          chats = chats.filter(chat => chat.userId === userId || chat.user_id === userId);
+          console.log('根据userId过滤后的聊天数据:', chats);
+        }
+
+        // 如果没有数据，直接返回
+        if (chats.length === 0) {
+          this.setData({
+            recentChats: [],
+            loading: false
+          });
+          return;
+        }
+
+        // 获取所有角色ID，用于批量查询角色信息
+        // 注意大小写，兼容roleId和role_id两种形式
+        const roleIds = chats.map(chat => chat.roleId || chat.role_id).filter(id => id);
+        const uniqueRoleIds = [...new Set(roleIds)];
+
+        console.log('提取的角色ID:', uniqueRoleIds);
+
+        // 角色信息映射表
+        let roleInfoMap = {};
+
+        // 如果有角色ID，批量获取角色信息
+        if (uniqueRoleIds.length > 0) {
+          try {
+            // 从roles集合获取角色信息
+            const roleResult = await db.collection('roles')
+              .where({
+                _id: db.command.in(uniqueRoleIds)
+              })
+              .get();
+
+            // 构建角色信息映射表
+            roleResult.data.forEach(role => {
+              roleInfoMap[role._id] = role;
+            });
+
+            console.log('获取到的角色信息:', roleInfoMap);
+          } catch (error) {
+            console.error('获取角色信息失败:', error);
+          }
+        }
+
+        // 处理时间显示和角色信息
         const processedChats = chats.map(chat => {
           // 格式化时间 - 优先使用updateTime，其次是last_message_time
           const messageTime = chat.updateTime ? new Date(chat.updateTime) :
@@ -163,37 +245,55 @@ Page({
             timeText = `${validTime.getMonth() + 1}-${validTime.getDate()}`;
           }
 
+          // 确保有roleId字段，兼容不同的字段名称，注意大小写
+          const roleId = chat.roleId || chat.role_id;
+
+          // 获取角色信息，兼容不同的字段名称，注意大小写
+          let roleName = chat.roleName || chat.role_name;
+          let roleAvatar = chat.roleAvatar || chat.role_avatar;
+
+          // 如果有角色ID且角色信息映射表中有该角色，使用映射表中的角色信息
+          if (roleId && roleInfoMap[roleId]) {
+            const roleInfo = roleInfoMap[roleId];
+            roleName = roleName || roleInfo.name || roleInfo.role_name;
+            roleAvatar = roleAvatar || roleInfo.avatar || roleInfo.avatar_url;
+          }
+
+          // 如果还是没有角色名称，使用默认值
+          if (!roleName) {
+            roleName = '对话角色';
+          }
+
+          // 如果还是没有角色头像，使用默认值
+          if (!roleAvatar) {
+            roleAvatar = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0';
+          }
+
+          // 获取最后一条消息内容，兼容不同的字段名称
+          const lastMessage = chat.lastMessage || chat.last_message || chat.last_message_content || '开始一段新的对话吧';
+
           // 调试信息
-          console.log('聊天记录时间信息:', {
+          console.log('处理聊天记录:', {
             chatId: chat._id,
-            updateTime: chat.updateTime,
-            last_message_time: chat.last_message_time,
-            calculatedTime: validTime,
+            roleId: roleId,
+            roleName: roleName,
+            roleAvatar: roleAvatar,
+            lastMessage: lastMessage,
             timeText: timeText
           });
 
-          // 确保有roleId字段，兼容不同的字段名称
-          const roleId = chat.role_id || chat.roleId;
-
-          // 如果没有roleId，尝试从其他字段提取
-          if (!roleId && chat.role) {
-            if (typeof chat.role === 'string') {
-              // 如果role是字符串ID
-              chat.role_id = chat.role;
-            } else if (chat.role._id) {
-              // 如果role是对象
-              chat.role_id = chat.role._id;
-            }
-          }
-
           return {
             ...chat,
+            roleId: roleId, // 使用驼峰命名法，与数据库中的字段保持一致
+            roleName: roleName, // 使用驼峰命名法，与数据库中的字段保持一致
+            roleAvatar: roleAvatar, // 使用驼峰命名法，与数据库中的字段保持一致
+            lastMessage: lastMessage, // 使用驼峰命名法，与数据库中的字段保持一致
             time_text: timeText
           };
         });
 
         // 过滤掉没有roleId的聊天
-        const filteredChats = processedChats.filter(chat => chat.role_id || chat.roleId);
+        const filteredChats = processedChats.filter(chat => chat.roleId);
 
         console.log('处理后的聊天数据:', filteredChats);
 
@@ -287,7 +387,19 @@ Page({
       url += `&chatId=${chatId}`;
     }
 
-    console.log('跳转到新聊天页面:', url);
+    console.log('跳转到聊天页面:', url);
+
+    // 将角色ID和聊天ID存入全局变量，确保聊天页面可以获取到正确的角色ID
+    app.globalData.chatParams = { roleId: roleId, chatId: chatId };
+
+    // 尝试从最近对话中获取角色信息
+    const chat = this.data.recentChats.find(item => item._id === chatId);
+    if (chat) {
+      // 如果找到了对应的聊天记录，将角色信息也存入全局变量
+      app.globalData.chatParams.roleName = chat.roleName;
+      app.globalData.chatParams.roleAvatar = chat.roleAvatar;
+      console.log('存入全局变量的角色信息:', app.globalData.chatParams);
+    }
 
     // 跳转到聊天页面
     wx.navigateTo({

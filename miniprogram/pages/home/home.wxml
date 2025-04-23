@@ -76,14 +76,14 @@
   <view class="recent-chats">
     <block wx:if="{{recentChats.length > 0}}">
       <view class="chat-item" wx:for="{{recentChats}}" wx:key="_id"
-            data-chat-id="{{item._id}}" data-role-id="{{item.role_id || item.roleId}}"
+            data-chat-id="{{item._id}}" data-role-id="{{item.roleId}}"
             bindtap="navigateToChat">
         <view class="chat-avatar">
-          <image src="{{item.role_avatar || item.roleAvatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}" mode="aspectFill"></image>
+          <image src="{{item.roleAvatar}}" mode="aspectFill"></image>
         </view>
         <view class="chat-info">
-          <text class="chat-name">{{item.role_name || item.roleName || '对话角色'}}</text>
-          <text class="chat-message">{{item.last_message_content || item.lastMessageContent || item.last_message || '开始一段新的对话吧'}}</text>
+          <text class="chat-name">{{item.roleName}}</text>
+          <text class="chat-message">{{item.lastMessage}}</text>
         </view>
         <view class="chat-time">
           <text>{{item.time_text}}</text>
