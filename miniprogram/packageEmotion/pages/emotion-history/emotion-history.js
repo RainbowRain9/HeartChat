@@ -335,9 +335,34 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // 获取系统信息，检测暗黑模式
+    // 获取系统信息
     const systemInfo = wx.getSystemInfoSync();
-    const darkMode = systemInfo.theme === 'dark';
+
+    // 获取全局应用实例
+    const app = getApp();
+
+    // 优先使用本地缓存中的 darkMode 设置
+    let darkMode = false;
+    try {
+      const localDarkMode = wx.getStorageSync('darkMode');
+      if (localDarkMode !== undefined && localDarkMode !== null) {
+        // 确保 localDarkMode 是布尔值
+        darkMode = typeof localDarkMode === 'boolean' ? localDarkMode : localDarkMode === 'true';
+        console.log('情绪历史页面加载时从本地缓存读取暗黑模式设置:', darkMode);
+      } else if (app && app.globalData && app.globalData.darkMode !== undefined) {
+        // 如果本地缓存中没有设置，则使用全局状态
+        darkMode = app.globalData.darkMode;
+        console.log('情绪历史页面加载时使用全局状态暗黑模式设置:', darkMode);
+      } else {
+        // 如果全局状态也没有设置，则使用系统主题
+        darkMode = systemInfo.theme === 'dark';
+        console.log('情绪历史页面加载时使用系统主题设置暗黑模式:', darkMode);
+      }
+    } catch (e) {
+      console.error('获取暗黑模式设置失败:', e);
+      // 如果出错，使用系统主题
+      darkMode = systemInfo.theme === 'dark';
+    }
 
     // 获取状态栏高度
     const statusBarHeight = systemInfo.statusBarHeight || 20;
@@ -357,7 +382,6 @@ Page({
     });
 
     // 检查用户登录状态
-    const app = getApp();
     let isLoggedIn = app && app.globalData ? app.globalData.isLoggedIn : false;
 
     console.log('初始登录状态:', isLoggedIn);
@@ -1535,6 +1559,7 @@ Page({
    * 跳转到情绪分析页面
    */
   navigateToEmotionAnalysis: function(recordId) {
+    console.log('准备跳转到情绪分析页面，recordId:', recordId);
     wx.navigateTo({
       url: '/packageChat/pages/emotion-analysis/emotion-analysis?recordId=' + recordId,
       success: () => {
@@ -1590,12 +1615,38 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    // 检查暗黑模式变化
-    const systemInfo = wx.getSystemInfoSync();
-    const darkMode = systemInfo.theme === 'dark';
+    // 获取全局应用实例
+    const app = getApp();
 
-    if (this.data.darkMode !== darkMode) {
-      this.setData({ darkMode });
+    // 优先使用本地缓存中的 darkMode 设置
+    let newDarkMode = false;
+    try {
+      const localDarkMode = wx.getStorageSync('darkMode');
+      if (localDarkMode !== undefined && localDarkMode !== null) {
+        // 确保 localDarkMode 是布尔值
+        newDarkMode = typeof localDarkMode === 'boolean' ? localDarkMode : localDarkMode === 'true';
+        console.log('情绪历史页面从本地缓存读取暗黑模式设置:', newDarkMode);
+      } else if (app && app.globalData && app.globalData.darkMode !== undefined) {
+        // 如果本地缓存中没有设置，则使用全局状态
+        newDarkMode = app.globalData.darkMode;
+        console.log('情绪历史页面使用全局状态暗黑模式设置:', newDarkMode);
+      } else {
+        // 如果全局状态也没有设置，则使用系统主题
+        const systemInfo = wx.getSystemInfoSync();
+        newDarkMode = systemInfo.theme === 'dark';
+        console.log('情绪历史页面使用系统主题设置暗黑模式:', newDarkMode);
+      }
+    } catch (e) {
+      console.error('获取暗黑模式设置失败:', e);
+      // 如果出错，使用系统主题
+      const systemInfo = wx.getSystemInfoSync();
+      newDarkMode = systemInfo.theme === 'dark';
+    }
+
+    // 检查暗黑模式是否变化
+    if (this.data.darkMode !== newDarkMode) {
+      this.setData({ darkMode: newDarkMode });
+      console.log('情绪历史页面更新暗黑模式为:', newDarkMode);
 
       // 如果图表已初始化，重新初始化以适应主题变化
       if (this.data.hasData) {

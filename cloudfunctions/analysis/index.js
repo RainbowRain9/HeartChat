@@ -934,6 +934,50 @@ async function getKeywordEmotionStats(event) {
 }
 
 /**
+ * 获取情绪记录分析
+ * @param {Object} event 事件参数
+ * @returns {Promise<Object>} 处理结果
+ */
+async function getEmotionRecordAnalysis(event) {
+  try {
+    // 获取参数
+    const { recordId } = event;
+
+    // 验证参数
+    if (!recordId) {
+      return {
+        success: false,
+        error: '记录ID不能为空'
+      };
+    }
+
+    // 从数据库中获取情绪记录
+    const db = cloud.database();
+    const record = await db.collection('emotionRecords').doc(recordId).get();
+
+    // 检查记录是否存在
+    if (!record || !record.data) {
+      return {
+        success: false,
+        error: '未找到情绪记录'
+      };
+    }
+
+    // 返回情绪分析数据
+    return {
+      success: true,
+      data: record.data.analysis
+    };
+  } catch (error) {
+    console.error('获取情绪记录分析失败:', error);
+    return {
+      success: false,
+      error: error.message || '获取情绪记录分析失败'
+    };
+  }
+}
+
+/**
  * 云函数入口
  * @param {Object} event 事件参数
  * @returns {Promise<Object>} 处理结果
@@ -966,6 +1010,8 @@ exports.main = async (event) => {
       return await linkKeywordsToEmotion(event);
     case 'get_keyword_emotion_stats':
       return await getKeywordEmotionStats(event);
+    case 'emotion_record':
+      return await getEmotionRecordAnalysis(event);
     default:
       return {
         success: false,

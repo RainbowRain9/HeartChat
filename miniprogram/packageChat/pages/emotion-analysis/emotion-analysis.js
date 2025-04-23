@@ -6,6 +6,7 @@ Page({
   data: {
     messageId: '',
     chatId: '',
+    recordId: '',
     userId: '',
     roleId: '',
     emotionAnalysis: null,
@@ -34,6 +35,11 @@ Page({
         roleId: options.roleId || ''
       });
       this.loadChatEmotionAnalysis(options.chatId);
+    } else if (options.recordId) {
+      this.setData({
+        recordId: options.recordId
+      });
+      this.loadEmotionRecordAnalysis(options.recordId);
     } else {
       wx.showToast({
         title: '参数错误',
@@ -103,6 +109,39 @@ Page({
       }
     } catch (error) {
       console.error('加载聊天情绪分析失败:', error);
+      wx.showToast({
+        title: '加载失败',
+        icon: 'none'
+      });
+      this.setData({ loading: false });
+    }
+  },
+
+  /**
+   * 加载情绪记录的情绪分析
+   */
+  async loadEmotionRecordAnalysis(recordId) {
+    try {
+      this.setData({ loading: true });
+
+      const result = await wx.cloud.callFunction({
+        name: 'analysis',
+        data: {
+          type: 'emotion_record',
+          recordId
+        }
+      });
+
+      if (result && result.result && result.result.success) {
+        this.setData({
+          emotionAnalysis: result.result.data,
+          loading: false
+        });
+      } else {
+        throw new Error('获取情绪记录分析失败');
+      }
+    } catch (error) {
+      console.error('加载情绪记录分析失败:', error);
       wx.showToast({
         title: '加载失败',
         icon: 'none'

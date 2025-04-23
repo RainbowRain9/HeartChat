@@ -151,12 +151,34 @@ Page({
    * 监听页面显示
    */
   onShow: function () {
-    // 检测暗夜模式状态是否变化
-    const app = getApp();
-    if (app.globalData && app.globalData.darkMode !== undefined &&
-        this.data.darkMode !== app.globalData.darkMode) {
+    // 优先使用本地缓存中的 darkMode 设置
+    let newDarkMode = this.data.darkMode;
+    let shouldUpdateDarkMode = false;
+
+    try {
+      const localDarkMode = wx.getStorageSync('darkMode');
+      if (localDarkMode !== undefined && localDarkMode !== null) {
+        // 确保 localDarkMode 是布尔值
+        newDarkMode = typeof localDarkMode === 'boolean' ? localDarkMode : localDarkMode === 'true';
+        shouldUpdateDarkMode = this.data.darkMode !== newDarkMode;
+        console.log('每日报告页面onShow从本地缓存读取暗黑模式设置:', newDarkMode, '是否需要更新:', shouldUpdateDarkMode);
+      } else {
+        // 如果本地缓存中没有设置，则使用全局状态
+        const app = getApp();
+        if (app.globalData && app.globalData.darkMode !== undefined) {
+          newDarkMode = app.globalData.darkMode;
+          shouldUpdateDarkMode = this.data.darkMode !== newDarkMode;
+          console.log('每日报告页面onShow使用全局状态暗黑模式设置:', newDarkMode, '是否需要更新:', shouldUpdateDarkMode);
+        }
+      }
+    } catch (e) {
+      console.error('每日报告页面onShow从本地缓存读取darkMode失败:', e);
+    }
+
+    // 如果暗黑模式状态变化，更新UI和图表
+    if (shouldUpdateDarkMode) {
       this.setData({
-        darkMode: app.globalData.darkMode,
+        darkMode: newDarkMode,
         // 清空颜色映射，强制重新生成颜色
         emotionColorMap: {}
       });
@@ -1017,18 +1039,34 @@ Page({
    * 检测系统暗夜模式
    */
   checkDarkMode: function() {
-    // 获取全局数据
+    // 优先使用本地缓存中的 darkMode 设置
+    try {
+      const localDarkMode = wx.getStorageSync('darkMode');
+      if (localDarkMode !== undefined && localDarkMode !== null) {
+        // 确保 localDarkMode 是布尔值
+        const darkModeValue = typeof localDarkMode === 'boolean' ? localDarkMode : localDarkMode === 'true';
+        this.setData({ darkMode: darkModeValue });
+        console.log('每日报告页面从本地缓存读取暗黑模式设置:', darkModeValue);
+        return;
+      }
+    } catch (e) {
+      console.error('从本地缓存读取darkMode失败:', e);
+    }
+
+    // 如果本地缓存中没有设置，则使用全局状态
     const app = getApp();
     if (app.globalData && app.globalData.darkMode !== undefined) {
       this.setData({
         darkMode: app.globalData.darkMode
       });
+      console.log('每日报告页面使用全局状态暗黑模式设置:', app.globalData.darkMode);
     } else {
-      // 获取系统信息
+      // 如果全局状态也没有设置，则使用系统主题
       wx.getSystemInfo({
         success: (res) => {
           const darkMode = res.theme === 'dark';
           this.setData({ darkMode });
+          console.log('每日报告页面使用系统主题设置暗黑模式:', darkMode);
 
           // 如果全局数据存在，更新全局数据
           if (app.globalData) {

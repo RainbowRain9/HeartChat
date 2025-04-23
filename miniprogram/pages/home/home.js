@@ -338,7 +338,7 @@ Page({
    */
   navigateToEmotionAnalysis: function () {
     wx.navigateTo({
-      url: '/pages/emotionAnalysis/emotionAnalysis'
+      url: '/packageChat/pages/emotion-analysis/emotion-analysis'
     });
   },
 
