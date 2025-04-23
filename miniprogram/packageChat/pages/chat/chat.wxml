@@ -115,6 +115,7 @@
         emotionData="{{emotionAnalysis}}"
         show="{{showEmotionAnalysis}}"
         darkMode="{{darkMode}}"
+        showCloseButton="{{true}}"
         bind:close="handleCloseEmotionAnalysis"
         bind:viewMore="handleViewEmotionDetail"
       ></emotion-dashboard>

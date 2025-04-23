@@ -9,8 +9,10 @@
   padding: 24rpx;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  border-radius: 20rpx;
-  max-height: 80vh;
+  border-radius: 0;
+  /* 确保在弹窗中可以滚动 */
+  -webkit-overflow-scrolling: touch; /* 使iOS滚动更流畅 */
+  max-height: 100%;
 }
 
 .emotion-dashboard.dark {
@@ -23,14 +25,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24rpx;
+  margin-bottom: 30rpx;
   position: relative;
+  padding: 0 10rpx;
 }
 
 .title {
-  font-size: 36rpx;
+  font-size: 34rpx;
   font-weight: 600;
   color: #111827;
+  margin-left: 10rpx;
 }
 
 .dark .title {
@@ -46,19 +50,25 @@
   font-size: 40rpx;
   color: #6B7280;
   cursor: pointer;
+  /* 增强关闭按钮的可见度 */
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  margin-right: 10rpx;
+  z-index: 10;
 }
 
 .dark .close-btn {
   color: #A1A1AA;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* 卡片样式 */
 .emotion-card {
   background-color: #FFFFFF;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .dark .emotion-card {
@@ -442,21 +452,23 @@ ec-canvas {
 /* 操作按钮 */
 .action-buttons {
   display: flex;
-  gap: 20rpx;
-  margin-top: 20rpx;
-  margin-bottom: 40rpx;
+  gap: 30rpx;
+  margin-top: 30rpx;
+  margin-bottom: 50rpx;
+  padding: 0 20rpx;
 }
 
 .action-btn {
   flex: 1;
-  height: 88rpx;
+  height: 96rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 44rpx;
-  font-size: 28rpx;
-  gap: 8rpx;
+  border-radius: 48rpx;
+  font-size: 30rpx;
+  gap: 12rpx;
   border: none;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
 }
 
 .save-btn {

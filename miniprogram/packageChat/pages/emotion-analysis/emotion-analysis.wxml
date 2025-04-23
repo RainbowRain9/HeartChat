@@ -1,6 +1,39 @@
 <!-- packageChat/pages/emotion-analysis/emotion-analysis.wxml -->
-<view class="container">
-  <view class="content">
+<view class="container {{darkMode ? 'dark-mode' : ''}}">
+  <!-- 导航栏容器 -->
+  <view class="nav-container">
+    <!-- 状态栏占位 -->
+    <view class="status-bar" style="height: {{statusBarHeight}}px"></view>
+
+    <!-- 自定义导航栏 -->
+    <view class="nav-bar" style="height: {{navBarHeight}}px;">
+      <view class="nav-bar-left">
+        <view class="back-btn" bindtap="navigateBack">
+          <view class="back-icon"></view>
+        </view>
+      </view>
+      <view class="nav-bar-title">
+        <text>情绪分析</text>
+      </view>
+      <view class="nav-bar-right">
+        <view class="theme-switch" bindtap="toggleDarkMode">
+          <view class="{{darkMode ? 'icon-moon' : 'icon-sun'}}"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <scroll-view
+    class="content"
+    style="margin-top: {{navTotalHeight}}px;"
+    scroll-y="true"
+    refresher-enabled="{{true}}"
+    refresher-threshold="80"
+    refresher-default-style="black"
+    refresher-background="{{darkMode ? '#1a1a1a' : '#f8f9fa'}}"
+    refresher-triggered="{{refreshing}}"
+    bindrefresherrefresh="onRefresh">
     <block wx:if="{{loading}}">
       <view class="loading">
         <view class="loading-spinner"></view>
@@ -8,20 +41,44 @@
       </view>
     </block>
     <block wx:elif="{{emotionAnalysis}}">
-      <!-- 使用现有的情绪分析组件 -->
-      <emotion-analysis
-        emotion="{{emotionAnalysis}}"
-        show="{{true}}"
-        userId="{{userId}}"
-        roleId="{{roleId}}"
-        darkMode="{{false}}">
-      </emotion-analysis>
+      <!-- 使用新的情绪仪表盘组件 -->
+      <view class="dashboard-wrapper">
+        <emotion-dashboard
+          emotionData="{{emotionAnalysis}}"
+          show="{{true}}"
+          userId="{{userId}}"
+          historyData="{{historyData}}"
+          darkMode="{{darkMode}}">
+        </emotion-dashboard>
+
+        <!-- 导出和分享按钮 -->
+        <view class="action-buttons {{darkMode ? 'dark-mode' : ''}}">
+          <button class="action-btn share-btn" bindtap="shareEmotionAnalysis">
+            <view class="btn-icon share-icon"></view>
+            <text>分享</text>
+          </button>
+          <button class="action-btn export-btn" bindtap="exportEmotionAnalysis">
+            <view class="btn-icon export-icon"></view>
+            <text>导出</text>
+          </button>
+        </view>
+      </view>
     </block>
     <block wx:else>
       <view class="empty">
-        <image src="/images/icons/empty.png" mode="aspectFit" class="empty-icon"></image>
+        <view class="empty-icon">
+          <!-- 内联SVG图标 -->
+          <view class="svg-container">
+            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+              <g fill="{{darkMode ? '#555555' : '#cccccc'}}">
+                <path d="M32 2C15.432 2 2 15.432 2 32s13.432 30 30 30 30-13.432 30-30S48.568 2 32 2zm0 52c-12.15 0-22-9.85-22-22s9.85-22 22-22 22 9.85 22 22-9.85 22-22 22z"/>
+                <path d="M20 24c0 2.21 1.79 4 4 4s4-1.79 4-4-1.79-4-4-4-4 1.79-4 4zm16 0c0 2.21 1.79 4 4 4s4-1.79 4-4-1.79-4-4-4-4 1.79-4 4zM44 40c0-6.627-5.373-12-12-12s-12 5.373-12 12h4c0-4.418 3.582-8 8-8s8 3.582 8 8h4z"/>
+              </g>
+            </svg>
+          </view>
+        </view>
         <text class="empty-text">暂无情绪分析数据</text>
       </view>
     </block>
-  </view>
+  </scroll-view>
 </view>

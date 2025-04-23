@@ -52,6 +52,11 @@ Component({
     darkMode: {
       type: Boolean,
       value: false
+    },
+    // 是否显示关闭按钮
+    showCloseButton: {
+      type: Boolean,
+      value: false
     }
   },
 
@@ -255,16 +260,27 @@ Component({
     processEmotionData(data) {
       if (!data) return;
 
-      console.log('处理情绪数据:', data);
-      console.log('原始数据值 - intensity:', data.intensity, 'valence:', data.valence, 'arousal:', data.arousal);
+      // 使用常量控制是否打印调试日志
+      const DEBUG_MODE = false;
+      if (DEBUG_MODE) {
+        console.log('处理情绪数据:', data);
+        console.log('原始数据值 - intensity:', data.intensity, 'valence:', data.valence, 'arousal:', data.arousal);
+      }
 
       // 提取主要情感数据 - 优先使用 type
       const primaryEmotion = data.type || data.primary_emotion || 'calm';
-      console.log('主要情绪类型:', primaryEmotion);
+
+      // 使用常量控制是否打印调试日志
+      if (DEBUG_MODE) {
+        console.log('主要情绪类型:', primaryEmotion);
+      }
 
       // 如果有关键词数据，将关键词分类并更新到数据库
+      // 使用延迟执行，避免阻塞主线程
       if (data.topic_keywords && Array.isArray(data.topic_keywords) && data.topic_keywords.length > 0 && this.data.userId) {
-        this.classifyAndUpdateKeywords(data.topic_keywords);
+        setTimeout(() => {
+          this.classifyAndUpdateKeywords(data.topic_keywords);
+        }, 500);
       }
 
       const emotion = {
@@ -288,8 +304,11 @@ Component({
         attention: data.attention_level_en || data.attention_level || 'medium'
       };
 
-      console.log('处理后的情绪数据:', emotion);
-      console.log('处理后的值 - intensity:', emotion.intensity, 'valence:', emotion.valence, 'arousal:', emotion.arousal);
+      // 使用常量控制是否打印调试日志
+      if (DEBUG_MODE) {
+        console.log('处理后的情绪数据:', emotion);
+        console.log('处理后的值 - intensity:', emotion.intensity, 'valence:', emotion.valence, 'arousal:', emotion.arousal);
+      }
 
       // 提取雷达图维度
       let radarPercent = {};
@@ -323,9 +342,12 @@ Component({
         };
       }
 
-      console.log('雷达图数据:', radarPercent);
-      if (data.radar_dimensions) {
-        console.log('原始雷达图数据:', data.radar_dimensions);
+      // 使用常量控制是否打印调试日志
+      if (DEBUG_MODE) {
+        console.log('雷达图数据:', radarPercent);
+        if (data.radar_dimensions) {
+          console.log('原始雷达图数据:', data.radar_dimensions);
+        }
       }
 
       // 更新数据
@@ -346,65 +368,81 @@ Component({
     initCharts() {
       try {
         // 使用延时确保组件已经完全渲染
-        setTimeout(() => {
+        // 使用wx.nextTick替代requestAnimationFrame，适应小程序环境
+        wx.nextTick(() => {
+          // 使用Promise并行初始化图表，提高性能
+          const initPromises = [];
+
           // 初始化情绪波动图
           this.emotionChartComponent = this.selectComponent('#emotionChart');
           if (this.emotionChartComponent) {
-            this.emotionChartComponent.init((canvas, width, height, dpr) => {
-              const chart = echarts.init(canvas, null, {
-                width: width,
-                height: height,
-                devicePixelRatio: dpr
+            initPromises.push(new Promise(resolve => {
+              this.emotionChartComponent.init((canvas, width, height, dpr) => {
+                const chart = echarts.init(canvas, null, {
+                  width: width,
+                  height: height,
+                  devicePixelRatio: dpr
+                });
+                const option = this.getEmotionChartOption();
+                chart.setOption(option);
+                this.emotionChart = chart;
+                resolve();
+                return chart;
               });
-              const option = this.getEmotionChartOption();
-              chart.setOption(option);
-              this.emotionChart = chart;
-              return chart;
-            });
+            }));
           }
 
           // 初始化雷达图
           this.radarChartComponent = this.selectComponent('#radarChart');
           if (this.radarChartComponent) {
-            this.radarChartComponent.init((canvas, width, height, dpr) => {
-              const chart = echarts.init(canvas, null, {
-                width: width,
-                height: height,
-                devicePixelRatio: dpr
+            initPromises.push(new Promise(resolve => {
+              this.radarChartComponent.init((canvas, width, height, dpr) => {
+                const chart = echarts.init(canvas, null, {
+                  width: width,
+                  height: height,
+                  devicePixelRatio: dpr
+                });
+                const option = this.getRadarChartOption();
+                chart.setOption(option);
+                this.radarChart = chart;
+                resolve();
+                return chart;
               });
-              const option = this.getRadarChartOption();
-              chart.setOption(option);
-              this.radarChart = chart;
-              return chart;
-            });
+            }));
           }
 
           // 初始化历史对比图
           this.historyChartComponent = this.selectComponent('#historyChart');
           if (this.historyChartComponent) {
-            this.historyChartComponent.init((canvas, width, height, dpr) => {
-              const chart = echarts.init(canvas, null, {
-                width: width,
-                height: height,
-                devicePixelRatio: dpr
+            initPromises.push(new Promise(resolve => {
+              this.historyChartComponent.init((canvas, width, height, dpr) => {
+                const chart = echarts.init(canvas, null, {
+                  width: width,
+                  height: height,
+                  devicePixelRatio: dpr
+                });
+                const option = this.getHistoryChartOption();
+                chart.setOption(option);
+                this.historyChart = chart;
+                resolve();
+                return chart;
               });
-              const option = this.getHistoryChartOption();
-              chart.setOption(option);
-              this.historyChart = chart;
-              return chart;
-            });
+            }));
           }
 
-          // 确保图表只渲染一次
-          this.setData({
-            chartRendered: true
-          });
+          // 等待所有图表初始化完成
+          Promise.all(initPromises).then(() => {
+            // 确保图表只渲染一次
+            this.setData({
+              chartRendered: true
+            });
 
-          // 图表初始化完成后，修复图表位置
-          setTimeout(() => {
-            this.fixChartsPosition();
-          }, 500);
-        }, 100);
+            // 图表初始化完成后，修复图表位置
+            wx.nextTick(() => {
+              this.fixChartsPosition();
+            });
+          });
+        });
       } catch (error) {
         console.error('图表初始化失败:', error);
       }
@@ -417,6 +455,7 @@ Component({
         const now = new Date();
         const xAxisData = [];
         const seriesData = [];
+        const darkMode = this.data.darkMode;
 
         // 生成过去7小时的时间标签
         for (let i = 6; i >= 0; i--) {
@@ -432,6 +471,14 @@ Component({
           }
         }
 
+        // 根据暗黑模式设置颜色
+        const textColor = darkMode ? '#e0e0e0' : '#333';
+        const lineColor = darkMode ? '#444' : '#999';
+        const splitLineColor = darkMode ? '#333' : '#ddd';
+        const mainColor = darkMode ? '#34D399' : '#10B981';
+        const areaColorStart = darkMode ? 'rgba(52, 211, 153, 0.3)' : 'rgba(16, 185, 129, 0.3)';
+        const areaColorEnd = darkMode ? 'rgba(52, 211, 153, 0.1)' : 'rgba(16, 185, 129, 0.1)';
+
         return {
           title: {
             text: '情绪波动',
@@ -439,12 +486,18 @@ Component({
             top: 0,
             textStyle: {
               fontSize: 14,
-              fontWeight: 'normal'
+              fontWeight: 'normal',
+              color: textColor
             }
           },
           tooltip: {
             trigger: 'axis',
-            formatter: '{b}: {c}%'
+            formatter: '{b}: {c}%',
+            backgroundColor: darkMode ? 'rgba(50,50,50,0.9)' : 'rgba(255,255,255,0.9)',
+            borderColor: darkMode ? '#555' : '#ddd',
+            textStyle: {
+              color: textColor
+            }
           },
           grid: {
             left: '3%',
@@ -459,11 +512,12 @@ Component({
             data: xAxisData,
             axisLine: {
               lineStyle: {
-                color: '#999'
+                color: lineColor
               }
             },
             axisLabel: {
-              fontSize: 10
+              fontSize: 10,
+              color: textColor
             }
           },
           yAxis: {
@@ -472,11 +526,13 @@ Component({
             max: 100,
             axisLabel: {
               formatter: '{value}%',
-              fontSize: 10
+              fontSize: 10,
+              color: textColor
             },
             splitLine: {
               lineStyle: {
-                type: 'dashed'
+                type: 'dashed',
+                color: splitLineColor
               }
             }
           },
@@ -486,7 +542,7 @@ Component({
             smooth: true,
             data: seriesData,
             itemStyle: {
-              color: '#10B981'
+              color: mainColor
             },
             areaStyle: {
               color: {
@@ -497,10 +553,10 @@ Component({
                 y2: 1,
                 colorStops: [{
                   offset: 0,
-                  color: 'rgba(16, 185, 129, 0.3)'
+                  color: areaColorStart
                 }, {
                   offset: 1,
-                  color: 'rgba(16, 185, 129, 0.1)'
+                  color: areaColorEnd
                 }]
               }
             }
@@ -516,6 +572,7 @@ Component({
     getRadarChartOption() {
       try {
         const dimensions = this.data.radarDimensions;
+        const darkMode = this.data.darkMode;
         const data = [
           dimensions.trust || 50,
           dimensions.openness || 50,
@@ -524,6 +581,13 @@ Component({
           dimensions.stress || 50
         ];
 
+        // 根据暗黑模式设置颜色
+        const textColor = darkMode ? '#e0e0e0' : '#333';
+        const lineColor = darkMode ? '#444' : '#999';
+        const splitLineColor = darkMode ? '#333' : '#ddd';
+        const mainColor = darkMode ? '#34D399' : '#10B981';
+        const areaColor = darkMode ? 'rgba(52, 211, 153, 0.2)' : 'rgba(16, 185, 129, 0.3)';
+
         return {
           title: {
             text: '情绪维度',
@@ -531,11 +595,17 @@ Component({
             top: 0,
             textStyle: {
               fontSize: 14,
-              fontWeight: 'normal'
+              fontWeight: 'normal',
+              color: textColor
             }
           },
           tooltip: {
-            trigger: 'item'
+            trigger: 'item',
+            backgroundColor: darkMode ? 'rgba(50,50,50,0.9)' : 'rgba(255,255,255,0.9)',
+            borderColor: darkMode ? '#555' : '#ddd',
+            textStyle: {
+              color: textColor
+            }
           },
           radar: {
             indicator: [
@@ -548,7 +618,18 @@ Component({
             radius: '65%',
             splitNumber: 4,
             axisName: {
-              fontSize: 10
+              fontSize: 10,
+              color: textColor
+            },
+            splitLine: {
+              lineStyle: {
+                color: splitLineColor
+              }
+            },
+            axisLine: {
+              lineStyle: {
+                color: lineColor
+              }
             }
           },
           series: [{
@@ -557,13 +638,13 @@ Component({
               value: data,
               name: '情绪维度',
               areaStyle: {
-                color: 'rgba(16, 185, 129, 0.3)'
+                color: areaColor
               },
               lineStyle: {
-                color: '#10B981'
+                color: mainColor
               },
               itemStyle: {
-                color: '#10B981'
+                color: mainColor
               }
             }]
           }]
@@ -582,6 +663,15 @@ Component({
         const positiveData = [60, 65, 70, this.data.emotion.valence];
         const stressData = [70, 65, 60, this.data.radarDimensions.stress];
         const energyData = [50, 55, 60, this.data.emotion.arousal];
+        const darkMode = this.data.darkMode;
+
+        // 根据暗黑模式设置颜色
+        const textColor = darkMode ? '#e0e0e0' : '#333';
+        const lineColor = darkMode ? '#444' : '#999';
+        const splitLineColor = darkMode ? '#333' : '#ddd';
+        const positiveColor = darkMode ? '#34D399' : '#10B981';
+        const stressColor = darkMode ? '#FBBF24' : '#F59E0B';
+        const energyColor = darkMode ? '#93C5FD' : '#60A5FA';
 
         return {
           title: {
@@ -590,7 +680,8 @@ Component({
             top: 0,
             textStyle: {
               fontSize: 14,
-              fontWeight: 'normal'
+              fontWeight: 'normal',
+              color: textColor
             }
           },
           tooltip: {
@@ -604,6 +695,11 @@ Component({
                 result += `${param.marker}${param.seriesName}: ${param.value}%<br/>`;
               });
               return result;
+            },
+            backgroundColor: darkMode ? 'rgba(50,50,50,0.9)' : 'rgba(255,255,255,0.9)',
+            borderColor: darkMode ? '#555' : '#ddd',
+            textStyle: {
+              color: textColor
             }
           },
           legend: {
@@ -612,7 +708,8 @@ Component({
             itemWidth: 12,
             itemHeight: 8,
             textStyle: {
-              fontSize: 10
+              fontSize: 10,
+              color: textColor
             }
           },
           grid: {
@@ -627,11 +724,12 @@ Component({
             data: categories,
             axisLine: {
               lineStyle: {
-                color: '#999'
+                color: lineColor
               }
             },
             axisLabel: {
-              fontSize: 10
+              fontSize: 10,
+              color: textColor
             }
           },
           yAxis: {
@@ -640,11 +738,13 @@ Component({
             max: 100,
             axisLabel: {
               formatter: '{value}%',
-              fontSize: 10
+              fontSize: 10,
+              color: textColor
             },
             splitLine: {
               lineStyle: {
-                type: 'dashed'
+                type: 'dashed',
+                color: splitLineColor
               }
             }
           },
@@ -654,7 +754,7 @@ Component({
               type: 'bar',
               data: positiveData,
               itemStyle: {
-                color: '#10B981'
+                color: positiveColor
               }
             },
             {
@@ -662,7 +762,7 @@ Component({
               type: 'bar',
               data: stressData,
               itemStyle: {
-                color: '#F59E0B'
+                color: stressColor
               }
             },
             {
@@ -670,7 +770,7 @@ Component({
               type: 'bar',
               data: energyData,
               itemStyle: {
-                color: '#60A5FA'
+                color: energyColor
               }
             }
           ]

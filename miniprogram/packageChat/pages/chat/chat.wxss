@@ -399,10 +399,12 @@
   max-height: 85%;
   background-color: #ffffff;
   border-radius: 20rpx;
-  overflow: hidden;
+  overflow-y: auto; /* 修改为auto，允许内容滚动 */
   transform: scale(0.9);
   transition: transform 0.3s ease;
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  /* 添加滚动条样式 */
+  -webkit-overflow-scrolling: touch; /* 使iOS滚动更流畅 */
 }
 
 .dark .emotion-modal-content {

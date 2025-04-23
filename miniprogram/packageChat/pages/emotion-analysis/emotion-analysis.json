@@ -1,7 +1,11 @@
 {
   "navigationBarTitleText": "情绪分析",
-  "navigationStyle": "default",
+  "navigationStyle": "custom",
   "usingComponents": {
-    "emotion-analysis": "/components/emotion-analysis/emotion-analysis"
-  }
+    "emotion-analysis": "/components/emotion-analysis/emotion-analysis",
+    "emotion-dashboard": "/components/emotion-dashboard/emotion-dashboard"
+  },
+  "disableScroll": true,
+  "enablePullDownRefresh": false,
+  "shareTimeline": true
 }

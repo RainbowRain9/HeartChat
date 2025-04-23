@@ -246,14 +246,26 @@ async function analyzeEmotion(text, options = {}) {
       console.log('从云函数返回的关键词:', keywords);
     }
 
-    return {
+    // 构建完整的结果对象
+    const finalResult = {
       success: true,
       data: {
         ...analysisResult,
         recordId: result.result.recordId || null,
-        keywords: keywords
+        keywords: keywords,
+        timestamp: new Date().getTime() // 添加时间戳
       }
     };
+
+    // 保存最新的情绪分析结果到本地缓存
+    try {
+      wx.setStorageSync('latestEmotionAnalysis', finalResult);
+      console.log('已将最新情绪分析结果保存到本地缓存');
+    } catch (e) {
+      console.error('保存情绪分析结果到本地缓存失败:', e);
+    }
+
+    return finalResult;
   } catch (error) {
     console.error('情感分析调用失败:', error);
     return createDefaultResult();
@@ -1107,6 +1119,40 @@ async function linkKeywordsToEmotion(userId, keywords, emotionResult) {
   }
 }
 
+/**
+ * 获取最新的情绪分析结果
+ * @returns {Object|null} 最新的情绪分析结果，如果没有则返回null
+ */
+function getLatestEmotionAnalysis() {
+  try {
+    // 从本地缓存中获取最新的情绪分析结果
+    const cachedResult = wx.getStorageSync('latestEmotionAnalysis');
+
+    // 检查缓存是否存在且有效
+    if (cachedResult && cachedResult.success && cachedResult.data) {
+      // 检查缓存是否过期（24小时）
+      const now = new Date().getTime();
+      const cacheTime = cachedResult.data.timestamp || 0;
+      const cacheAge = now - cacheTime;
+
+      // 如果缓存不超过24小时，则返回缓存的结果
+      if (cacheAge < 24 * 60 * 60 * 1000) {
+        console.log('使用缓存的情绪分析结果，缓存时间：', new Date(cacheTime).toLocaleString());
+        return cachedResult;
+      } else {
+        console.log('缓存的情绪分析结果已过期');
+      }
+    } else {
+      console.log('本地缓存中没有有效的情绪分析结果');
+    }
+
+    return null;
+  } catch (error) {
+    console.error('获取缓存的情绪分析结果失败:', error);
+    return null;
+  }
+}
+
 // 创建服务对象
 const emotionService = {
   EmotionTypes,
@@ -1125,7 +1171,9 @@ const emotionService = {
   getEmotionalVolatilityData,
   // 关键词情感相关函数
   getKeywordEmotionStats,
-  linkKeywordsToEmotion
+  linkKeywordsToEmotion,
+  // 缓存相关函数
+  getLatestEmotionAnalysis
 };
 
 // 导出服务对象

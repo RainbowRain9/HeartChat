@@ -934,6 +934,72 @@ async function getKeywordEmotionStats(event) {
 }
 
 /**
+ * 获取聊天的情绪分析
+ * @param {Object} event 事件参数
+ * @returns {Promise<Object>} 处理结果
+ */
+async function getChatEmotionAnalysis(event) {
+  try {
+    // 获取参数
+    const { chatId } = event;
+
+    // 验证参数
+    if (!chatId) {
+      return {
+        success: false,
+        error: '聊天ID不能为空'
+      };
+    }
+
+    // 从数据库中获取聊天记录
+    const db = cloud.database();
+    const _ = db.command;
+    const messages = await db.collection('messages')
+      .where({
+        chatId: chatId
+      })
+      .orderBy('createTime', 'desc')
+      .limit(20)
+      .get();
+
+    // 检查记录是否存在
+    if (!messages || !messages.data || messages.data.length === 0) {
+      return {
+        success: false,
+        error: '未找到聊天记录'
+      };
+    }
+
+    // 提取所有用户消息的内容
+    const userMessages = messages.data
+      .filter(msg => msg.role === 'user')
+      .map(msg => msg.content)
+      .join('\n');
+
+    // 如果没有用户消息，返回错误
+    if (!userMessages) {
+      return {
+        success: false,
+        error: '未找到用户消息'
+      };
+    }
+
+    // 分析用户消息的情绪
+    const emotionResult = await analyzeEmotion({
+      text: userMessages
+    });
+
+    return emotionResult;
+  } catch (error) {
+    console.error('获取聊天情绪分析失败:', error);
+    return {
+      success: false,
+      error: error.message || '获取聊天情绪分析失败'
+    };
+  }
+}
+
+/**
  * 获取情绪记录分析
  * @param {Object} event 事件参数
  * @returns {Promise<Object>} 处理结果
@@ -1012,6 +1078,8 @@ exports.main = async (event) => {
       return await getKeywordEmotionStats(event);
     case 'emotion_record':
       return await getEmotionRecordAnalysis(event);
+    case 'chat_emotion':
+      return await getChatEmotionAnalysis(event);
     default:
       return {
         success: false,

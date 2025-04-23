@@ -3,7 +3,7 @@
   <!-- 头部 -->
   <view class="header">
     <view class="title">情绪分析</view>
-    <view class="close-btn" bindtap="closePanel">×</view>
+    <view class="close-btn" bindtap="closePanel" wx:if="{{showCloseButton}}">×</view>
   </view>
 
   <!-- 情绪概览卡片 -->

@@ -277,16 +277,6 @@ Page({
           // 获取最后一条消息内容，兼容不同的字段名称
           const lastMessage = chat.lastMessage || chat.last_message || chat.last_message_content || '开始一段新的对话吧';
 
-          // 调试信息
-          console.log('处理聊天记录:', {
-            chatId: chat._id,
-            roleId: roleId,
-            roleName: roleName,
-            roleAvatar: roleAvatar,
-            lastMessage: lastMessage,
-            timeText: timeText
-          });
-
           return {
             ...chat,
             roleId: roleId, // 使用驼峰命名法，与数据库中的字段保持一致
@@ -299,8 +289,6 @@ Page({
 
         // 过滤掉没有roleId的聊天
         const filteredChats = processedChats.filter(chat => chat.roleId);
-
-        console.log('处理后的聊天数据:', filteredChats);
 
         this.setData({
           recentChats: filteredChats,
@@ -337,9 +325,199 @@ Page({
    * 跳转到情绪分析
    */
   navigateToEmotionAnalysis: function () {
-    wx.navigateTo({
-      url: '/packageChat/pages/emotion-analysis/emotion-analysis'
+    // 获取用户ID
+    const userInfo = app.globalData.userInfo;
+    if (!userInfo) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 尝试从本地缓存中获取最新的情绪分析结果
+    const emotionService = require('../../services/emotionService');
+    const cachedEmotionAnalysis = emotionService.getLatestEmotionAnalysis();
+
+    // 如果有缓存的情绪分析结果，直接使用
+    if (cachedEmotionAnalysis && cachedEmotionAnalysis.data) {
+      console.log('使用缓存的情绪分析结果');
+
+      // 将缓存的情绪分析结果存入全局变量，供情绪分析页面使用
+      app.globalData.cachedEmotionAnalysis = cachedEmotionAnalysis;
+
+      // 跳转到情绪分析页面，带上缓存标记
+      wx.navigateTo({
+        url: '/packageChat/pages/emotion-analysis/emotion-analysis?useCache=true',
+        fail: (err) => {
+          console.error('跳转失败:', err);
+          wx.showToast({
+            title: '跳转失败',
+            icon: 'none'
+          });
+        }
+      });
+
+      // 同时在后台查询最新数据，以便刷新缓存
+      this.queryLatestEmotionDataInBackground();
+      return;
+    }
+
+    // 如果没有缓存数据，则查询最近的聊天记录
+    console.log('没有缓存的情绪分析结果，查询最近的聊天记录');
+
+    // 优先使用userId，其次是_id，最后是openid
+    const userId = userInfo.userId || userInfo.user_id || userInfo._id || userInfo.openid;
+
+    // 从用户信息中获取openid，先检查顶层，再检查stats对象
+    let openid = userInfo.openid;
+    if (!openid && userInfo.stats && userInfo.stats.openid) {
+      openid = userInfo.stats.openid;
+    }
+
+    // 如果还是没有，尝试从本地缓存中获取
+    if (!openid) {
+      try {
+        const cachedOpenid = wx.getStorageSync('openid');
+        if (cachedOpenid) {
+          openid = cachedOpenid;
+        }
+      } catch (e) {
+        console.error('从缓存获取openid失败:', e);
+      }
+    }
+
+    if (!userId && !openid) {
+      wx.showToast({
+        title: '无法获取用户信息',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 显示加载中提示
+    wx.showLoading({
+      title: '加载中...'
     });
+
+    // 查询最近的聊天记录
+    const db = wx.cloud.database();
+    let query = {};
+
+    // 优先使用openid查询
+    if (openid) {
+      query = { openId: openid };
+    }
+    // 如果没有openid，则使用userId
+    else if (userId) {
+      query = { userId: userId };
+    }
+
+    db.collection('chats')
+      .where(query)
+      .orderBy('last_message_time', 'desc')
+      .limit(1)
+      .get()
+      .then(res => {
+        wx.hideLoading();
+        const chats = res.data || [];
+
+        if (chats.length > 0) {
+          const latestChat = chats[0];
+          const chatId = latestChat._id;
+          const roleId = latestChat.roleId || latestChat.role_id;
+
+          // 跳转到情绪分析页面，带上聊天ID和角色ID
+          wx.navigateTo({
+            url: `/packageChat/pages/emotion-analysis/emotion-analysis?chatId=${chatId}&roleId=${roleId}`,
+            fail: (err) => {
+              console.error('跳转失败:', err);
+              wx.showToast({
+                title: '跳转失败',
+                icon: 'none'
+              });
+            }
+          });
+        } else {
+          // 如果没有聊天记录，直接跳转到情绪分析页面
+          wx.navigateTo({
+            url: '/packageChat/pages/emotion-analysis/emotion-analysis'
+          });
+        }
+      })
+      .catch(err => {
+        wx.hideLoading();
+        console.error('获取最近聊天失败:', err);
+        // 出错时也直接跳转到情绪分析页面
+        wx.navigateTo({
+          url: '/packageChat/pages/emotion-analysis/emotion-analysis'
+        });
+      });
+  },
+
+  /**
+   * 在后台查询最新的情绪数据，用于更新缓存
+   */
+  queryLatestEmotionDataInBackground: function() {
+    const userInfo = app.globalData.userInfo;
+    if (!userInfo) return;
+
+    const userId = userInfo.userId || userInfo.user_id || userInfo._id || userInfo.openid;
+    let openid = userInfo.openid;
+    if (!openid && userInfo.stats && userInfo.stats.openid) {
+      openid = userInfo.stats.openid;
+    }
+
+    if (!userId && !openid) return;
+
+    const db = wx.cloud.database();
+    let query = openid ? { openId: openid } : { userId: userId };
+
+    // 查询最近的聊天记录
+    db.collection('chats')
+      .where(query)
+      .orderBy('last_message_time', 'desc')
+      .limit(1)
+      .get()
+      .then(res => {
+        const chats = res.data || [];
+        if (chats.length > 0) {
+          const latestChat = chats[0];
+          const chatId = latestChat._id;
+
+          // 查询该聊天的情绪分析结果
+          wx.cloud.callFunction({
+            name: 'analysis',
+            data: {
+              type: 'chat_emotion',
+              chatId: chatId
+            }
+          }).then(result => {
+            if (result && result.result && result.result.success) {
+              // 更新缓存
+              const finalResult = {
+                success: true,
+                data: {
+                  ...result.result.data || result.result.result || {},
+                  timestamp: new Date().getTime()
+                }
+              };
+
+              try {
+                wx.setStorageSync('latestEmotionAnalysis', finalResult);
+                console.log('后台更新情绪分析缓存成功');
+              } catch (e) {
+                console.error('后台更新情绪分析缓存失败:', e);
+              }
+            }
+          }).catch(err => {
+            console.error('后台查询情绪分析失败:', err);
+          });
+        }
+      })
+      .catch(err => {
+        console.error('后台查询最近聊天失败:', err);
+      });
   },
 
   /**

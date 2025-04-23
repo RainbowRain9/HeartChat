@@ -704,6 +704,28 @@ async function analyzeEmotion(text) {
 
 ## 九、版本更新记录
 
+### 版本 0.3.1 更新
+
+#### 情绪分析弹窗优化
+
+- **修复弹窗无法上下滚动问题**
+  - 修改了弹窗容器的样式，将`overflow: hidden`改为`overflow-y: auto`
+  - 添加`-webkit-overflow-scrolling: touch`属性，使iOS设备上的滚动更加流畅
+  - 优化了`emotion-dashboard`组件本身的滚动属性
+  - 确保在各种设备上都能正常滚动查看全部内容
+
+- **修复右上角关闭按钮不显示问题**
+  - 在对话界面中显示`emotion-dashboard`组件时，明确设置`showCloseButton="{{true}}"`属性
+  - 增强关闭按钮的样式，添加背景色和圆角，使其更加明显
+  - 为暗黑模式下的关闭按钮添加特殊样式
+  - 增加z-index确保关闭按钮始终在最上层
+
+- **修复JavaScript错误**
+  - 修复`process.env.NODE_ENV`错误，使用常量替代环境变量
+  - 修复`requestAnimationFrame`错误，使用`wx.nextTick`替代浏览器API
+  - 增强代码的健壮性，适应小程序环境
+  - 优化图表初始化和渲染性能
+
 ### 版本 0.3.0 更新
 
 #### 暗夜模式全面优化
