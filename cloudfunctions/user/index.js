@@ -566,7 +566,7 @@ async function getUserPerception(event) {
     return {
       success: true,
       data: defaultPerceptionData,
-      error: error.message || '获取用户画像失败'
+        error: error.message || '获取用户画像失败'
     };
   }
 }

@@ -419,7 +419,7 @@ Page({
    */
   navigateToProfile: function () {
     wx.navigateTo({
-      url: '/pages/user/profile/index'
+      url: '/pages/user/profile/profile'
     });
   }
 });
