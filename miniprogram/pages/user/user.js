@@ -200,6 +200,9 @@ Page({
         }
       })
 
+      // 获取用户总消息数
+      this.getTotalMessageCount()
+
       // 获取用户情绪数据
       this.loadEmotionData()
 
@@ -208,6 +211,222 @@ Page({
 
       // 获取用户兴趣标签
       this.loadInterestTags()
+    }
+  },
+
+  /**
+   * 获取用户总消息数
+   */
+  async getTotalMessageCount() {
+    try {
+      console.log('开始获取用户总消息数...');
+
+      // 获取用户ID
+      const userInfo = this.data.userInfo;
+      if (!userInfo) {
+        console.error('未获取到用户信息，无法获取总消息数');
+        return;
+      }
+
+      // 获取用户ID和openId
+      const userId = userInfo.userId || userInfo.user_id || userInfo._id;
+      const openId = wx.getStorageSync('openId') ||
+                    (userInfo && userInfo.stats && userInfo.stats.openid) ||
+                    (userInfo && userInfo.openid);
+
+      // 获取用户统计信息中的stats_id
+      const statsId = userInfo.stats && userInfo.stats._id;
+
+      console.log('获取总消息数使用的用户ID信息:', {
+        userId: userId,
+        openId: openId,
+        statsId: statsId,
+        userInfo: {
+          userId: userInfo.userId,
+          user_id: userInfo.user_id,
+          _id: userInfo._id,
+          openid: userInfo.openid,
+          stats: userInfo.stats ? {
+            _id: userInfo.stats._id,
+            openid: userInfo.stats.openid,
+            chat_count: userInfo.stats.chat_count
+          } : null
+        }
+      });
+
+      // 直接从本地获取聊天记录数量
+      await this.getLocalChatCount();
+
+      // 调用云函数获取总消息数并更新数据库
+      const result = await wx.cloud.callFunction({
+        name: 'user',
+        data: {
+          action: 'getTotalMessageCount',
+          userId: openId || userId // 优先使用openId
+        }
+      });
+
+      console.log('获取用户总消息数结果:', result);
+
+      if (result.result && result.result.success) {
+        const totalMessageCount = result.result.totalMessageCount || 0;
+        console.log('云函数返回的用户总消息数:', totalMessageCount);
+
+        // 如果云函数返回的总消息数大于0，更新页面数据
+        if (totalMessageCount > 0) {
+          // 更新页面数据
+          this.setData({
+            'stats.chatCount': totalMessageCount
+          });
+
+          // 更新用户信息中的统计数据
+          if (userInfo.stats) {
+            userInfo.stats.chat_count = totalMessageCount;
+            this.setData({ userInfo });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('获取用户总消息数失败:', error);
+    }
+  },
+
+  /**
+   * 从本地获取聊天记录数量
+   */
+  async getLocalChatCount() {
+    try {
+      console.log('开始从本地获取聊天记录数量...');
+
+      // 获取用户ID
+      const userInfo = this.data.userInfo;
+      if (!userInfo) {
+        console.error('未获取到用户信息，无法获取本地聊天记录');
+        return;
+      }
+
+      const openId = wx.getStorageSync('openId') ||
+                    (userInfo && userInfo.stats && userInfo.stats.openid) ||
+                    (userInfo && userInfo.openid);
+
+      if (!openId) {
+        console.error('未获取到用户openId，无法获取本地聊天记录');
+        return;
+      }
+
+      // 直接从数据库获取聊天记录
+      const db = wx.cloud.database();
+      const _ = db.command;
+
+      // 构建查询条件，考虑多种可能的字段名
+      const query = _.or([
+        { openId: openId },
+        { openid: openId },
+        { userId: openId },
+        { userid: openId },
+        { user_id: openId }
+      ]);
+
+      console.log('本地查询聊天记录条件:', query);
+
+      // 查询该用户的所有聊天记录
+      const chatsResult = await db.collection('chats')
+        .where(query)
+        .get();
+
+      console.log('本地查询聊天记录结果:', chatsResult);
+
+      if (chatsResult.data && chatsResult.data.length > 0) {
+        // 打印前5条记录的关键信息，便于调试
+        const sampleChats = chatsResult.data.slice(0, 5).map(chat => ({
+          id: chat._id,
+          roleId: chat.roleId,
+          openId: chat.openId || chat.openid,
+          messageCount: chat.messageCount
+        }));
+        console.log('示例聊天记录:', sampleChats);
+
+        // 计算总消息数
+        let totalMessageCount = 0;
+        chatsResult.data.forEach(chat => {
+          if (chat.messageCount && typeof chat.messageCount === 'number') {
+            totalMessageCount += chat.messageCount;
+          } else if (chat.messages && Array.isArray(chat.messages)) {
+            // 如果没有messageCount字段，但有messages数组，使用数组长度
+            totalMessageCount += chat.messages.length;
+          }
+        });
+
+        console.log('本地计算的总消息数:', totalMessageCount);
+
+        // 更新页面数据
+        this.setData({
+          'stats.chatCount': totalMessageCount
+        });
+
+        // 更新用户信息中的统计数据
+        if (userInfo.stats) {
+          userInfo.stats.chat_count = totalMessageCount;
+          this.setData({ userInfo });
+
+          // 尝试直接更新数据库中的user_stats表
+          try {
+            if (userInfo.stats._id) {
+              console.log('尝试直接更新数据库中的user_stats表...');
+
+              const updateResult = await db.collection('user_stats').doc(userInfo.stats._id).update({
+                data: {
+                  chat_count: totalMessageCount,
+                  updated_at: db.serverDate()
+                }
+              });
+
+              console.log('直接更新user_stats表结果:', updateResult);
+            }
+          } catch (updateErr) {
+            console.error('直接更新user_stats表失败:', updateErr);
+          }
+        }
+
+        // 如果找到了聊天记录，但总消息数为0，可能是messageCount字段不存在
+        if (totalMessageCount === 0) {
+          console.log('找到聊天记录，但总消息数为0，设置为聊天记录数量');
+
+          // 使用聊天记录的数量作为总消息数
+          const chatCount = chatsResult.data.length;
+
+          // 更新页面数据
+          this.setData({
+            'stats.chatCount': chatCount
+          });
+
+          // 更新用户信息中的统计数据
+          if (userInfo.stats) {
+            userInfo.stats.chat_count = chatCount;
+            this.setData({ userInfo });
+          }
+        }
+      } else {
+        console.log('未找到本地聊天记录');
+
+        // 如果没有找到聊天记录，但用户信息中有chat_count，使用它
+        if (userInfo.stats && userInfo.stats.chat_count) {
+          const chatCount = userInfo.stats.chat_count;
+          console.log('使用用户信息中的chat_count:', chatCount);
+
+          // 更新页面数据
+          this.setData({
+            'stats.chatCount': chatCount
+          });
+        } else {
+          // 如果什么都没有，设置为0
+          this.setData({
+            'stats.chatCount': 0
+          });
+        }
+      }
+    } catch (error) {
+      console.error('获取本地聊天记录失败:', error);
     }
   },
 
@@ -475,6 +694,12 @@ Page({
             })
 
             console.log('用户信息已通过云函数强制刷新:', updatedUserInfo)
+
+            // 获取用户总消息数
+            setTimeout(() => {
+              this.getTotalMessageCount();
+            }, 500);
+
             return
           }
         } catch (cloudError) {
@@ -527,6 +752,12 @@ Page({
           })
 
           console.log('用户信息已通过数据库强制刷新:', updatedUserInfo)
+
+          // 获取用户总消息数
+          setTimeout(() => {
+            this.getTotalMessageCount();
+          }, 500);
+
           return
         }
       }
@@ -547,6 +778,11 @@ Page({
         })
 
         console.log('用户信息已从内存刷新:', userInfo)
+
+        // 获取用户总消息数
+        setTimeout(() => {
+          this.getTotalMessageCount();
+        }, 500);
       } else {
         throw new Error('无法获取用户信息')
       }
@@ -581,6 +817,11 @@ Page({
             reportCount: userInfo.stats?.daily_report_count || 0
           }
         })
+
+        // 获取用户总消息数
+        setTimeout(() => {
+          this.getTotalMessageCount();
+        }, 500);
       } else {
         this.setData({
           loading: false,
@@ -661,18 +902,19 @@ Page({
       this.emotionPieChart = null
       this.personalityRadarChart = null
 
-      // 刷新情绪概览、个性分析和兴趣标签数据
+      // 刷新情绪概览、个性分析、兴趣标签数据和总消息数
       // 使用Promise.allSettled而不是Promise.all，确保即使一个请求失败也不会影响其他请求
       const results = await Promise.allSettled([
         this.loadEmotionData(),
         this.loadPersonalityData(),
-        this.loadInterestTags(true)
+        this.loadInterestTags(true),
+        this.getTotalMessageCount()
       ])
 
       // 检查结果
       results.forEach((result, index) => {
         if (result.status === 'rejected') {
-          const dataTypes = ['情绪数据', '个性数据', '兴趣标签'];
+          const dataTypes = ['情绪数据', '个性数据', '兴趣标签', '总消息数'];
           console.error(`数据加载失败 (${dataTypes[index]})`, result.reason)
         }
       })
@@ -738,8 +980,12 @@ Page({
         }
       });
 
-      // 加载用户兴趣标签
-      setTimeout(() => this.loadInterestTags(), 500);
+      // 获取用户总消息数
+      setTimeout(() => {
+        this.getTotalMessageCount();
+        // 加载用户兴趣标签
+        this.loadInterestTags();
+      }, 500);
     } else {
       // 如果全局用户信息不可用，则使用事件中的用户信息
       const { userInfo } = e.detail;
@@ -759,8 +1005,12 @@ Page({
           }
         });
 
-        // 加载用户兴趣标签
-        setTimeout(() => this.loadInterestTags(), 500);
+        // 获取用户总消息数
+        setTimeout(() => {
+          this.getTotalMessageCount();
+          // 加载用户兴趣标签
+          this.loadInterestTags();
+        }, 500);
       }
     }
   },
