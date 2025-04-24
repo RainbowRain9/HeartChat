@@ -168,12 +168,17 @@
   position: absolute;
   bottom: 16rpx;
   right: 16rpx;
-  background-color: rgba(255, 193, 7, 0.9);
+  background-color: rgba(255, 193, 7, 0.9); /* 黄色 - 推荐 */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 30rpx;
   padding: 6rpx 16rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 常用角色标记 - 使用不同的类名和颜色 */
+.frequently-used {
+  background-color: rgba(32, 201, 151, 0.9); /* 绿色 - 常用 */
 }
 
 .recommended-badge text {

@@ -140,19 +140,22 @@ Page({
         const systemRoles = cachedRoles.filter(role => role.creator === 'system' || role.isSystem);
         const userRoles = cachedRoles.filter(role => role.creator !== 'system' && !role.isSystem);
 
-        // 分离推荐角色
-        const recommendedRoles = systemRoles.filter(role => role.isRecommended).slice(0, 2);
+        // 获取聊天记录统计，用于推荐角色 - 考虑所有角色（系统角色和用户角色）
+        this.getChatsStatistics(cachedRoles, openid || userId, (rolesWithStats) => {
+          // 根据消息数量排序，选择前两个作为推荐角色
+          const recommendedRoles = this.getRecommendedRolesByMessageCount(rolesWithStats);
 
-        this.setData({
-          roles: cachedRoles,
-          systemRoles: systemRoles,
-          userRoles: userRoles,
-          filteredRoles: this.filterRoles(cachedRoles, this.data.activeCategory, this.data.searchValue),
-          recommendedRoles: recommendedRoles,
-          loading: false
+          this.setData({
+            roles: cachedRoles,
+            systemRoles: systemRoles,
+            userRoles: userRoles,
+            filteredRoles: this.filterRoles(cachedRoles, this.data.activeCategory, this.data.searchValue),
+            recommendedRoles: recommendedRoles,
+            loading: false
+          });
+
+          if (callback) callback();
         });
-
-        if (callback) callback();
         return;
       }
     }
@@ -183,24 +186,27 @@ Page({
       console.log('系统角色数量:', systemRoles.length);
       console.log('用户角色数量:', userRoles.length);
 
-      // 分离推荐角色
-      const recommendedRoles = systemRoles.filter(role => role.isRecommended).slice(0, 2);
+      // 获取聊天记录统计，用于推荐角色 - 考虑所有角色（系统角色和用户角色）
+      this.getChatsStatistics(roles, openid || userId, (rolesWithStats) => {
+        // 根据消息数量排序，选择前两个作为推荐角色
+        const recommendedRoles = this.getRecommendedRolesByMessageCount(rolesWithStats);
 
-      // 将角色列表存入缓存
-      wx.setStorageSync(cacheKey, roles);
-      wx.setStorageSync(cacheTimeKey, currentTime);
-      console.log('角色列表已缓存，过期时间:', new Date(currentTime + cacheExpireTime));
+        // 将角色列表存入缓存
+        wx.setStorageSync(cacheKey, roles);
+        wx.setStorageSync(cacheTimeKey, currentTime);
+        console.log('角色列表已缓存，过期时间:', new Date(currentTime + cacheExpireTime));
 
-      this.setData({
-        roles: roles,
-        systemRoles: systemRoles,
-        userRoles: userRoles,
-        filteredRoles: this.filterRoles(roles, this.data.activeCategory, this.data.searchValue),
-        recommendedRoles: recommendedRoles,
-        loading: false
+        this.setData({
+          roles: roles,
+          systemRoles: systemRoles,
+          userRoles: userRoles,
+          filteredRoles: this.filterRoles(roles, this.data.activeCategory, this.data.searchValue),
+          recommendedRoles: recommendedRoles,
+          loading: false
+        });
+
+        if (callback) callback();
       });
-
-      if (callback) callback();
     })
     .catch(err => {
       console.error('获取角色列表失败:', err);
@@ -211,6 +217,131 @@ Page({
       this.setData({ loading: false });
       if (callback) callback();
     });
+  },
+
+  /**
+   * 获取聊天记录统计，用于推荐角色
+   * @param {Array} roles - 角色列表
+   * @param {String} userId - 用户ID或openid
+   * @param {Function} callback - 回调函数，返回带有消息统计的角色列表
+   */
+  getChatsStatistics: function(roles, userId, callback) {
+    if (!roles || roles.length === 0) {
+      console.log('角色列表为空，无法获取聊天统计');
+      callback(roles);
+      return;
+    }
+
+    console.log('开始获取聊天记录统计...');
+    const db = wx.cloud.database();
+
+    // 查询所有聊天记录
+    db.collection('chats')
+      .where({
+        openId: userId // 使用openId查询
+      })
+      .get()
+      .then(res => {
+        const chats = res.data || [];
+        console.log(`获取到 ${chats.length} 条聊天记录`);
+
+        // 创建角色消息数量映射
+        const roleMessageCounts = {};
+
+        // 统计每个角色的消息数量
+        chats.forEach(chat => {
+          if (chat.roleId && chat.messageCount) {
+            if (!roleMessageCounts[chat.roleId]) {
+              roleMessageCounts[chat.roleId] = 0;
+            }
+            roleMessageCounts[chat.roleId] += chat.messageCount;
+          }
+        });
+
+        console.log('角色消息数量统计:', roleMessageCounts);
+
+        // 记录消息数量最多的前5个角色
+        const topRoleIds = Object.entries(roleMessageCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5)
+          .map(entry => entry[0]);
+
+        console.log('消息数量最多的前5个角色ID:', topRoleIds);
+
+        // 将消息数量添加到角色对象中
+        const rolesWithStats = roles.map(role => {
+          return {
+            ...role,
+            messageCount: roleMessageCounts[role._id] || 0
+          };
+        });
+
+        // 检查是否有角色ID在统计中但不在角色列表中
+        const missingRoleIds = Object.keys(roleMessageCounts).filter(
+          roleId => !roles.some(role => role._id === roleId)
+        );
+
+        if (missingRoleIds.length > 0) {
+          console.warn('以下角色ID在聊天统计中存在，但不在角色列表中:', missingRoleIds);
+        }
+
+        callback(rolesWithStats);
+      })
+      .catch(err => {
+        console.error('获取聊天记录统计失败:', err);
+        // 出错时仍然返回原始角色列表
+        callback(roles);
+      });
+  },
+
+  /**
+   * 根据消息数量获取推荐角色
+   * @param {Array} roles - 带有消息统计的角色列表
+   * @returns {Array} - 推荐角色列表（最多2个）
+   */
+  getRecommendedRolesByMessageCount: function(roles) {
+    if (!roles || roles.length === 0) {
+      return [];
+    }
+
+    // 按消息数量降序排序
+    const sortedRoles = [...roles].sort((a, b) => {
+      return (b.messageCount || 0) - (a.messageCount || 0);
+    });
+
+    console.log('按消息数量排序后的前5个角色:', sortedRoles.slice(0, 5).map(role => ({
+      id: role._id,
+      name: role.name,
+      messageCount: role.messageCount || 0
+    })));
+
+    // 选择前两个有消息记录的角色作为推荐角色，不区分系统角色和用户角色
+    const recommendedRoles = sortedRoles
+      .filter(role => role.messageCount > 0)
+      .slice(0, 2);
+
+    console.log('根据消息数量推荐的角色:', recommendedRoles.map(role => ({
+      id: role._id,
+      name: role.name,
+      messageCount: role.messageCount || 0
+    })));
+
+    // 如果没有足够的有消息记录的角色，则使用原来的isRecommended字段补充
+    if (recommendedRoles.length < 2) {
+      const defaultRecommended = roles
+        .filter(role => role.isRecommended && !recommendedRoles.some(r => r._id === role._id))
+        .slice(0, 2 - recommendedRoles.length);
+
+      recommendedRoles.push(...defaultRecommended);
+      console.log('补充默认推荐角色后:', recommendedRoles.map(role => ({
+        id: role._id,
+        name: role.name,
+        messageCount: role.messageCount || 0,
+        isRecommended: role.isRecommended
+      })));
+    }
+
+    return recommendedRoles;
   },
 
   /**

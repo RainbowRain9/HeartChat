@@ -22,9 +22,10 @@
              (role.category || role.role_type) === 'other' ? '其他' : '其他'}}</text>
     </view>
 
-    <!-- 推荐角色标记 -->
-    <view class="recommended-badge" wx:if="{{role.isRecommended}}">
-      <text>推荐</text>
+    <!-- 推荐角色标记 - 基于消息数量或isRecommended字段 -->
+    <view class="{{role.messageCount > 0 ? 'recommended-badge frequently-used' : 'recommended-badge'}}"
+          wx:if="{{role.messageCount > 0 || role.isRecommended}}">
+      <text>{{role.messageCount > 0 ? '常用' : '推荐'}}</text>
     </view>
   </view>
 
