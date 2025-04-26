@@ -203,6 +203,9 @@ Page({
       // 获取用户总消息数
       this.getTotalMessageCount()
 
+      // 获取用户心情报告数量
+      this.getReportCount()
+
       // 获取用户情绪数据
       this.loadEmotionData()
 
@@ -288,6 +291,62 @@ Page({
       }
     } catch (error) {
       console.error('获取用户总消息数失败:', error);
+    }
+  },
+
+  /**
+   * 获取用户心情报告数量
+   */
+  async getReportCount() {
+    try {
+      console.log('开始获取用户心情报告数量...');
+
+      // 获取用户ID
+      const userInfo = this.data.userInfo;
+      if (!userInfo) {
+        console.error('未获取到用户信息，无法获取心情报告数量');
+        return;
+      }
+
+      // 获取用户ID和openId
+      const userId = userInfo.userId || userInfo.user_id || userInfo._id;
+      const openId = wx.getStorageSync('openId') ||
+                    (userInfo && userInfo.stats && userInfo.stats.openid) ||
+                    (userInfo && userInfo.openid);
+
+      console.log('获取心情报告数量使用的用户ID信息:', {
+        userId: userId,
+        openId: openId
+      });
+
+      // 调用云函数获取心情报告数量
+      const result = await wx.cloud.callFunction({
+        name: 'user',
+        data: {
+          action: 'getReportCount',
+          userId: openId || userId // 优先使用openId
+        }
+      });
+
+      console.log('获取用户心情报告数量结果:', result);
+
+      if (result.result && result.result.success) {
+        const reportCount = result.result.reportCount || 0;
+        console.log('云函数返回的用户心情报告数量:', reportCount);
+
+        // 更新页面数据
+        this.setData({
+          'stats.reportCount': reportCount
+        });
+
+        // 更新用户信息中的统计数据
+        if (userInfo.stats) {
+          userInfo.stats.daily_report_count = reportCount;
+          this.setData({ userInfo });
+        }
+      }
+    } catch (error) {
+      console.error('获取用户心情报告数量失败:', error);
     }
   },
 
@@ -753,9 +812,10 @@ Page({
 
           console.log('用户信息已通过数据库强制刷新:', updatedUserInfo)
 
-          // 获取用户总消息数
+          // 获取用户总消息数和心情报告数量
           setTimeout(() => {
             this.getTotalMessageCount();
+            this.getReportCount();
           }, 500);
 
           return
@@ -779,9 +839,10 @@ Page({
 
         console.log('用户信息已从内存刷新:', userInfo)
 
-        // 获取用户总消息数
+        // 获取用户总消息数和心情报告数量
         setTimeout(() => {
           this.getTotalMessageCount();
+          this.getReportCount();
         }, 500);
       } else {
         throw new Error('无法获取用户信息')
@@ -818,9 +879,10 @@ Page({
           }
         })
 
-        // 获取用户总消息数
+        // 获取用户总消息数和心情报告数量
         setTimeout(() => {
           this.getTotalMessageCount();
+          this.getReportCount();
         }, 500);
       } else {
         this.setData({
@@ -902,19 +964,20 @@ Page({
       this.emotionPieChart = null
       this.personalityRadarChart = null
 
-      // 刷新情绪概览、个性分析、兴趣标签数据和总消息数
+      // 刷新情绪概览、个性分析、兴趣标签数据、总消息数和心情报告数量
       // 使用Promise.allSettled而不是Promise.all，确保即使一个请求失败也不会影响其他请求
       const results = await Promise.allSettled([
         this.loadEmotionData(),
         this.loadPersonalityData(),
         this.loadInterestTags(true),
-        this.getTotalMessageCount()
+        this.getTotalMessageCount(),
+        this.getReportCount()
       ])
 
       // 检查结果
       results.forEach((result, index) => {
         if (result.status === 'rejected') {
-          const dataTypes = ['情绪数据', '个性数据', '兴趣标签', '总消息数'];
+          const dataTypes = ['情绪数据', '个性数据', '兴趣标签', '总消息数', '心情报告数量'];
           console.error(`数据加载失败 (${dataTypes[index]})`, result.reason)
         }
       })
@@ -980,9 +1043,10 @@ Page({
         }
       });
 
-      // 获取用户总消息数
+      // 获取用户总消息数和心情报告数量
       setTimeout(() => {
         this.getTotalMessageCount();
+        this.getReportCount();
         // 加载用户兴趣标签
         this.loadInterestTags();
       }, 500);
@@ -1005,9 +1069,10 @@ Page({
           }
         });
 
-        // 获取用户总消息数
+        // 获取用户总消息数和心情报告数量
         setTimeout(() => {
           this.getTotalMessageCount();
+          this.getReportCount();
           // 加载用户兴趣标签
           this.loadInterestTags();
         }, 500);

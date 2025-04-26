@@ -999,6 +999,85 @@ async function updateKeywordEmotionScore(event) {
 }
 
 /**
+ * 获取用户心情报告数量
+ * @param {Object} event 事件参数
+ * @returns {Promise<Object>} 处理结果
+ */
+async function getReportCount(event) {
+  try {
+    // 获取微信上下文
+    const wxContext = cloud.getWXContext();
+    const { OPENID } = wxContext;
+
+    // 获取请求参数
+    const { userId } = event;
+
+    // 构建查询条件，考虑多种可能的字段名
+    const db = cloud.database();
+    const _ = db.command;
+
+    // 使用用户ID或OpenID
+    const openid = userId || OPENID;
+
+    console.log('查询心情报告数量，用户ID:', openid);
+
+    // 查询userReports表中该用户的记录数量
+    const countResult = await db.collection('userReports')
+      .where({
+        userId: openid
+      })
+      .count();
+
+    console.log('查询结果:', countResult);
+
+    const reportCount = countResult.total || 0;
+
+    // 更新user_stats表中的daily_report_count字段
+    try {
+      // 查询用户统计信息
+      const userStatsResult = await db.collection('user_stats')
+        .where(_.or([
+          { openid: openid },
+          { user_id: openid }
+        ]))
+        .get();
+
+      console.log('查询user_stats结果:', userStatsResult);
+
+      if (userStatsResult.data && userStatsResult.data.length > 0) {
+        const userStats = userStatsResult.data[0];
+
+        // 更新用户统计信息
+        await db.collection('user_stats').doc(userStats._id).update({
+          data: {
+            daily_report_count: reportCount,
+            updated_at: db.serverDate()
+          }
+        });
+
+        console.log('用户统计信息更新成功, 新的daily_report_count:', reportCount);
+      } else {
+        console.log('未找到用户统计信息，无法更新');
+      }
+    } catch (statsErr) {
+      console.error('更新用户统计信息失败:', statsErr);
+      // 不影响主流程
+    }
+
+    return {
+      success: true,
+      reportCount: reportCount
+    };
+  } catch (error) {
+    console.error('获取用户心情报告数量失败:', error);
+    return {
+      success: false,
+      error: error.message || '获取用户心情报告数量失败'
+    };
+  }
+}
+
+/**
  * 创建数据库索引
  * @param {Object} event 事件参数
  * @returns {Promise<Object>} 处理结果
@@ -1081,6 +1160,8 @@ exports.main = async (event, context) => {
       return await createDatabaseIndexes(event);
     case 'getTotalMessageCount':
       return await getTotalMessageCount(event);
+    case 'getReportCount':
+      return await getReportCount(event);
     default:
       return {
         success: false,
