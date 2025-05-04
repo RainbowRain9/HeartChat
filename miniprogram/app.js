@@ -25,34 +25,7 @@ App({
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力');
     } else {
-      try {
-        // 检查是否已经初始化
-        if (!wx.cloud.inited) {
-          wx.cloud.init({
-            env: this.globalData.cloudEnv,
-            traceUser: true,
-          });
-        }
-        this.globalData.cloudInit = true;
-        console.log('云环境初始化成功:', this.globalData.cloudEnv);
-
-        // 初始化图片服务
-        this.globalData.imageService = imageService;
-        imageService.initImageService();
-      } catch (error) {
-        console.error('云环境初始化失败:', error);
-        // 尝试使用动态环境ID
-        try {
-          wx.cloud.init({
-            env: wx.cloud.DYNAMIC_CURRENT_ENV,
-            traceUser: true,
-          });
-          this.globalData.cloudInit = true;
-          console.log('使用动态环境ID初始化云环境成功');
-        } catch (retryError) {
-          console.error('使用动态环境ID初始化云环境失败:', retryError);
-        }
-      }
+      this.initCloudEnvironment();
     }
 
     // 获取系统信息
@@ -237,10 +210,96 @@ App({
   },
 
   /**
+   * 初始化云环境
+   * @returns {boolean} 初始化是否成功
+   */
+  initCloudEnvironment() {
+    try {
+      // 检查是否已经初始化
+      if (!wx.cloud.inited) {
+        wx.cloud.init({
+          env: this.globalData.cloudEnv,
+          traceUser: true,
+        });
+      }
+      this.globalData.cloudInit = true;
+      console.log('云环境初始化成功:', this.globalData.cloudEnv);
+
+      // 初始化图片服务
+      this.globalData.imageService = imageService;
+      imageService.initImageService();
+      return true;
+    } catch (error) {
+      console.error('云环境初始化失败:', error);
+      // 尝试使用动态环境ID
+      try {
+        wx.cloud.init({
+          env: wx.cloud.DYNAMIC_CURRENT_ENV,
+          traceUser: true,
+        });
+        this.globalData.cloudInit = true;
+        console.log('使用动态环境ID初始化云环境成功');
+
+        // 初始化图片服务
+        this.globalData.imageService = imageService;
+        imageService.initImageService();
+        return true;
+      } catch (retryError) {
+        console.error('使用动态环境ID初始化云环境失败:', retryError);
+        return false;
+      }
+    }
+  },
+
+  /**
    * 更新主题设置
    * @param {boolean} isDarkMode - 是否为暗黑模式
    */
   updateTheme(isDarkMode) {
+    try {
+      // 更新全局状态
+      this.globalData.darkMode = isDarkMode;
+
+      // 尝试更新当前页面的主题
+      this.updateCurrentPageTheme(isDarkMode);
+
+      // 设置TabBar样式
+      this.updateTabBarStyle(isDarkMode);
+    } catch (error) {
+      console.error('更新主题设置失败:', error);
+    }
+  },
+
+  /**
+   * 更新当前页面的主题
+   * @param {boolean} isDarkMode - 是否为暗黑模式
+   */
+  updateCurrentPageTheme(isDarkMode) {
+    try {
+      // 获取当前页面
+      const pages = getCurrentPages();
+      if (pages.length === 0) {
+        console.log('当前没有页面，不更新页面主题');
+        return;
+      }
+
+      // 遍历所有页面，更新主题
+      pages.forEach(page => {
+        if (page && page.setData) {
+          page.setData({ darkMode: isDarkMode });
+          console.log(`更新页面 ${page.route} 的主题为:`, isDarkMode ? '暗黑模式' : '亮色模式');
+        }
+      });
+    } catch (error) {
+      console.error('更新当前页面主题失败:', error);
+    }
+  },
+
+  /**
+   * 更新TabBar样式
+   * @param {boolean} isDarkMode - 是否为暗黑模式
+   */
+  updateTabBarStyle(isDarkMode) {
     try {
       // 获取当前页面路径
       const pages = getCurrentPages();
@@ -261,7 +320,7 @@ App({
         return;
       }
 
-      // 设置当前页面的主题
+      // 设置TabBar样式
       wx.setTabBarStyle({
         color: isDarkMode ? '#8a9aa9' : '#6c757d',
         selectedColor: isDarkMode ? '#4dabf7' : '#007bff',
@@ -275,7 +334,7 @@ App({
         }
       });
     } catch (error) {
-      console.error('更新主题设置失败:', error);
+      console.error('更新TabBar样式失败:', error);
     }
   }
 });

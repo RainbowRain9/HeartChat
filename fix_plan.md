@@ -90,13 +90,13 @@
 ## 优先级5：其他优化
 
 ### 1. app.js
-- 简化第26-53行的云环境初始化部分的错误处理逻辑
-- 优化第230-267行的 `updateTheme` 方法，使其在所有页面生效
+- ✓ 简化第26-53行的云环境初始化部分的错误处理逻辑
+- ✓ 优化第230-267行的 `updateTheme` 方法，使其在所有页面生效
 
 ### 2. app.json
-- 统一第55-56行中的图标路径格式，移除 `navigation/` 目录
-- 确保第72-75行引用的 `/pages/emotionVault/agent-ui/` 组件能被正确加载
-- 确保第41-44行使用的主题变量在 `theme.json` 中定义
+- ✓ 统一第55-56行中的图标路径格式，移除 `navigation/` 目录
+- ✓ 确保第72-75行引用的 `/pages/emotionVault/agent-ui/` 组件能被正确加载
+- ✓ 确保第41-44行使用的主题变量在 `theme.json` 中定义
 
 ### 3. home.js
 - 优化第166-168行的注释和第168-171行的查询条件
@@ -122,13 +122,18 @@
 - [x] 优先级2：代码重复问题（部分）
   - [x] app.js 中的代码重复问题
   - [x] privacy.wxss 与 service.wxss 的重复样式
-  - [ ] 其他文件中的代码重复问题
-- [x] 优先级3：硬编码问题（部分）
+  - [x] home.js 中的获取用户ID和openid的重复逻辑
+  - [x] role-select.js 中的获取用户ID的重复逻辑和聊天函数重复
+  - [x] user.js 中的获取用户ID和openId的重复逻辑
+  - [x] profile.js 中的 fetchInterestTags 和 fetchPersonalityAnalysis 函数的共同逻辑
+- [x] 优先级3：硬编码问题
   - [x] app.js 中的硬编码问题
-  - [ ] 其他文件中的硬编码问题
+  - [x] 其他文件中的硬编码问题
 - [x] 优先级4：未使用的代码
   - [x] role-select.js 中的未使用函数
   - [x] role-select.wxml 中的测试按钮和调试信息区域
   - [x] role-select.wxss 中的未使用样式
   - [x] emotion-history.js 中的未使用函数
-- [ ] 优先级5：其他优化
+- [x] 优先级5：其他优化（部分）
+  - [x] app.js 中的优化
+  - [x] app.json 中的优化

@@ -9,7 +9,7 @@
     <view class="nav-bar" style="height: {{navBarHeight}}px;">
     <view class="nav-bar-left">
       <view class="avatar" bindtap="navigateToProfile">
-        <image src="{{userInfo.avatarUrl || userInfo.avatar_url || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}" mode="aspectFill"></image>
+        <image src="{{userInfo.avatarUrl || userInfo.avatar_url || defaultAvatar}}" mode="aspectFill"></image>
       </view>
     </view>
     <view class="nav-bar-title">

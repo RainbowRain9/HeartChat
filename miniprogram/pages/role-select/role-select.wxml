@@ -250,7 +250,7 @@
           <view class="button-row">
             <button class="detail-button edit" bindtap="editRole" data-role="{{currentRole}}" wx:if="{{!currentRole.isSystem && currentRole.creator !== 'system'}}">编辑角色</button>
             <button class="detail-button delete" bindtap="deleteRole" data-role="{{currentRole}}" wx:if="{{!currentRole.isSystem && currentRole.creator !== 'system'}}">删除角色</button>
-            <button class="detail-button edit chat-btn" bindtap="handleSelectAndChat" data-role="{{currentRole}}">开始对话</button>
+            <button class="detail-button edit chat-btn" bindtap="handleStartChat" data-role="{{currentRole}}">开始对话</button>
           </view>
         </view>
       </view>

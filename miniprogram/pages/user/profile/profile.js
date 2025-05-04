@@ -219,45 +219,72 @@ Page({
   },
 
   /**
-   * 获取兴趣标签
+   * 通用的用户数据获取函数
+   * @param {string} userId - 用户ID
+   * @param {string} action - 云函数action名称
+   * @param {Object} defaultData - 默认数据
+   * @param {Function} processResult - 处理结果的函数
+   * @param {string} errorMessage - 错误日志前缀
+   * @returns {Promise<Object>} 处理后的数据
    */
-  fetchInterestTags: async function (userId) {
-    if (!userId) return;
+  fetchUserData: async function (userId, action, defaultData, processResult, errorMessage) {
+    if (!userId) return defaultData;
 
     // 确保使用正确的用户ID
     userId = userId || '6457751'; // 使用固定的userId
 
     try {
-      // 调用云函数获取用户兴趣标签
+      // 调用云函数获取用户数据
       const result = await wx.cloud.callFunction({
         name: 'user',
         data: {
-          action: 'getUserInterests',
+          action,
           userId
         }
       });
 
-      if (result.result && result.result.success && result.result.keywords) {
-        // 从关键词中提取标签
-        const tags = result.result.keywords.map(item => item.word || item);
-        this.setData({
-          interestTags: tags
-        });
+      // 处理结果
+      if (result.result && result.result.success) {
+        return processResult(result.result);
       } else {
-        // 如果获取失败，使用默认标签
-        const defaultTags = ['旅行', '摄影', '美食', '电影', '音乐', '阅读', '科技'];
-        this.setData({
-          interestTags: defaultTags
-        });
+        console.warn(`${errorMessage} - 云函数返回失败:`, result.result);
+        return defaultData;
       }
     } catch (error) {
-      console.error('获取用户兴趣标签失败:', error);
-      // 使用默认标签
-      const defaultTags = ['旅行', '摄影', '美食', '电影', '音乐', '阅读', '科技'];
-      this.setData({
-        interestTags: defaultTags
-      });
+      console.error(`${errorMessage}:`, error);
+      return defaultData;
     }
+  },
+
+  /**
+   * 获取兴趣标签
+   */
+  fetchInterestTags: async function (userId) {
+    if (!userId) return;
+
+    // 默认标签
+    const defaultTags = ['旅行', '摄影', '美食', '电影', '音乐', '阅读', '科技'];
+
+    // 处理结果的函数
+    const processResult = (result) => {
+      if (result.keywords) {
+        // 从关键词中提取标签
+        return result.keywords.map(item => item.word || item);
+      }
+      return defaultTags;
+    };
+
+    // 获取数据
+    const tags = await this.fetchUserData(
+      userId,
+      'getUserInterests',
+      defaultTags,
+      processResult,
+      '获取用户兴趣标签失败'
+    );
+
+    // 更新状态
+    this.setData({ interestTags: tags });
   },
 
   /**
@@ -266,57 +293,36 @@ Page({
   fetchPersonalityAnalysis: async function (userId) {
     if (!userId) return;
 
-    // 确保使用正确的用户ID
-    userId = userId || '6457751'; // 使用固定的userId
+    // 默认摘要
+    const defaultSummary = '您的性格特点是开朗、乐观，善于与人沟通。在面对挑战时，您表现出较强的适应能力和解决问题的能力。您对新事物充满好奇心，喜欢探索和学习。';
 
-    try {
-      // 调用云函数获取用户性格分析
-      const result = await wx.cloud.callFunction({
-        name: 'user',
-        data: {
-          action: 'getUserPerception',
-          userId
-        }
-      });
+    // 处理结果的函数
+    const processResult = (result) => {
+      const data = result.data;
+      const updates = {};
 
-      if (result.result && result.result.success && result.result.data) {
-        // 获取性格特质和摘要
-        const perceptionData = result.result.data;
-
-        // 更新性格特质
-        if (perceptionData.personalityTraits && perceptionData.personalityTraits.length > 0) {
-          this.setData({
-            personalityTraits: perceptionData.personalityTraits
-          });
-        }
-
-        // 更新性格摘要
-        if (perceptionData.summary) {
-          this.setData({
-            personalitySummary: perceptionData.summary
-          });
-        } else {
-          // 使用默认摘要
-          const defaultSummary = '您的性格特点是开朗、乐观，善于与人沟通。在面对挑战时，您表现出较强的适应能力和解决问题的能力。您对新事物充满好奇心，喜欢探索和学习。';
-          this.setData({
-            personalitySummary: defaultSummary
-          });
-        }
-      } else {
-        // 如果获取失败，使用默认数据
-        const defaultSummary = '您的性格特点是开朗、乐观，善于与人沟通。在面对挑战时，您表现出较强的适应能力和解决问题的能力。您对新事物充满好奇心，喜欢探索和学习。';
-        this.setData({
-          personalitySummary: defaultSummary
-        });
+      // 更新性格特质
+      if (data && data.personalityTraits && data.personalityTraits.length > 0) {
+        updates.personalityTraits = data.personalityTraits;
       }
-    } catch (error) {
-      console.error('获取用户性格分析失败:', error);
-      // 使用默认数据
-      const defaultSummary = '您的性格特点是开朗、乐观，善于与人沟通。在面对挑战时，您表现出较强的适应能力和解决问题的能力。您对新事物充满好奇心，喜欢探索和学习。';
-      this.setData({
-        personalitySummary: defaultSummary
-      });
-    }
+
+      // 更新性格摘要
+      updates.personalitySummary = (data && data.summary) ? data.summary : defaultSummary;
+
+      return updates;
+    };
+
+    // 获取数据
+    const updates = await this.fetchUserData(
+      userId,
+      'getUserPerception',
+      { personalitySummary: defaultSummary },
+      processResult,
+      '获取用户性格分析失败'
+    );
+
+    // 更新状态
+    this.setData(updates);
   },
 
   /**

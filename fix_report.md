@@ -38,10 +38,26 @@
   - 将角色分类和关系选项移至配置文件
   - 将TabBar页面列表移至配置文件
   - 将情绪颜色映射移至配置文件
+  - 将默认情绪数据和个性分析数据移至配置文件
+  - 将默认个性特质和个性摘要移至配置文件
+  - 将默认兴趣标签移至配置文件
 - ✅ 修复 app.js 中的硬编码问题
   - 从配置文件导入云环境ID
   - 从配置文件导入TabBar页面列表
   - 将配置对象添加到全局数据中，便于其他页面使用
+- ✅ 修复 home.js 中的硬编码问题
+  - 将硬编码的默认头像URL替换为配置文件中的值
+  - 在home.wxml中将硬编码的默认头像URL替换为data中的defaultAvatar变量
+  - 在data中添加defaultAvatar变量，使用配置文件中的值
+- ✅ 修复 role-select.js 中的硬编码问题
+  - 将角色分类替换为配置文件中的值
+- ✅ 修复 user.js 中的硬编码问题
+  - 将情绪数据和个性分析数据替换为配置文件中的值
+- ✅ 修复 role-editor/index.js 中的硬编码问题
+  - 将默认头像路径替换为配置文件中的值
+  - 将关系选项替换为配置文件中的值
+  - 将分类选项替换为配置文件中的值
+  - 将关系与分类的映射替换为配置文件中的值
 
 ### 5. 其他优化
 - ✅ 修复 app.json 中的图标路径问题
@@ -75,6 +91,23 @@
   - 删除了 onUnload 函数
   - 修复了 onReachBottom 函数中对已删除函数的调用
 
+## 已修复的问题（续）
+
+### 7. 代码优化
+- ✅ 优化 app.js 中的云环境初始化部分的错误处理逻辑
+  - 创建了 initCloudEnvironment 方法，将云环境初始化逻辑抽取到单独的方法中
+  - 添加了返回值，表示初始化是否成功
+  - 优化了错误处理逻辑，使代码更加清晰
+- ✅ 优化 app.js 中的 updateTheme 方法，使其在所有页面生效
+  - 将 updateTheme 方法拆分为三个方法：updateTheme、updateCurrentPageTheme 和 updateTabBarStyle
+  - 添加了 updateCurrentPageTheme 方法，遍历所有页面并更新主题
+  - 添加了 updateTabBarStyle 方法，专门处理 TabBar 样式的更新
+  - 添加了详细的 JSDoc 注释，提高代码可读性
+- ✅ 修复 app.json 中的组件路径问题
+  - 验证了 agent-ui 组件的路径是否正确
+  - 确认了 emotionVault 目录和相关组件的存在
+  - 确保了 app.json 中引用的组件路径正确
+
 ## 待修复的问题
 
 ### 1. 文件过长问题
@@ -86,10 +119,25 @@
 - ⬜ miniprogram/pages/role-editor/index.wxss (699行)
 
 ### 2. 其他代码重复问题
-- ⬜ home.js 中的获取用户ID和openid的重复逻辑
-- ⬜ role-select.js 中的获取用户ID的重复逻辑和聊天函数重复
-- ⬜ user.js 中的获取用户ID和openId的重复逻辑
-- ⬜ profile.js 中的 fetchInterestTags 和 fetchPersonalityAnalysis 函数的共同逻辑
+- ✅ home.js 中的获取用户ID和openid的重复逻辑
+  - 在 userService.js 中添加了 getUserId、getOpenId、getUserIdentifiers、buildUserQuery 和 isValidUser 函数
+  - 修改 home.js 中的 loadRecentChats、navigateToEmotionAnalysis 和 queryLatestEmotionDataInBackground 函数，使用 userService 中的函数
+- ✅ role-select.js 中的获取用户ID的重复逻辑和聊天函数重复
+  - 使用 userService.getUserIdentifiers 函数替代重复的获取用户ID和openid的逻辑
+  - 合并了 handleStartChat 和 handleSelectAndChat 函数，消除了功能重复
+  - 更新了 role-select.wxml 中的函数引用
+- ✅ user.js 中的获取用户ID和openId的重复逻辑
+  - 修改了 getTotalMessageCount 函数，使用 userService.getUserIdentifiers 函数
+  - 修改了 getReportCount 函数，使用 userService.getUserIdentifiers 函数
+  - 修改了 getLocalChatCount 函数，使用 userService.getUserIdentifiers 函数
+  - 修改了 loadEmotionData 函数，使用 userService.getUserIdentifiers 函数
+  - 修改了 loadPersonalityData 函数，使用 userService.getUserIdentifiers 函数
+- ✅ profile.js 中的 fetchInterestTags 和 fetchPersonalityAnalysis 函数的共同逻辑
+  - 创建了通用的 fetchUserData 函数，抽取了两个函数的共同逻辑
+  - 重构了 fetchInterestTags 函数，使用通用函数获取数据
+  - 重构了 fetchPersonalityAnalysis 函数，使用通用函数获取数据
+  - 添加了详细的 JSDoc 注释，提高代码可读性
+  - 优化了错误处理和日志记录
 
 ## 修复建议
 

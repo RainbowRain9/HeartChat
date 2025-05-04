@@ -4,6 +4,8 @@ import { getLoginInfo, checkLogin } from '../../utils/auth'
 import { updateActiveDay } from '../../utils/stats'
 // 引入 echarts
 const echarts = require('../../components/ec-canvas/echarts')
+// 引入用户服务
+const userService = require('../../services/userService')
 
 Page({
   // 页面的初始数据
@@ -26,28 +28,10 @@ Page({
     },
 
     // 情绪概览数据
-    emotionData: {
-      labels: ['疲惫', '压力', '担忧', '焦虑', '平静', '满足', '快乐'],
-      values: [25, 20, 15, 10, 15, 10, 5],
-      colors: [
-        '#ffc107', // 疲惫
-        '#f56565', // 压力
-        '#4299e1', // 担忧
-        '#ed64a6', // 焦虑
-        '#48bb78', // 平静
-        '#9f7aea', // 满足
-        '#38b2ac'  // 快乐
-      ],
-      mainEmotion: '疲惫',
-      secondEmotion: '压力'
-    },
+    emotionData: require('../../config/index').user.DEFAULT_EMOTION_DATA,
 
     // 个性分析数据
-    personalityData: {
-      labels: ['责任感', '完美主义', '同理心', '创造力', '社交性', '冒险精神', '耐心'],
-      values: [85, 80, 70, 65, 50, 40, 60],
-      summary: '根据你的对话内容和情绪反应，我们分析出你是一个责任感强、追求完美的人，同时也具有同理心和创造力。'
-    },
+    personalityData: require('../../config/index').user.DEFAULT_PERSONALITY_DATA,
 
     // 情绪饼图配置
     emotionPieEc: {
@@ -231,11 +215,8 @@ Page({
         return;
       }
 
-      // 获取用户ID和openId
-      const userId = userInfo.userId || userInfo.user_id || userInfo._id;
-      const openId = wx.getStorageSync('openId') ||
-                    (userInfo && userInfo.stats && userInfo.stats.openid) ||
-                    (userInfo && userInfo.openid);
+      // 使用userService获取用户ID和openId
+      const { userId, openid: openId } = userService.getUserIdentifiers(userInfo);
 
       // 获取用户统计信息中的stats_id
       const statsId = userInfo.stats && userInfo.stats._id;
@@ -308,11 +289,8 @@ Page({
         return;
       }
 
-      // 获取用户ID和openId
-      const userId = userInfo.userId || userInfo.user_id || userInfo._id;
-      const openId = wx.getStorageSync('openId') ||
-                    (userInfo && userInfo.stats && userInfo.stats.openid) ||
-                    (userInfo && userInfo.openid);
+      // 使用userService获取用户ID和openId
+      const { userId, openid: openId } = userService.getUserIdentifiers(userInfo);
 
       console.log('获取心情报告数量使用的用户ID信息:', {
         userId: userId,
@@ -364,9 +342,8 @@ Page({
         return;
       }
 
-      const openId = wx.getStorageSync('openId') ||
-                    (userInfo && userInfo.stats && userInfo.stats.openid) ||
-                    (userInfo && userInfo.openid);
+      // 使用userService获取openId
+      const { openid: openId } = userService.getUserIdentifiers(userInfo);
 
       if (!openId) {
         console.error('未获取到用户openId，无法获取本地聊天记录');
@@ -495,26 +472,20 @@ Page({
       console.log('开始加载情绪概览数据...')
 
       // 获取用户ID
-      let userId = null;
-      let openId = wx.getStorageSync('openId');
+      const userInfo = wx.getStorageSync('userInfo');
+      const { userId, openid: openId } = userService.getUserIdentifiers(userInfo, true);
 
-      if (!openId) {
-        const userInfo = wx.getStorageSync('userInfo');
-        if (userInfo && userInfo.stats && userInfo.stats.openid) {
-          openId = userInfo.stats.openid;
-        }
-      }
-
-      if (!openId) {
+      if (!openId && !userId) {
         console.error('未获取到用户ID，无法获取情绪数据');
         return null;
       }
 
-      userId = openId;
+      // 使用openId作为userId
+      const userIdentifier = openId || userId;
 
       // 使用emotionService获取一周内的情绪记录
       const emotionService = require('../../services/emotionService');
-      const records = await emotionService.getEmotionHistory(userId, null, 20);
+      const records = await emotionService.getEmotionHistory(userIdentifier, null, 20);
 
       if (!records || records.length === 0) {
         console.warn('未找到情绪记录，无法生成情绪概览数据');
@@ -601,24 +572,18 @@ Page({
       };
 
       // 获取用户ID
-      let userId = null;
-      let openId = wx.getStorageSync('openId');
+      const userInfo = wx.getStorageSync('userInfo');
+      const { userId, openid: openId } = userService.getUserIdentifiers(userInfo, true);
 
-      if (!openId) {
-        const userInfo = wx.getStorageSync('userInfo');
-        if (userInfo && userInfo.stats && userInfo.stats.openid) {
-          openId = userInfo.stats.openid;
-        }
-      }
-
-      if (!openId) {
+      if (!openId && !userId) {
         console.error('未获取到用户ID，无法获取个性分析数据');
         // 使用默认数据
         this.setData({ personalityData: defaultPersonalityData })
         return defaultPersonalityData;
       }
 
-      userId = openId;
+      // 使用openId作为userId
+      const userIdentifier = openId || userId;
 
       // 调用云函数获取个性分析数据
       try {
@@ -626,7 +591,7 @@ Page({
           name: 'user',
           data: {
             action: 'getUserPerception',
-            userId: userId
+            userId: userIdentifier
           }
         })
 

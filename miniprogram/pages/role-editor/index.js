@@ -9,7 +9,7 @@ Page({
     currentStep: 1,
     showPromptPreview: false,
     previewPromptText: '',
-    defaultAvatar: '/images/avatars/default-avatar.png',
+    defaultAvatar: require('../../config/index').role.DEFAULT_ROLE_AVATAR,
     statusBarHeight: 20, // 默认状态栏高度
     darkMode: false, // 暗夜模式状态
 
@@ -37,42 +37,15 @@ Page({
     showCustomRelationship: false,
 
     // 关系选项
-    relationshipOptions: [
-      '父母', '子女', '兄弟姐妹', '朋友', '恋人', '配偶',
-      '上级', '下级', '同事', '客户', '合作伙伴', '老师',
-      '学生', '医生', '病人', '其他'
-    ],
+    relationshipOptions: require('../../config/index').role.RELATIONSHIP_OPTIONS,
     relationshipIndex: 0,
 
     // 分类选项
-    categoryOptions: [
-      { id: 'emotion', name: '情感支持' },
-      { id: 'psychology', name: '心理咨询' },
-      { id: 'life', name: '生活伙伴' },
-      { id: 'career', name: '职场导师' },
-      { id: 'other', name: '其他' }
-    ],
+    categoryOptions: require('../../config/index').role.ROLE_CATEGORIES,
     categoryIndex: -1,
 
     // 关系与分类的映射
-    relationshipToCategoryMap: {
-      '父母': 'life',
-      '子女': 'life',
-      '兄弟姐妹': 'life',
-      '朋友': 'life',
-      '恋人': 'emotion',
-      '配偶': 'emotion',
-      '上级': 'career',
-      '下级': 'career',
-      '同事': 'career',
-      '客户': 'career',
-      '合作伙伴': 'career',
-      '老师': 'psychology',
-      '学生': 'psychology',
-      '医生': 'psychology',
-      '病人': 'psychology',
-      '其他': 'other'
-    }
+    relationshipToCategoryMap: require('../../config/index').role.RELATIONSHIP_TO_CATEGORY_MAP
   },
 
   /**

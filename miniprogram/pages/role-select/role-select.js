@@ -1,5 +1,6 @@
 // pages/role-select/role-select.js
 const app = getApp();
+const userService = require('../../services/userService');
 
 Page({
   /**
@@ -12,13 +13,7 @@ Page({
     selectedRoleId: '', // 当前选中的角色ID
     loading: true, // 是否正在加载
     darkMode: false, // 暗夜模式
-    categories: [ // 角色分类
-      { id: 'all', name: '全部' },
-      { id: 'emotion', name: '情感支持' },
-      { id: 'psychology', name: '心理咨询' },
-      { id: 'life', name: '生活伙伴' },
-      { id: 'career', name: '职场导师' }
-    ],
+    categories: require('../../config/index').role.ROLE_CATEGORIES.concat([{ id: 'all', name: '全部' }]), // 角色分类
     activeCategory: 'all', // 当前选中的分类
     searchValue: '', // 搜索关键词
     filteredRoles: [], // 过滤后的角色列表
@@ -113,12 +108,10 @@ Page({
       return;
     }
 
-    // 获取用户ID，优先使用userId，其次是_id，最后是openid
-    const userId = userInfo.userId || userInfo.user_id || userInfo._id || userInfo.openid;
+    // 使用userService获取用户ID和openid
+    const { userId, openid } = userService.getUserIdentifiers(userInfo);
     console.log('使用用户ID加载角色列表:', userId);
 
-    // 同时获取openid，用于调试
-    const openid = userInfo.openid || userInfo.stats?.openid;
     if (openid) {
       console.log('用户openid:', openid);
     }
@@ -444,9 +437,26 @@ Page({
 
   /**
    * 开始对话
+   * @param {Object} e - 事件对象，可选，如果提供则从中获取角色信息
    */
-  handleStartChat: function () {
-    if (!this.data.selectedRoleId) {
+  handleStartChat: function (e) {
+    let roleId = this.data.selectedRoleId;
+    let role = null;
+
+    // 如果提供了事件对象，从中获取角色信息
+    if (e && e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.role) {
+      role = e.currentTarget.dataset.role;
+      roleId = role._id;
+
+      // 更新选中的角色ID
+      this.setData({
+        selectedRoleId: roleId,
+        showRoleDetail: false
+      });
+    }
+
+    // 如果没有选中角色，显示提示
+    if (!roleId) {
       wx.showToast({
         title: '请先选择一个角色',
         icon: 'none'
@@ -456,11 +466,11 @@ Page({
 
     // 跳转到聊天页面
     wx.navigateTo({
-      url: '/packageChat/pages/chat/chat?roleId=' + this.data.selectedRoleId,
+      url: '/packageChat/pages/chat/chat?roleId=' + roleId,
       success: () => {
         console.log('跳转到聊天页面成功');
         // 将选中的角色ID存入全局变量
-        app.globalData.chatParams = { roleId: this.data.selectedRoleId };
+        app.globalData.chatParams = { roleId: roleId };
       }
     });
   },
@@ -626,28 +636,7 @@ Page({
 
   // 已删除未使用的 formatEmotionalTendency 函数
 
-  /**
-   * 选择并开始对话
-   */
-  handleSelectAndChat: function (e) {
-    const role = e.currentTarget.dataset.role;
-
-    // 设置选中的角色
-    this.setData({
-      selectedRoleId: role._id,
-      showRoleDetail: false
-    });
-
-    // 开始对话
-    wx.navigateTo({
-      url: '/packageChat/pages/chat/chat?roleId=' + role._id,
-      success: () => {
-        console.log('跳转到聊天页面成功');
-        // 将选中的角色ID存入全局变量
-        app.globalData.chatParams = { roleId: role._id };
-      }
-    });
-  },
+  // handleSelectAndChat 函数已合并到 handleStartChat 函数中
 
 
 

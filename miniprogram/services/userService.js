@@ -249,8 +249,107 @@ function clearUserProfileCache(userId) {
   }
 }
 
+/**
+ * 从用户信息中获取用户ID
+ * @param {Object} userInfo - 用户信息对象
+ * @returns {String|null} 用户ID
+ */
+function getUserId(userInfo) {
+  if (!userInfo) return null;
+
+  // 优先使用userId，其次是user_id，再次是_id，最后是openid
+  return userInfo.userId || userInfo.user_id || userInfo._id || userInfo.openid || null;
+}
+
+/**
+ * 从用户信息中获取openid
+ * @param {Object} userInfo - 用户信息对象
+ * @param {Boolean} tryCache - 是否尝试从缓存中获取
+ * @returns {String|null} openid
+ */
+function getOpenId(userInfo, tryCache = true) {
+  if (!userInfo) return null;
+
+  // 先检查顶层
+  let openid = userInfo.openid;
+
+  // 再检查stats对象
+  if (!openid && userInfo.stats && userInfo.stats.openid) {
+    openid = userInfo.stats.openid;
+  }
+
+  // 如果还是没有，尝试从本地缓存中获取
+  if (!openid && tryCache) {
+    try {
+      const cachedOpenid = wx.getStorageSync('openId');
+      if (cachedOpenid) {
+        openid = cachedOpenid;
+      }
+    } catch (e) {
+      console.error('从缓存获取openid失败:', e);
+    }
+  }
+
+  return openid || null;
+}
+
+/**
+ * 获取用户ID和openid
+ * @param {Object} userInfo - 用户信息对象
+ * @param {Boolean} tryCache - 是否尝试从缓存中获取openid
+ * @returns {Object} 包含userId和openid的对象
+ */
+function getUserIdentifiers(userInfo, tryCache = true) {
+  if (!userInfo) return { userId: null, openid: null };
+
+  const userId = getUserId(userInfo);
+  const openid = getOpenId(userInfo, tryCache);
+
+  return { userId, openid };
+}
+
+/**
+ * 构建数据库查询条件
+ * @param {Object} userInfo - 用户信息对象
+ * @param {Boolean} tryCache - 是否尝试从缓存中获取openid
+ * @returns {Object} 查询条件对象
+ */
+function buildUserQuery(userInfo, tryCache = true) {
+  const { userId, openid } = getUserIdentifiers(userInfo, tryCache);
+
+  // 优先使用openid查询
+  if (openid) {
+    return { openId: openid };
+  }
+  // 如果没有openid，则使用userId
+  else if (userId) {
+    return { userId: userId };
+  }
+
+  // 如果都没有，返回空对象
+  return {};
+}
+
+/**
+ * 检查用户是否有效
+ * @param {Object} userInfo - 用户信息对象
+ * @param {Boolean} tryCache - 是否尝试从缓存中获取openid
+ * @returns {Boolean} 用户是否有效
+ */
+function isValidUser(userInfo, tryCache = true) {
+  if (!userInfo) return false;
+
+  const { userId, openid } = getUserIdentifiers(userInfo, tryCache);
+  return !!(userId || openid);
+}
+
 module.exports = {
   getUserProfile,
   saveUserProfile,
-  clearUserProfileCache
+  clearUserProfileCache,
+  getUserId,
+  getOpenId,
+  getUserIdentifiers,
+  buildUserQuery,
+  isValidUser
 };

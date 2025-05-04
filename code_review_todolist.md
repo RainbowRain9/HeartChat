@@ -25,7 +25,7 @@
 - [x] miniprogram/pages/welcome/welcome.wxml
 - [x] miniprogram/pages/welcome/welcome.wxss
 
-- [x] miniprogram/pages/home/home.js
+- [✓] miniprogram/pages/home/home.js
 - [x] miniprogram/pages/home/home.json
 - [x] miniprogram/pages/home/home.wxml
 - [x] miniprogram/pages/home/home.wxss
@@ -35,7 +35,7 @@
 - [✓] miniprogram/pages/role-select/role-select.wxml
 - [✓] miniprogram/pages/role-select/role-select.wxss
 
-- [x] miniprogram/pages/user/user.js
+- [✓] miniprogram/pages/user/user.js
 - [x] miniprogram/pages/user/user.json
 - [x] miniprogram/pages/user/user.wxml
 - [x] miniprogram/pages/user/user.wxss
@@ -185,6 +185,7 @@
 - [ ] miniprogram/services/cloudFuncCaller.js
 - [ ] miniprogram/services/eventBus.js
 - [ ] miniprogram/services/imageService.js
+- [✓] miniprogram/services/userService.js
 
 ### 模型（Models）
 

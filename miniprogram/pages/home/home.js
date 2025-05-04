@@ -1,5 +1,6 @@
 // pages/home/home.js
 const app = getApp();
+const userService = require('../../services/userService');
 
 Page({
   /**
@@ -12,7 +13,8 @@ Page({
     loading: true,
     statusBarHeight: 20, // 状态栏高度，默认值
     navBarHeight: 44, // 导航栏高度，默认值
-    menuButtonInfo: null // 胶囊按钮信息
+    menuButtonInfo: null, // 胶囊按钮信息
+    defaultAvatar: require('../../config/index').user.DEFAULT_AVATAR // 默认头像
   },
 
   /**
@@ -114,28 +116,11 @@ Page({
       return;
     }
 
-    // 优先使用userId，其次是_id，最后是openid
-    const userId = userInfo.userId || userInfo.user_id || userInfo._id || userInfo.openid;
+    // 使用userService获取用户ID和openid
+    const { userId, openid } = userService.getUserIdentifiers(userInfo);
 
-    // 从用户信息中获取openid，先检查顶层，再检查stats对象
-    let openid = userInfo.openid;
-    if (!openid && userInfo.stats && userInfo.stats.openid) {
-      openid = userInfo.stats.openid;
-    }
-
-    // 如果还是没有，尝试从本地缓存中获取
-    if (!openid) {
-      try {
-        const cachedOpenid = wx.getStorageSync('openid');
-        if (cachedOpenid) {
-          openid = cachedOpenid;
-        }
-      } catch (e) {
-        console.error('从缓存获取openid失败:', e);
-      }
-    }
-
-    if (!userId && !openid) {
+    // 检查用户是否有效
+    if (!userService.isValidUser(userInfo)) {
       console.log('无法获取用户ID或openid，用户信息：', userInfo);
       this.setData({ loading: false });
       return;
@@ -146,20 +131,9 @@ Page({
     // 直接从数据库查询最近对话
     const db = wx.cloud.database();
 
-    // 构建查询条件，确保只查询当前用户的聊天记录
-    // 直接使用简单的查询条件，不使用复杂的组合查询
-    let query = {};
-
-    // 优先使用openid查询，因为这是最可靠的标识
-    if (openid) {
-      console.log('使用openid查询聊天记录:', openid);
-      query = { openId: openid };
-    }
-    // 如果没有openid，则使用userId
-    else if (userId) {
-      console.log('使用userId查询聊天记录:', userId);
-      query = { userId: userId };
-    }
+    // 使用userService构建查询条件，确保只查询当前用户的聊天记录
+    const query = userService.buildUserQuery(userInfo);
+    console.log('使用查询条件:', query);
 
     console.log('最终查询条件:', query);
 
@@ -271,7 +245,7 @@ Page({
 
           // 如果还是没有角色头像，使用默认值
           if (!roleAvatar) {
-            roleAvatar = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0';
+            roleAvatar = require('../../config/index').user.DEFAULT_AVATAR;
           }
 
           // 获取最后一条消息内容，兼容不同的字段名称
@@ -366,28 +340,11 @@ Page({
     // 如果没有缓存数据，则查询最近的聊天记录
     console.log('没有缓存的情绪分析结果，查询最近的聊天记录');
 
-    // 优先使用userId，其次是_id，最后是openid
-    const userId = userInfo.userId || userInfo.user_id || userInfo._id || userInfo.openid;
+    // 使用userService获取用户ID和openid
+    const { userId, openid } = userService.getUserIdentifiers(userInfo);
 
-    // 从用户信息中获取openid，先检查顶层，再检查stats对象
-    let openid = userInfo.openid;
-    if (!openid && userInfo.stats && userInfo.stats.openid) {
-      openid = userInfo.stats.openid;
-    }
-
-    // 如果还是没有，尝试从本地缓存中获取
-    if (!openid) {
-      try {
-        const cachedOpenid = wx.getStorageSync('openid');
-        if (cachedOpenid) {
-          openid = cachedOpenid;
-        }
-      } catch (e) {
-        console.error('从缓存获取openid失败:', e);
-      }
-    }
-
-    if (!userId && !openid) {
+    // 检查用户是否有效
+    if (!userService.isValidUser(userInfo)) {
       wx.showToast({
         title: '无法获取用户信息',
         icon: 'none'
@@ -402,16 +359,7 @@ Page({
 
     // 查询最近的聊天记录
     const db = wx.cloud.database();
-    let query = {};
-
-    // 优先使用openid查询
-    if (openid) {
-      query = { openId: openid };
-    }
-    // 如果没有openid，则使用userId
-    else if (userId) {
-      query = { userId: userId };
-    }
+    const query = userService.buildUserQuery(userInfo);
 
     db.collection('chats')
       .where(query)
@@ -462,16 +410,11 @@ Page({
     const userInfo = app.globalData.userInfo;
     if (!userInfo) return;
 
-    const userId = userInfo.userId || userInfo.user_id || userInfo._id || userInfo.openid;
-    let openid = userInfo.openid;
-    if (!openid && userInfo.stats && userInfo.stats.openid) {
-      openid = userInfo.stats.openid;
-    }
-
-    if (!userId && !openid) return;
+    // 检查用户是否有效
+    if (!userService.isValidUser(userInfo)) return;
 
     const db = wx.cloud.database();
-    let query = openid ? { openId: openid } : { userId: userId };
+    const query = userService.buildUserQuery(userInfo);
 
     // 查询最近的聊天记录
     db.collection('chats')
