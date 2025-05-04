@@ -2,6 +2,7 @@
 import { checkLogin, saveLoginInfo, getLoginInfo, clearLoginInfo } from './utils/auth';
 import * as echarts from './components/ec-canvas/echarts';
 import imageService from './services/imageService';
+import config from './config/index';
 
 App({
   globalData: {
@@ -9,10 +10,11 @@ App({
     systemInfo: null,
     darkMode: false,
     isLoggedIn: false,
-    cloudEnv: 'rainbowrain-2gt3j8hda726e4fe', // 添加云环境ID
+    cloudEnv: config.cloud.ENV_ID, // 从配置文件获取云环境ID
     roleList: [], // 添加角色列表
     cloudInit: false, // 云环境是否初始化
-    imageService: null // 图片服务
+    imageService: null, // 图片服务
+    config: config // 全局配置对象
   },
 
   onLaunch() {
@@ -162,10 +164,7 @@ App({
         this.globalData.userInfo = result.data.userInfo;
 
         // 将openid存储到本地缓存中，便于其他页面使用
-        if (result.data.userInfo && result.data.userInfo.stats && result.data.userInfo.stats.openid) {
-          wx.setStorageSync('openId', result.data.userInfo.stats.openid);
-          console.log('存储openId到本地缓存:', result.data.userInfo.stats.openid);
-        }
+        this.saveOpenIdToStorage(result.data.userInfo);
 
         return true;
       }
@@ -209,10 +208,7 @@ App({
           this.globalData.userInfo = userInfo;
 
           // 将openid存储到本地缓存中，便于其他页面使用
-          if (userInfo.stats && userInfo.stats.openid) {
-            wx.setStorageSync('openId', userInfo.stats.openid);
-            console.log('检查登录状态时存储openId到本地缓存:', userInfo.stats.openid);
-          }
+          this.saveOpenIdToStorage(userInfo);
         }
       }
 
@@ -220,6 +216,23 @@ App({
     } catch (error) {
       console.error('Check login status failed:', error);
       return false;
+    }
+  },
+
+  /**
+   * 将用户的openId保存到本地缓存
+   * @param {Object} userInfo - 用户信息对象
+   */
+  saveOpenIdToStorage(userInfo) {
+    try {
+      if (userInfo && userInfo.stats && userInfo.stats.openid) {
+        wx.setStorageSync('openId', userInfo.stats.openid);
+        console.log('存储openId到本地缓存:', userInfo.stats.openid);
+      } else {
+        console.warn('用户信息中没有openId，无法保存到本地缓存');
+      }
+    } catch (error) {
+      console.error('保存openId到本地缓存失败:', error);
     }
   },
 
@@ -240,7 +253,7 @@ App({
       const currentRoute = currentPage.route;
 
       // 检查当前页面是否是TabBar页面
-      const tabBarPages = ['pages/home/home', 'pages/role-select/role-select', 'pages/user/user'];
+      const tabBarPages = this.globalData.config.theme.TAB_BAR_PAGES;
       const isTabBarPage = tabBarPages.some(page => currentRoute === page);
 
       if (!isTabBarPage) {

@@ -1,7 +1,21 @@
 <view class="agreement-page">
+  <!-- 自定义导航栏 -->
+  <block wx:if="{{showBackButton}}">
+    <view class="nav-bar">
+      <view class="status-bar" style="height: {{statusBarHeight}}px"></view>
+      <view class="nav-content">
+        <view class="back-button" bindtap="navigateBack">←</view>
+        <view class="page-title">服务协议</view>
+        <view style="width: 30rpx;"></view>
+      </view>
+    </view>
+    <!-- 导航栏占位 -->
+    <view style="height: {{statusBarHeight + navBarHeight}}px"></view>
+  </block>
+
   <view class="agreement-header">
     <view class="agreement-title">服务协议</view>
-    <view class="agreement-date">更新日期：2024年3月10日</view>
+    <view class="agreement-date">更新日期：{{lastUpdated}}</view>
   </view>
 
   <view class="agreement-content">
@@ -67,4 +81,4 @@
       </view>
     </view>
   </view>
-</view> 
+</view>

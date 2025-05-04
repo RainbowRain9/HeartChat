@@ -613,13 +613,7 @@ Page({
     });
   },
 
-  /**
-   * 返回首页 (保留函数但不再使用，因为现在是tab页面)
-   */
-  handleBackClick: function () {
-    // 不再需要返回首页的功能，因为现在是tab页面
-    console.log('这是tab页面，不需要返回按钮');
-  },
+  // 已删除未使用的 handleBackClick 函数
 
   /**
    * 关闭角色详情
@@ -630,14 +624,7 @@ Page({
     });
   },
 
-  /**
-   * 处理情感倾向文本，确保不会被截断
-   */
-  formatEmotionalTendency: function(text) {
-    if (!text) return '';
-    // 将可能的分隔符替换为空格
-    return text.replace(/[,，、]/g, ' ');
-  },
+  // 已删除未使用的 formatEmotionalTendency 函数
 
   /**
    * 选择并开始对话
@@ -664,39 +651,5 @@ Page({
 
 
 
-  /**
-   * 创建测试角色数据（仅用于开发测试）
-   */
-  createTestRoles: function () {
-    wx.showLoading({
-      title: '创建测试数据中',
-    });
-
-    // 调用云函数创建测试角色
-    wx.cloud.callFunction({
-      name: 'roles',
-      data: {
-        action: 'createTestRoles'
-      }
-    })
-    .then(res => {
-      console.log('创建测试角色成功:', res.result);
-      wx.hideLoading();
-      wx.showToast({
-        title: '创建成功',
-        icon: 'success'
-      });
-
-      // 重新加载角色列表
-      this.loadRoles();
-    })
-    .catch(err => {
-      console.error('创建测试角色失败:', err);
-      wx.hideLoading();
-      wx.showToast({
-        title: '创建失败',
-        icon: 'none'
-      });
-    });
-  }
+  // 已删除未使用的 createTestRoles 函数
 });

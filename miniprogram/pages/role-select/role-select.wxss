@@ -65,29 +65,7 @@
   color: #ffffff;
 }
 
-/* 返回按钮（已移除，保留样式以便其他地方可能使用） */
-.back-button {
-  width: 60rpx;
-  height: 60rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10rpx;
-  position: relative;
-  z-index: 102; /* 确保在其他元素之上 */
-}
-
-.back-icon {
-  width: 40rpx;
-  height: 40rpx;
-}
-
-.page-title {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: #333333;
-  margin-left: 20rpx;
-}
+/* 已删除未使用的返回按钮和页面标题样式 */
 
 /* 搜索框 */
 .search-box {
@@ -189,38 +167,7 @@
   width: 100%;
 }
 
-/* 调试信息 */
-.debug-info {
-  margin: 20rpx 0;
-  padding: 20rpx;
-  background-color: #f0f0f0;
-  border-radius: 10rpx;
-  display: flex;
-  flex-direction: column;
-}
-
-.debug-info text {
-  font-size: 24rpx;
-  color: #666;
-  margin-bottom: 10rpx;
-}
-
-.debug-section {
-  margin: 20rpx 0;
-  padding: 20rpx;
-  display: flex;
-  justify-content: center;
-}
-
-.debug-button {
-  margin-top: 10rpx;
-  font-size: 24rpx;
-  padding: 10rpx 20rpx;
-  background-color: #5e72e4;
-  color: #fff;
-  border-radius: 8rpx;
-  width: auto;
-}
+/* 已删除调试信息相关样式 */
 
 .section-title {
   font-size: 32rpx;
@@ -654,6 +601,4 @@
   border: 2rpx solid #4c63d2 !important;
 }
 
-.detail-button.chat.active {
-  background-color: #4a5bd0;
-}
+/* 已删除未使用的样式 */

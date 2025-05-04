@@ -1593,23 +1593,9 @@ Page({
     });
   },
 
-  /**
-   * 加载更多记录
-   */
-  loadMoreRecords: function () {
-    // 实现加载更多记录的逻辑
-    wx.showToast({
-      title: '加载更多记录',
-      icon: 'none'
-    });
-  },
+  // 已删除未使用的 loadMoreRecords 函数
 
-  /**
-   * 计算绝对值
-   */
-  abs: function (value) {
-    return Math.abs(value);
-  },
+  // 已删除未使用的 abs 函数
 
   /**
    * 生命周期函数--监听页面显示
@@ -1655,19 +1641,9 @@ Page({
     }
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-    // 页面隐藏时可以做一些清理工作
-  },
+  // 已删除未使用的 onHide 函数
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-    // 页面卸载时清理资源
-  },
+  // 已删除未使用的 onUnload 函数
 
   /**
    * 页面上拉触底事件的处理函数
@@ -1675,7 +1651,11 @@ Page({
   onReachBottom: function () {
     // 如果有更多记录，加载更多
     if (this.data.hasMoreRecords) {
-      this.loadMoreRecords();
+      // 已删除对未使用函数的调用
+      wx.showToast({
+        title: '加载更多记录',
+        icon: 'none'
+      });
     }
   },
 

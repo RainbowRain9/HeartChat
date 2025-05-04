@@ -101,19 +101,7 @@
         </view>
       </view>
 
-      <!-- 测试按钮 -->
-      <view class="debug-section" wx:if="{{roles.length === 0}}">
-        <button class="debug-button" bindtap="createTestRoles">加载测试数据</button>
-      </view>
-
-      <!-- 调试信息 -->
-      <view class="debug-info" wx:if="{{false}}">
-        <text>roles数量: {{roles.length}}</text>
-        <text>recommendedRoles数量: {{recommendedRoles.length}}</text>
-        <text>过滤后数量: {{filteredRoles.length}}</text>
-        <text>当前分类: {{activeCategory}}</text>
-        <button class="debug-button" bindtap="createTestRoles">加载测试数据</button>
-      </view>
+      <!-- 已删除测试按钮和调试信息区域 -->
     </scroll-view>
   </view>
 

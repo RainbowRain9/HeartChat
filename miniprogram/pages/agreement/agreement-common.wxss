@@ -1,0 +1,127 @@
+/* 协议页面公共样式 */
+.agreement-page {
+  padding: 30rpx;
+  background-color: var(--bg-color, #fff);
+  min-height: 100vh;
+}
+
+.agreement-header {
+  margin-bottom: 40rpx;
+}
+
+.agreement-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  text-align: center;
+}
+
+.agreement-date {
+  font-size: 24rpx;
+  color: var(--text-secondary, #999);
+  text-align: center;
+}
+
+.agreement-content {
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: var(--text-primary, #333);
+}
+
+.section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.section-content {
+  padding-left: 20rpx;
+}
+
+.paragraph {
+  margin-bottom: 20rpx;
+}
+
+.list-item {
+  margin-bottom: 10rpx;
+  padding-left: 20rpx;
+}
+
+/* 暗黑模式样式 */
+@media (prefers-color-scheme: dark) {
+  .agreement-page {
+    background-color: var(--bg-color-dark, #1a1a1a);
+  }
+  
+  .agreement-title {
+    color: var(--text-primary-dark, #f0f0f0);
+  }
+  
+  .agreement-date {
+    color: var(--text-secondary-dark, #aaa);
+  }
+  
+  .agreement-content {
+    color: var(--text-primary-dark, #f0f0f0);
+  }
+  
+  .section-title {
+    color: var(--text-primary-dark, #f0f0f0);
+  }
+}
+
+/* 返回按钮样式 */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: var(--bg-color, #fff);
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.status-bar {
+  width: 100%;
+}
+
+.nav-content {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 30rpx;
+}
+
+.back-button {
+  padding: 10rpx;
+  font-size: 36rpx;
+  color: var(--text-primary, #333);
+}
+
+.page-title {
+  flex: 1;
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: bold;
+  color: var(--text-primary, #333);
+}
+
+/* 暗黑模式导航栏样式 */
+@media (prefers-color-scheme: dark) {
+  .nav-bar {
+    background-color: var(--bg-color-dark, #1a1a1a);
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.3);
+  }
+  
+  .back-button {
+    color: var(--text-primary-dark, #f0f0f0);
+  }
+  
+  .page-title {
+    color: var(--text-primary-dark, #f0f0f0);
+  }
+}

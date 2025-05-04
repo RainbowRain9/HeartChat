@@ -3,15 +3,15 @@
   "rules": [
     {
       "action": "allow",
-      "page": "pages/user/index"
+      "page": "pages/user/user"
     },
     {
       "action": "allow",
-      "page": "packageA/pages/emotion/analysis"
+      "page": "packageEmotion/pages/emotion-history/emotion-history"
     },
     {
       "action": "allow",
-      "page": "packageA/pages/emotion/practice"
+      "page": "packageChat/pages/emotion-analysis/emotion-analysis"
     },
     {
       "action": "disallow",

@@ -4,6 +4,7 @@
 
 - [ ] 表示未审查
 - [x] 表示已审查
+- [✓] 表示已审查且已修复
 
 ## 应用层（Application Layer）
 
@@ -11,10 +12,10 @@
 
 ### 主包页面
 
-- [x] miniprogram/app.js
-- [x] miniprogram/app.json
+- [✓] miniprogram/app.js
+- [✓] miniprogram/app.json
 - [x] miniprogram/app.wxss
-- [x] miniprogram/sitemap.json
+- [✓] miniprogram/sitemap.json
 - [x] miniprogram/theme.json
 
 ### 页面（Pages）
@@ -29,10 +30,10 @@
 - [x] miniprogram/pages/home/home.wxml
 - [x] miniprogram/pages/home/home.wxss
 
-- [x] miniprogram/pages/role-select/role-select.js
+- [✓] miniprogram/pages/role-select/role-select.js
 - [x] miniprogram/pages/role-select/role-select.json
-- [x] miniprogram/pages/role-select/role-select.wxml
-- [x] miniprogram/pages/role-select/role-select.wxss
+- [✓] miniprogram/pages/role-select/role-select.wxml
+- [✓] miniprogram/pages/role-select/role-select.wxss
 
 - [x] miniprogram/pages/user/user.js
 - [x] miniprogram/pages/user/user.json
@@ -49,15 +50,15 @@
 - [x] miniprogram/pages/keywordTest/keywordTest.wxml
 - [x] miniprogram/pages/keywordTest/keywordTest.wxss
 
-- [x] miniprogram/pages/agreement/service.js
+- [✓] miniprogram/pages/agreement/service.js
 - [x] miniprogram/pages/agreement/service.json
-- [x] miniprogram/pages/agreement/service.wxml
-- [x] miniprogram/pages/agreement/service.wxss
+- [✓] miniprogram/pages/agreement/service.wxml
+- [✓] miniprogram/pages/agreement/service.wxss
 
-- [x] miniprogram/pages/agreement/privacy.js
+- [✓] miniprogram/pages/agreement/privacy.js
 - [x] miniprogram/pages/agreement/privacy.json
-- [x] miniprogram/pages/agreement/privacy.wxml
-- [x] miniprogram/pages/agreement/privacy.wxss
+- [✓] miniprogram/pages/agreement/privacy.wxml
+- [✓] miniprogram/pages/agreement/privacy.wxss
 
 - [x] miniprogram/pages/role-editor/index.js
 - [x] miniprogram/pages/role-editor/index.json
@@ -81,7 +82,7 @@
 - [x] miniprogram/packageEmotion/pages/daily-report/daily-report.wxml
 - [x] miniprogram/packageEmotion/pages/daily-report/daily-report.wxss
 
-- [x] miniprogram/packageEmotion/pages/emotion-history/emotion-history.js
+- [✓] miniprogram/packageEmotion/pages/emotion-history/emotion-history.js
 - [x] miniprogram/packageEmotion/pages/emotion-history/emotion-history.json
 - [x] miniprogram/packageEmotion/pages/emotion-history/emotion-history.wxml
 - [x] miniprogram/packageEmotion/pages/emotion-history/emotion-history.wxss
@@ -211,6 +212,7 @@
 
 ### 配置（Config）
 
+- [✓] miniprogram/config/index.js
 - [ ] project.config.json
 - [ ] tsconfig.json
 - [ ] package.json
@@ -289,6 +291,8 @@
 - [ ] docs/使用文档/
 - [ ] docs/流程图/
 - [ ] cloudfunctions/testBigmodel/README.md
+- [✓] fix_plan.md
+- [✓] fix_report.md
 
 ## 其他文件（Others）
 

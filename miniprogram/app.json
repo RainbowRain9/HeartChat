@@ -52,8 +52,8 @@
       {
         "pagePath": "pages/role-select/role-select",
         "text": "心情树洞",
-        "iconPath": "images/navigation/tabbar/emotion.png",
-        "selectedIconPath": "images/navigation/tabbar/emotion-active.png"
+        "iconPath": "images/tabbar/emotion.png",
+        "selectedIconPath": "images/tabbar/emotion-active.png"
       },
       {
         "pagePath": "pages/user/user",
