@@ -31,12 +31,14 @@ Page({
     // 获取暗黑模式设置
     const darkMode = wx.getStorageSync('darkMode') || false;
 
-    // 获取系统信息和导航栏高度
-    this.getSystemInfo();
-
     this.setData({
       userId: userInfo.userId || '',
       darkMode: darkMode
+    });
+
+    // 延迟获取系统信息，避免页面加载时间过长
+    wx.nextTick(() => {
+      this.getSystemInfo();
     });
 
     // 检查是否使用缓存数据
@@ -52,8 +54,10 @@ Page({
           loading: false
         });
 
-        // 同时在后台加载历史情绪数据
-        this.loadHistoryEmotionData();
+        // 延迟加载历史情绪数据，避免页面加载时间过长
+        setTimeout(() => {
+          this.loadHistoryEmotionData();
+        }, 500);
         return;
       } else {
         console.warn('全局变量中没有缓存的情绪分析结果，尝试从本地缓存中获取');
@@ -67,8 +71,10 @@ Page({
               loading: false
             });
 
-            // 同时在后台加载历史情绪数据
-            this.loadHistoryEmotionData();
+            // 延迟加载历史情绪数据，避免页面加载时间过长
+            setTimeout(() => {
+              this.loadHistoryEmotionData();
+            }, 500);
             return;
           }
         } catch (e) {
@@ -102,10 +108,17 @@ Page({
       setTimeout(() => {
         wx.navigateBack();
       }, 1500);
+    } else {
+      // 如果没有任何参数，但使用缓存，则显示空状态
+      this.setData({
+        loading: false
+      });
     }
 
-    // 加载历史情绪数据
-    this.loadHistoryEmotionData();
+    // 延迟加载历史情绪数据，避免页面加载时间过长
+    setTimeout(() => {
+      this.loadHistoryEmotionData();
+    }, 500);
   },
 
   /**
@@ -258,6 +271,32 @@ Page({
         return;
       }
 
+      // 先尝试从本地缓存获取历史数据
+      try {
+        const cachedHistoryData = wx.getStorageSync('emotionHistoryData_' + userId);
+        if (cachedHistoryData && Array.isArray(cachedHistoryData) && cachedHistoryData.length > 0) {
+          // 检查缓存时间是否在24小时内
+          const cacheTime = wx.getStorageSync('emotionHistoryDataTime_' + userId) || 0;
+          const now = Date.now();
+          const cacheAge = now - cacheTime;
+
+          // 如果缓存不超过24小时，直接使用缓存数据
+          if (cacheAge < 24 * 60 * 60 * 1000) {
+            console.log('使用缓存的历史情绪数据');
+            this.setData({
+              historyData: cachedHistoryData,
+              refreshing: false
+            });
+            return;
+          }
+        }
+      } catch (cacheError) {
+        console.error('读取缓存历史情绪数据失败:', cacheError);
+      }
+
+      // 如果没有缓存或缓存过期，从数据库获取
+      console.log('从数据库获取历史情绪数据');
+
       // 从数据库中获取近7天的情绪记录
       const db = wx.cloud.database();
       const _ = db.command;
@@ -270,13 +309,24 @@ Page({
           createTime: _.gte(sevenDaysAgo)
         })
         .orderBy('createTime', 'asc')
+        .limit(20) // 限制返回数量，避免数据过多
         .get();
 
       if (result && result.data) {
+        // 更新页面数据
         this.setData({
           historyData: result.data,
           refreshing: false
         });
+
+        // 缓存数据
+        try {
+          wx.setStorageSync('emotionHistoryData_' + userId, result.data);
+          wx.setStorageSync('emotionHistoryDataTime_' + userId, Date.now());
+          console.log('历史情绪数据已缓存');
+        } catch (storageError) {
+          console.error('缓存历史情绪数据失败:', storageError);
+        }
       } else {
         this.setData({ refreshing: false });
       }

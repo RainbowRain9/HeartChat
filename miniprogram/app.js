@@ -23,15 +23,34 @@ App({
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力');
     } else {
-      wx.cloud.init({
-        env: this.globalData.cloudEnv,
-        traceUser: true,
-      });
-      this.globalData.cloudInit = true;
+      try {
+        // 检查是否已经初始化
+        if (!wx.cloud.inited) {
+          wx.cloud.init({
+            env: this.globalData.cloudEnv,
+            traceUser: true,
+          });
+        }
+        this.globalData.cloudInit = true;
+        console.log('云环境初始化成功:', this.globalData.cloudEnv);
 
-      // 初始化图片服务
-      this.globalData.imageService = imageService;
-      imageService.initImageService();
+        // 初始化图片服务
+        this.globalData.imageService = imageService;
+        imageService.initImageService();
+      } catch (error) {
+        console.error('云环境初始化失败:', error);
+        // 尝试使用动态环境ID
+        try {
+          wx.cloud.init({
+            env: wx.cloud.DYNAMIC_CURRENT_ENV,
+            traceUser: true,
+          });
+          this.globalData.cloudInit = true;
+          console.log('使用动态环境ID初始化云环境成功');
+        } catch (retryError) {
+          console.error('使用动态环境ID初始化云环境失败:', retryError);
+        }
+      }
     }
 
     // 获取系统信息

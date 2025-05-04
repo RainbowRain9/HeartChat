@@ -6,6 +6,5 @@
     "emotion-dashboard": "/components/emotion-dashboard/emotion-dashboard"
   },
   "disableScroll": true,
-  "enablePullDownRefresh": false,
-  "shareTimeline": true
+  "enablePullDownRefresh": false
 }
