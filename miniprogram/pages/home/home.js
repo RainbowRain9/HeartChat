@@ -137,24 +137,16 @@ Page({
 
     console.log('最终查询条件:', query);
 
-    // 直接获取所有聊天记录，不使用查询条件，然后在前端过滤
-    // 这是一种应急方案，可以确保能看到所有聊天记录
+    // 使用数据库查询条件，直接获取当前用户的聊天记录
+    // 这样可以减少数据传输量，提高查询效率
     db.collection('chats')
+      .where(query) // 使用构建好的查询条件
       .orderBy('last_message_time', 'desc')
-      .limit(10) // 增加限制数量，确保能获取到足够的记录
+      .limit(10) // 限制返回记录数量
       .get()
       .then(async res => {
-        let chats = res.data || [];
-        console.log('获取到的原始聊天数据:', chats);
-
-        // 在前端过滤当前用户的聊天记录
-        if (openid) {
-          chats = chats.filter(chat => chat.openId === openid);
-          console.log('根据openId过滤后的聊天数据:', chats);
-        } else if (userId) {
-          chats = chats.filter(chat => chat.userId === userId || chat.user_id === userId);
-          console.log('根据userId过滤后的聊天数据:', chats);
-        }
+        const chats = res.data || [];
+        console.log('获取到的用户聊天数据:', chats);
 
         // 如果没有数据，直接返回
         if (chats.length === 0) {
@@ -165,88 +157,16 @@ Page({
           return;
         }
 
-        // 获取所有角色ID，用于批量查询角色信息
-        // 注意大小写，兼容roleId和role_id两种形式
-        const roleIds = chats.map(chat => chat.roleId || chat.role_id).filter(id => id);
-        const uniqueRoleIds = [...new Set(roleIds)];
-
-        console.log('提取的角色ID:', uniqueRoleIds);
-
-        // 角色信息映射表
-        let roleInfoMap = {};
-
-        // 如果有角色ID，批量获取角色信息
-        if (uniqueRoleIds.length > 0) {
-          try {
-            // 从roles集合获取角色信息
-            const roleResult = await db.collection('roles')
-              .where({
-                _id: db.command.in(uniqueRoleIds)
-              })
-              .get();
-
-            // 构建角色信息映射表
-            roleResult.data.forEach(role => {
-              roleInfoMap[role._id] = role;
-            });
-
-            console.log('获取到的角色信息:', roleInfoMap);
-          } catch (error) {
-            console.error('获取角色信息失败:', error);
-          }
-        }
+        // 获取角色信息映射表
+        const roleInfoMap = await this.fetchRoleInfoMap(chats);
 
         // 处理时间显示和角色信息
         const processedChats = chats.map(chat => {
-          // 格式化时间 - 优先使用updateTime，其次是last_message_time
-          const messageTime = chat.updateTime ? new Date(chat.updateTime) :
-                            chat.last_message_time ? new Date(chat.last_message_time) : new Date();
+          // 格式化时间
+          const timeText = this.formatChatTime(chat);
 
-          // 确保时间是有效的Date对象
-          const validTime = isNaN(messageTime.getTime()) ? new Date() : messageTime;
-
-          const now = new Date();
-          const diffMs = now - validTime;
-          const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-          let timeText = '';
-          if (diffDays === 0) {
-            // 今天，显示具体时间
-            const hours = validTime.getHours();
-            const minutes = validTime.getMinutes();
-            timeText = `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-          } else if (diffDays === 1) {
-            timeText = '昨天';
-          } else if (diffDays < 7) {
-            timeText = `${diffDays}天前`;
-          } else {
-            // 超过7天，显示具体日期
-            timeText = `${validTime.getMonth() + 1}-${validTime.getDate()}`;
-          }
-
-          // 确保有roleId字段，兼容不同的字段名称，注意大小写
-          const roleId = chat.roleId || chat.role_id;
-
-          // 获取角色信息，兼容不同的字段名称，注意大小写
-          let roleName = chat.roleName || chat.role_name;
-          let roleAvatar = chat.roleAvatar || chat.role_avatar;
-
-          // 如果有角色ID且角色信息映射表中有该角色，使用映射表中的角色信息
-          if (roleId && roleInfoMap[roleId]) {
-            const roleInfo = roleInfoMap[roleId];
-            roleName = roleName || roleInfo.name || roleInfo.role_name;
-            roleAvatar = roleAvatar || roleInfo.avatar || roleInfo.avatar_url;
-          }
-
-          // 如果还是没有角色名称，使用默认值
-          if (!roleName) {
-            roleName = '对话角色';
-          }
-
-          // 如果还是没有角色头像，使用默认值
-          if (!roleAvatar) {
-            roleAvatar = require('../../config/index').user.DEFAULT_AVATAR;
-          }
+          // 处理角色信息
+          const { roleId, roleName, roleAvatar } = this.processRoleInfo(chat, roleInfoMap);
 
           // 获取最后一条消息内容，兼容不同的字段名称
           const lastMessage = chat.lastMessage || chat.last_message || chat.last_message_content || '开始一段新的对话吧';
@@ -279,20 +199,8 @@ Page({
    * 跳转到心情树洞（现为role-select tab页）
    */
   navigateToEmotionVault: function () {
-    // 使用switchTab方法跳转到tab页面
-    wx.switchTab({
-      url: '/pages/role-select/role-select',
-      success: function() {
-        console.log('成功跳转到角色选择页面');
-      },
-      fail: function(err) {
-        console.error('跳转失败:', err);
-        wx.showToast({
-          title: '跳转失败',
-          icon: 'none'
-        });
-      }
-    });
+    // 使用通用导航方法跳转到tab页面
+    this.navigate('/pages/role-select/role-select', 'switchTab');
   },
 
   /**
@@ -321,16 +229,7 @@ Page({
       app.globalData.cachedEmotionAnalysis = cachedEmotionAnalysis;
 
       // 跳转到情绪分析页面，带上缓存标记
-      wx.navigateTo({
-        url: '/packageChat/pages/emotion-analysis/emotion-analysis?useCache=true',
-        fail: (err) => {
-          console.error('跳转失败:', err);
-          wx.showToast({
-            title: '跳转失败',
-            icon: 'none'
-          });
-        }
-      });
+      this.navigate('/packageChat/pages/emotion-analysis/emotion-analysis?useCache=true');
 
       // 同时在后台查询最新数据，以便刷新缓存
       this.queryLatestEmotionDataInBackground();
@@ -376,30 +275,17 @@ Page({
           const roleId = latestChat.roleId || latestChat.role_id;
 
           // 跳转到情绪分析页面，带上聊天ID和角色ID
-          wx.navigateTo({
-            url: `/packageChat/pages/emotion-analysis/emotion-analysis?chatId=${chatId}&roleId=${roleId}`,
-            fail: (err) => {
-              console.error('跳转失败:', err);
-              wx.showToast({
-                title: '跳转失败',
-                icon: 'none'
-              });
-            }
-          });
+          this.navigate(`/packageChat/pages/emotion-analysis/emotion-analysis?chatId=${chatId}&roleId=${roleId}`);
         } else {
           // 如果没有聊天记录，直接跳转到情绪分析页面
-          wx.navigateTo({
-            url: '/packageChat/pages/emotion-analysis/emotion-analysis'
-          });
+          this.navigate('/packageChat/pages/emotion-analysis/emotion-analysis');
         }
       })
       .catch(err => {
         wx.hideLoading();
         console.error('获取最近聊天失败:', err);
         // 出错时也直接跳转到情绪分析页面
-        wx.navigateTo({
-          url: '/packageChat/pages/emotion-analysis/emotion-analysis'
-        });
+        this.navigate('/packageChat/pages/emotion-analysis/emotion-analysis');
       });
   },
 
@@ -464,30 +350,84 @@ Page({
   },
 
   /**
+   * 通用导航方法
+   * @param {string} url - 导航URL
+   * @param {string} method - 导航方法，可选值：navigateTo, switchTab, redirectTo, reLaunch
+   * @param {Function} successCallback - 成功回调函数
+   */
+  navigate: function(url, method = 'navigateTo', successCallback = null) {
+    if (!url) {
+      console.error('导航URL不能为空');
+      return;
+    }
+
+    // 默认的成功回调
+    const defaultSuccess = function() {
+      console.log(`成功跳转到: ${url}`);
+    };
+
+    // 默认的失败回调
+    const defaultFail = function(err) {
+      console.error(`跳转失败: ${url}`, err);
+      wx.showToast({
+        title: '跳转失败',
+        icon: 'none'
+      });
+    };
+
+    // 根据method选择不同的导航方法
+    switch (method) {
+      case 'switchTab':
+        wx.switchTab({
+          url: url,
+          success: successCallback || defaultSuccess,
+          fail: defaultFail
+        });
+        break;
+      case 'redirectTo':
+        wx.redirectTo({
+          url: url,
+          success: successCallback || defaultSuccess,
+          fail: defaultFail
+        });
+        break;
+      case 'reLaunch':
+        wx.reLaunch({
+          url: url,
+          success: successCallback || defaultSuccess,
+          fail: defaultFail
+        });
+        break;
+      case 'navigateTo':
+      default:
+        wx.navigateTo({
+          url: url,
+          success: successCallback || defaultSuccess,
+          fail: defaultFail
+        });
+        break;
+    }
+  },
+
+  /**
    * 跳转到情绪历史页面
    */
   navigateToEmotionHistory: function () {
-    wx.navigateTo({
-      url: '/packageEmotion/pages/emotion-history/emotion-history'
-    });
+    this.navigate('/packageEmotion/pages/emotion-history/emotion-history');
   },
 
   /**
    * 跳转到关键词测试
    */
   navigateToKeywordTest: function () {
-    wx.navigateTo({
-      url: '/pages/keywordTest/keywordTest'
-    });
+    this.navigate('/pages/keywordTest/keywordTest');
   },
 
   /**
    * 跳转到每日报告
    */
   navigateToDailyReport: function () {
-    wx.navigateTo({
-      url: '/packageEmotion/pages/daily-report/daily-report'
-    });
+    this.navigate('/packageEmotion/pages/daily-report/daily-report');
   },
 
   /**
@@ -528,24 +468,123 @@ Page({
     }
 
     // 跳转到聊天页面
-    wx.navigateTo({
-      url: url,
-      fail: function(err) {
-        console.error('跳转失败:', err);
-        wx.showToast({
-          title: '跳转失败',
-          icon: 'none'
-        });
-      }
-    });
+    this.navigate(url);
   },
 
   /**
    * 跳转到用户资料
    */
   navigateToProfile: function () {
-    wx.navigateTo({
-      url: '/pages/user/profile/profile'
-    });
+    this.navigate('/pages/user/profile/profile');
+  },
+
+  /**
+   * 处理角色信息
+   * @param {Object} chat - 聊天记录对象
+   * @param {Object} roleInfoMap - 角色信息映射表
+   * @returns {Object} 处理后的角色信息
+   */
+  processRoleInfo: function(chat, roleInfoMap) {
+    // 确保有roleId字段，兼容不同的字段名称，注意大小写
+    const roleId = chat.roleId || chat.role_id;
+
+    // 获取角色信息，兼容不同的字段名称，注意大小写
+    let roleName = chat.roleName || chat.role_name;
+    let roleAvatar = chat.roleAvatar || chat.role_avatar;
+
+    // 如果有角色ID且角色信息映射表中有该角色，使用映射表中的角色信息
+    if (roleId && roleInfoMap[roleId]) {
+      const roleInfo = roleInfoMap[roleId];
+      roleName = roleName || roleInfo.name || roleInfo.role_name;
+      roleAvatar = roleAvatar || roleInfo.avatar || roleInfo.avatar_url;
+    }
+
+    // 如果还是没有角色名称，使用默认值
+    if (!roleName) {
+      roleName = '对话角色';
+    }
+
+    // 如果还是没有角色头像，使用默认值
+    if (!roleAvatar) {
+      roleAvatar = require('../../config/index').user.DEFAULT_AVATAR;
+    }
+
+    return { roleId, roleName, roleAvatar };
+  },
+
+  /**
+   * 格式化聊天时间
+   * @param {Object} chat - 聊天记录对象
+   * @returns {string} 格式化后的时间文本
+   */
+  formatChatTime: function(chat) {
+    // 格式化时间 - 优先使用updateTime，其次是last_message_time
+    const messageTime = chat.updateTime ? new Date(chat.updateTime) :
+                      chat.last_message_time ? new Date(chat.last_message_time) : new Date();
+
+    // 确保时间是有效的Date对象
+    const validTime = isNaN(messageTime.getTime()) ? new Date() : messageTime;
+
+    const now = new Date();
+    const diffMs = now - validTime;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    let timeText = '';
+    if (diffDays === 0) {
+      // 今天，显示具体时间
+      const hours = validTime.getHours();
+      const minutes = validTime.getMinutes();
+      timeText = `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+    } else if (diffDays === 1) {
+      timeText = '昨天';
+    } else if (diffDays < 7) {
+      timeText = `${diffDays}天前`;
+    } else {
+      // 超过7天，显示具体日期
+      timeText = `${validTime.getMonth() + 1}-${validTime.getDate()}`;
+    }
+
+    return timeText;
+  },
+
+  /**
+   * 获取角色信息映射表
+   * @param {Array} chats - 聊天记录数组
+   * @returns {Object} 角色信息映射表
+   */
+  fetchRoleInfoMap: async function(chats) {
+    // 角色信息映射表
+    let roleInfoMap = {};
+
+    try {
+      // 获取所有角色ID，用于批量查询角色信息
+      // 注意大小写，兼容roleId和role_id两种形式
+      const roleIds = chats.map(chat => chat.roleId || chat.role_id).filter(id => id);
+      const uniqueRoleIds = [...new Set(roleIds)];
+
+      console.log('提取的角色ID:', uniqueRoleIds);
+
+      // 如果有角色ID，批量获取角色信息
+      if (uniqueRoleIds.length > 0) {
+        // 从roles集合获取角色信息
+        const db = wx.cloud.database();
+        const roleResult = await db.collection('roles')
+          .where({
+            _id: db.command.in(uniqueRoleIds)
+          })
+          .get();
+
+        // 构建角色信息映射表
+        roleResult.data.forEach(role => {
+          roleInfoMap[role._id] = role;
+        });
+
+        console.log('获取到的角色信息:', roleInfoMap);
+      }
+    } catch (error) {
+      console.error('获取角色信息失败:', error);
+    }
+
+    return roleInfoMap;
   }
 });

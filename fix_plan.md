@@ -11,7 +11,10 @@
 
 ### 2. 文件过长问题
 以下文件需要重构，将功能拆分为多个模块：
-- miniprogram/pages/emotionVault/emotionVault.js (2201行)
+- ✅ miniprogram/pages/emotionVault/emotionVault.js (2201行 -> 993行)
+  - 创建了 dbHelper.js、emotionHelper.js、chatHelper.js、roleHelper.js 和 uiHelper.js 模块
+  - 将数据库操作、情感分析、聊天功能、角色管理和界面交互相关功能分别移至对应模块
+  - 重构了原文件，使用新创建的模块
 - miniprogram/pages/emotionVault/emotionVault.wxss (1905行)
 - miniprogram/packageEmotion/pages/emotion-history/emotion-history.js (1692行)
 - miniprogram/packageChat/pages/chat/chat.js (1911行)
@@ -99,9 +102,9 @@
 - ✓ 确保第41-44行使用的主题变量在 `theme.json` 中定义
 
 ### 3. home.js
-- 优化第166-168行的注释和第168-171行的查询条件
-- 优化第177-183行的前端过滤数据逻辑，改为在数据库查询时过滤
-- 统一错误处理方式，如第316-320行和第299-301行
+- ✓ 优化第166-168行的注释和第168-171行的查询条件
+- ✓ 优化第177-183行的前端过滤数据逻辑，改为在数据库查询时过滤
+- ✓ 统一错误处理方式，如第316-320行和第299-301行
 
 ### 4. user.js
 - 将文件拆分为多个模块，如用户信息模块、图表模块、兴趣标签模块等
@@ -119,6 +122,9 @@
 - [x] 优先级1：严重问题
   - [x] sitemap.json 路径不匹配问题
   - [x] 空文件问题
+  - [ ] 文件过长问题（部分）
+    - [x] miniprogram/pages/emotionVault/emotionVault.js
+    - [ ] 其他文件过长问题
 - [x] 优先级2：代码重复问题（部分）
   - [x] app.js 中的代码重复问题
   - [x] privacy.wxss 与 service.wxss 的重复样式
@@ -137,3 +143,4 @@
 - [x] 优先级5：其他优化（部分）
   - [x] app.js 中的优化
   - [x] app.json 中的优化
+  - [x] home.js 中的优化
