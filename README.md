@@ -84,15 +84,15 @@ HeartChat/
 │   ├── models/               # 数据模型
 │   │   └── emotion.js        # 情感模型
 │   │
-│   ├── packageA/             # 分包A - 情感相关
+│   ├── packageEmotion/       # 情感分析相关分包
 │   │   └── pages/
-│   │       └── emotion/
-│   │           ├── analysis.ts  # 情感分析页面
-│   │           └── practice.ts  # 情感练习页面
+│   │       ├── daily-report/     # 每日情绪报告页面
+│   │       └── emotion-history/  # 情绪历史页面
 │   │
-│   ├── packageB/             # 分包B - 组件相关
+│   ├── packageChat/          # 聊天相关分包
 │   │   └── pages/
-│   │       └── feedback/     # 反馈页面
+│   │       ├── chat/             # 聊天页面
+│   │       └── emotion-analysis/ # 情绪分析页面
 │   │
 │   ├── pages/                # 主包页面
 │   │   ├── role-select/      # 角色选择页面（原心情树洞tab页）
@@ -1544,7 +1544,22 @@ async function analyzeEmotion(text) {
 
 ## 十、技术问题与解决方案
 
-### 10.1 关键词提取与权重计算精度问题
+### 10.1 代码清理与优化
+
+**挑战**：项目中存在一些测试代码和未使用的文件，可能导致代码冗余和维护困难。
+
+**解决方案**：
+- 删除未使用的测试页面，如 `miniprogram\pages\emotionTest` 目录
+- 删除未在app.json中注册的分包目录，如 `miniprogram\packageA` 和 `miniprogram\packageB`
+- 删除未使用的云函数目录，如 `cloudfunctions\quickstartFunctions`（微信云开发示例代码）和 `cloudfunctions\testBigmodel`（测试代码）
+- 删除旧版未使用的服务文件，如 `miniprogram\services\keywordService_old.js`
+- 删除旧版页面，如 `miniprogram\pages\emotionAnalysis`（已被packageChat/pages/emotion-analysis替代）
+- 考虑删除 `miniprogram\models` 目录，其功能已被 `services` 目录中的服务文件替代
+- 使用ESLint进行代码检查，发现并移除未使用的代码
+- 优化项目结构，确保代码组织清晰
+- 定期进行代码审查，确保代码质量
+
+### 10.2 关键词提取与权重计算精度问题
 
 **挑战**：简单的词频统计或TF-IDF可能无法准确反映关键词在情感表达中的重要性。
 
@@ -1553,7 +1568,7 @@ async function analyzeEmotion(text) {
 - 对于常用词和停用词，使用自定义的过滤规则
 - 考虑词语在句子中的位置和上下文重要性
 
-### 10.2 兴趣领域分类的准确性
+### 10.3 兴趣领域分类的准确性
 
 **挑战**：自动将关键词聚类到合适的兴趣领域并不容易，尤其是对于跨领域词汇。
 
@@ -1563,7 +1578,7 @@ async function analyzeEmotion(text) {
 - 设计适当的衰减机制，平衡新兴趣与持续兴趣
 - 对未能明确分类的关键词，设置保守策略避免错误分类
 
-### 10.3 LLM输出质量控制
+### 10.4 LLM输出质量控制
 
 **挑战**：确保LLM生成的内容质量一致、有价值且符合预期格式。
 
@@ -1573,7 +1588,7 @@ async function analyzeEmotion(text) {
 - 设置内容安全过滤，避免不适当的建议或内容
 - 准备备选回退方案，当LLM输出不满足要求时使用
 
-### 10.4 性能与资源消耗
+### 10.5 性能与资源消耗
 
 **挑战**：报告生成涉及多步骤计算和外部API调用，可能导致性能问题。
 
@@ -1584,7 +1599,7 @@ async function analyzeEmotion(text) {
 - 使用队列管理批量报告生成任务
 - 对长期非活跃用户采用按需生成策略
 
-### 10.5 ECharts 组件集成问题
+### 10.6 ECharts 组件集成问题
 
 **挑战**：在微信小程序中集成 ECharts 图表库时，可能遇到文件缺失和编译错误问题。
 
@@ -1739,7 +1754,7 @@ try {
 }
 ```
 
-### 10.2 示例代码
+### 12.2 示例代码
 
 #### 报告页面加载
 
@@ -1802,7 +1817,7 @@ Page({
 });
 ```
 
-### 10.3 示例报告内容
+### 12.3 示例报告内容
 
 **今日心情总结**：
 > 今天你的情绪以平静为主(占比65%)，但下午出现了一些波动，短暂出现了些许焦虑情绪。与昨日相比，今天整体情绪略有上升，情绪稳定性良好，波动指数较低(32/100)。

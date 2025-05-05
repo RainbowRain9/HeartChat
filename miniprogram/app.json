@@ -35,7 +35,6 @@
     "navigationBarTitleText": "HeartChat",
     "navigationBarTextStyle": "black"
   },
-
   "tabBar": {
     "custom": false,
     "color": "@tabFontColor",
@@ -69,10 +68,6 @@
     "emotion-panel": "/components/emotion-panel/emotion-panel",
     "emotion-history": "/components/emotion-history/emotion-history",
     "emotion-analysis": "/components/emotion-analysis/emotion-analysis",
-    "agent-ui": "/pages/emotionVault/agent-ui/index",
-    "markdownPreview": "/pages/emotionVault/agent-ui/wd-markdown/index",
-    "FoldedCard": "/pages/emotionVault/agent-ui/collapse/index",
-    "chatFile": "/pages/emotionVault/agent-ui/chatFile/index",
     "role-card": "/components/role-card/role-card",
     "ec-canvas": "/components/ec-canvas/ec-canvas"
   },

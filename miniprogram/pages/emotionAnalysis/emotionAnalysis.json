@@ -1,6 +1,0 @@
-{
-    "navigationBarTitleText": "情感分析",
-    "usingComponents": {
-      "emotion-dashboard": "../../components/emotion-dashboard/emotion-dashboard"
-    }
-  }

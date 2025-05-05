@@ -1,8 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "chatFile": "./chatFile/index",
-    "markdownPreview": "./wd-markdown/index",
-    "FoldedCard": "./collapse/index"
-  }
-}

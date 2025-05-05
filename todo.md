@@ -290,7 +290,15 @@
 - [x] **代码规范与清理**:
     - [x] 移除配置文件中的开发测试用户ID
     - [ ] ESLint 检查
-    - [ ] 删除无用代码
+    - [x] 删除无用代码
+        - [x] 删除 miniprogram\pages\emotionTest 测试目录
+        - [x] 删除 miniprogram\packageA 目录（未在app.json中注册的分包）
+        - [x] 删除 miniprogram\packageB 目录（未在app.json中注册的分包）
+        - [x] 删除 cloudfunctions\quickstartFunctions 目录（微信云开发示例代码）
+        - [x] 删除 cloudfunctions\testBigmodel 目录（测试代码）
+        - [x] 删除 miniprogram\services\keywordService_old.js 文件（旧版关键词服务）
+        - [x] 删除 miniprogram\pages\emotionAnalysis 目录（旧版情感分析页面，已被packageChat/pages/emotion-analysis替代）
+        - [ ] 删除 miniprogram\models 目录（已创建备份，但删除操作失败，建议在微信开发者工具中手动删除）
 - [x] **代码修复**:
     - [x] 修复角色选择页面的滚动、分类和操作功能问题
     - [x] 修复图片服务中的 `getApp()` 调用问题
