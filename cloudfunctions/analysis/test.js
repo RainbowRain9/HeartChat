@@ -34,7 +34,7 @@ async function main() {
     const emotionResult = await bigModelModule.analyzeEmotion(testEvent.textForEmotion);
     console.log('analyzeEmotion 输出:', emotionResult);
   } catch (error) {
-    console.log('智谱AI情感分析失败:', error);
+    console.log('智谱AI情感分析失败:', error.message || error);
     console.log('analyzeEmotion 输出:', {
       success: false,
       error: error.message || '情感分析失败'
@@ -48,7 +48,7 @@ async function main() {
     const keywordsResult = await bigModelModule.extractKeywords(testEvent.textForKeywords);
     console.log('extractKeywords 输出:', keywordsResult);
   } catch (error) {
-    console.log('智谱AI关键词提取失败:', error);
+    console.log('智谱AI关键词提取失败:', error.message || error);
     console.log('extractKeywords 输出:', {
       success: false,
       error: error.message || '关键词提取失败'
@@ -62,7 +62,7 @@ async function main() {
     const embeddingsResult = await bigModelModule.getEmbeddings(testEvent.textsForEmbedding);
     console.log('getEmbeddings 输出:', embeddingsResult);
   } catch (error) {
-    console.log('智谱AI向量获取失败:', error);
+    console.log('智谱AI向量获取失败:', error.message || error);
     console.log('getEmbeddings 输出:', {
       success: false,
       error: error.message || '向量获取失败'
@@ -76,7 +76,7 @@ async function main() {
     const interestsResult = await bigModelModule.analyzeUserInterests(testEvent.userMessagesForInterest);
     console.log('analyzeUserInterests 输出:', interestsResult);
   } catch (error) {
-    console.log('智谱AI用户兴趣分析失败:', error);
+    console.log('智谱AI用户兴趣分析失败:', error.message || error);
     console.log('analyzeUserInterests 输出:', {
       success: false,
       error: error.message || '用户兴趣分析失败'
@@ -88,7 +88,7 @@ async function main() {
 
 // 执行测试
 main().catch(error => {
-  console.error('测试过程中发生错误:', error);
+  console.error('测试过程中发生错误:', error.message || error);
 });
 
 // 导出测试函数
@@ -100,7 +100,7 @@ exports.main = async (event) => {
       message: 'bigmodel.js 模块测试执行完毕，请检查云函数运行日志获取详细结果。'
     };
   } catch (error) {
-    console.error('测试执行失败:', error);
+    console.error('测试执行失败:', error.message || error);
     return {
       success: false,
       error: error.message || '测试执行失败'

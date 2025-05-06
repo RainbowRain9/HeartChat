@@ -6,6 +6,9 @@
 // 引入云函数调用工具
 const cloudFuncCaller = require('./cloudFuncCaller');
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 /**
  * 从文本中提取关键词
  * @param {string} text 待分析文本
@@ -15,7 +18,9 @@ const cloudFuncCaller = require('./cloudFuncCaller');
 async function extractKeywords(text, topK = 10) {
   try {
     if (!text || typeof text !== 'string' || text.trim() === '') {
-      console.warn('提取关键词失败: 文本为空');
+      if (isDev) {
+        console.warn('提取关键词失败: 文本为空');
+      }
       return [];
     }
 
@@ -29,11 +34,13 @@ async function extractKeywords(text, topK = 10) {
     if (result.success && result.data && result.data.keywords) {
       return result.data.keywords;
     } else {
-      console.warn('提取关键词失败:', result.error || '未知错误');
+      if (isDev) {
+        console.warn('提取关键词失败:', result.error || '未知错误');
+      }
       return [];
     }
   } catch (error) {
-    console.error('提取关键词异常:', error);
+    console.error('提取关键词异常:', error.message || error);
     return [];
   }
 }
@@ -46,7 +53,9 @@ async function extractKeywords(text, topK = 10) {
 async function getWordVectors(texts) {
   try {
     if (!Array.isArray(texts) || texts.length === 0) {
-      console.warn('获取词向量失败: 文本数组为空');
+      if (isDev) {
+        console.warn('获取词向量失败: 文本数组为空');
+      }
       return [];
     }
 
@@ -59,11 +68,13 @@ async function getWordVectors(texts) {
     if (result.success && result.data && result.data.vectors) {
       return result.data.vectors;
     } else {
-      console.warn('获取词向量失败:', result.error || '未知错误');
+      if (isDev) {
+        console.warn('获取词向量失败:', result.error || '未知错误');
+      }
       return [];
     }
   } catch (error) {
-    console.error('获取词向量异常:', error);
+    console.error('获取词向量异常:', error.message || error);
     return [];
   }
 }
@@ -78,7 +89,9 @@ async function getWordVectors(texts) {
 async function clusterKeywords(text, threshold = 0.7, minClusterSize = 2) {
   try {
     if (!text || typeof text !== 'string' || text.trim() === '') {
-      console.warn('聚类分析失败: 文本为空');
+      if (isDev) {
+        console.warn('聚类分析失败: 文本为空');
+      }
       return [];
     }
 
@@ -93,11 +106,13 @@ async function clusterKeywords(text, threshold = 0.7, minClusterSize = 2) {
     if (result.success && result.data && result.data.clusters) {
       return result.data.clusters;
     } else {
-      console.warn('聚类分析失败:', result.error || '未知错误');
+      if (isDev) {
+        console.warn('聚类分析失败:', result.error || '未知错误');
+      }
       return [];
     }
   } catch (error) {
-    console.error('聚类分析异常:', error);
+    console.error('聚类分析异常:', error.message || error);
     return [];
   }
 }
@@ -110,7 +125,9 @@ async function clusterKeywords(text, threshold = 0.7, minClusterSize = 2) {
 async function analyzeUserInterests(messages) {
   try {
     if (!Array.isArray(messages) || messages.length === 0) {
-      console.warn('分析用户兴趣失败: 消息数组为空');
+      if (isDev) {
+        console.warn('分析用户兴趣失败: 消息数组为空');
+      }
       return { interests: [], summary: '' };
     }
 
@@ -123,11 +140,13 @@ async function analyzeUserInterests(messages) {
     if (result.success && result.data) {
       return result.data;
     } else {
-      console.warn('分析用户兴趣失败:', result.error || '未知错误');
+      if (isDev) {
+        console.warn('分析用户兴趣失败:', result.error || '未知错误');
+      }
       return { interests: [], summary: '' };
     }
   } catch (error) {
-    console.error('分析用户兴趣异常:', error);
+    console.error('分析用户兴趣异常:', error.message || error);
     return { interests: [], summary: '' };
   }
 }
@@ -141,7 +160,9 @@ async function analyzeUserInterests(messages) {
 async function getUserInterests(userId, forceRefresh = false) {
   try {
     if (!userId) {
-      console.warn('获取用户兴趣数据失败: 用户ID为空');
+      if (isDev) {
+        console.warn('获取用户兴趣数据失败: 用户ID为空');
+      }
       return { keywords: [] };
     }
 
@@ -149,7 +170,9 @@ async function getUserInterests(userId, forceRefresh = false) {
     if (!forceRefresh) {
       const cachedData = getCachedInterests(userId);
       if (cachedData) {
-        console.log('使用缓存的用户兴趣数据');
+        if (isDev) {
+          console.log('使用缓存的用户兴趣数据');
+        }
         return cachedData;
       }
     }
@@ -165,11 +188,13 @@ async function getUserInterests(userId, forceRefresh = false) {
       cacheInterests(userId, result.data);
       return result.data;
     } else {
-      console.warn('获取用户兴趣数据失败:', result.error || '未知错误');
+      if (isDev) {
+        console.warn('获取用户兴趣数据失败:', result.error || '未知错误');
+      }
       return { keywords: [] };
     }
   } catch (error) {
-    console.error('获取用户兴趣数据异常:', error);
+    console.error('获取用户兴趣数据异常:', error.message || error);
     return { keywords: [] };
   }
 }
@@ -184,7 +209,9 @@ async function getUserInterests(userId, forceRefresh = false) {
 async function updateUserInterest(userId, keyword, weightDelta = 0.1) {
   try {
     if (!userId || !keyword) {
-      console.warn('更新用户兴趣数据失败: 参数不完整');
+      if (isDev) {
+        console.warn('更新用户兴趣数据失败: 参数不完整');
+      }
       return false;
     }
 
@@ -201,11 +228,13 @@ async function updateUserInterest(userId, keyword, weightDelta = 0.1) {
       clearInterestsCache(userId);
       return true;
     } else {
-      console.warn('更新用户兴趣数据失败:', result.error || '未知错误');
+      if (isDev) {
+        console.warn('更新用户兴趣数据失败:', result.error || '未知错误');
+      }
       return false;
     }
   } catch (error) {
-    console.error('更新用户兴趣数据异常:', error);
+    console.error('更新用户兴趣数据异常:', error.message || error);
     return false;
   }
 }
@@ -222,7 +251,9 @@ async function updateUserInterest(userId, keyword, weightDelta = 0.1) {
 async function batchUpdateUserInterests(userId, keywords, autoClassify = true, categoryStats = null, categoriesArray = null) {
   try {
     if (!userId || !Array.isArray(keywords) || keywords.length === 0) {
-      console.warn('批量更新用户兴趣数据失败: 参数不完整');
+      if (isDev) {
+        console.warn('批量更新用户兴趣数据失败: 参数不完整');
+      }
       return false;
     }
 
@@ -241,11 +272,13 @@ async function batchUpdateUserInterests(userId, keywords, autoClassify = true, c
       clearInterestsCache(userId);
       return true;
     } else {
-      console.warn('批量更新用户兴趣数据失败:', result.error || '未知错误');
+      if (isDev) {
+        console.warn('批量更新用户兴趣数据失败:', result.error || '未知错误');
+      }
       return false;
     }
   } catch (error) {
-    console.error('批量更新用户兴趣数据异常:', error);
+    console.error('批量更新用户兴趣数据异常:', error.message || error);
     return false;
   }
 }
@@ -259,14 +292,18 @@ async function batchUpdateUserInterests(userId, keywords, autoClassify = true, c
 async function processDialogueAndUpdateInterests(userId, text) {
   try {
     if (!userId || !text) {
-      console.warn('处理对话并更新兴趣失败: 参数不完整');
+      if (isDev) {
+        console.warn('处理对话并更新兴趣失败: 参数不完整');
+      }
       return false;
     }
 
     // 提取关键词
     const keywords = await extractKeywords(text, 5);
     if (keywords.length === 0) {
-      console.log('未从对话中提取到关键词');
+      if (isDev) {
+        console.log('未从对话中提取到关键词');
+      }
       return false;
     }
 
@@ -328,7 +365,7 @@ async function processDialogueAndUpdateInterests(userId, text) {
         );
       }
     } catch (classifyError) {
-      console.error('分类关键词失败:', classifyError);
+      console.error('分类关键词失败:', classifyError.message || classifyError);
       // 分类失败不影响主流程
     }
 
@@ -362,7 +399,7 @@ async function processDialogueAndUpdateInterests(userId, text) {
       categoriesArray // 传递分类数组
     );
   } catch (error) {
-    console.error('处理对话并更新兴趣异常:', error);
+    console.error('处理对话并更新兴趣异常:', error.message || error);
     return false;
   }
 }
@@ -390,7 +427,7 @@ function getCachedInterests(userId) {
 
     return cache.data;
   } catch (e) {
-    console.error('解析缓存数据失败:', e);
+    console.error('解析缓存数据失败:', e.message || e);
     return null;
   }
 }

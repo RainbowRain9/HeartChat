@@ -3,6 +3,9 @@ const cloud = require('wx-server-sdk')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }) // 使用当前云环境
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 // 云函数入口函数
 exports.main = async (event, context) => {
   const db = cloud.database()
@@ -79,7 +82,7 @@ exports.main = async (event, context) => {
       results
     }
   } catch (error) {
-    console.error('清理数据库失败:', error)
+    console.error('清理数据库失败:', error.message || error)
     return {
       success: false,
       error: error.message || error

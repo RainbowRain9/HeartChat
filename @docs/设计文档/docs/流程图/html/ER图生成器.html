@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartChat ER图生成器</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --button-bg: #4a90e2;
+            --button-hover: #357abf;
+            --button-text: white;
+            --card-bg: #f9f9f9;
+            --input-bg: #ffffff;
+            --input-border: #cccccc;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1e1e1e;
+                --text-color: #e0e0e0;
+                --border-color: #444444;
+                --button-bg: #2d6baf;
+                --button-hover: #1d5a9f;
+                --button-text: #f0f0f0;
+                --card-bg: #2a2a2a;
+                --input-bg: #333333;
+                --input-border: #555555;
+            }
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        button svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .input-container {
+            display: flex;
+            margin-bottom: 20px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .code-input {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .preview {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid var(--input-border);
+            border-radius: 5px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            resize: vertical;
+        }
+
+        .diagram-container {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            overflow: auto;
+            transition: transform 0.3s;
+            min-height: 300px;
+        }
+
+        .zoom-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .zoom-level {
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .examples {
+            margin-top: 30px;
+        }
+
+        .example-button {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* 暗黑模式下的mermaid图表样式调整 */
+        @media (prefers-color-scheme: dark) {
+            .mermaid .entityBox {
+                fill: #2d2d2d !important;
+            }
+            .mermaid .classText, .mermaid .nodeLabel {
+                fill: #e0e0e0 !important;
+            }
+            .mermaid .relationshipLine, .mermaid .relationshipLabelLine {
+                stroke: #aaaaaa !important;
+            }
+            .mermaid .relationshipLabel {
+                fill: #e0e0e0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HeartChat ER图生成器</h1>
+            <p class="description">输入erDiagram格式的代码，生成可导出的ER图</p>
+        </header>
+
+        <div class="controls">
+            <button id="render-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4V2.21c0-.45-.54-.67-.85-.35l-2.8 2.79c-.2.2-.2.51 0 .71l2.79 2.79c.32.31.86.09.86-.36V6c3.31 0 6 2.69 6 6c0 .79-.15 1.56-.44 2.25c-.15.36-.04.77.23 1.04c.51.51 1.37.33 1.64-.34c.37-.91.57-1.91.57-2.95c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6c0-.79.15-1.56.44-2.25c.15-.36.04-.77-.23-1.04c-.51-.51-1.37-.33-1.64.34C4.2 9.96 4 10.96 4 12c0 4.42 3.58 8 8 8v1.79c0 .45.54.67.85.35l2.79-2.79c.2-.2.2-.51 0-.71l-2.79-2.79c-.31-.31-.85-.09-.85.36V18z"/></svg>
+                渲染ER图
+            </button>
+            <button id="export-png">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 21q-.825 0-1.413-.588T3 19V5q0-.825.588-1.413T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.588 1.413T19 21H5Zm0-2h14V5H5v14Zm1-2h12v-2H6v2Zm0-4h4v-6H6v6Zm6 0h6v-6h-6v6Zm-6 4v-2v2Zm6-4v-6v6Z"/></svg>
+                导出为PNG
+            </button>
+            <button id="export-png-transparent">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54l-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+                导出透明PNG
+            </button>
+            <button id="copy-clipboard">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                复制到剪贴板
+            </button>
+            <button id="export-svg">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 21q-.825 0-1.413-.588T3 19V5q0-.825.588-1.413T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.588 1.413T19 21H5Zm0-2h14V5H5v14Zm1-2h12v-2H6v2Zm0-4h4v-6H6v6Zm6 0h6v-6h-6v6Zm-6 4v-2v2Zm6-4v-6v6Z"/></svg>
+                导出为SVG
+            </button>
+            <button id="fullscreen">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 19v-5h2v3h3v2H5Zm12 0v-2h3v-3h2v5h-5ZM5 5h5v2H7v3H5V5Zm12 0h5v5h-2V7h-3V5Z"/></svg>
+                全屏查看
+            </button>
+            <button id="clear-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                清空
+            </button>
+        </div>
+
+        <div class="zoom-controls">
+            <button id="zoom-out">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2Z"/></svg>
+            </button>
+            <span class="zoom-level">100%</span>
+            <button id="zoom-in">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg>
+            </button>
+            <button id="zoom-reset">重置缩放</button>
+        </div>
+
+        <div class="input-container">
+            <div class="code-input">
+                <h3>输入ER图代码</h3>
+                <textarea id="mermaid-input" placeholder="在这里输入erDiagram格式的代码...">erDiagram
+    users ||--o{ user_profile : "关联"
+    users ||--o{ user_base : "关联"
+    users ||--o{ user_stats : "关联"
+    users ||--o{ user_config : "关联"
+    users ||--o{ user_interests : "关联"
+    users ||--o{ chats : "创建"
+    users ||--o{ emotionRecords : "拥有"
+    users ||--o{ userReports : "拥有"
+
+    roles ||--o{ chats : "使用"
+    roles ||--o{ roleUsage : "记录"
+
+    chats ||--o{ messages : "包含"
+
+    emotionRecords ||--o{ userReports : "汇总"
+
+    user_interests ||--o{ emotionRecords : "关联"</textarea>
+            </div>
+            <div class="preview">
+                <h3>预览</h3>
+                <div class="diagram-container" id="er-diagram">
+                    <div class="mermaid" id="mermaid-diagram"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="examples">
+            <h3>示例</h3>
+            <button class="example-button" data-example="database-relations">数据库集合关系图</button>
+            <button class="example-button" data-example="users-structure">用户集合结构图</button>
+            <button class="example-button" data-example="roles-structure">角色集合结构图</button>
+            <button class="example-button" data-example="chats-structure">聊天集合结构图</button>
+            <button class="example-button" data-example="emotion-structure">情感记录集合结构图</button>
+        </div>
+
+        <footer>
+            <p>HeartChat项目 - ER图生成器 - 支持导出和缩放功能</p>
+        </footer>
+    </div>
+
+    <script>
+        // 初始化Mermaid
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+            securityLevel: 'loose',
+            er: {
+                diagramPadding: 20,
+                layoutDirection: 'TB',
+                minEntityWidth: 100,
+                minEntityHeight: 75,
+                entityPadding: 15,
+                stroke: 'gray',
+                fill: 'honeydew',
+                fontSize: 12
+            }
+        });
+
+        // 示例代码
+        const examples = {
+            'database-relations': `erDiagram
+    users ||--o{ user_profile : "关联"
+    users ||--o{ user_base : "关联"
+    users ||--o{ user_stats : "关联"
+    users ||--o{ user_config : "关联"
+    users ||--o{ user_interests : "关联"
+    users ||--o{ chats : "创建"
+    users ||--o{ emotionRecords : "拥有"
+    users ||--o{ userReports : "拥有"
+
+    roles ||--o{ chats : "使用"
+    roles ||--o{ roleUsage : "记录"
+
+    chats ||--o{ messages : "包含"
+
+    emotionRecords ||--o{ userReports : "汇总"
+
+    user_interests ||--o{ emotionRecords : "关联"`,
+            'users-structure': `classDiagram
+    class users {
+        _id: String
+        _openid: String
+        stats: Object
+        created_at: Date
+        updated_at: Date
+    }
+
+    class stats {
+        openid: String
+        session_key: String
+        unionid: String
+    }
+
+    users *-- stats`,
+            'roles-structure': `classDiagram
+    class roles {
+        _id: String
+        name: String
+        avatar: String
+        description: String
+        prompt: String
+        system_prompt: String
+        category: String
+        tags: Array
+        creator: String
+        is_system: Boolean
+        is_public: Boolean
+        usage_count: Number
+        created_at: Date
+        updated_at: Date
+    }`,
+            'chats-structure': `classDiagram
+    class chats {
+        _id: String
+        userId: String
+        roleId: String
+        title: String
+        last_message: String
+        last_message_time: Date
+        message_count: Number
+        created_at: Date
+        updated_at: Date
+    }
+
+    class messages {
+        _id: String
+        chatId: String
+        userId: String
+        roleId: String
+        content: String
+        type: String
+        sender: String
+        timestamp: Date
+        emotion_analyzed: Boolean
+        created_at: Date
+    }
+
+    chats "1" -- "n" messages : contains`,
+            'emotion-structure': `classDiagram
+    class emotionRecords {
+        _id: String
+        userId: String
+        chatId: String
+        messageId: String
+        text: String
+        emotions: Object
+        keywords: Array
+        analysis: String
+        timestamp: Date
+        created_at: Date
+    }
+
+    class emotions {
+        joy: Number
+        sadness: Number
+        anger: Number
+        fear: Number
+        surprise: Number
+        disgust: Number
+        neutral: Number
+        primary: String
+        secondary: String
+    }
+
+    class keyword {
+        word: String
+        weight: Number
+        emotion: String
+    }
+
+    emotionRecords *-- emotions
+    emotionRecords *-- keyword`
+        };
+
+        // DOM元素
+        const mermaidInput = document.getElementById('mermaid-input');
+        const mermaidDiagram = document.getElementById('mermaid-diagram');
+        const renderBtn = document.getElementById('render-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const exportPngBtn = document.getElementById('export-png');
+        const exportSvgBtn = document.getElementById('export-svg');
+        const fullscreenBtn = document.getElementById('fullscreen');
+        const zoomInBtn = document.getElementById('zoom-in');
+        const zoomOutBtn = document.getElementById('zoom-out');
+        const zoomResetBtn = document.getElementById('zoom-reset');
+        const zoomLevel = document.querySelector('.zoom-level');
+        const diagramContainer = document.getElementById('er-diagram');
+        const exampleButtons = document.querySelectorAll('.example-button');
+
+        // 当前缩放级别
+        let currentZoom = 1;
+
+        // 渲染图表
+        function renderDiagram() {
+            const code = mermaidInput.value.trim();
+            if (!code) {
+                mermaidDiagram.innerHTML = '<div style="text-align: center; padding: 20px;">请输入erDiagram格式的代码</div>';
+                return;
+            }
+
+            mermaidDiagram.innerHTML = code;
+
+            try {
+                mermaid.render('mermaid-svg', code).then(result => {
+                    mermaidDiagram.innerHTML = result.svg;
+                }).catch(error => {
+                    console.error('Mermaid渲染错误:', error);
+                    mermaidDiagram.innerHTML = `<div style="color: red; padding: 20px;">
+                        <strong>渲染错误:</strong><br>
+                        ${error.message || '请检查您的代码格式是否正确'}
+                    </div>`;
+                });
+            } catch (error) {
+                console.error('Mermaid渲染错误:', error);
+                mermaidDiagram.innerHTML = `<div style="color: red; padding: 20px;">
+                    <strong>渲染错误:</strong><br>
+                    ${error.message || '请检查您的代码格式是否正确'}
+                </div>`;
+            }
+        }
+
+        // 导出图表
+        function exportDiagram(format, transparent = false) {
+            if (format === 'png') {
+                // 获取设备像素比
+                const dpr = window.devicePixelRatio || 1;
+                // 使用更高的缩放比例，考虑设备像素比
+                const scale = Math.max(8, dpr * 4); // 大幅提高缩放比例，至少8倍缩放
+
+                // 直接从SVG导出高质量PNG
+                const svgElement = diagramContainer.querySelector('svg');
+                if (svgElement) {
+                    try {
+                        // 克隆SVG以避免修改原始SVG
+                        const svgClone = svgElement.cloneNode(true);
+
+                        // 设置SVG的尺寸
+                        const width = svgElement.getBoundingClientRect().width * scale;
+                        const height = svgElement.getBoundingClientRect().height * scale;
+                        svgClone.setAttribute('width', width);
+                        svgClone.setAttribute('height', height);
+
+                        // 设置背景色（如果需要透明背景，则不设置）
+                        if (!transparent) {
+                            const bgColor = getComputedStyle(document.body).getPropertyValue('--bg-color');
+                            const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                            bgRect.setAttribute('width', '100%');
+                            bgRect.setAttribute('height', '100%');
+                            bgRect.setAttribute('fill', bgColor);
+                            svgClone.insertBefore(bgRect, svgClone.firstChild);
+                        }
+
+                        // 将SVG转换为字符串
+                        const svgData = new XMLSerializer().serializeToString(svgClone);
+                        const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+
+                        // 创建一个新的Image对象
+                        const img = new Image();
+                        img.onload = function() {
+                            // 创建Canvas
+                            const canvas = document.createElement('canvas');
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+
+                            // 如果需要透明背景，确保Canvas是透明的
+                            if (transparent) {
+                                ctx.clearRect(0, 0, width, height);
+                            } else {
+                                // 否则填充背景色
+                                ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--bg-color');
+                                ctx.fillRect(0, 0, width, height);
+                            }
+
+                            // 绘制图像
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            // 导出为PNG
+                            canvas.toBlob(function(blob) {
+                                saveAs(blob, transparent ? 'HeartChat_ER_Diagram_Transparent.png' : 'HeartChat_ER_Diagram.png');
+                            }, 'image/png', 1.0);
+                        };
+
+                        // 设置图像源
+                        img.src = URL.createObjectURL(svgBlob);
+                    } catch (error) {
+                        console.error('导出PNG时出错:', error);
+                        alert('导出PNG时出错: ' + error.message);
+
+                        // 回退到html2canvas方法
+                        fallbackToPngExport(transparent);
+                    }
+                } else {
+                    // 如果没有找到SVG元素，回退到html2canvas方法
+                    fallbackToPngExport(transparent);
+                }
+            } else if (format === 'svg') {
+                const svgElement = diagramContainer.querySelector('svg');
+                if (!svgElement) {
+                    alert('未找到SVG元素，请先渲染图表');
+                    return;
+                }
+
+                // 克隆SVG以避免修改原始SVG
+                const svgClone = svgElement.cloneNode(true);
+
+                // 设置SVG的样式
+                svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                svgClone.setAttribute('width', svgElement.getBoundingClientRect().width);
+                svgClone.setAttribute('height', svgElement.getBoundingClientRect().height);
+
+                // 将SVG转换为字符串
+                const svgData = new XMLSerializer().serializeToString(svgClone);
+                const blob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                saveAs(blob, 'HeartChat_ER_Diagram.svg');
+            }
+        }
+
+        // 更新缩放
+        function updateZoom() {
+            diagramContainer.style.transform = `scale(${currentZoom})`;
+            diagramContainer.style.transformOrigin = 'center top';
+            zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
+        }
+
+        // 回退到html2canvas方法
+        function fallbackToPngExport(transparent = false) {
+            // 获取设备像素比
+            const dpr = window.devicePixelRatio || 1;
+            // 使用更高的缩放比例
+            const scale = Math.max(8, dpr * 4);
+
+            html2canvas(diagramContainer, {
+                backgroundColor: transparent ? 'rgba(0,0,0,0)' : getComputedStyle(document.body).getPropertyValue('--bg-color'),
+                scale: scale,
+                useCORS: true,
+                allowTaint: true,
+                logging: false,
+                imageTimeout: 0,
+                onclone: (document) => {
+                    // 在克隆的文档中调整SVG大小
+                    const svg = document.querySelector('#er-diagram svg');
+                    if (svg) {
+                        const width = svg.getBoundingClientRect().width;
+                        const height = svg.getBoundingClientRect().height;
+                        svg.setAttribute('width', width * scale);
+                        svg.setAttribute('height', height * scale);
+                    }
+                }
+            }).then(canvas => {
+                canvas.toBlob(function(blob) {
+                    saveAs(blob, transparent ? 'HeartChat_ER_Diagram_Transparent.png' : 'HeartChat_ER_Diagram.png');
+                }, 'image/png', 1.0);
+            });
+        }
+
+        // 复制到剪贴板功能
+        function copyToClipboard() {
+            // 获取设备像素比
+            const dpr = window.devicePixelRatio || 1;
+            // 使用更高的缩放比例
+            const scale = Math.max(4, dpr * 2);
+
+            // 显示加载提示
+            showToast('正在准备图像...');
+
+            // 直接从SVG导出高质量PNG
+            const svgElement = diagramContainer.querySelector('svg');
+            if (!svgElement) {
+                showToast('未找到SVG元素，请先渲染图表');
+                return;
+            }
+
+            try {
+                // 方法1: 使用html2canvas直接捕获整个容器
+                // 首先，确保容器背景是透明的
+                const originalBg = diagramContainer.style.backgroundColor;
+                diagramContainer.style.backgroundColor = 'transparent';
+
+                html2canvas(diagramContainer, {
+                    backgroundColor: null, // 透明背景
+                    scale: scale,
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false,
+                    imageTimeout: 0,
+                    alpha: true, // 确保启用alpha通道
+                    onclone: (clonedDoc) => {
+                        // 在克隆的文档中调整SVG大小和背景
+                        const clonedContainer = clonedDoc.querySelector('#er-diagram');
+                        if (clonedContainer) {
+                            clonedContainer.style.backgroundColor = 'transparent';
+                            clonedContainer.style.border = 'none';
+                            clonedContainer.style.boxShadow = 'none';
+                            clonedContainer.style.padding = '0';
+                            clonedContainer.style.margin = '0';
+                        }
+
+                        const svg = clonedDoc.querySelector('#er-diagram svg');
+                        if (svg) {
+                            const width = svg.getBoundingClientRect().width;
+                            const height = svg.getBoundingClientRect().height;
+                            svg.setAttribute('width', width * scale);
+                            svg.setAttribute('height', height * scale);
+
+                            // 移除边框和背景
+                            svg.style.border = 'none';
+                            svg.style.boxShadow = 'none';
+                            svg.style.backgroundColor = 'transparent';
+
+                            // 移除任何背景元素
+                            const rects = svg.querySelectorAll('rect[width="100%"][height="100%"]');
+                            rects.forEach(rect => {
+                                if (rect.getAttribute('fill')) {
+                                    rect.parentNode.removeChild(rect);
+                                }
+                            });
+
+                            // 移除所有边框相关属性
+                            svg.querySelectorAll('*').forEach(el => {
+                                if (el.style) {
+                                    el.style.border = 'none';
+                                    el.style.boxShadow = 'none';
+                                }
+                                // 移除stroke属性，除非是路径或线条元素
+                                if (el.tagName !== 'path' && el.tagName !== 'line' && el.tagName !== 'polyline') {
+                                    el.setAttribute('stroke', 'none');
+                                }
+                            });
+                        }
+                    }
+                }).then(canvas => {
+                    // 恢复原始背景
+                    diagramContainer.style.backgroundColor = originalBg;
+
+                    // 确保canvas是透明的
+                    const ctx = canvas.getContext('2d');
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+
+                    // 检查是否有纯色背景，如果有，将其设为透明
+                    // 获取第一个像素的颜色作为可能的背景色
+                    const bgColor = [data[0], data[1], data[2], data[3]];
+
+                    // 如果背景色接近白色或黑色，将其设为透明
+                    if ((bgColor[0] > 240 && bgColor[1] > 240 && bgColor[2] > 240) ||
+                        (bgColor[0] < 15 && bgColor[1] < 15 && bgColor[2] < 15)) {
+                        for (let i = 0; i < data.length; i += 4) {
+                            // 如果像素颜色与背景色相似，则设为透明
+                            if (Math.abs(data[i] - bgColor[0]) < 10 &&
+                                Math.abs(data[i+1] - bgColor[1]) < 10 &&
+                                Math.abs(data[i+2] - bgColor[2]) < 10) {
+                                data[i+3] = 0; // 设置alpha为0（完全透明）
+                            }
+                        }
+                        ctx.putImageData(imageData, 0, 0);
+                    }
+
+                    // 处理边框问题 - 检测图像边缘的像素
+                    // 获取图像数据
+                    const borderImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const borderData = borderImageData.data;
+
+                    // 定义边框检测的阈值
+                    const borderThreshold = 5; // 边缘像素的宽度
+
+                    // 检查图像边缘是否有一致的颜色（可能是边框）
+                    // 检查顶部边缘
+                    let topBorderColor = null;
+                    let isTopBorder = true;
+
+                    for (let x = 0; x < canvas.width; x++) {
+                        const i = (x * 4); // 顶部边缘的像素索引
+                        if (topBorderColor === null) {
+                            // 第一个像素，记录颜色
+                            topBorderColor = [borderData[i], borderData[i+1], borderData[i+2]];
+                        } else if (Math.abs(borderData[i] - topBorderColor[0]) > 10 ||
+                                  Math.abs(borderData[i+1] - topBorderColor[1]) > 10 ||
+                                  Math.abs(borderData[i+2] - topBorderColor[2]) > 10) {
+                            // 如果颜色不一致，则不是边框
+                            isTopBorder = false;
+                            break;
+                        }
+                    }
+
+                    // 如果检测到边框，将其设为透明
+                    if (isTopBorder) {
+                        for (let y = 0; y < borderThreshold; y++) {
+                            for (let x = 0; x < canvas.width; x++) {
+                                const i = (y * canvas.width + x) * 4;
+                                borderData[i+3] = 0; // 设置alpha为0（完全透明）
+                            }
+                        }
+                    }
+
+                    // 检查底部边缘
+                    let bottomBorderColor = null;
+                    let isBottomBorder = true;
+
+                    for (let x = 0; x < canvas.width; x++) {
+                        const i = ((canvas.height - 1) * canvas.width + x) * 4; // 底部边缘的像素索引
+                        if (bottomBorderColor === null) {
+                            // 第一个像素，记录颜色
+                            bottomBorderColor = [borderData[i], borderData[i+1], borderData[i+2]];
+                        } else if (Math.abs(borderData[i] - bottomBorderColor[0]) > 10 ||
+                                  Math.abs(borderData[i+1] - bottomBorderColor[1]) > 10 ||
+                                  Math.abs(borderData[i+2] - bottomBorderColor[2]) > 10) {
+                            // 如果颜色不一致，则不是边框
+                            isBottomBorder = false;
+                            break;
+                        }
+                    }
+
+                    // 如果检测到边框，将其设为透明
+                    if (isBottomBorder) {
+                        for (let y = canvas.height - borderThreshold; y < canvas.height; y++) {
+                            for (let x = 0; x < canvas.width; x++) {
+                                const i = (y * canvas.width + x) * 4;
+                                borderData[i+3] = 0; // 设置alpha为0（完全透明）
+                            }
+                        }
+                    }
+
+                    // 检查左侧边缘
+                    let leftBorderColor = null;
+                    let isLeftBorder = true;
+
+                    for (let y = 0; y < canvas.height; y++) {
+                        const i = (y * canvas.width) * 4; // 左侧边缘的像素索引
+                        if (leftBorderColor === null) {
+                            // 第一个像素，记录颜色
+                            leftBorderColor = [borderData[i], borderData[i+1], borderData[i+2]];
+                        } else if (Math.abs(borderData[i] - leftBorderColor[0]) > 10 ||
+                                  Math.abs(borderData[i+1] - leftBorderColor[1]) > 10 ||
+                                  Math.abs(borderData[i+2] - leftBorderColor[2]) > 10) {
+                            // 如果颜色不一致，则不是边框
+                            isLeftBorder = false;
+                            break;
+                        }
+                    }
+
+                    // 如果检测到边框，将其设为透明
+                    if (isLeftBorder) {
+                        for (let x = 0; x < borderThreshold; x++) {
+                            for (let y = 0; y < canvas.height; y++) {
+                                const i = (y * canvas.width + x) * 4;
+                                borderData[i+3] = 0; // 设置alpha为0（完全透明）
+                            }
+                        }
+                    }
+
+                    // 检查右侧边缘
+                    let rightBorderColor = null;
+                    let isRightBorder = true;
+
+                    for (let y = 0; y < canvas.height; y++) {
+                        const i = (y * canvas.width + canvas.width - 1) * 4; // 右侧边缘的像素索引
+                        if (rightBorderColor === null) {
+                            // 第一个像素，记录颜色
+                            rightBorderColor = [borderData[i], borderData[i+1], borderData[i+2]];
+                        } else if (Math.abs(borderData[i] - rightBorderColor[0]) > 10 ||
+                                  Math.abs(borderData[i+1] - rightBorderColor[1]) > 10 ||
+                                  Math.abs(borderData[i+2] - rightBorderColor[2]) > 10) {
+                            // 如果颜色不一致，则不是边框
+                            isRightBorder = false;
+                            break;
+                        }
+                    }
+
+                    // 如果检测到边框，将其设为透明
+                    if (isRightBorder) {
+                        for (let x = canvas.width - borderThreshold; x < canvas.width; x++) {
+                            for (let y = 0; y < canvas.height; y++) {
+                                const i = (y * canvas.width + x) * 4;
+                                borderData[i+3] = 0; // 设置alpha为0（完全透明）
+                            }
+                        }
+                    }
+
+                    // 将处理后的图像数据放回Canvas
+                    ctx.putImageData(borderImageData, 0, 0);
+
+                    // 尝试复制到剪贴板
+                    copyCanvasToClipboard(canvas);
+                }).catch(error => {
+                    // 恢复原始背景
+                    diagramContainer.style.backgroundColor = originalBg;
+
+                    console.error('html2canvas失败，尝试备用方法:', error);
+                    // 如果html2canvas失败，尝试方法2
+                    useSvgMethod();
+                });
+            } catch (error) {
+                console.error('捕获图像失败，尝试备用方法:', error);
+                // 如果出现异常，尝试方法2
+                useSvgMethod();
+            }
+
+            // 方法2: 使用SVG转Canvas方法
+            function useSvgMethod() {
+                try {
+                    // 克隆SVG以避免修改原始SVG
+                    const svgClone = svgElement.cloneNode(true);
+
+                    // 设置SVG的尺寸
+                    const width = svgElement.getBoundingClientRect().width * scale;
+                    const height = svgElement.getBoundingClientRect().height * scale;
+                    svgClone.setAttribute('width', width);
+                    svgClone.setAttribute('height', height);
+
+                    // 移除任何背景元素
+                    const rects = svgClone.querySelectorAll('rect[width="100%"][height="100%"]');
+                    rects.forEach(rect => {
+                        if (rect.getAttribute('fill')) {
+                            rect.parentNode.removeChild(rect);
+                        }
+                    });
+
+                    // 确保SVG有透明背景，并移除边框
+                    svgClone.style.backgroundColor = 'transparent';
+                    svgClone.style.border = 'none';
+                    svgClone.style.boxShadow = 'none';
+
+                    // 移除所有元素的边框相关属性
+                    svgClone.querySelectorAll('*').forEach(el => {
+                        if (el.style) {
+                            el.style.border = 'none';
+                            el.style.boxShadow = 'none';
+                        }
+                        // 移除stroke属性，除非是路径或线条元素
+                        if (el.tagName !== 'path' && el.tagName !== 'line' && el.tagName !== 'polyline') {
+                            el.setAttribute('stroke', 'none');
+                        }
+                    });
+
+                    // 移除可能的外部边框
+                    const outerG = svgClone.querySelector('g.outer-group');
+                    if (outerG) {
+                        outerG.setAttribute('stroke', 'none');
+                        outerG.style.border = 'none';
+                    }
+
+                    // 添加透明背景属性
+                    if (!svgClone.hasAttribute('style')) {
+                        svgClone.setAttribute('style', 'background-color: transparent;');
+                    } else {
+                        const style = svgClone.getAttribute('style');
+                        svgClone.setAttribute('style', style + '; background-color: transparent;');
+                    }
+
+                    // 将SVG转换为字符串
+                    const svgData = new XMLSerializer().serializeToString(svgClone);
+
+                    // 确保SVG包含透明背景设置
+                    const svgWithTransparentBg = svgData.replace('<svg', '<svg style="background-color: transparent;"');
+
+                    const svgBlob = new Blob([svgWithTransparentBg], {type: 'image/svg+xml;charset=utf-8'});
+                    const url = URL.createObjectURL(svgBlob);
+
+                    // 创建一个新的Image对象
+                    const img = new Image();
+                    img.crossOrigin = 'Anonymous';
+
+                    img.onload = function() {
+                        // 创建Canvas
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d', { alpha: true }); // 确保启用alpha通道
+
+                        // 确保Canvas是透明的
+                        ctx.clearRect(0, 0, width, height);
+
+                        // 绘制图像
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // 处理可能的背景
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const data = imageData.data;
+
+                        // 获取第一个像素的颜色作为可能的背景色
+                        const bgColor = [data[0], data[1], data[2], data[3]];
+
+                        // 如果背景色接近白色或黑色，将其设为透明
+                        if ((bgColor[0] > 240 && bgColor[1] > 240 && bgColor[2] > 240) ||
+                            (bgColor[0] < 15 && bgColor[1] < 15 && bgColor[2] < 15)) {
+                            for (let i = 0; i < data.length; i += 4) {
+                                // 如果像素颜色与背景色相似，则设为透明
+                                if (Math.abs(data[i] - bgColor[0]) < 10 &&
+                                    Math.abs(data[i+1] - bgColor[1]) < 10 &&
+                                    Math.abs(data[i+2] - bgColor[2]) < 10) {
+                                    data[i+3] = 0; // 设置alpha为0（完全透明）
+                                }
+                            }
+                            ctx.putImageData(imageData, 0, 0);
+                        }
+
+                        // 尝试复制到剪贴板
+                        copyCanvasToClipboard(canvas);
+
+                        // 释放URL对象
+                        URL.revokeObjectURL(url);
+                    };
+
+                    img.onerror = function() {
+                        console.error('加载SVG失败，尝试方法3');
+                        URL.revokeObjectURL(url);
+                        // 如果加载SVG失败，尝试方法3
+                        createImageDirectly();
+                    };
+
+                    // 设置图像源
+                    img.src = url;
+                } catch (error) {
+                    console.error('SVG方法失败，尝试方法3:', error);
+                    // 如果SVG方法失败，尝试方法3
+                    createImageDirectly();
+                }
+            }
+
+            // 方法3: 直接创建图像
+            function createImageDirectly() {
+                try {
+                    // 获取mermaid图表的文本内容
+                    const mermaidText = mermaidInput.value;
+
+                    // 创建一个新的div来渲染图表
+                    const tempDiv = document.createElement('div');
+                    tempDiv.style.position = 'absolute';
+                    tempDiv.style.left = '-9999px';
+                    tempDiv.style.backgroundColor = 'transparent';
+                    tempDiv.className = 'mermaid';
+                    tempDiv.textContent = mermaidText;
+                    document.body.appendChild(tempDiv);
+
+                    // 使用mermaid渲染图表
+                    mermaid.init(undefined, tempDiv);
+
+                    // 确保SVG有透明背景，并移除边框
+                    const svg = tempDiv.querySelector('svg');
+                    if (svg) {
+                        // 移除任何背景元素
+                        const rects = svg.querySelectorAll('rect[width="100%"][height="100%"]');
+                        rects.forEach(rect => {
+                            if (rect.getAttribute('fill')) {
+                                rect.parentNode.removeChild(rect);
+                            }
+                        });
+
+                        // 添加透明背景，移除边框
+                        svg.style.backgroundColor = 'transparent';
+                        svg.style.border = 'none';
+                        svg.style.boxShadow = 'none';
+
+                        // 移除所有元素的边框相关属性
+                        svg.querySelectorAll('*').forEach(el => {
+                            if (el.style) {
+                                el.style.border = 'none';
+                                el.style.boxShadow = 'none';
+                            }
+                            // 移除stroke属性，除非是路径或线条元素
+                            if (el.tagName !== 'path' && el.tagName !== 'line' && el.tagName !== 'polyline') {
+                                el.setAttribute('stroke', 'none');
+                            }
+                        });
+
+                        // 移除可能的外部边框
+                        const outerG = svg.querySelector('g.outer-group');
+                        if (outerG) {
+                            outerG.setAttribute('stroke', 'none');
+                            outerG.style.border = 'none';
+                        }
+                    }
+
+                    // 确保容器也没有边框
+                    tempDiv.style.border = 'none';
+                    tempDiv.style.boxShadow = 'none';
+                    tempDiv.style.padding = '0';
+                    tempDiv.style.margin = '0';
+
+                    // 使用html2canvas捕获图表
+                    html2canvas(tempDiv, {
+                        backgroundColor: null, // 透明背景
+                        scale: scale,
+                        useCORS: true,
+                        allowTaint: true,
+                        logging: false,
+                        alpha: true // 确保启用alpha通道
+                    }).then(canvas => {
+                        // 确保canvas是透明的
+                        const ctx = canvas.getContext('2d');
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const data = imageData.data;
+
+                        // 获取第一个像素的颜色作为可能的背景色
+                        const bgColor = [data[0], data[1], data[2], data[3]];
+
+                        // 如果背景色接近白色或黑色，将其设为透明
+                        if ((bgColor[0] > 240 && bgColor[1] > 240 && bgColor[2] > 240) ||
+                            (bgColor[0] < 15 && bgColor[1] < 15 && bgColor[2] < 15)) {
+                            for (let i = 0; i < data.length; i += 4) {
+                                // 如果像素颜色与背景色相似，则设为透明
+                                if (Math.abs(data[i] - bgColor[0]) < 10 &&
+                                    Math.abs(data[i+1] - bgColor[1]) < 10 &&
+                                    Math.abs(data[i+2] - bgColor[2]) < 10) {
+                                    data[i+3] = 0; // 设置alpha为0（完全透明）
+                                }
+                            }
+                            ctx.putImageData(imageData, 0, 0);
+                        }
+
+                        // 尝试复制到剪贴板
+                        copyCanvasToClipboard(canvas);
+
+                        // 移除临时div
+                        document.body.removeChild(tempDiv);
+                    }).catch(error => {
+                        console.error('创建图像失败:', error);
+                        document.body.removeChild(tempDiv);
+                        showToast('无法创建图像，请尝试导出为PNG');
+                    });
+                } catch (error) {
+                    console.error('直接创建图像失败:', error);
+                    showToast('无法创建图像，请尝试导出为PNG');
+                }
+            }
+
+            // 通用的Canvas复制到剪贴板函数
+            function copyCanvasToClipboard(canvas) {
+                // 确保canvas上下文是透明的
+                const ctx = canvas.getContext('2d');
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                // 创建一个新的canvas，确保它支持透明度
+                const transparentCanvas = document.createElement('canvas');
+                transparentCanvas.width = canvas.width;
+                transparentCanvas.height = canvas.height;
+                const transparentCtx = transparentCanvas.getContext('2d', { alpha: true });
+
+                // 将原始图像数据绘制到新canvas
+                transparentCtx.putImageData(imageData, 0, 0);
+
+                // 尝试多种方法复制到剪贴板
+
+                // 方法A: 使用现代Clipboard API
+                transparentCanvas.toBlob(function(blob) {
+                    try {
+                        // 检查是否支持ClipboardItem
+                        if (window.ClipboardItem) {
+                            const item = new ClipboardItem({ 'image/png': blob });
+                            navigator.clipboard.write([item]).then(function() {
+                                showToast('已复制到剪贴板');
+                            }).catch(function(error) {
+                                console.error('Clipboard API失败:', error);
+                                // 尝试方法B
+                                useDataTransfer(transparentCanvas, blob);
+                            });
+                        } else {
+                            // 不支持ClipboardItem，尝试方法B
+                            useDataTransfer(transparentCanvas, blob);
+                        }
+                    } catch (error) {
+                        console.error('ClipboardItem不可用:', error);
+                        // 尝试方法B
+                        useDataTransfer(transparentCanvas, blob);
+                    }
+                }, 'image/png', 1.0);
+            }
+
+            // 方法B: 使用DataTransfer API
+            function useDataTransfer(canvas, blob) {
+                try {
+                    // 创建一个新的剪贴板事件
+                    const clipboardEvent = new ClipboardEvent('copy', { bubbles: true });
+
+                    // 尝试使用setData方法
+                    const clipboardData = new DataTransfer();
+
+                    // 确保使用透明PNG
+                    const transparentBlob = new Blob([blob], { type: 'image/png' });
+                    clipboardData.items.add(new File([transparentBlob], 'image.png', { type: 'image/png' }));
+
+                    // 替换clipboardEvent的clipboardData
+                    Object.defineProperty(clipboardEvent, 'clipboardData', {
+                        value: clipboardData,
+                        writable: false
+                    });
+
+                    // 分发事件
+                    document.dispatchEvent(clipboardEvent);
+
+                    // 检查是否成功
+                    if (clipboardEvent.defaultPrevented) {
+                        showToast('已复制到剪贴板');
+                    } else {
+                        // 尝试方法C
+                        useExecCommand(canvas, blob);
+                    }
+                } catch (error) {
+                    console.error('DataTransfer API失败:', error);
+                    // 尝试方法C
+                    useExecCommand(canvas, blob);
+                }
+            }
+
+            // 方法C: 使用execCommand
+            function useExecCommand(canvas, blob) {
+                try {
+                    // 确保使用透明背景
+                    const ctx = canvas.getContext('2d');
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                    // 创建一个新的canvas，确保它支持透明度
+                    const transparentCanvas = document.createElement('canvas');
+                    transparentCanvas.width = canvas.width;
+                    transparentCanvas.height = canvas.height;
+                    const transparentCtx = transparentCanvas.getContext('2d', { alpha: true });
+
+                    // 将原始图像数据绘制到新canvas
+                    transparentCtx.putImageData(imageData, 0, 0);
+
+                    // 创建一个临时链接，确保使用PNG格式和透明背景
+                    const url = transparentCanvas.toDataURL('image/png');
+
+                    // 创建一个临时图像元素
+                    const tempImg = document.createElement('img');
+                    tempImg.src = url;
+                    tempImg.style.backgroundColor = 'transparent'; // 确保图像背景透明
+
+                    // 创建一个临时div来包含图像
+                    const tempDiv = document.createElement('div');
+                    tempDiv.contentEditable = true;
+                    tempDiv.style.position = 'absolute';
+                    tempDiv.style.left = '-9999px';
+                    tempDiv.style.backgroundColor = 'transparent'; // 确保div背景透明
+                    tempDiv.appendChild(tempImg);
+                    document.body.appendChild(tempDiv);
+
+                    // 选择临时div
+                    const range = document.createRange();
+                    range.selectNodeContents(tempDiv);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+                    // 尝试复制
+                    const success = document.execCommand('copy');
+
+                    // 清理
+                    selection.removeAllRanges();
+                    document.body.removeChild(tempDiv);
+
+                    if (success) {
+                        showToast('已复制到剪贴板');
+                    } else {
+                        // 尝试另一种方法：使用navigator.clipboard.writeText
+                        try {
+                            // 创建一个包含图像的HTML字符串
+                            const imgHtml = `<img src="${url}" alt="ER Diagram" style="background-color: transparent;">`;
+
+                            // 尝试将HTML复制到剪贴板
+                            navigator.clipboard.writeText(imgHtml).then(() => {
+                                showToast('已复制HTML图像到剪贴板');
+                            }).catch(() => {
+                                // 如果所有方法都失败，回退到下载
+                                saveAs(blob, 'HeartChat_ER_Diagram_Transparent.png');
+                                showToast('无法复制到剪贴板，已下载图片');
+                            });
+                        } catch (e) {
+                            // 如果所有方法都失败，回退到下载
+                            saveAs(blob, 'HeartChat_ER_Diagram_Transparent.png');
+                            showToast('无法复制到剪贴板，已下载图片');
+                        }
+                    }
+                } catch (error) {
+                    console.error('execCommand失败:', error);
+                    // 如果所有方法都失败，回退到下载
+                    saveAs(blob, 'HeartChat_ER_Diagram_Transparent.png');
+                    showToast('无法复制到剪贴板，已下载图片');
+                }
+            }
+        }
+
+        // 显示提示消息
+        function showToast(message) {
+            // 检查是否已存在toast元素
+            let toast = document.getElementById('toast-message');
+            if (!toast) {
+                // 创建toast元素
+                toast = document.createElement('div');
+                toast.id = 'toast-message';
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.left = '50%';
+                toast.style.transform = 'translateX(-50%)';
+                toast.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                toast.style.color = 'white';
+                toast.style.padding = '10px 20px';
+                toast.style.borderRadius = '5px';
+                toast.style.zIndex = '1000';
+                toast.style.transition = 'opacity 0.3s';
+                document.body.appendChild(toast);
+            }
+
+            // 设置消息并显示
+            toast.textContent = message;
+            toast.style.opacity = '1';
+
+            // 3秒后隐藏
+            setTimeout(function() {
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        // 事件监听器
+        renderBtn.addEventListener('click', renderDiagram);
+
+        clearBtn.addEventListener('click', function() {
+            mermaidInput.value = '';
+            mermaidDiagram.innerHTML = '<div style="text-align: center; padding: 20px;">请输入erDiagram格式的代码</div>';
+        });
+
+        exportPngBtn.addEventListener('click', function() {
+            exportDiagram('png', false);
+        });
+
+        document.getElementById('export-png-transparent').addEventListener('click', function() {
+            exportDiagram('png', true);
+        });
+
+        document.getElementById('copy-clipboard').addEventListener('click', function() {
+            copyToClipboard();
+        });
+
+        exportSvgBtn.addEventListener('click', function() {
+            exportDiagram('svg');
+        });
+
+        fullscreenBtn.addEventListener('click', function() {
+            if (diagramContainer.requestFullscreen) {
+                diagramContainer.requestFullscreen();
+            } else if (diagramContainer.webkitRequestFullscreen) {
+                diagramContainer.webkitRequestFullscreen();
+            } else if (diagramContainer.msRequestFullscreen) {
+                diagramContainer.msRequestFullscreen();
+            }
+        });
+
+        zoomInBtn.addEventListener('click', function() {
+            currentZoom += 0.1;
+            updateZoom();
+        });
+
+        zoomOutBtn.addEventListener('click', function() {
+            currentZoom = Math.max(0.5, currentZoom - 0.1);
+            updateZoom();
+        });
+
+        zoomResetBtn.addEventListener('click', function() {
+            currentZoom = 1;
+            updateZoom();
+        });
+
+        // 添加鼠标滚轮缩放
+        diagramContainer.addEventListener('wheel', function(e) {
+            if (e.ctrlKey) {
+                e.preventDefault();
+                if (e.deltaY < 0) {
+                    currentZoom += 0.1;
+                } else {
+                    currentZoom = Math.max(0.5, currentZoom - 0.1);
+                }
+                updateZoom();
+            }
+        });
+
+        // 示例按钮
+        exampleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const exampleKey = this.getAttribute('data-example');
+                if (examples[exampleKey]) {
+                    mermaidInput.value = examples[exampleKey];
+                    renderDiagram();
+                }
+            });
+        });
+
+        // 监听输入变化，自动渲染
+        mermaidInput.addEventListener('input', function() {
+            // 使用防抖，避免频繁渲染
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(renderDiagram, 1000);
+        });
+
+        // 初始渲染
+        renderDiagram();
+
+        // 监听暗黑模式变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            mermaid.initialize({
+                theme: event.matches ? 'dark' : 'default'
+            });
+            renderDiagram();
+        });
+    </script>
+</body>
+</html>

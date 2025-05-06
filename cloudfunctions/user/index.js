@@ -5,6 +5,9 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 // 导入模块
 // 使用新版本的用户画像处理模块，基于智谱AI实现
 const userPerception = require('./userPerception_new');
@@ -75,10 +78,10 @@ async function getInfo(event) {
       }
     };
   } catch (error) {
-    console.error('获取用户信息失败:', error);
+    console.error('获取用户信息失败:', error.message || error);
     return {
       success: false,
-      error: error
+      error: error.message || error
     };
   }
 }
@@ -211,10 +214,10 @@ async function updateProfile(event, context) {
       }
     };
   } catch (error) {
-    console.error('更新用户信息失败:', error);
+    console.error('更新用户信息失败:', error.message || error);
     return {
       success: false,
-      error: error
+      error: error.message || error
     };
   }
 }
@@ -233,21 +236,29 @@ async function getStats(event, context) {
     // 如果提供了userId，添加到查询条件
     if (userId) {
       query.user_id = userId;
-      console.log('使用userId查询:', userId);
+      if (isDev) {
+        console.log('使用userId查询:', userId);
+      }
     } else {
       // 如果没有提供userId，使用openid
       query.openid = OPENID;
-      console.log('使用openId查询:', OPENID);
+      if (isDev) {
+        console.log('使用openId查询:', OPENID);
+      }
     }
 
-    console.log('查询条件:', query);
+    if (isDev) {
+      console.log('查询条件:', query);
+    }
 
     // 查询用户统计信息
     const result = await db.collection('user_stats')
       .where(query)
       .get();
 
-    console.log('查询结果:', result.data.length > 0 ? '找到数据' : '未找到数据');
+    if (isDev) {
+      console.log('查询结果:', result.data.length > 0 ? '找到数据' : '未找到数据');
+    }
 
     if (result.data && result.data.length > 0) {
       return {
@@ -277,7 +288,9 @@ async function updateStats(event, context) {
   const { userId, statsType, value } = event;
 
   try {
-    console.log(`更新用户统计数据: userId=${userId}, statsType=${statsType}, value=${value}`);
+    if (isDev) {
+      console.log(`更新用户统计数据: userId=${userId}, statsType=${statsType}, value=${value}`);
+    }
 
     // 获取用户统计信息
     const userStatsResult = await db.collection('user_stats')
@@ -360,10 +373,10 @@ async function updateStats(event, context) {
       }
     };
   } catch (error) {
-    console.error('更新用户统计失败:', error);
+    console.error('更新用户统计失败:', error.message || error);
     return {
       success: false,
-      error: error
+      error: error.message || error
     };
   }
 }
@@ -510,15 +523,17 @@ async function getTotalMessageCount(event) {
     // 在chats表中，用户ID可能存储在不同的字段中
     const openid = OPENID;
 
-    // 打印用户ID信息，便于调试
-    console.log('用户ID信息:', {
-      OPENID: OPENID,
-      providedUserId: userId
-    });
-
     // 使用OR条件查询多个可能的字段
     const db = cloud.database();
     const _ = db.command;
+
+    if (isDev) {
+      // 打印用户ID信息，便于调试
+      console.log('用户ID信息:', {
+        OPENID: OPENID,
+        providedUserId: userId
+      });
+    }
 
     // 构建查询条件，考虑所有可能的字段名和大小写情况
     const query = _.or([
@@ -540,7 +555,9 @@ async function getTotalMessageCount(event) {
       );
     }
 
-    console.log('查询条件:', query);
+    if (isDev) {
+      console.log('查询条件:', query);
+    }
 
     // 使用聚合查询计算所有聊天记录的消息总数
     const $ = db.command.aggregate;
@@ -550,17 +567,19 @@ async function getTotalMessageCount(event) {
       .where(query)
       .get();
 
-    console.log(`找到 ${chatRecords.data.length} 条匹配的聊天记录`);
+    if (isDev) {
+      console.log(`找到 ${chatRecords.data.length} 条匹配的聊天记录`);
 
-    // 如果找到了聊天记录，打印前5条记录的关键信息，便于调试
-    if (chatRecords.data.length > 0) {
-      const sampleRecords = chatRecords.data.slice(0, 5).map(chat => ({
-        id: chat._id,
-        roleId: chat.roleId,
-        openId: chat.openId || chat.openid,
-        messageCount: chat.messageCount
-      }));
-      console.log('示例聊天记录:', sampleRecords);
+      // 如果找到了聊天记录，打印前5条记录的关键信息，便于调试
+      if (chatRecords.data.length > 0) {
+        const sampleRecords = chatRecords.data.slice(0, 5).map(chat => ({
+          id: chat._id,
+          roleId: chat.roleId,
+          openId: chat.openId || chat.openid,
+          messageCount: chat.messageCount
+        }));
+        console.log('示例聊天记录:', sampleRecords);
+      }
     }
 
     // 使用聚合查询计算总消息数
@@ -573,31 +592,37 @@ async function getTotalMessageCount(event) {
       })
       .end();
 
-    console.log('聚合查询结果:', result);
+    if (isDev) {
+      console.log('聚合查询结果:', result);
+    }
 
     // 如果有结果，返回总消息数
     if (result.list && result.list.length > 0) {
       const totalMessageCount = result.list[0].totalMessageCount || 0;
-      console.log('用户总消息数:', totalMessageCount);
+      if (isDev) {
+        console.log('用户总消息数:', totalMessageCount);
+      }
 
       // 更新用户统计信息中的总消息数
       try {
-        console.log('开始更新user_stats表中的chat_count...');
-        console.log('用户ID信息:', { OPENID, userId });
+        if (isDev) {
+          console.log('开始更新user_stats表中的chat_count...');
+          console.log('用户ID信息:', { OPENID, userId });
 
-        // 直接获取user_stats表中的所有记录，以便调试
-        const allStats = await db.collection('user_stats').get();
-        console.log(`user_stats表中共有 ${allStats.data.length} 条记录`);
+          // 直接获取user_stats表中的所有记录，以便调试
+          const allStats = await db.collection('user_stats').get();
+          console.log(`user_stats表中共有 ${allStats.data.length} 条记录`);
 
-        if (allStats.data.length > 0) {
-          // 打印前5条记录的关键信息，便于调试
-          const sampleStats = allStats.data.slice(0, 5).map(stat => ({
-            id: stat._id,
-            openid: stat.openid,
-            user_id: stat.user_id,
-            chat_count: stat.chat_count
-          }));
-          console.log('user_stats表示例记录:', sampleStats);
+          if (allStats.data.length > 0) {
+            // 打印前5条记录的关键信息，便于调试
+            const sampleStats = allStats.data.slice(0, 5).map(stat => ({
+              id: stat._id,
+              openid: stat.openid,
+              user_id: stat.user_id,
+              chat_count: stat.chat_count
+            }));
+            console.log('user_stats表示例记录:', sampleStats);
+          }
         }
 
         // 尝试多种查询方式找到用户的统计记录
@@ -609,10 +634,14 @@ async function getTotalMessageCount(event) {
             const byIdResult = await db.collection('user_stats').doc(userId).get();
             if (byIdResult.data) {
               userStats = byIdResult.data;
-              console.log('通过_id找到用户统计信息:', userStats);
+              if (isDev) {
+                console.log('通过_id找到用户统计信息:', userStats);
+              }
             }
           } catch (idErr) {
-            console.log('通过_id查询失败，尝试其他方式');
+            if (isDev) {
+              console.log('通过_id查询失败，尝试其他方式');
+            }
           }
         }
 
@@ -644,7 +673,9 @@ async function getTotalMessageCount(event) {
           for (const result of results) {
             if (result.data && result.data.length > 0) {
               userStats = result.data[0];
-              console.log('通过字段查询找到用户统计信息:', userStats);
+              if (isDev) {
+                console.log('通过字段查询找到用户统计信息:', userStats);
+              }
               break;
             }
           }
@@ -655,7 +686,9 @@ async function getTotalMessageCount(event) {
           try {
             // 从截图中看到的ID
             const statsId = "7456afe067d056a600d4a9981504c9c";
-            console.log('尝试使用已知ID查询:', statsId);
+            if (isDev) {
+              console.log('尝试使用已知ID查询:', statsId);
+            }
 
             // 尝试不同的ID格式
             const possibleIds = [
@@ -669,29 +702,39 @@ async function getTotalMessageCount(event) {
             // 尝试所有可能的ID
             for (const id of possibleIds) {
               try {
-                console.log('尝试ID:', id);
+                if (isDev) {
+                  console.log('尝试ID:', id);
+                }
                 const result = await db.collection('user_stats').doc(id).get();
                 if (result.data) {
                   userStats = result.data;
-                  console.log('通过已知ID找到用户统计信息:', userStats);
+                  if (isDev) {
+                    console.log('通过已知ID找到用户统计信息:', userStats);
+                  }
                   break;
                 }
               } catch (err) {
-                console.log(`ID ${id} 查询失败:`, err.message);
+                if (isDev) {
+                  console.log(`ID ${id} 查询失败:`, err.message);
+                }
               }
             }
           } catch (knownIdErr) {
-            console.log('通过已知ID查询失败:', knownIdErr.message);
+            if (isDev) {
+              console.log('通过已知ID查询失败:', knownIdErr.message);
+            }
           }
         }
 
         // 如果找到了用户统计信息，更新chat_count
         if (userStats) {
-          console.log('准备更新用户统计信息:', {
-            statsId: userStats._id,
-            oldChatCount: userStats.chat_count,
-            newChatCount: totalMessageCount
-          });
+          if (isDev) {
+            console.log('准备更新用户统计信息:', {
+              statsId: userStats._id,
+              oldChatCount: userStats.chat_count,
+              newChatCount: totalMessageCount
+            });
+          }
 
           // 更新用户统计信息
           const updateResult = await db.collection('user_stats').doc(userStats._id).update({
@@ -701,14 +744,18 @@ async function getTotalMessageCount(event) {
             }
           });
 
-          console.log('用户统计信息更新结果:', updateResult);
-          console.log('用户统计信息更新成功, 新的chat_count:', totalMessageCount);
+          if (isDev) {
+            console.log('用户统计信息更新结果:', updateResult);
+            console.log('用户统计信息更新成功, 新的chat_count:', totalMessageCount);
 
-          // 再次查询确认更新成功
-          const verifyResult = await db.collection('user_stats').doc(userStats._id).get();
-          console.log('更新后的用户统计信息:', verifyResult.data);
+            // 再次查询确认更新成功
+            const verifyResult = await db.collection('user_stats').doc(userStats._id).get();
+            console.log('更新后的用户统计信息:', verifyResult.data);
+          }
         } else {
-          console.log('未找到用户统计信息，无法更新');
+          if (isDev) {
+            console.log('未找到用户统计信息，无法更新');
+          }
 
           // 如果没有找到用户统计信息，尝试创建一个新的
           if (OPENID) {
@@ -721,17 +768,21 @@ async function getTotalMessageCount(event) {
               updated_at: db.serverDate()
             };
 
-            console.log('尝试创建新的用户统计信息:', newStats);
+            if (isDev) {
+              console.log('尝试创建新的用户统计信息:', newStats);
+            }
 
             const createResult = await db.collection('user_stats').add({
               data: newStats
             });
 
-            console.log('创建用户统计信息结果:', createResult);
+            if (isDev) {
+              console.log('创建用户统计信息结果:', createResult);
+            }
           }
         }
       } catch (statsErr) {
-        console.error('更新用户统计信息失败:', statsErr);
+        console.error('更新用户统计信息失败:', statsErr.message || statsErr);
         // 不影响主流程
       }
 
@@ -747,7 +798,7 @@ async function getTotalMessageCount(event) {
       };
     }
   } catch (error) {
-    console.error('获取用户总消息数失败:', error);
+    console.error('获取用户总消息数失败:', error.message || error);
     return {
       success: false,
       error: error.message || '获取用户总消息数失败'
@@ -792,13 +843,17 @@ async function getUserPerception(event) {
     const wxContext = cloud.getWXContext();
     const userId = event.userId || wxContext.OPENID;
 
-    console.log(`开始获取用户画像, 用户ID: ${userId}, 使用智谱AI增强版`);
+    if (isDev) {
+      console.log(`开始获取用户画像, 用户ID: ${userId}, 使用智谱AI增强版`);
+    }
 
     try {
       // 获取用户画像数据
       const perceptionData = await userPerception.getUserPerception(userId);
 
-      console.log('用户画像数据获取成功');
+      if (isDev) {
+        console.log('用户画像数据获取成功');
+      }
 
       // 检查数据是否完整
       if (perceptionData && perceptionData.personalityTraits && perceptionData.personalityTraits.length > 0) {
@@ -807,7 +862,9 @@ async function getUserPerception(event) {
           data: perceptionData
         };
       } else {
-        console.warn('用户画像数据不完整，使用默认数据');
+        if (isDev) {
+          console.warn('用户画像数据不完整，使用默认数据');
+        }
         return {
           success: true,
           data: defaultPerceptionData,
@@ -815,7 +872,7 @@ async function getUserPerception(event) {
         };
       }
     } catch (apiError) {
-      console.error('调用用户画像 API 失败:', apiError);
+      console.error('调用用户画像 API 失败:', apiError.message || apiError);
       return {
         success: true,
         data: defaultPerceptionData,
@@ -823,7 +880,7 @@ async function getUserPerception(event) {
       };
     }
   } catch (error) {
-    console.error('获取用户画像失败:', error);
+    console.error('获取用户画像失败:', error.message || error);
 
     // 即使出错也返回默认数据，确保前端能正常显示
     return {
@@ -871,13 +928,15 @@ async function batchUpdateUserInterests(event) {
     const userId = event.userId || wxContext.OPENID;
     const { keywords, autoClassify = true, categoryStats, categoriesArray } = event;
 
-    console.log('批量更新用户兴趣关键词，参数:', {
-      userId,
-      keywordsCount: keywords ? keywords.length : 0,
-      autoClassify,
-      hasCategoryStats: !!categoryStats,
-      hasCategoriesArray: !!categoriesArray
-    });
+    if (isDev) {
+      console.log('批量更新用户兴趣关键词，参数:', {
+        userId,
+        keywordsCount: keywords ? keywords.length : 0,
+        autoClassify,
+        hasCategoryStats: !!categoryStats,
+        hasCategoriesArray: !!categoriesArray
+      });
+    }
 
     // 使用用户兴趣模块批量更新关键词
     const result = await userInterests.batchUpdateUserInterests(
@@ -890,7 +949,7 @@ async function batchUpdateUserInterests(event) {
 
     return result;
   } catch (error) {
-    console.error('批量更新用户兴趣关键词失败:', error);
+    console.error('批量更新用户兴趣关键词失败:', error.message || error);
     return {
       success: false,
       error: error.message || '批量更新用户兴趣关键词失败'
@@ -915,7 +974,7 @@ async function deleteUserInterest(event) {
 
     return result;
   } catch (error) {
-    console.error('删除用户兴趣关键词失败:', error);
+    console.error('删除用户兴趣关键词失败:', error.message || error);
     return {
       success: false,
       error: error.message || '删除用户兴趣关键词失败'
@@ -940,7 +999,7 @@ async function updateKeywordCategory(event) {
 
     return result;
   } catch (error) {
-    console.error('更新关键词分类失败:', error);
+    console.error('更新关键词分类失败:', error.message || error);
     return {
       success: false,
       error: error.message || '更新关键词分类失败'
@@ -965,7 +1024,7 @@ async function batchUpdateKeywordCategories(event) {
 
     return result;
   } catch (error) {
-    console.error('批量更新关键词分类失败:', error);
+    console.error('批量更新关键词分类失败:', error.message || error);
     return {
       success: false,
       error: error.message || '批量更新关键词分类失败'
@@ -990,7 +1049,7 @@ async function updateKeywordEmotionScore(event) {
 
     return result;
   } catch (error) {
-    console.error('更新关键词情感分数失败:', error);
+    console.error('更新关键词情感分数失败:', error.message || error);
     return {
       success: false,
       error: error.message || '更新关键词情感分数失败'
@@ -1019,7 +1078,9 @@ async function getReportCount(event) {
     // 使用用户ID或OpenID
     const openid = userId || OPENID;
 
-    console.log('查询心情报告数量，用户ID:', openid);
+    if (isDev) {
+      console.log('查询心情报告数量，用户ID:', openid);
+    }
 
     // 查询userReports表中该用户的记录数量
     const countResult = await db.collection('userReports')
@@ -1028,7 +1089,9 @@ async function getReportCount(event) {
       })
       .count();
 
-    console.log('查询结果:', countResult);
+    if (isDev) {
+      console.log('查询结果:', countResult);
+    }
 
     const reportCount = countResult.total || 0;
 
@@ -1042,7 +1105,9 @@ async function getReportCount(event) {
         ]))
         .get();
 
-      console.log('查询user_stats结果:', userStatsResult);
+      if (isDev) {
+        console.log('查询user_stats结果:', userStatsResult);
+      }
 
       if (userStatsResult.data && userStatsResult.data.length > 0) {
         const userStats = userStatsResult.data[0];
@@ -1055,12 +1120,16 @@ async function getReportCount(event) {
           }
         });
 
-        console.log('用户统计信息更新成功, 新的daily_report_count:', reportCount);
+        if (isDev) {
+          console.log('用户统计信息更新成功, 新的daily_report_count:', reportCount);
+        }
       } else {
-        console.log('未找到用户统计信息，无法更新');
+        if (isDev) {
+          console.log('未找到用户统计信息，无法更新');
+        }
       }
     } catch (statsErr) {
-      console.error('更新用户统计信息失败:', statsErr);
+      console.error('更新用户统计信息失败:', statsErr.message || statsErr);
       // 不影响主流程
     }
 
@@ -1069,7 +1138,7 @@ async function getReportCount(event) {
       reportCount: reportCount
     };
   } catch (error) {
-    console.error('获取用户心情报告数量失败:', error);
+    console.error('获取用户心情报告数量失败:', error.message || error);
     return {
       success: false,
       error: error.message || '获取用户心情报告数量失败'
@@ -1115,7 +1184,7 @@ async function createDatabaseIndexes(event) {
 
     return result;
   } catch (error) {
-    console.error('创建数据库索引失败:', error);
+    console.error('创建数据库索引失败:', error.message || error);
     return {
       success: false,
       error: error.message || '创建数据库索引失败'

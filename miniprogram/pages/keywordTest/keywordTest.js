@@ -1,6 +1,9 @@
 // pages/keywordTest/keywordTest.js
 const keywordService = require('../../services/keywordService');
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 Page({
   /**
    * 页面的初始数据
@@ -38,7 +41,9 @@ Page({
     // 调用关键词提取服务
     keywordService.extractKeywords(text)
       .then(keywords => {
-        console.log('提取到的关键词:', keywords);
+        if (isDev) {
+          console.log('提取到的关键词:', keywords);
+        }
 
         // 为每个关键词添加格式化后的权重值
         const formattedKeywords = keywords.map(item => {
@@ -54,7 +59,7 @@ Page({
         });
       })
       .catch(err => {
-        console.error('关键词提取失败:', err);
+        console.error('关键词提取失败:', err.message || err);
         wx.showToast({
           title: '提取失败，请重试',
           icon: 'none'

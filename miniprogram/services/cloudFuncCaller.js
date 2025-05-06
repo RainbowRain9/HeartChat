@@ -3,6 +3,9 @@
  * 提供统一的云函数调用接口，包含错误处理和日志记录
  */
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 /**
  * 调用云函数
  * @param {string} name 云函数名称
@@ -20,10 +23,10 @@ async function callCloudFunc(name, data = {}, options = {}) {
     loadingText: '处理中...',
     showError: true
   };
-  
+
   // 合并选项
   const mergedOptions = { ...defaultOptions, ...options };
-  
+
   // 显示加载提示
   if (mergedOptions.showLoading) {
     wx.showLoading({
@@ -31,20 +34,24 @@ async function callCloudFunc(name, data = {}, options = {}) {
       mask: true
     });
   }
-  
+
   try {
-    console.log(`调用云函数 ${name}:`, data);
-    
+    if (isDev) {
+      console.log(`调用云函数 ${name}:`, data);
+    }
+
     // 调用云函数
     const result = await wx.cloud.callFunction({
       name,
       data
     });
-    
+
     // 处理结果
     if (result && result.result) {
-      console.log(`云函数 ${name} 返回:`, result.result);
-      
+      if (isDev) {
+        console.log(`云函数 ${name} 返回:`, result.result);
+      }
+
       // 如果云函数返回错误
       if (result.result.error && mergedOptions.showError) {
         wx.showToast({
@@ -53,11 +60,11 @@ async function callCloudFunc(name, data = {}, options = {}) {
           duration: 2000
         });
       }
-      
+
       return result.result;
     } else {
-      console.error(`云函数 ${name} 返回无效结果:`, result);
-      
+      console.error(`云函数 ${name} 返回无效结果`);
+
       if (mergedOptions.showError) {
         wx.showToast({
           title: '服务调用失败',
@@ -65,12 +72,12 @@ async function callCloudFunc(name, data = {}, options = {}) {
           duration: 2000
         });
       }
-      
+
       return { success: false, error: '无效的云函数返回结果' };
     }
   } catch (error) {
-    console.error(`云函数 ${name} 调用异常:`, error);
-    
+    console.error(`云函数 ${name} 调用异常:`, error.message || error);
+
     if (mergedOptions.showError) {
       wx.showToast({
         title: error.message || '服务调用异常',
@@ -78,7 +85,7 @@ async function callCloudFunc(name, data = {}, options = {}) {
         duration: 2000
       });
     }
-    
+
     return { success: false, error: error.message || '云函数调用异常' };
   } finally {
     // 隐藏加载提示
@@ -98,7 +105,7 @@ async function batchCallCloudFunc(calls, options = {}) {
   if (!Array.isArray(calls) || calls.length === 0) {
     return [];
   }
-  
+
   // 默认选项
   const defaultOptions = {
     showLoading: false,
@@ -106,10 +113,10 @@ async function batchCallCloudFunc(calls, options = {}) {
     showError: true,
     parallel: true // 是否并行调用
   };
-  
+
   // 合并选项
   const mergedOptions = { ...defaultOptions, ...options };
-  
+
   // 显示加载提示
   if (mergedOptions.showLoading) {
     wx.showLoading({
@@ -117,16 +124,18 @@ async function batchCallCloudFunc(calls, options = {}) {
       mask: true
     });
   }
-  
+
   try {
-    console.log(`批量调用云函数:`, calls);
-    
+    if (isDev) {
+      console.log(`批量调用云函数:`, calls);
+    }
+
     let results;
-    
+
     // 并行或串行调用
     if (mergedOptions.parallel) {
       // 并行调用
-      const promises = calls.map(call => 
+      const promises = calls.map(call =>
         callCloudFunc(call.name, call.data, { ...mergedOptions, showLoading: false, showError: false })
       );
       results = await Promise.all(promises);
@@ -138,12 +147,14 @@ async function batchCallCloudFunc(calls, options = {}) {
         results.push(result);
       }
     }
-    
-    console.log(`批量云函数调用完成:`, results);
+
+    if (isDev) {
+      console.log(`批量云函数调用完成:`, results);
+    }
     return results;
   } catch (error) {
-    console.error(`批量云函数调用异常:`, error);
-    
+    console.error(`批量云函数调用异常:`, error.message || error);
+
     if (mergedOptions.showError) {
       wx.showToast({
         title: error.message || '批量服务调用异常',
@@ -151,7 +162,7 @@ async function batchCallCloudFunc(calls, options = {}) {
         duration: 2000
       });
     }
-    
+
     return [];
   } finally {
     // 隐藏加载提示

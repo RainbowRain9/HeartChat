@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartChat数据库ER图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --button-bg: #4a90e2;
+            --button-hover: #357abf;
+            --button-text: white;
+            --card-bg: #f9f9f9;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1e1e1e;
+                --text-color: #e0e0e0;
+                --border-color: #444444;
+                --button-bg: #2d6baf;
+                --button-hover: #1d5a9f;
+                --button-text: #f0f0f0;
+                --card-bg: #2a2a2a;
+            }
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        button svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .diagram-container {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            overflow: auto;
+            transition: transform 0.3s;
+        }
+
+        .zoom-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .zoom-level {
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* 暗黑模式下的mermaid图表样式调整 */
+        @media (prefers-color-scheme: dark) {
+            .mermaid .entityBox {
+                fill: #2d2d2d !important;
+            }
+            .mermaid .classText, .mermaid .nodeLabel {
+                fill: #e0e0e0 !important;
+            }
+            .mermaid .relationshipLine, .mermaid .relationshipLabelLine {
+                stroke: #aaaaaa !important;
+            }
+            .mermaid .relationshipLabel {
+                fill: #e0e0e0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HeartChat数据库ER图</h1>
+            <p class="description">本页面展示了HeartChat项目的数据库实体关系图，包括各个集合的字段和关系。</p>
+        </header>
+
+        <div class="controls">
+            <button id="export-png">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 21q-.825 0-1.413-.588T3 19V5q0-.825.588-1.413T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.588 1.413T19 21H5Zm0-2h14V5H5v14Zm1-2h12v-2H6v2Zm0-4h4v-6H6v6Zm6 0h6v-6h-6v6Zm-6 4v-2v2Zm6-4v-6v6Z"/></svg>
+                导出为PNG
+            </button>
+            <button id="export-png-transparent">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54l-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+                导出透明PNG
+            </button>
+            <button id="copy-clipboard">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                复制到剪贴板
+            </button>
+            <button id="export-svg">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 21q-.825 0-1.413-.588T3 19V5q0-.825.588-1.413T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.588 1.413T19 21H5Zm0-2h14V5H5v14Zm1-2h12v-2H6v2Zm0-4h4v-6H6v6Zm6 0h6v-6h-6v6Zm-6 4v-2v2Zm6-4v-6v6Z"/></svg>
+                导出为SVG
+            </button>
+            <button id="fullscreen">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 19v-5h2v3h3v2H5Zm12 0v-2h3v-3h2v5h-5ZM5 5h5v2H7v3H5V5Zm12 0h5v5h-2V7h-3V5Z"/></svg>
+                全屏查看
+            </button>
+        </div>
+
+        <div class="zoom-controls">
+            <button id="zoom-out">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2Z"/></svg>
+            </button>
+            <span class="zoom-level">100%</span>
+            <button id="zoom-in">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg>
+            </button>
+            <button id="zoom-reset">重置缩放</button>
+        </div>
+
+        <div class="diagram-container" id="er-diagram">
+            <div class="mermaid">
+erDiagram
+    users ||--o{ user_profile : "关联"
+    users ||--o{ user_base : "关联"
+    users ||--o{ user_stats : "关联"
+    users ||--o{ user_config : "关联"
+    users ||--o{ user_interests : "关联"
+    users ||--o{ chats : "创建"
+    users ||--o{ emotionRecords : "拥有"
+    users ||--o{ userReports : "拥有"
+
+    roles ||--o{ chats : "使用"
+    roles ||--o{ roleUsage : "记录"
+
+    chats ||--o{ messages : "包含"
+
+    emotionRecords ||--o{ userReports : "汇总"
+
+    user_interests ||--o{ emotionRecords : "关联"
+            </div>
+        </div>
+
+        <h2>数据库集合详细结构</h2>
+
+        <h3>1. 用户相关集合</h3>
+        <div class="diagram-container">
+            <div class="mermaid">
+classDiagram
+    class users {
+        _id: String
+        _openid: String
+        stats: Object
+        created_at: Date
+        updated_at: Date
+    }
+
+    class stats {
+        openid: String
+        session_key: String
+        unionid: String
+    }
+
+    users *-- stats
+            </div>
+        </div>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+classDiagram
+    class user_base {
+        _id: String
+        userId: String
+        username: String
+        avatar_url: String
+        gender: Number
+        country: String
+        province: String
+        city: String
+        language: String
+        created_at: Date
+        updated_at: Date
+    }
+            </div>
+        </div>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+classDiagram
+    class user_profile {
+        _id: String
+        userId: String
+        nickname: String
+        bio: String
+        birthday: Date
+        interests: Array
+        preferences: Object
+        created_at: Date
+        updated_at: Date
+    }
+            </div>
+        </div>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+classDiagram
+    class user_interests {
+        _id: String
+        userId: String
+        keywords: Array
+        categories: Array
+        created_at: Date
+        updated_at: Date
+    }
+
+    class keyword {
+        word: String
+        weight: Number
+        count: Number
+    }
+
+    class category {
+        name: String
+        weight: Number
+        keywords: Array
+    }
+
+    user_interests *-- keyword
+    user_interests *-- category
+            </div>
+        </div>
+
+        <h3>2. 角色相关集合</h3>
+        <div class="diagram-container">
+            <div class="mermaid">
+classDiagram
+    class roles {
+        _id: String
+        name: String
+        avatar: String
+        description: String
+        prompt: String
+        system_prompt: String
+        category: String
+        tags: Array
+        creator: String
+        is_system: Boolean
+        is_public: Boolean
+        usage_count: Number
+        created_at: Date
+        updated_at: Date
+    }
+            </div>
+        </div>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+classDiagram
+    class roleUsage {
+        _id: String
+        userId: String
+        roleId: String
+        chat_count: Number
+        message_count: Number
+        last_used: Date
+        created_at: Date
+        updated_at: Date
+    }
+            </div>
+        </div>
+
+        <h3>3. 聊天相关集合</h3>
+        <div class="diagram-container">
+            <div class="mermaid">
+classDiagram
+    class chats {
+        _id: String
+        userId: String
+        roleId: String
+        title: String
+        last_message: String
+        last_message_time: Date
+        message_count: Number
+        created_at: Date
+        updated_at: Date
+    }
+            </div>
+        </div>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+classDiagram
+    class messages {
+        _id: String
+        chatId: String
+        userId: String
+        roleId: String
+        content: String
+        type: String
+        sender: String
+        timestamp: Date
+        emotion_analyzed: Boolean
+        created_at: Date
+    }
+            </div>
+        </div>
+
+        <h3>4. 情感相关集合</h3>
+        <div class="diagram-container">
+            <div class="mermaid">
+classDiagram
+    class emotionRecords {
+        _id: String
+        userId: String
+        chatId: String
+        messageId: String
+        text: String
+        emotions: Object
+        keywords: Array
+        analysis: String
+        timestamp: Date
+        created_at: Date
+    }
+
+    class emotions {
+        joy: Number
+        sadness: Number
+        anger: Number
+        fear: Number
+        surprise: Number
+        disgust: Number
+        neutral: Number
+        primary: String
+        secondary: String
+    }
+
+    class keyword {
+        word: String
+        weight: Number
+        emotion: String
+    }
+
+    emotionRecords *-- emotions
+    emotionRecords *-- keyword
+            </div>
+        </div>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+classDiagram
+    class userReports {
+        _id: String
+        userId: String
+        date: Date
+        type: String
+        data: Object
+        summary: String
+        created_at: Date
+    }
+
+    class reportData {
+        emotion_stats: Object
+        keyword_stats: Array
+        chat_count: Number
+        message_count: Number
+    }
+
+    userReports *-- reportData
+            </div>
+        </div>
+
+        <h3>5. 数据库索引结构</h3>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TD
+    subgraph users集合索引
+        UI1[_openid]
+        UI2[stats.openid]
+        UI3[created_at]
+    end
+
+    subgraph user_base集合索引
+        UBI1[userId]
+        UBI2[username]
+    end
+
+    subgraph user_profile集合索引
+        UPI1[userId]
+    end
+
+    subgraph user_interests集合索引
+        UII1[userId]
+        UII2[userId + categories.name]
+    end
+
+    subgraph roles集合索引
+        RI1[creator]
+        RI2[is_system]
+        RI3[is_public]
+        RI4[category]
+        RI5[usage_count]
+    end
+
+    subgraph chats集合索引
+        CI1[userId]
+        CI2[roleId]
+        CI3[userId + roleId]
+        CI4[last_message_time]
+    end
+
+    subgraph messages集合索引
+        MI1[chatId]
+        MI2[userId]
+        MI3[timestamp]
+        MI4[emotion_analyzed]
+    end
+
+    subgraph emotionRecords集合索引
+        EI1[userId]
+        EI2[chatId]
+        EI3[messageId]
+        EI4[timestamp]
+        EI5[userId + timestamp]
+    end
+
+    subgraph userReports集合索引
+        URI1[userId]
+        URI2[date]
+        URI3[type]
+        URI4[userId + date]
+    end
+            </div>
+        </div>
+
+        <footer>
+            <p>HeartChat项目 - 数据库ER图 - 支持导出和缩放功能</p>
+        </footer>
+    </div>
+
+    <script>
+        // 初始化Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+            securityLevel: 'loose',
+            er: {
+                diagramPadding: 20,
+                layoutDirection: 'TB',
+                minEntityWidth: 100,
+                minEntityHeight: 75,
+                entityPadding: 15,
+                stroke: 'gray',
+                fill: 'honeydew',
+                fontSize: 12
+            },
+            flowchart: {
+                diagramPadding: 8,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+
+        // 监听暗黑模式变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            location.reload(); // 简单处理：重新加载页面以应用新主题
+        });
+
+        // 等待DOM和Mermaid图表完全加载
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                setupExportButtons();
+                setupZoomControls();
+                setupFullscreenButton();
+            }, 1000); // 给Mermaid一些时间来渲染图表
+        });
+
+        // 复制到剪贴板功能
+        function copyToClipboard() {
+            // 询问用户要复制哪个图表
+            let message = '请选择要复制到剪贴板的图表:\n';
+            message += '1. 数据库集合关系图\n';
+            message += '2. 用户集合结构图\n';
+            message += '3. 用户基础信息结构图\n';
+            message += '4. 用户资料结构图\n';
+            message += '5. 用户兴趣结构图\n';
+            message += '6. 角色结构图\n';
+            message += '7. 角色使用记录结构图\n';
+            message += '8. 聊天会话结构图\n';
+            message += '9. 消息结构图\n';
+            message += '10. 情感记录结构图\n';
+            message += '11. 用户报告结构图\n';
+            message += '12. 数据库索引结构图\n';
+
+            const choice = prompt(message, '1');
+
+            if (!choice) return;
+
+            const index = parseInt(choice) - 1;
+            const diagramContainers = document.querySelectorAll('.diagram-container');
+
+            if (isNaN(index) || index < 0 || index >= diagramContainers.length) {
+                showToast('无效的选择');
+                return;
+            }
+
+            const container = diagramContainers[index];
+
+            // 获取设备像素比
+            const dpr = window.devicePixelRatio || 1;
+            // 使用更高的缩放比例
+            const scale = Math.max(8, dpr * 4);
+
+            // 直接从SVG导出高质量PNG
+            const svgElement = container.querySelector('svg');
+            if (svgElement) {
+                try {
+                    // 克隆SVG以避免修改原始SVG
+                    const svgClone = svgElement.cloneNode(true);
+
+                    // 设置SVG的尺寸
+                    const width = svgElement.getBoundingClientRect().width * scale;
+                    const height = svgElement.getBoundingClientRect().height * scale;
+                    svgClone.setAttribute('width', width);
+                    svgClone.setAttribute('height', height);
+
+                    // 将SVG转换为字符串
+                    const svgData = new XMLSerializer().serializeToString(svgClone);
+                    const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+
+                    // 创建一个新的Image对象
+                    const img = new Image();
+                    img.onload = function() {
+                        // 创建Canvas
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+
+                        // 确保Canvas是透明的
+                        ctx.clearRect(0, 0, width, height);
+
+                        // 绘制图像
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // 将Canvas转换为Blob
+                        canvas.toBlob(function(blob) {
+                            // 创建ClipboardItem
+                            try {
+                                // 现代浏览器方法
+                                const item = new ClipboardItem({ 'image/png': blob });
+                                navigator.clipboard.write([item]).then(function() {
+                                    showToast('已复制到剪贴板');
+                                }).catch(function(error) {
+                                    console.error('复制到剪贴板失败:', error);
+                                    showToast('复制失败: ' + error.message);
+
+                                    // 回退到下载方法
+                                    saveAs(blob, `HeartChat_ER_Diagram_${index + 1}_Transparent.png`);
+                                    showToast('无法复制到剪贴板，已下载图片');
+                                });
+                            } catch (error) {
+                                console.error('复制到剪贴板失败:', error);
+
+                                // 尝试使用canvas.toDataURL方法
+                                try {
+                                    const dataURL = canvas.toDataURL('image/png');
+                                    const tempInput = document.createElement('input');
+                                    document.body.appendChild(tempInput);
+                                    tempInput.value = dataURL;
+                                    tempInput.select();
+                                    document.execCommand('copy');
+                                    document.body.removeChild(tempInput);
+                                    showToast('已复制图片数据URL到剪贴板');
+                                } catch (e) {
+                                    console.error('复制数据URL失败:', e);
+                                    // 回退到下载方法
+                                    saveAs(blob, `HeartChat_ER_Diagram_${index + 1}_Transparent.png`);
+                                    showToast('无法复制到剪贴板，已下载图片');
+                                }
+                            }
+                        }, 'image/png', 1.0);
+                    };
+
+                    img.onerror = function() {
+                        console.error('加载SVG失败');
+                        showToast('加载SVG失败，无法复制到剪贴板');
+                    };
+
+                    // 设置图像源
+                    img.src = URL.createObjectURL(svgBlob);
+                } catch (error) {
+                    console.error('复制到剪贴板时出错:', error);
+                    showToast('复制到剪贴板时出错: ' + error.message);
+                }
+            } else {
+                showToast('未找到SVG元素，无法复制到剪贴板');
+            }
+        }
+
+        // 显示提示消息
+        function showToast(message) {
+            // 检查是否已存在toast元素
+            let toast = document.getElementById('toast-message');
+            if (!toast) {
+                // 创建toast元素
+                toast = document.createElement('div');
+                toast.id = 'toast-message';
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.left = '50%';
+                toast.style.transform = 'translateX(-50%)';
+                toast.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                toast.style.color = 'white';
+                toast.style.padding = '10px 20px';
+                toast.style.borderRadius = '5px';
+                toast.style.zIndex = '1000';
+                toast.style.transition = 'opacity 0.3s';
+                document.body.appendChild(toast);
+            }
+
+            // 设置消息并显示
+            toast.textContent = message;
+            toast.style.opacity = '1';
+
+            // 3秒后隐藏
+            setTimeout(function() {
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        // 设置导出按钮
+        function setupExportButtons() {
+            document.getElementById('export-png').addEventListener('click', function() {
+                exportDiagram('png', false);
+            });
+
+            document.getElementById('export-png-transparent').addEventListener('click', function() {
+                exportDiagram('png', true);
+            });
+
+            document.getElementById('copy-clipboard').addEventListener('click', function() {
+                copyToClipboard();
+            });
+
+            document.getElementById('export-svg').addEventListener('click', function() {
+                exportDiagram('svg');
+            });
+        }
+
+        // 导出图表
+        function exportDiagram(format, transparent = false) {
+            const diagramContainers = document.querySelectorAll('.diagram-container');
+
+            if (diagramContainers.length === 0) {
+                alert('未找到图表容器');
+                return;
+            }
+
+            // 询问用户要导出哪个图表
+            let message = '请选择要导出的图表:\n';
+            message += '1. 数据库集合关系图\n';
+            message += '2. 用户集合结构图\n';
+            message += '3. 用户基础信息结构图\n';
+            message += '4. 用户资料结构图\n';
+            message += '5. 用户兴趣结构图\n';
+            message += '6. 角色结构图\n';
+            message += '7. 角色使用记录结构图\n';
+            message += '8. 聊天会话结构图\n';
+            message += '9. 消息结构图\n';
+            message += '10. 情感记录结构图\n';
+            message += '11. 用户报告结构图\n';
+            message += '12. 数据库索引结构图\n';
+            message += '13. 导出所有图表\n';
+
+            const choice = prompt(message, '1');
+
+            if (!choice) return;
+
+            if (choice === '13') {
+                // 导出所有图表
+                exportAllDiagrams(format, transparent);
+                return;
+            }
+
+            const index = parseInt(choice) - 1;
+            if (isNaN(index) || index < 0 || index >= diagramContainers.length) {
+                alert('无效的选择');
+                return;
+            }
+
+            const container = diagramContainers[index];
+
+            if (format === 'png') {
+                // 直接从SVG导出高质量PNG
+                const svgElement = container.querySelector('svg');
+                if (svgElement) {
+                    try {
+                        // 获取设备像素比
+                        const dpr = window.devicePixelRatio || 1;
+                        // 使用更高的缩放比例
+                        const scale = Math.max(8, dpr * 4); // 大幅提高缩放比例
+
+                        // 克隆SVG以避免修改原始SVG
+                        const svgClone = svgElement.cloneNode(true);
+
+                        // 设置SVG的尺寸
+                        const width = svgElement.getBoundingClientRect().width * scale;
+                        const height = svgElement.getBoundingClientRect().height * scale;
+                        svgClone.setAttribute('width', width);
+                        svgClone.setAttribute('height', height);
+
+                        // 设置背景色（如果需要透明背景，则不设置）
+                        if (!transparent) {
+                            const bgColor = getComputedStyle(document.body).getPropertyValue('--bg-color');
+                            const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                            bgRect.setAttribute('width', '100%');
+                            bgRect.setAttribute('height', '100%');
+                            bgRect.setAttribute('fill', bgColor);
+                            svgClone.insertBefore(bgRect, svgClone.firstChild);
+                        }
+
+                        // 将SVG转换为字符串
+                        const svgData = new XMLSerializer().serializeToString(svgClone);
+                        const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+
+                        // 创建一个新的Image对象
+                        const img = new Image();
+                        img.onload = function() {
+                            // 创建Canvas
+                            const canvas = document.createElement('canvas');
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+
+                            // 如果需要透明背景，确保Canvas是透明的
+                            if (transparent) {
+                                ctx.clearRect(0, 0, width, height);
+                            } else {
+                                // 否则填充背景色
+                                ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--bg-color');
+                                ctx.fillRect(0, 0, width, height);
+                            }
+
+                            // 绘制图像
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            // 导出为PNG
+                            canvas.toBlob(function(blob) {
+                                saveAs(blob, transparent ?
+                                    `HeartChat_ER_Diagram_${index + 1}_Transparent.png` :
+                                    `HeartChat_ER_Diagram_${index + 1}.png`);
+                            }, 'image/png', 1.0);
+                        };
+
+                        // 设置图像源
+                        img.src = URL.createObjectURL(svgBlob);
+                    } catch (error) {
+                        console.error('导出PNG时出错:', error);
+                        alert('导出PNG时出错: ' + error.message);
+
+                        // 回退到html2canvas方法
+                        fallbackToPngExport(container, index, transparent);
+                    }
+                } else {
+                    // 如果没有找到SVG元素，回退到html2canvas方法
+                    fallbackToPngExport(container, index, transparent);
+                }
+            } else if (format === 'svg') {
+                const svgElement = container.querySelector('svg');
+                if (!svgElement) {
+                    alert('未找到SVG元素');
+                    return;
+                }
+
+                // 克隆SVG以避免修改原始SVG
+                const svgClone = svgElement.cloneNode(true);
+
+                // 设置SVG的样式
+                svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                svgClone.setAttribute('width', svgElement.getBoundingClientRect().width);
+                svgClone.setAttribute('height', svgElement.getBoundingClientRect().height);
+
+                // 将SVG转换为字符串
+                const svgData = new XMLSerializer().serializeToString(svgClone);
+                const blob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                saveAs(blob, `HeartChat_ER_Diagram_${index + 1}.svg`);
+            }
+        }
+
+        // 回退到html2canvas方法
+        function fallbackToPngExport(container, index, transparent = false) {
+            // 获取设备像素比
+            const dpr = window.devicePixelRatio || 1;
+            // 使用更高的缩放比例
+            const scale = Math.max(8, dpr * 4);
+
+            html2canvas(container, {
+                backgroundColor: transparent ? 'rgba(0,0,0,0)' : getComputedStyle(document.body).getPropertyValue('--bg-color'),
+                scale: scale,
+                useCORS: true,
+                allowTaint: true,
+                logging: false,
+                imageTimeout: 0,
+                onclone: (document) => {
+                    // 在克隆的文档中调整SVG大小
+                    const svg = document.querySelector(`.diagram-container:nth-child(${index + 1}) svg`);
+                    if (svg) {
+                        const width = svg.getBoundingClientRect().width;
+                        const height = svg.getBoundingClientRect().height;
+                        svg.setAttribute('width', width * scale);
+                        svg.setAttribute('height', height * scale);
+                    }
+                }
+            }).then(canvas => {
+                canvas.toBlob(function(blob) {
+                    saveAs(blob, transparent ?
+                        `HeartChat_ER_Diagram_${index + 1}_Transparent.png` :
+                        `HeartChat_ER_Diagram_${index + 1}.png`);
+                }, 'image/png', 1.0);
+            });
+        }
+
+        // 导出所有图表
+        function exportAllDiagrams(format, transparent = false) {
+            const diagramContainers = document.querySelectorAll('.diagram-container');
+
+            if (format === 'png') {
+                // 获取设备像素比
+                const dpr = window.devicePixelRatio || 1;
+                // 使用更高的缩放比例，考虑设备像素比
+                const scale = Math.max(6, dpr * 3); // 对于合并图表使用稍低的缩放比例，避免文件过大
+
+                // 创建一个大的画布来容纳所有图表
+                const totalHeight = Array.from(diagramContainers).reduce((height, container) => {
+                    return height + container.offsetHeight + 40; // 40px的间距
+                }, 0);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = 1800 * scale; // 更宽的画布
+                canvas.height = totalHeight * scale; // 按比例缩放高度
+                const ctx = canvas.getContext('2d');
+
+                // 设置背景色（如果需要透明背景，则不设置）
+                if (!transparent) {
+                    ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--bg-color');
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+                ctx.scale(scale, scale); // 应用缩放
+
+                let currentY = 20; // 起始位置留出一些空间
+
+                // 为每个图表创建一个Promise
+                const promises = Array.from(diagramContainers).map((container, index) => {
+                    // 尝试使用SVG直接导出
+                    const svgElement = container.querySelector('svg');
+                    if (svgElement) {
+                        try {
+                            // 克隆SVG以避免修改原始SVG
+                            const svgClone = svgElement.cloneNode(true);
+
+                            // 设置SVG的尺寸
+                            const width = svgElement.getBoundingClientRect().width * scale;
+                            const height = svgElement.getBoundingClientRect().height * scale;
+                            svgClone.setAttribute('width', width);
+                            svgClone.setAttribute('height', height);
+
+                            // 设置背景色（如果需要透明背景，则不设置）
+                            if (!transparent) {
+                                const bgColor = getComputedStyle(document.body).getPropertyValue('--bg-color');
+                                const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                                bgRect.setAttribute('width', '100%');
+                                bgRect.setAttribute('height', '100%');
+                                bgRect.setAttribute('fill', bgColor);
+                                svgClone.insertBefore(bgRect, svgClone.firstChild);
+                            }
+
+                            // 将SVG转换为字符串
+                            const svgData = new XMLSerializer().serializeToString(svgClone);
+                            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+
+                            return new Promise((resolve) => {
+                                // 创建一个新的Image对象
+                                const img = new Image();
+                                img.onload = function() {
+                                    // 绘制到主画布
+                                    ctx.drawImage(img, 0, currentY, width / scale, height / scale);
+                                    currentY += (height / scale) + 40;
+                                    resolve();
+                                };
+                                img.onerror = function() {
+                                    // 如果加载失败，回退到html2canvas
+                                    fallbackForSingleDiagram(container, index);
+                                };
+                                img.src = URL.createObjectURL(svgBlob);
+                            });
+                        } catch (error) {
+                            console.error('处理SVG时出错:', error);
+                            // 回退到html2canvas
+                            return fallbackForSingleDiagram(container, index);
+                        }
+                    } else {
+                        // 如果没有找到SVG元素，回退到html2canvas
+                        return fallbackForSingleDiagram(container, index);
+                    }
+
+                    // 回退函数
+                    function fallbackForSingleDiagram(container, index) {
+                        return html2canvas(container, {
+                            backgroundColor: transparent ? 'rgba(0,0,0,0)' : getComputedStyle(document.body).getPropertyValue('--bg-color'),
+                            scale: scale,
+                            useCORS: true,
+                            allowTaint: true,
+                            logging: false,
+                            imageTimeout: 0,
+                            onclone: (document) => {
+                                // 在克隆的文档中调整SVG大小
+                                const svg = document.querySelector(`.diagram-container:nth-child(${index + 1}) svg`);
+                                if (svg) {
+                                    const width = svg.getBoundingClientRect().width;
+                                    const height = svg.getBoundingClientRect().height;
+                                    svg.setAttribute('width', width * scale);
+                                    svg.setAttribute('height', height * scale);
+                                }
+                            }
+                        }).then(canvas => {
+                            // 绘制到主画布，考虑缩放
+                            ctx.drawImage(canvas, 0, currentY, canvas.width / scale, canvas.height / scale);
+                            currentY += (canvas.height / scale) + 40;
+                        });
+                    }
+                });
+
+                // 等待所有图表渲染完成
+                Promise.all(promises).then(() => {
+                    // 使用更高质量的PNG导出
+                    canvas.toBlob(function(blob) {
+                        saveAs(blob, transparent ?
+                            'HeartChat_All_ER_Diagrams_Transparent.png' :
+                            'HeartChat_All_ER_Diagrams.png');
+                    }, 'image/png', 1.0); // 使用最高质量
+                });
+            } else if (format === 'svg') {
+                // 为每个图表创建一个SVG文件
+                diagramContainers.forEach((container, index) => {
+                    const svgElement = container.querySelector('svg');
+                    if (!svgElement) return;
+
+                    // 克隆SVG以避免修改原始SVG
+                    const svgClone = svgElement.cloneNode(true);
+
+                    // 设置SVG的样式
+                    svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                    svgClone.setAttribute('width', svgElement.getBoundingClientRect().width);
+                    svgClone.setAttribute('height', svgElement.getBoundingClientRect().height);
+
+                    // 将SVG转换为字符串
+                    const svgData = new XMLSerializer().serializeToString(svgClone);
+                    const blob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                    saveAs(blob, `HeartChat_ER_Diagram_${index + 1}.svg`);
+                });
+            }
+        }
+
+        // 设置缩放控件
+        function setupZoomControls() {
+            const diagramContainers = document.querySelectorAll('.diagram-container');
+            const zoomLevel = document.querySelector('.zoom-level');
+            let currentZoom = 1;
+
+            document.getElementById('zoom-in').addEventListener('click', function() {
+                currentZoom += 0.1;
+                updateZoom();
+            });
+
+            document.getElementById('zoom-out').addEventListener('click', function() {
+                currentZoom = Math.max(0.5, currentZoom - 0.1);
+                updateZoom();
+            });
+
+            document.getElementById('zoom-reset').addEventListener('click', function() {
+                currentZoom = 1;
+                updateZoom();
+            });
+
+            function updateZoom() {
+                diagramContainers.forEach(container => {
+                    container.style.transform = `scale(${currentZoom})`;
+                    container.style.transformOrigin = 'center top';
+                });
+                zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
+            }
+
+            // 添加鼠标滚轮缩放
+            diagramContainers.forEach(container => {
+                container.addEventListener('wheel', function(e) {
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        if (e.deltaY < 0) {
+                            currentZoom += 0.1;
+                        } else {
+                            currentZoom = Math.max(0.5, currentZoom - 0.1);
+                        }
+                        updateZoom();
+                    }
+                });
+            });
+        }
+
+        // 设置全屏按钮
+        function setupFullscreenButton() {
+            const fullscreenButton = document.getElementById('fullscreen');
+
+            fullscreenButton.addEventListener('click', function() {
+                const diagramContainers = document.querySelectorAll('.diagram-container');
+
+                // 询问用户要全屏显示哪个图表
+                let message = '请选择要全屏显示的图表:\n';
+                message += '1. 数据库集合关系图\n';
+                message += '2. 用户集合结构图\n';
+                message += '3. 用户基础信息结构图\n';
+                message += '4. 用户资料结构图\n';
+                message += '5. 用户兴趣结构图\n';
+                message += '6. 角色结构图\n';
+                message += '7. 角色使用记录结构图\n';
+                message += '8. 聊天会话结构图\n';
+                message += '9. 消息结构图\n';
+                message += '10. 情感记录结构图\n';
+                message += '11. 用户报告结构图\n';
+                message += '12. 数据库索引结构图\n';
+
+                const choice = prompt(message, '1');
+
+                if (!choice) return;
+
+                const index = parseInt(choice) - 1;
+                if (isNaN(index) || index < 0 || index >= diagramContainers.length) {
+                    alert('无效的选择');
+                    return;
+                }
+
+                const container = diagramContainers[index];
+
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

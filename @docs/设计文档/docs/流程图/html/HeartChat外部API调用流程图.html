@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartChat外部API调用流程图</title>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .section {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .note {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .mermaid {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 5px 10px;
+            background-color: #f8f9fa;
+            border-radius: 3px;
+        }
+        .export-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .export-btn:hover {
+            background-color: #2980b9;
+        }
+        .export-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                }
+            });
+            
+            // 创建模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="modal-close">&times;</span>
+                    <h3 class="modal-title"></h3>
+                    <div class="modal-diagram"></div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // 关闭模态框
+            modal.querySelector('.modal-close').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // 点击模态框外部关闭
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // 为每个流程图添加导出按钮和放大按钮
+            document.querySelectorAll('.section').forEach(function(section, index) {
+                const mermaidDiv = section.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    // 添加导出按钮
+                    const exportBtn = document.createElement('button');
+                    exportBtn.className = 'export-btn';
+                    exportBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        导出图片
+                    `;
+                    exportBtn.addEventListener('click', function() {
+                        exportDiagram(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(exportBtn);
+                    
+                    // 添加放大按钮
+                    const zoomBtn = document.createElement('button');
+                    zoomBtn.className = 'zoom-btn';
+                    zoomBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            <line x1="11" y1="8" x2="11" y2="14"></line>
+                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                        放大查看
+                    `;
+                    zoomBtn.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(zoomBtn);
+                    
+                    // 点击流程图也可以放大
+                    mermaidDiv.style.cursor = 'pointer';
+                    mermaidDiv.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                }
+            });
+            section.appendChild(zoomBtn);
+            
+            // 点击流程图也可以放大
+            mermaidDiv.style.cursor = 'pointer';
+            mermaidDiv.addEventListener('click', function() {
+                openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+            });
+        }
+    });
+
+            // 为每个流程图添加导出按钮
+            document.querySelectorAll('.section').forEach(function(section, index) {
+                const mermaidDiv = section.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    const exportBtn = document.createElement('button');
+                    exportBtn.className = 'export-btn';
+                    exportBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        导出图片
+                    `;
+                    exportBtn.addEventListener('click', function() {
+                        exportDiagram(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(exportBtn);
+                }
+            });
+        });
+
+        // 导出流程图为图片
+        function exportDiagram(mermaidDiv, title) {
+    const modal = document.querySelector('.modal');
+    const modalTitle = modal.querySelector('.modal-title');
+    const modalDiagram = modal.querySelector('.modal-diagram');
+    
+    // 重置缩放
+    currentScale = 1;
+    updateZoom();
+    
+    // 设置模态框标题
+    modalTitle.textContent = title;
+    
+    // 清空并复制流程图
+    modalDiagram.innerHTML = '';
+    const clonedDiagram = mermaidDiv.cloneNode(true);
+    modalDiagram.appendChild(clonedDiagram);
+    
+    // 显示模态框
+    modal.style.display = 'block';
+    
+    // 重新渲染Mermaid图表
+    mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+}
+
+// 打开放大模态框
+        function openZoomModal(mermaidDiv, title) {
+            const modal = document.querySelector('.modal');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalDiagram = modal.querySelector('.modal-diagram');
+            
+            // 设置模态框标题
+            modalTitle.textContent = title;
+            
+            // 清空并复制流程图
+            modalDiagram.innerHTML = '';
+            const clonedDiagram = mermaidDiv.cloneNode(true);
+            modalDiagram.appendChild(clonedDiagram);
+            
+            // 显示模态框
+            modal.style.display = 'block';
+            
+            // 重新渲染Mermaid图表
+            mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+        }
+        
+        function exportDiagram(mermaidDiv, title) {
+            // 设置导出选项
+            const options = {
+                scale: 2, // 提高导出图片的清晰度
+                backgroundColor: '#f8f9fa',
+                logging: false,
+                allowTaint: true,
+                useCORS: true
+            };
+
+            // 使用html2canvas将流程图转换为图片
+            html2canvas(mermaidDiv, options).then(function(canvas) {
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.download = 'HeartChat-' + title.replace(/[^\w\u4e00-\u9fa5]/g, '-') + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(function(error) {
+                console.error('导出图片失败:', error);
+                alert('导出图片失败，请重试或检查控制台错误信息。');
+            });
+        }
+    </script>
+</head>
+<body>
+    <a href="HeartChat流程图总览.html" class="back-link">← 返回流程图总览</a>
+
+    <h1>HeartChat外部API调用流程图</h1>
+
+    <div class="section">
+        <p>本文档展示了HeartChat项目中外部API的调用流程，特别是智谱AI API的调用过程。</p>
+    </div>
+
+    <div class="section">
+        <h2>1. 智谱AI GLM-4-Flash API调用流程</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant Client as 小程序前端
+                participant CloudFunc as 云函数
+                participant ZhipuAI as 智谱AI服务
+                participant Cache as 本地缓存
+
+                Client->>CloudFunc: 发送请求
+                CloudFunc->>CloudFunc: 验证参数
+                CloudFunc->>CloudFunc: 构建提示词
+
+                alt 使用缓存
+                    CloudFunc->>Cache: 检查缓存
+                    Cache-->>CloudFunc: 返回缓存结果
+                else 调用API
+                    CloudFunc->>ZhipuAI: 发送API请求
+                    ZhipuAI-->>CloudFunc: 返回API响应
+                    CloudFunc->>Cache: 缓存结果
+                end
+
+                CloudFunc->>CloudFunc: 处理响应
+                CloudFunc-->>Client: 返回结果
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>2. 聊天功能API调用详细流程</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant User as 用户
+                participant ChatUI as 聊天界面
+                participant CloudFunc as chat云函数
+                participant DB as 数据库
+                participant ZhipuAI as 智谱AI GLM-4-Flash
+
+                User->>ChatUI: 发送消息
+                ChatUI->>ChatUI: 显示用户消息
+                ChatUI->>CloudFunc: 调用chat云函数
+
+                CloudFunc->>DB: 保存用户消息
+                CloudFunc->>DB: 获取角色信息
+                DB-->>CloudFunc: 返回角色信息
+                CloudFunc->>DB: 获取聊天历史
+                DB-->>CloudFunc: 返回聊天历史
+
+                CloudFunc->>CloudFunc: 构建提示词
+                CloudFunc->>ZhipuAI: 调用GLM-4-Flash API
+
+                alt 流式响应
+                    ZhipuAI-->>CloudFunc: 返回流式响应
+                    loop 每个响应片段
+                        CloudFunc-->>ChatUI: 发送响应片段
+                        ChatUI->>ChatUI: 更新显示
+                    end
+                else 完整响应
+                    ZhipuAI-->>CloudFunc: 返回完整响应
+                    CloudFunc-->>ChatUI: 发送完整响应
+                    ChatUI->>ChatUI: 显示AI回复
+                end
+
+                CloudFunc->>DB: 保存AI回复
+                CloudFunc->>CloudFunc: 触发情感分析
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>3. 情感分析API调用流程</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant ChatUI as 聊天界面
+                participant CloudFunc as analysis云函数
+                participant DB as 数据库
+                participant ZhipuAI_GLM as 智谱AI GLM-4-Flash
+                participant ZhipuAI_Embedding as 智谱AI Embedding-3
+
+                ChatUI->>CloudFunc: 调用analysis云函数
+                CloudFunc->>CloudFunc: 准备分析提示词
+
+                CloudFunc->>ZhipuAI_GLM: 调用GLM-4-Flash API
+                ZhipuAI_GLM-->>CloudFunc: 返回情感分析结果
+
+                CloudFunc->>CloudFunc: 提取关键词
+                CloudFunc->>ZhipuAI_Embedding: 获取关键词向量
+                ZhipuAI_Embedding-->>CloudFunc: 返回词向量
+
+                CloudFunc->>CloudFunc: 聚类关键词
+                CloudFunc->>CloudFunc: 关联情感和关键词
+
+                CloudFunc->>DB: 保存情感分析结果
+                CloudFunc->>DB: 更新用户兴趣
+
+                CloudFunc-->>ChatUI: 返回分析结果
+                ChatUI->>ChatUI: 显示情感分析
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>4. 用户画像生成API调用流程</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant ProfileUI as 用户画像界面
+                participant CloudFunc as user云函数
+                participant DB as 数据库
+                participant ZhipuAI as 智谱AI GLM-4-Flash
+
+                ProfileUI->>CloudFunc: 调用user云函数
+                CloudFunc->>DB: 获取用户消息历史
+                DB-->>CloudFunc: 返回消息历史
+                CloudFunc->>DB: 获取情感记录
+                DB-->>CloudFunc: 返回情感记录
+                CloudFunc->>DB: 获取用户兴趣
+                DB-->>CloudFunc: 返回用户兴趣
+
+                CloudFunc->>CloudFunc: 准备分析数据
+                CloudFunc->>CloudFunc: 构建分析提示词
+
+                CloudFunc->>ZhipuAI: 调用GLM-4-Flash API
+                ZhipuAI-->>CloudFunc: 返回分析结果
+
+                CloudFunc->>CloudFunc: 提取性格特征
+                CloudFunc->>CloudFunc: 生成个性总结
+
+                CloudFunc->>DB: 保存用户画像
+                CloudFunc-->>ProfileUI: 返回用户画像
+                ProfileUI->>ProfileUI: 显示用户画像
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>5. 角色提示词生成API调用流程</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant RoleUI as 角色编辑界面
+                participant CloudFunc as roles云函数
+                participant ZhipuAI as 智谱AI GLM-4-Flash
+                participant DB as 数据库
+
+                RoleUI->>RoleUI: 用户输入角色信息
+                RoleUI->>CloudFunc: 调用roles云函数(generatePrompt)
+
+                CloudFunc->>CloudFunc: 构建提示词生成提示
+                CloudFunc->>ZhipuAI: 调用GLM-4-Flash API
+                ZhipuAI-->>CloudFunc: 返回生成的提示词
+
+                CloudFunc->>CloudFunc: 格式化提示词
+                CloudFunc-->>RoleUI: 返回生成的提示词
+                RoleUI->>RoleUI: 显示生成的提示词
+
+                alt 用户保存角色
+                    RoleUI->>CloudFunc: 调用roles云函数(createRole/updateRole)
+                    CloudFunc->>DB: 保存角色信息
+                    DB-->>CloudFunc: 返回保存结果
+                    CloudFunc-->>RoleUI: 返回操作结果
+                end
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>6. 每日报告生成API调用流程</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant Trigger as 定时触发器
+                participant CloudFunc as generateDailyReports云函数
+                participant DB as 数据库
+                participant ZhipuAI as 智谱AI GLM-4-Flash
+                participant Notification as 消息通知
+
+                Trigger->>CloudFunc: 触发云函数
+                CloudFunc->>DB: 获取活跃用户列表
+                DB-->>CloudFunc: 返回用户列表
+
+                loop 每个用户
+                    CloudFunc->>DB: 获取当日情绪记录
+                    DB-->>CloudFunc: 返回情绪记录
+
+                    alt 有足够数据
+                        CloudFunc->>CloudFunc: 聚合情绪数据
+                        CloudFunc->>CloudFunc: 提取关键词
+                        CloudFunc->>CloudFunc: 准备报告提示词
+
+                        CloudFunc->>ZhipuAI: 调用GLM-4-Flash API
+                        ZhipuAI-->>CloudFunc: 返回生成的报告内容
+
+                        CloudFunc->>CloudFunc: 格式化报告
+                        CloudFunc->>DB: 保存报告
+                        CloudFunc->>Notification: 发送通知
+                    end
+                end
+
+                CloudFunc->>CloudFunc: 生成统计数据
+                CloudFunc->>DB: 保存执行记录
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>7. API调用错误处理流程</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant Client as 小程序前端
+                participant CloudFunc as 云函数
+                participant API as 外部API
+                participant Fallback as 降级服务
+                participant Log as 日志服务
+
+                Client->>CloudFunc: 发送请求
+
+                CloudFunc->>API: 调用API
+
+                alt API调用成功
+                    API-->>CloudFunc: 返回成功响应
+                    CloudFunc-->>Client: 返回结果
+                else API调用失败
+                    API-->>CloudFunc: 返回错误
+                    CloudFunc->>Log: 记录错误
+
+                    alt 可重试错误
+                        CloudFunc->>CloudFunc: 等待重试
+                        CloudFunc->>API: 重新调用API
+
+                        alt 重试成功
+                            API-->>CloudFunc: 返回成功响应
+                            CloudFunc-->>Client: 返回结果
+                        else 重试失败
+                            API-->>CloudFunc: 返回错误
+                            CloudFunc->>Fallback: 启用降级服务
+                        end
+                    else 不可重试错误
+                        CloudFunc->>Fallback: 启用降级服务
+                    end
+
+                    Fallback-->>CloudFunc: 返回降级结果
+                    CloudFunc-->>Client: 返回降级结果
+                end
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>8. API密钥管理流程</h2>
+        <div class="mermaid">
+            flowchart TD
+                Start[开始] --> LoadConfig[加载配置]
+                LoadConfig --> GetKey[获取API密钥]
+
+                GetKey --> KeySource{密钥来源?}
+                KeySource -->|环境变量| GetEnv[从环境变量获取]
+                KeySource -->|云配置| GetCloud[从云配置获取]
+                KeySource -->|本地配置| GetLocal[从本地配置获取]
+
+                GetEnv --> ValidateKey[验证密钥]
+                GetCloud --> ValidateKey
+                GetLocal --> ValidateKey
+
+                ValidateKey --> IsValid{是否有效?}
+                IsValid -->|是| UseKey[使用密钥]
+                IsValid -->|否| HandleInvalid[处理无效密钥]
+
+                HandleInvalid --> TryBackup[尝试备用密钥]
+                TryBackup --> HasBackup{有备用密钥?}
+                HasBackup -->|是| GetBackup[获取备用密钥]
+                HasBackup -->|否| ReportError[报告错误]
+
+                GetBackup --> ValidateKey
+                ReportError --> End[结束]
+
+                UseKey --> MaskKey[掩码处理密钥]
+                MaskKey --> CallAPI[调用API]
+                CallAPI --> End
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>9. 智谱AI API参数配置</h2>
+        <div class="mermaid">
+            flowchart TD
+                Start[开始] --> PrepareParams[准备API参数]
+
+                PrepareParams --> ConfigModel[配置模型]
+                ConfigModel --> SetGLM4[设置GLM-4-Flash]
+
+                PrepareParams --> ConfigTemp[配置温度]
+                ConfigTemp --> SetTemp[设置temperature=0.7]
+
+                PrepareParams --> ConfigTop[配置top_p]
+                ConfigTop --> SetTop[设置top_p=0.9]
+
+                PrepareParams --> ConfigMax[配置最大长度]
+                ConfigMax --> SetMax[设置max_tokens=2000]
+
+                PrepareParams --> ConfigStream[配置流式输出]
+                ConfigStream --> SetStream[设置stream=true/false]
+
+                PrepareParams --> BuildMessages[构建消息数组]
+                BuildMessages --> AddSystem[添加系统消息]
+                AddSystem --> AddHistory[添加历史消息]
+                AddHistory --> AddUser[添加用户消息]
+
+                PrepareParams --> ConfigTools[配置工具]
+                ConfigTools --> HasTools{需要工具?}
+                HasTools -->|是| AddTools[添加工具定义]
+                HasTools -->|否| SkipTools[跳过工具配置]
+
+                AddTools --> SetTools[设置tools参数]
+                SkipTools --> FinalizeParams[完成参数配置]
+                SetTools --> FinalizeParams
+
+                AddUser --> FinalizeParams
+                FinalizeParams --> CallAPI[调用API]
+                CallAPI --> End[结束]
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>10. 智谱AI Embedding API调用流程</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant Client as 小程序前端
+                participant CloudFunc as 云函数
+                participant ZhipuAI as 智谱AI Embedding-3
+                participant Cache as 向量缓存
+
+                Client->>CloudFunc: 发送关键词列表
+
+                CloudFunc->>Cache: 检查缓存
+                alt 缓存命中
+                    Cache-->>CloudFunc: 返回缓存的向量
+                else 缓存未命中
+                    CloudFunc->>ZhipuAI: 调用Embedding API
+                    ZhipuAI-->>CloudFunc: 返回词向量
+                    CloudFunc->>Cache: 缓存词向量
+                end
+
+                CloudFunc->>CloudFunc: 计算相似度
+                CloudFunc->>CloudFunc: 执行聚类
+                CloudFunc-->>Client: 返回聚类结果
+        </div>
+    </div>
+
+    <div class="note">
+        <p><strong>注意</strong>：以上流程图使用Mermaid语法编写，需要在支持Mermaid的环境中查看。如果您在浏览器中查看本文档，可能需要安装Mermaid插件或使用支持Mermaid的Markdown查看器。</p>
+    </div>
+
+    <footer style="text-align: center; margin-top: 50px; color: #7f8c8d; font-size: 0.9em;">
+        <p>HeartChat项目文档 &copy; 2024</p>
+    </footer>
+</body>
+</html>

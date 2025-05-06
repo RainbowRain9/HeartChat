@@ -7,6 +7,9 @@ const echarts = require('../../components/ec-canvas/echarts')
 // 引入用户服务
 const userService = require('../../services/userService')
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 Page({
   // 页面的初始数据
   data: {
@@ -56,20 +59,21 @@ Page({
     if (localDarkMode !== undefined && localDarkMode !== null) {
       // 确保 darkMode 是布尔值
       darkMode = typeof localDarkMode === 'boolean' ? localDarkMode : localDarkMode === 'true';
-      console.log('用户页面从本地缓存读取暗黑模式设置:', darkMode, '原始值:', localDarkMode, '类型:', typeof localDarkMode);
+      if (isDev) {
+        console.log('用户页面从本地缓存读取暗黑模式设置:', darkMode);
+      }
 
       // 将布尔值存回缓存，确保类型一致
       wx.setStorageSync('darkMode', darkMode);
     } else {
       darkMode = systemInfo.theme === 'dark';
-      console.log('用户页面使用系统主题设置暗黑模式:', darkMode);
+      if (isDev) {
+        console.log('用户页面使用系统主题设置暗黑模式:', darkMode);
+      }
 
       // 将系统主题设置存入缓存
       wx.setStorageSync('darkMode', darkMode);
     }
-
-    // 从全局状态获取暗黑模式设置
-    const appDarkMode = app.globalData.darkMode;
 
     // 获取胶囊按钮位置信息
     const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
@@ -85,9 +89,6 @@ Page({
     app.globalData.statusBarHeight = systemInfo.statusBarHeight;
     app.globalData.navTotalHeight = navTotalHeight;
 
-    console.log('导航栏高度:', navBarHeight);
-    console.log('导航栏总高度:', navTotalHeight);
-
     // 确保使用布尔值
     const finalDarkMode = typeof darkMode === 'boolean' ? darkMode : darkMode === 'true';
 
@@ -97,8 +98,6 @@ Page({
       navBarHeight: navBarHeight,
       navTotalHeight: navTotalHeight
     });
-
-    console.log('用户页面设置暗黑模式为:', finalDarkMode, '类型:', typeof finalDarkMode);
 
     this.checkLoginStatus()
   },
@@ -114,7 +113,9 @@ Page({
 
   // 生命周期函数--监听页面显示
   onShow() {
-    console.log('页面显示, needRefresh:', this.data.needRefresh)
+    if (isDev) {
+      console.log('页面显示, needRefresh:', this.data.needRefresh);
+    }
 
     // 检查暗夜模式变化
     const localDarkMode = wx.getStorageSync('darkMode');
@@ -128,7 +129,9 @@ Page({
       // 如果有本地缓存设置，使用本地缓存设置
       shouldUpdateDarkMode = this.data.darkMode !== darkModeValue;
       if (shouldUpdateDarkMode) {
-        console.log('从本地缓存更新暗黑模式为:', darkModeValue, '原始值:', localDarkMode, '类型:', typeof localDarkMode);
+        if (isDev) {
+          console.log('从本地缓存更新暗黑模式为:', darkModeValue);
+        }
         newDarkMode = darkModeValue;
 
         // 将布尔值存回缓存，确保类型一致
@@ -138,14 +141,15 @@ Page({
       // 如果没有本地缓存设置，使用全局状态
       shouldUpdateDarkMode = true;
       newDarkMode = app.globalData.darkMode;
-      console.log('从全局状态更新暗黑模式为:', newDarkMode);
+      if (isDev) {
+        console.log('从全局状态更新暗黑模式为:', newDarkMode);
+      }
     }
 
     if (shouldUpdateDarkMode) {
       this.setData({
         darkMode: newDarkMode
       });
-      console.log('用户页面更新暗黑模式为:', newDarkMode, '类型:', typeof newDarkMode);
 
       // 更新TabBar样式
       if (app.updateTheme) {
@@ -155,13 +159,15 @@ Page({
 
     // 检查是否需要刷新
     if (this.data.needRefresh) {
-      console.log('检测到需要刷新用户信息')
+      if (isDev) {
+        console.log('检测到需要刷新用户信息');
+      }
       // 强制从服务器获取最新数据
-      this.refreshUserInfo(true)
-      this.setData({ needRefresh: false })
+      this.refreshUserInfo(true);
+      this.setData({ needRefresh: false });
     } else {
       // 从内存刷新用户信息，确保显示最新数据
-      this.refreshUserInfo(false)
+      this.refreshUserInfo(false);
     }
 
     // 更新用户活跃天数
@@ -206,7 +212,9 @@ Page({
    */
   async getTotalMessageCount() {
     try {
-      console.log('开始获取用户总消息数...');
+      if (isDev) {
+        console.log('开始获取用户总消息数...');
+      }
 
       // 获取用户ID
       const userInfo = this.data.userInfo;
@@ -218,25 +226,7 @@ Page({
       // 使用userService获取用户ID和openId
       const { userId, openid: openId } = userService.getUserIdentifiers(userInfo);
 
-      // 获取用户统计信息中的stats_id
-      const statsId = userInfo.stats && userInfo.stats._id;
-
-      console.log('获取总消息数使用的用户ID信息:', {
-        userId: userId,
-        openId: openId,
-        statsId: statsId,
-        userInfo: {
-          userId: userInfo.userId,
-          user_id: userInfo.user_id,
-          _id: userInfo._id,
-          openid: userInfo.openid,
-          stats: userInfo.stats ? {
-            _id: userInfo.stats._id,
-            openid: userInfo.stats.openid,
-            chat_count: userInfo.stats.chat_count
-          } : null
-        }
-      });
+      // 获取用户ID信息已足够，不需要额外的statsId
 
       // 直接从本地获取聊天记录数量
       await this.getLocalChatCount();
@@ -250,11 +240,8 @@ Page({
         }
       });
 
-      console.log('获取用户总消息数结果:', result);
-
       if (result.result && result.result.success) {
         const totalMessageCount = result.result.totalMessageCount || 0;
-        console.log('云函数返回的用户总消息数:', totalMessageCount);
 
         // 如果云函数返回的总消息数大于0，更新页面数据
         if (totalMessageCount > 0) {
@@ -280,7 +267,9 @@ Page({
    */
   async getReportCount() {
     try {
-      console.log('开始获取用户心情报告数量...');
+      if (isDev) {
+        console.log('开始获取用户心情报告数量...');
+      }
 
       // 获取用户ID
       const userInfo = this.data.userInfo;
@@ -292,11 +281,6 @@ Page({
       // 使用userService获取用户ID和openId
       const { userId, openid: openId } = userService.getUserIdentifiers(userInfo);
 
-      console.log('获取心情报告数量使用的用户ID信息:', {
-        userId: userId,
-        openId: openId
-      });
-
       // 调用云函数获取心情报告数量
       const result = await wx.cloud.callFunction({
         name: 'user',
@@ -306,11 +290,8 @@ Page({
         }
       });
 
-      console.log('获取用户心情报告数量结果:', result);
-
       if (result.result && result.result.success) {
         const reportCount = result.result.reportCount || 0;
-        console.log('云函数返回的用户心情报告数量:', reportCount);
 
         // 更新页面数据
         this.setData({
@@ -333,7 +314,9 @@ Page({
    */
   async getLocalChatCount() {
     try {
-      console.log('开始从本地获取聊天记录数量...');
+      if (isDev) {
+        console.log('开始从本地获取聊天记录数量...');
+      }
 
       // 获取用户ID
       const userInfo = this.data.userInfo;
@@ -363,25 +346,12 @@ Page({
         { user_id: openId }
       ]);
 
-      console.log('本地查询聊天记录条件:', query);
-
       // 查询该用户的所有聊天记录
       const chatsResult = await db.collection('chats')
         .where(query)
         .get();
 
-      console.log('本地查询聊天记录结果:', chatsResult);
-
       if (chatsResult.data && chatsResult.data.length > 0) {
-        // 打印前5条记录的关键信息，便于调试
-        const sampleChats = chatsResult.data.slice(0, 5).map(chat => ({
-          id: chat._id,
-          roleId: chat.roleId,
-          openId: chat.openId || chat.openid,
-          messageCount: chat.messageCount
-        }));
-        console.log('示例聊天记录:', sampleChats);
-
         // 计算总消息数
         let totalMessageCount = 0;
         chatsResult.data.forEach(chat => {
@@ -392,8 +362,6 @@ Page({
             totalMessageCount += chat.messages.length;
           }
         });
-
-        console.log('本地计算的总消息数:', totalMessageCount);
 
         // 更新页面数据
         this.setData({
@@ -408,16 +376,12 @@ Page({
           // 尝试直接更新数据库中的user_stats表
           try {
             if (userInfo.stats._id) {
-              console.log('尝试直接更新数据库中的user_stats表...');
-
-              const updateResult = await db.collection('user_stats').doc(userInfo.stats._id).update({
+              await db.collection('user_stats').doc(userInfo.stats._id).update({
                 data: {
                   chat_count: totalMessageCount,
                   updated_at: db.serverDate()
                 }
               });
-
-              console.log('直接更新user_stats表结果:', updateResult);
             }
           } catch (updateErr) {
             console.error('直接更新user_stats表失败:', updateErr);
@@ -426,8 +390,6 @@ Page({
 
         // 如果找到了聊天记录，但总消息数为0，可能是messageCount字段不存在
         if (totalMessageCount === 0) {
-          console.log('找到聊天记录，但总消息数为0，设置为聊天记录数量');
-
           // 使用聊天记录的数量作为总消息数
           const chatCount = chatsResult.data.length;
 
@@ -443,12 +405,9 @@ Page({
           }
         }
       } else {
-        console.log('未找到本地聊天记录');
-
         // 如果没有找到聊天记录，但用户信息中有chat_count，使用它
         if (userInfo.stats && userInfo.stats.chat_count) {
           const chatCount = userInfo.stats.chat_count;
-          console.log('使用用户信息中的chat_count:', chatCount);
 
           // 更新页面数据
           this.setData({
@@ -469,7 +428,9 @@ Page({
   // 加载情绪数据
   async loadEmotionData() {
     try {
-      console.log('开始加载情绪概览数据...')
+      if (isDev) {
+        console.log('开始加载情绪概览数据...');
+      }
 
       // 获取用户ID
       const userInfo = wx.getStorageSync('userInfo');
@@ -491,8 +452,6 @@ Page({
         console.warn('未找到情绪记录，无法生成情绪概览数据');
         return null;
       }
-
-      console.log('获取到情绪记录数量:', records.length);
 
       // 统计不同情绪类型的数量
       const emotionCounts = {};
@@ -533,36 +492,35 @@ Page({
         colors
       };
 
-      console.log('生成的情绪概览数据:', emotionData);
-
       // 更新数据
-      this.setData({ emotionData })
+      this.setData({ emotionData });
 
       // 在非下拉刷新时更新情绪饼图
       if (!this._isRefreshing && this.emotionPieChart) {
         try {
-          const option = this.getEmotionPieOption(emotionData)
-          this.emotionPieChart.setOption(option)
-          console.log('情绪饼图更新成功')
+          const option = this.getEmotionPieOption(emotionData);
+          this.emotionPieChart.setOption(option);
         } catch (chartError) {
-          console.error('更新情绪饼图失败:', chartError)
+          console.error('更新情绪饼图失败:', chartError);
           // 如果更新失败，尝试重新初始化
-          this.emotionPieChart = null
-          setTimeout(() => this.initEmotionPieChart(), 300)
+          this.emotionPieChart = null;
+          setTimeout(() => this.initEmotionPieChart(), 300);
         }
       }
 
       return emotionData;
     } catch (error) {
-      console.error('获取情绪数据失败:', error)
-      throw error
+      console.error('获取情绪数据失败:', error);
+      throw error;
     }
   },
 
   // 加载个性分析数据
   async loadPersonalityData() {
     try {
-      console.log('开始加载个性分析数据...')
+      if (isDev) {
+        console.log('开始加载个性分析数据...');
+      }
 
       // 默认个性数据，当云函数调用失败时使用
       const defaultPersonalityData = {
@@ -578,7 +536,7 @@ Page({
       if (!openId && !userId) {
         console.error('未获取到用户ID，无法获取个性分析数据');
         // 使用默认数据
-        this.setData({ personalityData: defaultPersonalityData })
+        this.setData({ personalityData: defaultPersonalityData });
         return defaultPersonalityData;
       }
 
@@ -593,11 +551,10 @@ Page({
             action: 'getUserPerception',
             userId: userIdentifier
           }
-        })
+        });
 
         if (result.result && result.result.success && result.result.data) {
-          const perceptionData = result.result.data
-          console.log('获取个性分析数据成功:', perceptionData)
+          const perceptionData = result.result.data;
 
           // 处理数据用于雷达图显示
           if (perceptionData.personalityTraits && perceptionData.personalityTraits.length > 0) {
@@ -607,50 +564,51 @@ Page({
               summary: perceptionData.personalitySummary || ''
             };
 
-            console.log('处理后的个性分析数据:', personalityData);
-
             // 更新数据
-            this.setData({ personalityData })
+            this.setData({ personalityData });
 
             // 在非下拉刷新时更新个性雷达图
             if (!this._isRefreshing && this.personalityRadarChart) {
               try {
-                const option = this.getPersonalityRadarOption(personalityData)
-                this.personalityRadarChart.setOption(option)
-                console.log('个性雷达图更新成功')
+                const option = this.getPersonalityRadarOption(personalityData);
+                this.personalityRadarChart.setOption(option);
               } catch (chartError) {
-                console.error('更新个性雷达图失败:', chartError)
+                console.error('更新个性雷达图失败:', chartError);
                 // 如果更新失败，尝试重新初始化
-                this.personalityRadarChart = null
-                setTimeout(() => this.initPersonalityRadarChart(), 300)
+                this.personalityRadarChart = null;
+                setTimeout(() => this.initPersonalityRadarChart(), 300);
               }
             }
 
-            return personalityData
+            return personalityData;
           } else {
-            console.warn('个性特征数据为空，使用默认数据');
-            this.setData({ personalityData: defaultPersonalityData })
+            if (isDev) {
+              console.warn('个性特征数据为空，使用默认数据');
+            }
+            this.setData({ personalityData: defaultPersonalityData });
             return defaultPersonalityData;
           }
         } else {
-          console.warn('云函数返回的个性分析数据无效:', result)
-          this.setData({ personalityData: defaultPersonalityData })
+          if (isDev) {
+            console.warn('云函数返回的个性分析数据无效');
+          }
+          this.setData({ personalityData: defaultPersonalityData });
           return defaultPersonalityData;
         }
       } catch (cloudError) {
-        console.error('调用云函数失败:', cloudError)
-        this.setData({ personalityData: defaultPersonalityData })
+        console.error('调用云函数失败:', cloudError);
+        this.setData({ personalityData: defaultPersonalityData });
         return defaultPersonalityData;
       }
     } catch (error) {
-      console.error('获取个性分析数据失败:', error)
+      console.error('获取个性分析数据失败:', error);
       // 使用默认数据
       const defaultPersonalityData = {
         labels: ['创造力', '责任感', '同理心', '社交性', '耐心'],
         values: [65, 80, 70, 50, 60],
         summary: '你是一个具有较强责任感和同理心的人，在创造力和耐心方面也有不错的表现。你善于理解他人的情感，并且能够认真完成自己的任务。'
       };
-      this.setData({ personalityData: defaultPersonalityData })
+      this.setData({ personalityData: defaultPersonalityData });
       return defaultPersonalityData;
     }
   },
@@ -658,24 +616,24 @@ Page({
   // 刷新用户信息
   async refreshUserInfo(forceRefresh = false) {
     try {
-      console.log('开始刷新用户信息, 强制刷新:', forceRefresh)
+      if (isDev) {
+        console.log('开始刷新用户信息, 强制刷新:', forceRefresh);
+      }
 
       // 首先从全局状态获取用户信息
-      const globalUserInfo = app.globalData.userInfo
-      console.log('全局状态用户信息:', globalUserInfo)
+      const globalUserInfo = app.globalData.userInfo;
 
       // 从本地存储获取用户信息
-      const { userInfo: localUserInfo } = getLoginInfo()
-      console.log('本地存储用户信息:', localUserInfo)
+      const { userInfo: localUserInfo } = getLoginInfo();
 
       // 如果是强制刷新，则从服务器获取最新数据
       if (forceRefresh) {
-        this.setData({ loading: true })
+        this.setData({ loading: true });
 
         // 获取当前登录信息
-        const loginInfo = getLoginInfo()
+        const loginInfo = getLoginInfo();
         if (!loginInfo || !loginInfo.userInfo || !loginInfo.userInfo.userId) {
-          throw new Error('用户未登录或登录信息不完整')
+          throw new Error('用户未登录或登录信息不完整');
         }
 
         try {
@@ -686,25 +644,23 @@ Page({
               action: 'getInfo',
               userId: loginInfo.userInfo.userId
             }
-          })
-
-          console.log('云函数获取用户信息结果:', result)
+          });
 
           if (result.result && result.result.success) {
             // 更新用户信息
             const updatedUserInfo = {
               ...loginInfo.userInfo,
               ...result.result.data.user
-            }
+            };
 
             // 更新全局状态
-            app.globalData.userInfo = updatedUserInfo
+            app.globalData.userInfo = updatedUserInfo;
 
             // 更新本地存储
             wx.setStorageSync('loginInfo', {
               ...loginInfo,
               userInfo: updatedUserInfo
-            })
+            });
 
             // 更新页面数据
             this.setData({
@@ -715,37 +671,31 @@ Page({
                 activeDay: updatedUserInfo.stats?.active_days || 0,
                 reportCount: updatedUserInfo.stats?.daily_report_count || 0
               }
-            })
-
-            console.log('用户信息已通过云函数强制刷新:', updatedUserInfo)
+            });
 
             // 获取用户总消息数
             setTimeout(() => {
               this.getTotalMessageCount();
             }, 500);
 
-            return
+            return;
           }
         } catch (cloudError) {
-          console.error('云函数获取用户信息失败:', cloudError)
+          console.error('云函数获取用户信息失败:', cloudError);
           // 如果云函数失败，则回退到使用数据库直接查询
         }
 
         // 如果云函数失败，则使用数据库直接查询
-        const db = wx.cloud.database()
+        const db = wx.cloud.database();
         const userBaseResult = await db.collection('user_base')
           .where({ user_id: loginInfo.userInfo.userId })
-          .get()
-
-        console.log('数据库查询用户基本信息结果:', userBaseResult)
+          .get();
 
         if (userBaseResult.data && userBaseResult.data.length > 0) {
           // 获取用户统计信息
           const userStatsResult = await db.collection('user_stats')
             .where({ user_id: loginInfo.userInfo.userId })
-            .get()
-
-          console.log('数据库查询用户统计信息结果:', userStatsResult)
+            .get();
 
           // 更新用户信息
           const updatedUserInfo = {
@@ -753,16 +703,16 @@ Page({
             username: userBaseResult.data[0].username,
             avatarUrl: userBaseResult.data[0].avatar_url,
             stats: userStatsResult.data[0] || loginInfo.userInfo.stats
-          }
+          };
 
           // 更新全局状态
-          app.globalData.userInfo = updatedUserInfo
+          app.globalData.userInfo = updatedUserInfo;
 
           // 更新本地存储
           wx.setStorageSync('loginInfo', {
             ...loginInfo,
             userInfo: updatedUserInfo
-          })
+          });
 
           // 更新页面数据
           this.setData({
@@ -773,9 +723,7 @@ Page({
               activeDay: updatedUserInfo.stats?.active_days || 0,
               reportCount: updatedUserInfo.stats?.daily_report_count || 0
             }
-          })
-
-          console.log('用户信息已通过数据库强制刷新:', updatedUserInfo)
+          });
 
           // 获取用户总消息数和心情报告数量
           setTimeout(() => {
@@ -783,13 +731,13 @@ Page({
             this.getReportCount();
           }, 500);
 
-          return
+          return;
         }
       }
 
       // 如果不是强制刷新或强制刷新失败，则使用全局状态或本地存储
       // 优先使用全局状态，因为它可能是最新的
-      const userInfo = globalUserInfo || localUserInfo
+      const userInfo = globalUserInfo || localUserInfo;
 
       if (userInfo) {
         this.setData({
@@ -800,9 +748,7 @@ Page({
             activeDay: userInfo.stats?.active_days || 0,
             reportCount: userInfo.stats?.daily_report_count || 0
           }
-        })
-
-        console.log('用户信息已从内存刷新:', userInfo)
+        });
 
         // 获取用户总消息数和心情报告数量
         setTimeout(() => {
@@ -810,17 +756,17 @@ Page({
           this.getReportCount();
         }, 500);
       } else {
-        throw new Error('无法获取用户信息')
+        throw new Error('无法获取用户信息');
       }
     } catch (error) {
-      console.error('刷新用户信息失败:', error)
-      this.setData({ loading: false })
+      console.error('刷新用户信息失败:', error);
+      this.setData({ loading: false });
 
       // 显示错误提示
       wx.showToast({
         title: '刷新失败',
         icon: 'error'
-      })
+      });
     }
   },
 
@@ -1310,7 +1256,9 @@ Page({
    */
   async loadInterestTags(forceRefresh = false) {
     try {
-      console.log('开始加载用户兴趣标签...')
+      if (isDev) {
+        console.log('开始加载用户兴趣标签...');
+      }
 
       // 获取用户ID
       const openId = wx.getStorageSync('openId') || (this.data.userInfo && this.data.userInfo.stats && this.data.userInfo.stats.openid);
@@ -1359,7 +1307,9 @@ Page({
    */
   handleTagClick(e) {
     const { tag } = e.detail;
-    console.log('点击了标签:', tag);
+    if (isDev) {
+      console.log('点击了标签:', tag);
+    }
 
     // 显示标签详情
     wx.showModal({
@@ -1375,7 +1325,9 @@ Page({
    */
   handleTagsLoaded(e) {
     const { tags } = e.detail;
-    console.log('兴趣标签加载完成, 数量:', tags.length);
+    if (isDev) {
+      console.log('兴趣标签加载完成, 数量:', tags.length);
+    }
   },
 
   /**

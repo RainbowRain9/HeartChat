@@ -18,6 +18,9 @@ const keywordEmotionLinker = require('./keywordEmotionLinker');
 // 导入用户兴趣分析器
 const userInterestAnalyzer = require('./userInterestAnalyzer');
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 // 初始化云开发
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
@@ -50,7 +53,7 @@ async function saveEmotionRecord(result, openid, options = {}) {
 
     return res._id;
   } catch (error) {
-    console.error('保存情感分析记录失败:', error);
+    console.error('保存情感分析记录失败:', error.message || error);
     return null;
   }
 }
@@ -92,7 +95,7 @@ async function analyzeEmotion(event) {
         try {
           recordId = await saveEmotionRecord(emotionResponse.result, wxContext.OPENID, { roleId, chatId });
         } catch (saveError) {
-          console.error('保存情感记录失败:', saveError);
+          console.error('保存情感记录失败:', saveError.message || saveError);
           // 保存失败不影响主流程
         }
       }
@@ -103,13 +106,15 @@ async function analyzeEmotion(event) {
           // 异步关联关键词和情感，不阻塞主流程
           keywordEmotionLinker.linkKeywordsToEmotion(wxContext.OPENID, keywords, emotionResponse.result)
             .then(success => {
-              console.log('关联关键词和情感' + (success ? '成功' : '失败'));
+              if (isDev) {
+                console.log('关联关键词和情感' + (success ? '成功' : '失败'));
+              }
             })
             .catch(error => {
-              console.error('关联关键词和情感异常:', error);
+              console.error('关联关键词和情感异常:', error.message || error);
             });
         } catch (linkError) {
-          console.error('关联关键词和情感失败:', linkError);
+          console.error('关联关键词和情感失败:', linkError.message || linkError);
           // 关联失败不影响主流程
         }
       }
@@ -129,7 +134,7 @@ async function analyzeEmotion(event) {
       };
     }
   } catch (error) {
-    console.error('情感分析失败:', error);
+    console.error('情感分析失败:', error.message || error);
 
     // 返回错误信息
     return {
@@ -163,7 +168,7 @@ async function extractTextKeywords(event) {
     // 返回结果
     return result;
   } catch (error) {
-    console.error('智谱AI关键词提取失败:', error);
+    console.error('智谱AI关键词提取失败:', error.message || error);
 
     // 返回错误信息
     return {
@@ -202,17 +207,21 @@ async function getWordVectors(event) {
       };
     }
 
-    console.log('调用智谱AI词向量获取, 输入:', textArray);
+    if (isDev) {
+      console.log('调用智谱AI词向量获取, 输入:', textArray);
+    }
 
     // 调用智谱AI词向量获取
     const result = await bigModelModule.getEmbeddings(textArray);
 
-    console.log('智谱AI词向量获取结果:', result);
+    if (isDev) {
+      console.log('智谱AI词向量获取结果:', result);
+    }
 
     // 返回结果
     return result;
   } catch (error) {
-    console.error('获取词向量失败:', error);
+    console.error('获取词向量失败:', error.message || error);
     return {
       success: false,
       error: error.message || '词向量服务调用失败'
@@ -244,7 +253,7 @@ async function clusterKeywords(event) {
     // 返回结果
     return result;
   } catch (error) {
-    console.error('聚类分析失败:', error);
+    console.error('聚类分析失败:', error.message || error);
 
     // 返回错误信息
     return {
@@ -278,7 +287,7 @@ async function analyzeUserInterests(event) {
     // 返回结果
     return result;
   } catch (error) {
-    console.error('用户兴趣分析失败:', error);
+    console.error('用户兴趣分析失败:', error.message || error);
 
     // 返回错误信息
     return {
@@ -407,7 +416,7 @@ async function analyzeFocusPoints(event) {
     // 返回结果
     return result;
   } catch (error) {
-    console.error('分析用户关注点失败:', error);
+    console.error('分析用户关注点失败:', error.message || error);
 
     // 返回错误信息
     return {

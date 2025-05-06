@@ -4,6 +4,9 @@
  */
 const axios = require('axios');
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 // 智谱AI API配置
 // 注意：实际使用时应从环境变量或安全配置中读取API密钥，而不是硬编码
 const API_KEY = process.env.ZHIPU_API_KEY || ''; // 从环境变量获取API密钥
@@ -137,7 +140,7 @@ async function analyzeEmotion(text, history = []) {
           }
         };
       } catch (parseError) {
-        console.error('解析智谱AI JSON响应失败:', parseError);
+        console.error('解析智谱AI JSON响应失败:', parseError.message || parseError);
         return {
           success: false,
           error: '解析情感分析结果失败'
@@ -150,7 +153,7 @@ async function analyzeEmotion(text, history = []) {
       };
     }
   } catch (error) {
-    console.error('智谱AI情感分析失败:', error);
+    console.error('智谱AI情感分析失败:', error.message || error);
     return {
       success: false,
       error: error.message || '情感分析服务调用失败'
@@ -218,7 +221,7 @@ async function extractKeywords(text, topK = 10) {
           }
         };
       } catch (parseError) {
-        console.error('解析智谱AI JSON响应失败:', parseError);
+        console.error('解析智谱AI JSON响应失败:', parseError.message || parseError);
         return {
           success: false,
           error: '解析关键词提取结果失败'
@@ -231,7 +234,7 @@ async function extractKeywords(text, topK = 10) {
       };
     }
   } catch (error) {
-    console.error('智谱AI关键词提取失败:', error);
+    console.error('智谱AI关键词提取失败:', error.message || error);
     return {
       success: false,
       error: error.message || '关键词提取服务调用失败'
@@ -268,17 +271,21 @@ async function getWordVectors(event) {
       };
     }
 
-    console.log('调用智谱AI词向量获取, 输入:', textArray);
+    if (isDev) {
+      console.log('调用智谱AI词向量获取, 输入:', textArray);
+    }
 
     // 调用智谱AI词向量获取
     const result = await getEmbeddings(textArray);
 
-    console.log('智谱AI词向量获取结果:', result);
+    if (isDev) {
+      console.log('智谱AI词向量获取结果:', result);
+    }
 
     // 返回结果
     return result;
   } catch (error) {
-    console.error('获取词向量失败:', error);
+    console.error('获取词向量失败:', error.message || error);
     return {
       success: false,
       error: error.message || '词向量服务调用失败'
@@ -355,7 +362,7 @@ async function clusterKeywords(text, threshold = 0.7, minClusterSize = 2) {
           }
         };
       } catch (parseError) {
-        console.error('解析智谱AI JSON响应失败:', parseError);
+        console.error('解析智谱AI JSON响应失败:', parseError.message || parseError);
         return {
           success: false,
           error: '解析聚类分析结果失败'
@@ -368,7 +375,7 @@ async function clusterKeywords(text, threshold = 0.7, minClusterSize = 2) {
       };
     }
   } catch (error) {
-    console.error('智谱AI聚类分析失败:', error);
+    console.error('智谱AI聚类分析失败:', error.message || error);
     return {
       success: false,
       error: error.message || '聚类分析服务调用失败'
@@ -440,7 +447,7 @@ async function analyzeUserInterests(messages) {
           }
         };
       } catch (parseError) {
-        console.error('解析智谱AI JSON响应失败:', parseError);
+        console.error('解析智谱AI JSON响应失败:', parseError.message || parseError);
         return {
           success: false,
           error: '解析兴趣分析结果失败'
@@ -453,7 +460,7 @@ async function analyzeUserInterests(messages) {
       };
     }
   } catch (error) {
-    console.error('智谱AI兴趣分析失败:', error);
+    console.error('智谱AI兴趣分析失败:', error.message || error);
     return {
       success: false,
       error: error.message || '兴趣分析服务调用失败'
@@ -476,7 +483,9 @@ async function getEmbeddings(texts) {
       };
     }
 
-    console.log('准备获取词向量, 文本数量:', texts.length);
+    if (isDev) {
+      console.log('准备获取词向量, 文本数量:', texts.length);
+    }
 
     // 当API_KEY为空时，使用本地模拟词向量
     if (!process.env.ZHIPU_API_KEY) {

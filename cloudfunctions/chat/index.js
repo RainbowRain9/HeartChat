@@ -10,6 +10,9 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 // 导入智谱AI模块
 const bigModelModule = require('./bigmodel');
 
@@ -149,17 +152,21 @@ function splitMessage(message) {
 async function saveChatHistory(event, context) {
   const { OPENID } = cloud.getWXContext(); // 获取用户的openid
 
-  console.log('执行 saveChatHistory 功能, 参数:', event);
-  console.log('OPENID:', OPENID);
+  if (isDev) {
+    console.log('执行 saveChatHistory 功能, 参数:', event);
+    console.log('OPENID:', OPENID);
+  }
 
   try {
     // 获取请求参数
     const { chatData, messages } = event;
 
-    console.log('接收到的数据:', {
-      chatDataKeys: chatData ? Object.keys(chatData) : null,
-      messagesCount: messages ? messages.length : 0
-    });
+    if (isDev) {
+      console.log('接收到的数据:', {
+        chatDataKeys: chatData ? Object.keys(chatData) : null,
+        messagesCount: messages ? messages.length : 0
+      });
+    }
 
     // 确保chatData包含必要的字段
     if (!chatData || !chatData.roleId) {
@@ -179,17 +186,21 @@ async function saveChatHistory(event, context) {
       chatData.createTime = db.serverDate();
     }
 
-    console.log('处理后的chatData:', {
-      roleId: chatData.roleId,
-      userId: chatData.userId,
-      openId: chatData.openId,
-      messageCount: chatData.messageCount
-    });
+    if (isDev) {
+      console.log('处理后的chatData:', {
+        roleId: chatData.roleId,
+        userId: chatData.userId,
+        openId: chatData.openId,
+        messageCount: chatData.messageCount
+      });
+    }
 
     let chatId;
 
     // 检查是否已存在相同的聊天记录
-    console.log('查询现有聊天记录...');
+    if (isDev) {
+      console.log('查询现有聊天记录...');
+    }
     const queryResult = await db.collection('chats')
       .where({
         roleId: chatData.roleId,
@@ -198,17 +209,21 @@ async function saveChatHistory(event, context) {
       })
       .get()
       .catch(err => {
-        console.error('查询聊天记录失败:', err);
+        console.error('查询聊天记录失败:', err.message || err);
         return { data: [] };
       });
 
     const { data } = queryResult;
-    console.log('查询结果:', { found: data && data.length > 0 });
+    if (isDev) {
+      console.log('查询结果:', { found: data && data.length > 0 });
+    }
 
     if (data && data.length > 0) {
       // 更新现有聊天记录
       chatId = data[0]._id;
-      console.log('更新现有聊天记录, chatId:', chatId);
+      if (isDev) {
+        console.log('更新现有聊天记录, chatId:', chatId);
+      }
 
       const updateData = {
         messageCount: chatData.messageCount || 0,
@@ -222,39 +237,51 @@ async function saveChatHistory(event, context) {
         updateTime: chatData.updateTime
       };
 
-      console.log('更新数据:', updateData);
+      if (isDev) {
+        console.log('更新数据:', updateData);
+      }
 
       await db.collection('chats').doc(chatId).update({
         data: updateData
       }).catch(err => {
-        console.error('更新聊天记录失败:', err);
+        console.error('更新聊天记录失败:', err.message || err);
         throw err;
       });
 
-      console.log('聊天记录更新成功');
+      if (isDev) {
+        console.log('聊天记录更新成功');
+      }
     } else {
       // 创建新的聊天记录
-      console.log('创建新的聊天记录');
+      if (isDev) {
+        console.log('创建新的聊天记录');
+      }
       const result = await db.collection('chats').add({
         data: chatData
       }).catch(err => {
-        console.error('创建聊天记录失败:', err);
+        console.error('创建聊天记录失败:', err.message || err);
         throw err;
       });
 
       chatId = result._id;
-      console.log('新聊天记录创建成功, chatId:', chatId);
+      if (isDev) {
+        console.log('新聊天记录创建成功, chatId:', chatId);
+      }
     }
 
     // 如果提供了消息数组，保存到messages集合
     if (messages && messages.length > 0) {
-      console.log(`开始保存 ${messages.length} 条消息到messages集合...`);
+      if (isDev) {
+        console.log(`开始保存 ${messages.length} 条消息到messages集合...`);
+      }
 
       // 批量添加消息
       const messagePromises = messages.map((msg, index) => {
         // 跳过已有ID的消息
         if (msg._id) {
-          console.log(`消息 ${index} 已有ID, 跳过`);
+          if (isDev) {
+            console.log(`消息 ${index} 已有ID, 跳过`);
+          }
           return Promise.resolve();
         }
 
@@ -267,29 +294,39 @@ async function saveChatHistory(event, context) {
         return db.collection('messages').add({
           data: msg
         }).then(res => {
-          console.log(`消息 ${index} 保存成功, _id: ${res._id}`);
+          if (isDev) {
+            console.log(`消息 ${index} 保存成功, _id: ${res._id}`);
+          }
           return res;
         }).catch(err => {
-          console.error(`消息 ${index} 保存失败:`, err);
+          console.error(`消息 ${index} 保存失败:`, err.message || err);
           throw err;
         });
       });
 
       // 等待所有消息保存完成
       await Promise.all(messagePromises);
-      console.log('所有消息保存完成');
+      if (isDev) {
+        console.log('所有消息保存完成');
+      }
     } else {
-      console.log('没有消息需要保存');
+      if (isDev) {
+        console.log('没有消息需要保存');
+      }
     }
 
     // 判断是否是新对话
     const isNewChat = !data || data.length === 0;
-    console.log('执行成功, 返回 chatId:', chatId, ', 是否新对话:', isNewChat);
+    if (isDev) {
+      console.log('执行成功, 返回 chatId:', chatId, ', 是否新对话:', isNewChat);
+    }
 
     // 如果是新对话，直接在云函数中更新用户统计
     if (isNewChat) {
       try {
-        console.log('在云函数中更新用户对话次数');
+        if (isDev) {
+          console.log('在云函数中更新用户对话次数');
+        }
         // 获取用户统计信息
         const userStatsResult = await db.collection('user_stats')
           .where({ user_id: chatData.userId })
@@ -306,12 +343,16 @@ async function saveChatHistory(event, context) {
             }
           });
 
-          console.log('用户对话次数更新成功');
+          if (isDev) {
+            console.log('用户对话次数更新成功');
+          }
         } else {
-          console.log('未找到用户统计信息，无法更新对话次数');
+          if (isDev) {
+            console.log('未找到用户统计信息，无法更新对话次数');
+          }
         }
       } catch (statsErr) {
-        console.error('更新用户对话次数失败:', statsErr);
+        console.error('更新用户对话次数失败:', statsErr.message || statsErr);
         // 不影响主流程
       }
     }
@@ -322,7 +363,7 @@ async function saveChatHistory(event, context) {
       isNewChat
     };
   } catch (error) {
-    console.error('保存聊天记录失败:', error);
+    console.error('保存聊天记录失败:', error.message || error);
     return {
       success: false,
       error: error.message || error
@@ -334,8 +375,10 @@ async function saveChatHistory(event, context) {
 async function getChatHistory(event, context) {
   const { OPENID } = cloud.getWXContext(); // 获取用户的openid
 
-  console.log('执行 getChatHistory 功能, 参数:', event);
-  console.log('OPENID:', OPENID);
+  if (isDev) {
+    console.log('执行 getChatHistory 功能, 参数:', event);
+    console.log('OPENID:', OPENID);
+  }
 
   try {
     // 获取请求参数
@@ -347,78 +390,106 @@ async function getChatHistory(event, context) {
     // 如果提供了userId，添加到查询条件
     if (userId) {
       query.userId = userId;
-      console.log('使用userId查询:', userId);
+      if (isDev) {
+        console.log('使用userId查询:', userId);
+      }
     } else {
       // 如果没有提供userId，使用openid
       query.openId = OPENID;
-      console.log('使用openId查询:', OPENID);
+      if (isDev) {
+        console.log('使用openId查询:', OPENID);
+      }
     }
 
     // 如果提供了roleId，添加到查询条件
     if (roleId) {
       query.roleId = roleId;
-      console.log('使用roleId查询:', roleId);
+      if (isDev) {
+        console.log('使用roleId查询:', roleId);
+      }
     }
 
-    console.log('最终查询条件:', query);
+    if (isDev) {
+      console.log('最终查询条件:', query);
+    }
 
     // 查询chats集合
     let chatData = [];
     try {
-      console.log('开始查询chats集合...');
+      if (isDev) {
+        console.log('开始查询chats集合...');
+      }
       const result = await db.collection('chats')
         .where(query)
         .orderBy('updateTime', 'desc')
         .limit(1)
         .get();
 
-      console.log('chats查询结果:', result);
+      if (isDev) {
+        console.log('chats查询结果:', result);
+      }
 
       if (result.data && result.data.length > 0) {
         chatData = result.data;
-        console.log('找到聊天记录:', chatData[0]._id);
+        if (isDev) {
+          console.log('找到聊天记录:', chatData[0]._id);
+        }
       } else {
-        console.log('未找到聊天记录');
+        if (isDev) {
+          console.log('未找到聊天记录');
+        }
       }
     } catch (chatErr) {
-      console.error('查询chats集合失败:', chatErr);
+      console.error('查询chats集合失败:', chatErr.message || chatErr);
     }
 
     // 如果找到了聊天记录，但没有消息数组，尝试从messages集合获取消息
     if (chatData.length > 0 && (!chatData[0].messages || chatData[0].messages.length === 0)) {
       try {
         const chatId = chatData[0]._id;
-        console.log('开始从messages集合获取消息, chatId:', chatId);
+        if (isDev) {
+          console.log('开始从messages集合获取消息, chatId:', chatId);
+        }
 
         const messagesResult = await db.collection('messages')
           .where({ chatId })
           .orderBy('timestamp', 'asc')
           .get();
 
-        console.log('messages查询结果:', messagesResult);
+        if (isDev) {
+          console.log('messages查询结果:', messagesResult);
+        }
 
         if (messagesResult.data && messagesResult.data.length > 0) {
           // 将消息添加到聊天记录中
           chatData[0].messages = messagesResult.data;
-          console.log(`找到 ${messagesResult.data.length} 条消息`);
+          if (isDev) {
+            console.log(`找到 ${messagesResult.data.length} 条消息`);
+          }
         } else {
-          console.log('未找到消息记录');
+          if (isDev) {
+            console.log('未找到消息记录');
+          }
         }
       } catch (msgErr) {
-        console.error('查询messages集合失败:', msgErr);
+        console.error('查询messages集合失败:', msgErr.message || msgErr);
       }
     } else if (chatData.length > 0 && chatData[0].messages && chatData[0].messages.length > 0) {
-      console.log(`聊天记录中已包含 ${chatData[0].messages.length} 条消息`);
+      if (isDev) {
+        console.log(`聊天记录中已包含 ${chatData[0].messages.length} 条消息`);
+      }
     }
 
-    console.log('功能执行成功, 返回数据长度:', chatData.length);
+    if (isDev) {
+      console.log('功能执行成功, 返回数据长度:', chatData.length);
+    }
 
     return {
       success: true,
       data: chatData
     };
   } catch (error) {
-    console.error('获取聊天记录失败:', error);
+    console.error('获取聊天记录失败:', error.message || error);
     return {
       success: false,
       error: error.message || error

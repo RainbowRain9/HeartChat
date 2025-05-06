@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartChat用户界面流程图</title>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .section {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .note {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .mermaid {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 5px 10px;
+            background-color: #f8f9fa;
+            border-radius: 3px;
+        }
+        .export-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .export-btn:hover {
+            background-color: #2980b9;
+        }
+        .export-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                }
+            });
+            
+            // 创建模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="modal-close">&times;</span>
+                    <h3 class="modal-title"></h3>
+                    <div class="modal-diagram"></div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // 关闭模态框
+            modal.querySelector('.modal-close').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // 点击模态框外部关闭
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // 为每个流程图添加导出按钮和放大按钮
+            document.querySelectorAll('.section').forEach(function(section, index) {
+                const mermaidDiv = section.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    // 添加导出按钮
+                    const exportBtn = document.createElement('button');
+                    exportBtn.className = 'export-btn';
+                    exportBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        导出图片
+                    `;
+                    exportBtn.addEventListener('click', function() {
+                        exportDiagram(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(exportBtn);
+                    
+                    // 添加放大按钮
+                    const zoomBtn = document.createElement('button');
+                    zoomBtn.className = 'zoom-btn';
+                    zoomBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            <line x1="11" y1="8" x2="11" y2="14"></line>
+                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                        放大查看
+                    `;
+                    zoomBtn.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(zoomBtn);
+                    
+                    // 点击流程图也可以放大
+                    mermaidDiv.style.cursor = 'pointer';
+                    mermaidDiv.addEventListener('click', function() {
+                        openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                }
+            });
+            section.appendChild(zoomBtn);
+            
+            // 点击流程图也可以放大
+            mermaidDiv.style.cursor = 'pointer';
+            mermaidDiv.addEventListener('click', function() {
+                openZoomModal(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+            });
+        }
+    });
+
+            // 为每个流程图添加导出按钮
+            document.querySelectorAll('.section').forEach(function(section, index) {
+                const mermaidDiv = section.querySelector('.mermaid');
+                if (mermaidDiv) {
+                    const exportBtn = document.createElement('button');
+                    exportBtn.className = 'export-btn';
+                    exportBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        导出图片
+                    `;
+                    exportBtn.addEventListener('click', function() {
+                        exportDiagram(mermaidDiv, section.querySelector('h2') ? section.querySelector('h2').textContent : '流程图' + (index + 1));
+                    });
+                    section.appendChild(exportBtn);
+                }
+            });
+        });
+
+        // 导出流程图为图片
+        function exportDiagram(mermaidDiv, title) {
+    const modal = document.querySelector('.modal');
+    const modalTitle = modal.querySelector('.modal-title');
+    const modalDiagram = modal.querySelector('.modal-diagram');
+    
+    // 重置缩放
+    currentScale = 1;
+    updateZoom();
+    
+    // 设置模态框标题
+    modalTitle.textContent = title;
+    
+    // 清空并复制流程图
+    modalDiagram.innerHTML = '';
+    const clonedDiagram = mermaidDiv.cloneNode(true);
+    modalDiagram.appendChild(clonedDiagram);
+    
+    // 显示模态框
+    modal.style.display = 'block';
+    
+    // 重新渲染Mermaid图表
+    mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+}
+
+// 打开放大模态框
+        function openZoomModal(mermaidDiv, title) {
+            const modal = document.querySelector('.modal');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalDiagram = modal.querySelector('.modal-diagram');
+            
+            // 设置模态框标题
+            modalTitle.textContent = title;
+            
+            // 清空并复制流程图
+            modalDiagram.innerHTML = '';
+            const clonedDiagram = mermaidDiv.cloneNode(true);
+            modalDiagram.appendChild(clonedDiagram);
+            
+            // 显示模态框
+            modal.style.display = 'block';
+            
+            // 重新渲染Mermaid图表
+            mermaid.init(undefined, modalDiagram.querySelectorAll('.mermaid'));
+        }
+        
+        function exportDiagram(mermaidDiv, title) {
+            // 设置导出选项
+            const options = {
+                scale: 2, // 提高导出图片的清晰度
+                backgroundColor: '#f8f9fa',
+                logging: false,
+                allowTaint: true,
+                useCORS: true
+            };
+
+            // 使用html2canvas将流程图转换为图片
+            html2canvas(mermaidDiv, options).then(function(canvas) {
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.download = 'HeartChat-' + title.replace(/[^\w\u4e00-\u9fa5]/g, '-') + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(function(error) {
+                console.error('导出图片失败:', error);
+                alert('导出图片失败，请重试或检查控制台错误信息。');
+            });
+        }
+    </script>
+</head>
+<body>
+    <a href="HeartChat流程图总览.html" class="back-link">← 返回流程图总览</a>
+
+    <h1>HeartChat用户界面流程图</h1>
+
+    <div class="section">
+        <p>本文档展示了HeartChat项目的用户界面流程，包括页面跳转和用户交互流程。</p>
+    </div>
+
+    <div class="section">
+        <h2>整体用户界面流程</h2>
+        <div class="mermaid">
+            graph TD
+                Start[启动小程序] --> Welcome[欢迎页面]
+                Welcome --> Login{是否登录?}
+                Login -->|否| Auth[授权登录]
+                Login -->|是| Home[首页]
+                Auth --> Home
+
+                Home --> RoleSelect[角色选择]
+                Home --> EmotionHistory[情绪历史]
+                Home --> EmotionAnalysis[情绪分析]
+                Home --> UserCenter[个人中心]
+
+                RoleSelect --> Chat[聊天界面]
+                EmotionHistory --> EmotionDetail[情绪详情]
+                EmotionAnalysis --> EmotionDashboard[情绪面板]
+                UserCenter --> UserProfile[用户资料]
+                UserCenter --> Settings[设置]
+
+                Chat --> EmotionAnalysis
+                EmotionDetail --> EmotionDashboard
+
+                subgraph 主要页面导航
+                    Home
+                    RoleSelect
+                    Chat
+                    EmotionHistory
+                    EmotionAnalysis
+                    UserCenter
+                end
+
+                subgraph 次要页面导航
+                    EmotionDetail
+                    EmotionDashboard
+                    UserProfile
+                    Settings
+                end
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>详细用户界面流程</h2>
+
+        <h3>1. 登录与授权流程</h3>
+        <div class="mermaid">
+            sequenceDiagram
+                participant User as 用户
+                participant Welcome as 欢迎页面
+                participant Auth as 授权页面
+                participant API as 微信API
+                participant Backend as 后端服务
+                participant Home as 首页
+
+                User->>Welcome: 打开小程序
+                Welcome->>Welcome: 检查登录状态
+                alt 未登录
+                    Welcome->>Auth: 跳转到授权页面
+                    Auth->>User: 请求用户授权
+                    User->>Auth: 同意授权
+                    Auth->>API: 调用wx.login
+                    API->>Auth: 返回code
+                    Auth->>Backend: 发送code
+                    Backend->>Auth: 返回用户信息和openid
+                    Auth->>Welcome: 保存用户信息
+                else 已登录
+                    Welcome->>Welcome: 获取缓存的用户信息
+                end
+                Welcome->>Home: 跳转到首页
+        </div>
+
+        <h3>2. 首页交互流程</h3>
+        <div class="mermaid">
+            sequenceDiagram
+                participant User as 用户
+                participant Home as 首页
+                participant RoleSelect as 角色选择
+                participant Chat as 聊天界面
+                participant EmotionHistory as 情绪历史
+                participant EmotionAnalysis as 情绪分析
+                participant UserCenter as 个人中心
+
+                User->>Home: 进入首页
+                Home->>Home: 加载最近对话
+                Home->>Home: 加载情绪数据
+
+                alt 点击开始对话
+                    User->>Home: 点击"开始对话"
+                    Home->>RoleSelect: 跳转到角色选择
+                    User->>RoleSelect: 选择角色
+                    RoleSelect->>Chat: 跳转到聊天界面
+                else 点击历史对话
+                    User->>Home: 点击历史对话
+                    Home->>Chat: 跳转到聊天界面并加载历史
+                else 点击情绪历史
+                    User->>Home: 点击"情绪历史"
+                    Home->>EmotionHistory: 跳转到情绪历史
+                else 点击情绪分析
+                    User->>Home: 点击"情绪分析"
+                    Home->>EmotionAnalysis: 跳转到情绪分析
+                else 点击个人中心
+                    User->>Home: 点击"个人中心"
+                    Home->>UserCenter: 跳转到个人中心
+                end
+        </div>
+
+        <h3>3. 聊天界面交互流程</h3>
+        <div class="mermaid">
+            sequenceDiagram
+                participant User as 用户
+                participant Chat as 聊天界面
+                participant Backend as 后端服务
+                participant AI as 智谱AI
+                participant EmotionAnalysis as 情绪分析
+
+                User->>Chat: 进入聊天界面
+                Chat->>Chat: 加载角色信息
+                Chat->>Chat: 加载历史消息
+
+                User->>Chat: 发送消息
+                Chat->>Chat: 显示用户消息
+                Chat->>Backend: 发送消息到后端
+                Backend->>AI: 调用智谱AI
+                AI->>Backend: 返回AI回复
+                Backend->>Chat: 返回AI回复
+                Chat->>Chat: 显示AI回复
+
+                Backend->>Backend: 分析情绪
+                Backend->>Chat: 返回情绪分析结果
+                Chat->>Chat: 更新情绪指示器
+
+                alt 点击情绪分析
+                    User->>Chat: 点击情绪分析按钮
+                    Chat->>EmotionAnalysis: 跳转到情绪分析
+                else 退出聊天
+                    User->>Chat: 点击返回
+                    Chat->>Chat: 保存聊天状态
+                end
+        </div>
+
+        <h3>4. 情绪分析交互流程</h3>
+        <div class="mermaid">
+            sequenceDiagram
+                participant User as 用户
+                participant EmotionAnalysis as 情绪分析
+                participant Backend as 后端服务
+                participant EmotionDashboard as 情绪面板
+
+                User->>EmotionAnalysis: 进入情绪分析
+                EmotionAnalysis->>Backend: 获取情绪数据
+                Backend->>EmotionAnalysis: 返回情绪数据
+                EmotionAnalysis->>EmotionAnalysis: 显示情绪分布
+                EmotionAnalysis->>EmotionAnalysis: 显示关键词
+                EmotionAnalysis->>EmotionAnalysis: 显示情绪分析
+
+                alt 查看详细面板
+                    User->>EmotionAnalysis: 点击查看详情
+                    EmotionAnalysis->>EmotionDashboard: 显示情绪面板
+                    User->>EmotionDashboard: 浏览情绪数据
+                else 分享情绪分析
+                    User->>EmotionAnalysis: 点击分享
+                    EmotionAnalysis->>EmotionAnalysis: 生成分享图片
+                else 导出情绪分析
+                    User->>EmotionAnalysis: 点击导出
+                    EmotionAnalysis->>EmotionAnalysis: 导出数据
+                end
+        </div>
+
+        <h3>5. 情绪历史交互流程</h3>
+        <div class="mermaid">
+            sequenceDiagram
+                participant User as 用户
+                participant EmotionHistory as 情绪历史
+                participant Backend as 后端服务
+                participant EmotionDetail as 情绪详情
+
+                User->>EmotionHistory: 进入情绪历史
+                EmotionHistory->>Backend: 获取历史情绪数据
+                Backend->>EmotionHistory: 返回历史情绪数据
+                EmotionHistory->>EmotionHistory: 显示情绪趋势图
+                EmotionHistory->>EmotionHistory: 显示情绪记录列表
+
+                alt 查看详细情绪
+                    User->>EmotionHistory: 点击情绪记录
+                    EmotionHistory->>EmotionDetail: 跳转到情绪详情
+                    EmotionDetail->>Backend: 获取详细情绪数据
+                    Backend->>EmotionDetail: 返回详细情绪数据
+                    EmotionDetail->>EmotionDetail: 显示详细情绪分析
+                else 筛选时间范围
+                    User->>EmotionHistory: 选择时间范围
+                    EmotionHistory->>Backend: 获取筛选后的数据
+                    Backend->>EmotionHistory: 返回筛选后的数据
+                    EmotionHistory->>EmotionHistory: 更新显示
+                end
+        </div>
+
+        <h3>6. 用户中心交互流程</h3>
+        <div class="mermaid">
+            sequenceDiagram
+                participant User as 用户
+                participant UserCenter as 个人中心
+                participant UserProfile as 用户资料
+                participant Backend as 后端服务
+                participant Settings as 设置
+
+                User->>UserCenter: 进入个人中心
+                UserCenter->>UserCenter: 加载用户信息
+                UserCenter->>UserCenter: 显示用户统计
+
+                alt 查看/编辑资料
+                    User->>UserCenter: 点击"个人资料"
+                    UserCenter->>UserProfile: 跳转到用户资料
+                    UserProfile->>Backend: 获取用户详细资料
+                    Backend->>UserProfile: 返回用户详细资料
+                    UserProfile->>UserProfile: 显示用户资料
+
+                    opt 编辑资料
+                        User->>UserProfile: 编辑资料
+                        UserProfile->>Backend: 保存资料
+                        Backend->>UserProfile: 返回保存结果
+                        UserProfile->>UserProfile: 更新显示
+                    end
+                else 查看设置
+                    User->>UserCenter: 点击"设置"
+                    UserCenter->>Settings: 跳转到设置
+
+                    opt 切换主题
+                        User->>Settings: 切换暗黑/亮色模式
+                        Settings->>Settings: 更新主题设置
+                    end
+
+                    opt 隐私设置
+                        User->>Settings: 调整隐私设置
+                        Settings->>Backend: 保存设置
+                        Backend->>Settings: 返回保存结果
+                    end
+                end
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>暗黑模式切换流程</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant User as 用户
+                participant Settings as 设置页面
+                participant ThemeManager as 主题管理器
+                participant Pages as 所有页面
+                participant Components as 所有组件
+
+                User->>Settings: 切换暗黑/亮色模式
+                Settings->>ThemeManager: 更新主题设置
+                ThemeManager->>ThemeManager: 保存设置到本地缓存
+                ThemeManager->>Pages: 通知主题变更
+                ThemeManager->>Components: 通知主题变更
+
+                Pages->>Pages: 应用新主题样式
+                Components->>Components: 应用新主题样式
+
+                alt 系统跟随
+                    ThemeManager->>ThemeManager: 监听系统主题变更
+                    ThemeManager->>Pages: 通知主题变更
+                    ThemeManager->>Components: 通知主题变更
+                end
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>角色选择与创建流程</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant User as 用户
+                participant RoleSelect as 角色选择页面
+                participant RoleEditor as 角色编辑器
+                participant Backend as 后端服务
+                participant Chat as 聊天界面
+
+                User->>RoleSelect: 进入角色选择
+                RoleSelect->>Backend: 获取角色列表
+                Backend->>RoleSelect: 返回角色列表
+                RoleSelect->>RoleSelect: 显示角色列表
+
+                alt 选择现有角色
+                    User->>RoleSelect: 选择角色
+                    RoleSelect->>Chat: 跳转到聊天界面
+                else 创建新角色
+                    User->>RoleSelect: 点击"创建角色"
+                    RoleSelect->>RoleEditor: 跳转到角色编辑器
+                    User->>RoleEditor: 填写角色信息
+                    User->>RoleEditor: 点击"生成提示词"
+                    RoleEditor->>Backend: 请求生成提示词
+                    Backend->>RoleEditor: 返回生成的提示词
+                    RoleEditor->>RoleEditor: 显示生成的提示词
+                    User->>RoleEditor: 编辑提示词
+                    User->>RoleEditor: 点击"保存"
+                    RoleEditor->>Backend: 保存角色信息
+                    Backend->>RoleEditor: 返回保存结果
+                    RoleEditor->>RoleSelect: 返回角色选择
+                    RoleSelect->>Backend: 获取更新后的角色列表
+                    Backend->>RoleSelect: 返回更新后的角色列表
+                    RoleSelect->>RoleSelect: 显示更新后的角色列表
+                end
+        </div>
+    </div>
+
+    <div class="note">
+        <p><strong>注意</strong>：以上流程图使用Mermaid语法编写，需要在支持Mermaid的环境中查看。如果您在浏览器中查看本文档，可能需要安装Mermaid插件或使用支持Mermaid的Markdown查看器。</p>
+    </div>
+
+    <footer style="text-align: center; margin-top: 50px; color: #7f8c8d; font-size: 0.9em;">
+        <p>HeartChat项目文档 &copy; 2024</p>
+    </footer>
+</body>
+</html>

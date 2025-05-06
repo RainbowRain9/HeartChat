@@ -1,4 +1,8 @@
 // packageChat/pages/emotion-analysis/emotion-analysis.js
+
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 Page({
   /**
    * 页面的初始数据
@@ -43,7 +47,9 @@ Page({
 
     // 检查是否使用缓存数据
     if (options.useCache === 'true' || options.useCache === true) {
-      console.log('使用缓存的情绪分析结果');
+      if (isDev) {
+        console.log('使用缓存的情绪分析结果');
+      }
 
       // 从全局变量中获取缓存的情绪分析结果
       const cachedEmotionAnalysis = app.globalData.cachedEmotionAnalysis;
@@ -60,7 +66,9 @@ Page({
         }, 500);
         return;
       } else {
-        console.warn('全局变量中没有缓存的情绪分析结果，尝试从本地缓存中获取');
+        if (isDev) {
+          console.warn('全局变量中没有缓存的情绪分析结果，尝试从本地缓存中获取');
+        }
 
         // 如果全局变量中没有，尝试从本地缓存中获取
         try {
@@ -78,7 +86,7 @@ Page({
             return;
           }
         } catch (e) {
-          console.error('从本地缓存获取情绪分析结果失败:', e);
+          console.error('从本地缓存获取情绪分析结果失败:', e.message || e);
         }
       }
     }
@@ -157,7 +165,7 @@ Page({
         throw new Error('获取情绪分析失败');
       }
     } catch (error) {
-      console.error('加载情绪分析失败:', error);
+      console.error('加载情绪分析失败:', error.message || error);
       wx.showToast({
         title: '加载失败',
         icon: 'none'
@@ -184,7 +192,9 @@ Page({
         }
       });
 
-      console.log('聊天情绪分析结果:', result);
+      if (isDev) {
+        console.log('聊天情绪分析结果获取成功');
+      }
 
       if (result && result.result && result.result.success) {
         // 处理返回结果，兼容两种不同的返回结构
@@ -209,7 +219,7 @@ Page({
         throw new Error('获取聊天情绪分析失败');
       }
     } catch (error) {
-      console.error('加载聊天情绪分析失败:', error);
+      console.error('加载聊天情绪分析失败:', error.message || error);
       wx.showToast({
         title: '加载失败',
         icon: 'none'
@@ -246,7 +256,7 @@ Page({
         throw new Error('获取情绪记录分析失败');
       }
     } catch (error) {
-      console.error('加载情绪记录分析失败:', error);
+      console.error('加载情绪记录分析失败:', error.message || error);
       wx.showToast({
         title: '加载失败',
         icon: 'none'
@@ -282,7 +292,9 @@ Page({
 
           // 如果缓存不超过24小时，直接使用缓存数据
           if (cacheAge < 24 * 60 * 60 * 1000) {
-            console.log('使用缓存的历史情绪数据');
+            if (isDev) {
+              console.log('使用缓存的历史情绪数据');
+            }
             this.setData({
               historyData: cachedHistoryData,
               refreshing: false
@@ -291,11 +303,13 @@ Page({
           }
         }
       } catch (cacheError) {
-        console.error('读取缓存历史情绪数据失败:', cacheError);
+        console.error('读取缓存历史情绪数据失败:', cacheError.message || cacheError);
       }
 
       // 如果没有缓存或缓存过期，从数据库获取
-      console.log('从数据库获取历史情绪数据');
+      if (isDev) {
+        console.log('从数据库获取历史情绪数据');
+      }
 
       // 从数据库中获取近7天的情绪记录
       const db = wx.cloud.database();
@@ -323,15 +337,17 @@ Page({
         try {
           wx.setStorageSync('emotionHistoryData_' + userId, result.data);
           wx.setStorageSync('emotionHistoryDataTime_' + userId, Date.now());
-          console.log('历史情绪数据已缓存');
+          if (isDev) {
+            console.log('历史情绪数据已缓存');
+          }
         } catch (storageError) {
-          console.error('缓存历史情绪数据失败:', storageError);
+          console.error('缓存历史情绪数据失败:', storageError.message || storageError);
         }
       } else {
         this.setData({ refreshing: false });
       }
     } catch (error) {
-      console.error('加载历史情绪数据失败:', error);
+      console.error('加载历史情绪数据失败:', error.message || error);
       this.setData({ refreshing: false });
     }
   },
@@ -367,12 +383,13 @@ Page({
         menuButtonInfo: menuButtonInfo
       });
 
-      console.log('系统信息:', systemInfo);
-      console.log('胶囊按钮信息:', menuButtonInfo);
-      console.log('导航栏高度:', navBarHeight);
-      console.log('导航栏总高度:', navTotalHeight);
+      if (isDev) {
+        console.log('系统信息已获取');
+        console.log('导航栏高度:', navBarHeight);
+        console.log('导航栏总高度:', navTotalHeight);
+      }
     } catch (e) {
-      console.error('获取系统信息失败:', e);
+      console.error('获取系统信息失败:', e.message || e);
     }
   },
 

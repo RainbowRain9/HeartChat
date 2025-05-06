@@ -8,6 +8,9 @@ const keywordService = require('../../../services/keywordService');
 // 导入用户兴趣服务
 const userInterestsService = require('../../../services/userInterestsService');
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 Page({
   /**
    * 页面的初始数据
@@ -88,7 +91,9 @@ Page({
     // 监听键盘高度变化
     this.watchKeyboard();
 
-    console.log('页面加载参数:', options);
+    if (isDev) {
+      console.log('页面加载参数:', options);
+    }
     if (options.roleId) {
       this.setData({
         roleId: options.roleId
@@ -112,13 +117,17 @@ Page({
           if (result && result.result && result.result.exists) {
             // 存在历史聊天，先尝试从缓存加载
             const chatId = result.result.chatId;
-            console.log('存在历史聊天:', chatId);
+            if (isDev) {
+              console.log('存在历史聊天:', chatId);
+            }
 
             // 尝试从缓存加载最新消息
             const cachedMessages = chatCacheService.loadMessagesFromCache(chatId || `temp_${options.roleId}`);
 
             if (cachedMessages && cachedMessages.length > 0) {
-              console.log('从缓存加载了最新消息:', cachedMessages.length);
+              if (isDev) {
+                console.log('从缓存加载了最新消息:', cachedMessages.length);
+              }
               this.setData({
                 chatId,
                 messages: cachedMessages,
@@ -136,11 +145,13 @@ Page({
             }
           } else {
             // 不存在历史聊天，创建新的聊天
-            console.log('不存在历史聊天，创建新的聊天');
+            if (isDev) {
+              console.log('不存在历史聊天，创建新的聊天');
+            }
             this.loadChatHistory();
           }
         }).catch(error => {
-          console.error('检查聊天存在失败:', error);
+          console.error('检查聊天存在失败:', error.message || error);
           // 出错时仍然尝试加载聊天历史
           this.loadChatHistory();
         });
@@ -172,7 +183,9 @@ Page({
         null,
         this.data.role
       );
-      console.log('已保存聊天记录到本地缓存');
+      if (isDev) {
+        console.log('已保存聊天记录到本地缓存');
+      }
     }
 
     // 移除键盘监听
@@ -234,7 +247,7 @@ Page({
         throw new Error('获取角色信息失败: ' + JSON.stringify(result.result));
       }
     } catch (error) {
-      console.error('加载角色信息失败:', error);
+      console.error('加载角色信息失败:', error.message || error);
       wx.showToast({
         title: '加载角色信息失败',
         icon: 'none'
@@ -308,7 +321,9 @@ Page({
             // 确保消息有有效的时间戳
             if (!msg.timestamp || isNaN(msg.timestamp) || msg.timestamp === 'NaN') {
               msg.timestamp = Date.now();
-              console.log('修复历史消息时间戳:', msg.timestamp);
+              if (isDev) {
+                console.log('修复历史消息时间戳:', msg.timestamp);
+              }
             }
 
             // 添加时间戳显示标志
@@ -368,7 +383,7 @@ Page({
         throw new Error('获取聊天历史失败');
       }
     } catch (error) {
-      console.error('加载聊天历史失败:', error);
+      console.error('加载聊天历史失败:', error.message || error);
       if (!silentLoad) {
         wx.showToast({
           title: '加载历史失败',
@@ -387,10 +402,14 @@ Page({
       if (this.data.messages.length === 0 && this.data.role && !this.data.fromCache) {
         // 检查是否有聊天ID，如果有则说明是新的聊天
         if (this.data.chatId) {
-          console.log('新的聊天，显示欢迎消息');
+          if (isDev) {
+            console.log('新的聊天，显示欢迎消息');
+          }
           this.addWelcomeMessage();
         } else {
-          console.log('没有聊天ID，不显示欢迎消息');
+          if (isDev) {
+            console.log('没有聊天ID，不显示欢迎消息');
+          }
         }
       }
 
@@ -408,12 +427,16 @@ Page({
 
     // 如果有历史消息且不是强制显示，则不显示欢迎消息
     if (this.data.messages.length > 0 && !force) {
-      console.log('已有历史消息，不显示欢迎消息');
+      if (isDev) {
+        console.log('已有历史消息，不显示欢迎消息');
+      }
       return;
     }
 
     const currentTime = Date.now();
-    console.log('欢迎消息时间戳:', currentTime);
+    if (isDev) {
+      console.log('欢迎消息时间戳:', currentTime);
+    }
 
     // 根据角色类型生成不同的欢迎语
     let welcomeContent = '';
@@ -468,7 +491,9 @@ Page({
     };
 
     // 打印消息对象以检查结构
-    console.log('欢迎消息对象:', welcomeMessage);
+    if (isDev) {
+      console.log('欢迎消息对象:', welcomeMessage);
+    }
 
     // 确保时间戳是数字类型
     if (typeof welcomeMessage.timestamp !== 'number') {
@@ -491,7 +516,9 @@ Page({
 
     // 显示加载状态
     this.setData({ loadingHistory: true });
-    console.log('开始加载更多历史消息');
+    if (isDev) {
+      console.log('开始加载更多历史消息');
+    }
 
     try {
       // 先尝试从缓存加载

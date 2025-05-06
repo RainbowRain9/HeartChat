@@ -10,6 +10,9 @@ const PAGE_SIZE = 20;
 // 最大缓存聊天数
 const MAX_CACHED_CHATS = 10;
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 /**
  * 保存消息到本地缓存
  * @param {string} chatId 聊天ID
@@ -20,7 +23,9 @@ const MAX_CACHED_CHATS = 10;
  */
 function saveMessagesToCache(chatId, messages, isLatest, pageNum, roleInfo) {
   if (!chatId || !messages || messages.length === 0) {
-    console.log('保存缓存参数无效');
+    if (isDev) {
+      console.log('保存缓存参数无效');
+    }
     return;
   }
 
@@ -83,17 +88,21 @@ function saveMessagesToCache(chatId, messages, isLatest, pageNum, roleInfo) {
   // 保存到缓存
   try {
     wx.setStorageSync(cacheKey, chatCache);
-    console.log(`成功保存聊天记录到缓存: ${chatId}, 消息数: ${messages.length}`);
+    if (isDev) {
+      console.log(`成功保存聊天记录到缓存: ${chatId}, 消息数: ${messages.length}`);
+    }
   } catch (error) {
-    console.error('保存聊天记录到缓存失败:', error);
+    console.error('保存聊天记录到缓存失败:', error.message || error);
     // 如果存储失败，可能是缓存已满，尝试清理旧数据
     cleanupOldCache();
     // 再次尝试保存
     try {
       wx.setStorageSync(cacheKey, chatCache);
-      console.log('清理缓存后成功保存');
+      if (isDev) {
+        console.log('清理缓存后成功保存');
+      }
     } catch (e) {
-      console.error('二次尝试保存缓存失败:', e);
+      console.error('二次尝试保存缓存失败:', e.message || e);
     }
   }
 }
@@ -111,7 +120,9 @@ function loadMessagesFromCache(chatId, pageNum) {
   const chatCache = wx.getStorageSync(cacheKey);
 
   if (!chatCache || !chatCache.messages) {
-    console.log(`缓存中没有找到聊天记录: ${chatId}`);
+    if (isDev) {
+      console.log(`缓存中没有找到聊天记录: ${chatId}`);
+    }
     return null;
   }
 
@@ -187,10 +198,12 @@ function updateMessageInCache(chatId, messageId, updates) {
   if (updated) {
     try {
       wx.setStorageSync(cacheKey, chatCache);
-      console.log(`成功更新缓存中的消息: ${messageId}`);
+      if (isDev) {
+        console.log(`成功更新缓存中的消息: ${messageId}`);
+      }
       return true;
     } catch (error) {
-      console.error('更新缓存消息失败:', error);
+      console.error('更新缓存消息失败:', error.message || error);
       return false;
     }
   }
@@ -222,10 +235,12 @@ function cleanupOldCache() {
     const deleteCount = chatKeys.length - MAX_CACHED_CHATS;
     for (let i = 0; i < deleteCount; i++) {
       wx.removeStorageSync(sortedChats[i].key);
-      console.log(`已清理旧聊天记录缓存: ${sortedChats[i].key}`);
+      if (isDev) {
+        console.log(`已清理旧聊天记录缓存: ${sortedChats[i].key}`);
+      }
     }
   } catch (error) {
-    console.error('清理缓存失败:', error);
+    console.error('清理缓存失败:', error.message || error);
   }
 }
 
@@ -239,9 +254,11 @@ function clearChatCache(chatId) {
   const cacheKey = `${CACHE_PREFIX}${chatId}`;
   try {
     wx.removeStorageSync(cacheKey);
-    console.log(`已清除聊天缓存: ${chatId}`);
+    if (isDev) {
+      console.log(`已清除聊天缓存: ${chatId}`);
+    }
   } catch (error) {
-    console.error(`清除聊天缓存失败: ${chatId}`, error);
+    console.error(`清除聊天缓存失败: ${chatId}`, error.message || error);
   }
 }
 
@@ -263,7 +280,7 @@ function getAllCachedChats() {
       };
     }).sort((a, b) => b.lastUpdateTime - a.lastUpdateTime); // 按最后更新时间倒序
   } catch (error) {
-    console.error('获取所有缓存聊天失败:', error);
+    console.error('获取所有缓存聊天失败:', error.message || error);
     return [];
   }
 }

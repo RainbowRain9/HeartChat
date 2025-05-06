@@ -5,6 +5,9 @@
 
 const cloudFuncCaller = require('./cloudFuncCaller');
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 // 缓存相关常量
 const USER_PROFILE_CACHE_KEY = 'user_profile_cache_';
 const CACHE_EXPIRY = 60 * 60 * 1000; // 1小时
@@ -18,7 +21,9 @@ const CACHE_EXPIRY = 60 * 60 * 1000; // 1小时
 async function getUserProfile(userId, forceRefresh = false) {
   try {
     if (!userId) {
-      console.warn('获取用户资料失败: 用户ID为空');
+      if (isDev) {
+        console.warn('获取用户资料失败: 用户ID为空');
+      }
       return null;
     }
 
@@ -26,7 +31,9 @@ async function getUserProfile(userId, forceRefresh = false) {
     if (!forceRefresh) {
       const cachedData = getCachedUserProfile(userId);
       if (cachedData) {
-        console.log('使用缓存的用户资料数据');
+        if (isDev) {
+          console.log('使用缓存的用户资料数据');
+        }
         return cachedData;
       }
     }
@@ -51,11 +58,13 @@ async function getUserProfile(userId, forceRefresh = false) {
       cacheUserProfile(userId, profileData);
       return profileData;
     } else {
-      console.warn('获取用户资料失败:', result.error || '未知错误');
+      if (isDev) {
+        console.warn('获取用户资料失败:', result.error || '未知错误');
+      }
       return null;
     }
   } catch (error) {
-    console.error('获取用户资料异常:', error);
+    console.error('获取用户资料异常:', error.message || error);
     return null;
   }
 }
@@ -96,7 +105,7 @@ async function getUserProfileFromDB(userId) {
       bio: profileData.bio || ''
     };
   } catch (error) {
-    console.error('从数据库获取用户详细资料失败:', error);
+    console.error('从数据库获取用户详细资料失败:', error.message || error);
     return {};
   }
 }
@@ -110,7 +119,9 @@ async function getUserProfileFromDB(userId) {
 async function saveUserProfile(userId, profileData) {
   try {
     if (!userId || !profileData) {
-      console.warn('保存用户资料失败: 参数不完整');
+      if (isDev) {
+        console.warn('保存用户资料失败: 参数不完整');
+      }
       return false;
     }
 
@@ -146,11 +157,13 @@ async function saveUserProfile(userId, profileData) {
 
       return true;
     } else {
-      console.warn('保存用户资料失败:', result.error || '未知错误');
+      if (isDev) {
+        console.warn('保存用户资料失败:', result.error || '未知错误');
+      }
       return false;
     }
   } catch (error) {
-    console.error('保存用户资料异常:', error);
+    console.error('保存用户资料异常:', error.message || error);
     return false;
   }
 }
@@ -186,7 +199,7 @@ function updateLocalUserInfo(profileData) {
       };
     }
   } catch (error) {
-    console.error('更新本地用户信息失败:', error);
+    console.error('更新本地用户信息失败:', error.message || error);
   }
 }
 
@@ -209,7 +222,7 @@ function getCachedUserProfile(userId) {
 
     return cache.data;
   } catch (e) {
-    console.error('解析缓存数据失败:', e);
+    console.error('解析缓存数据失败:', e.message || e);
     return null;
   }
 }
@@ -286,7 +299,7 @@ function getOpenId(userInfo, tryCache = true) {
         openid = cachedOpenid;
       }
     } catch (e) {
-      console.error('从缓存获取openid失败:', e);
+      console.error('从缓存获取openid失败:', e.message || e);
     }
   }
 

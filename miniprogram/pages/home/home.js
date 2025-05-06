@@ -2,6 +2,9 @@
 const app = getApp();
 const userService = require('../../services/userService');
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 Page({
   /**
    * 页面的初始数据
@@ -21,7 +24,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function () {
-    console.log('首页加载，用户信息：', app.globalData.userInfo);
+    if (isDev) {
+      console.log('首页加载，用户信息：', app.globalData.userInfo);
+    }
     // 获取系统信息和导航栏高度
     this.getSystemInfo();
 
@@ -63,13 +68,8 @@ Page({
       app.globalData.navHeight = navBarHeight;
       app.globalData.statusBarHeight = systemInfo.statusBarHeight;
       app.globalData.navTotalHeight = navTotalHeight;
-
-      console.log('系统信息:', systemInfo);
-      console.log('胶囊按钮信息:', menuButtonInfo);
-      console.log('导航栏高度:', navBarHeight);
-      console.log('导航栏总高度:', navTotalHeight);
     } catch (e) {
-      console.error('获取系统信息失败:', e);
+      console.error('获取系统信息失败:', e.message || e);
     }
   },
 
@@ -108,10 +108,14 @@ Page({
 
     // 获取用户ID
     const userInfo = app.globalData.userInfo;
-    console.log('加载最近对话，用户信息：', userInfo);
+    if (isDev) {
+      console.log('加载最近对话，用户信息：', userInfo);
+    }
 
     if (!userInfo) {
-      console.log('用户未登录，无法加载最近对话');
+      if (isDev) {
+        console.log('用户未登录，无法加载最近对话');
+      }
       this.setData({ loading: false });
       return;
     }
@@ -121,21 +125,18 @@ Page({
 
     // 检查用户是否有效
     if (!userService.isValidUser(userInfo)) {
-      console.log('无法获取用户ID或openid，用户信息：', userInfo);
+      if (isDev) {
+        console.log('无法获取用户ID或openid');
+      }
       this.setData({ loading: false });
       return;
     }
-
-    console.log('使用用户ID加载最近对话：', userId, '，openid:', openid);
 
     // 直接从数据库查询最近对话
     const db = wx.cloud.database();
 
     // 使用userService构建查询条件，确保只查询当前用户的聊天记录
     const query = userService.buildUserQuery(userInfo);
-    console.log('使用查询条件:', query);
-
-    console.log('最终查询条件:', query);
 
     // 直接获取所有聊天记录，不使用查询条件，然后在前端过滤
     // 这是一种应急方案，可以确保能看到所有聊天记录
@@ -145,15 +146,21 @@ Page({
       .get()
       .then(async res => {
         let chats = res.data || [];
-        console.log('获取到的原始聊天数据:', chats);
+        if (isDev) {
+          console.log('获取到的原始聊天数据数量:', chats.length);
+        }
 
         // 在前端过滤当前用户的聊天记录
         if (openid) {
           chats = chats.filter(chat => chat.openId === openid);
-          console.log('根据openId过滤后的聊天数据:', chats);
+          if (isDev) {
+            console.log('根据openId过滤后的聊天数据数量:', chats.length);
+          }
         } else if (userId) {
           chats = chats.filter(chat => chat.userId === userId || chat.user_id === userId);
-          console.log('根据userId过滤后的聊天数据:', chats);
+          if (isDev) {
+            console.log('根据userId过滤后的聊天数据数量:', chats.length);
+          }
         }
 
         // 如果没有数据，直接返回
@@ -169,8 +176,6 @@ Page({
         // 注意大小写，兼容roleId和role_id两种形式
         const roleIds = chats.map(chat => chat.roleId || chat.role_id).filter(id => id);
         const uniqueRoleIds = [...new Set(roleIds)];
-
-        console.log('提取的角色ID:', uniqueRoleIds);
 
         // 角色信息映射表
         let roleInfoMap = {};
@@ -189,10 +194,8 @@ Page({
             roleResult.data.forEach(role => {
               roleInfoMap[role._id] = role;
             });
-
-            console.log('获取到的角色信息:', roleInfoMap);
           } catch (error) {
-            console.error('获取角色信息失败:', error);
+            console.error('获取角色信息失败:', error.message || error);
           }
         }
 
@@ -270,7 +273,7 @@ Page({
         });
       })
       .catch(err => {
-        console.error('获取最近对话失败:', err);
+        console.error('获取最近对话失败:', err.message || err);
         this.setData({ loading: false });
       });
   },
@@ -283,10 +286,12 @@ Page({
     wx.switchTab({
       url: '/pages/role-select/role-select',
       success: function() {
-        console.log('成功跳转到角色选择页面');
+        if (isDev) {
+          console.log('成功跳转到角色选择页面');
+        }
       },
       fail: function(err) {
-        console.error('跳转失败:', err);
+        console.error('跳转失败:', err.message || err);
         wx.showToast({
           title: '跳转失败',
           icon: 'none'
@@ -315,7 +320,9 @@ Page({
 
     // 如果有缓存的情绪分析结果，直接使用
     if (cachedEmotionAnalysis && cachedEmotionAnalysis.data) {
-      console.log('使用缓存的情绪分析结果');
+      if (isDev) {
+        console.log('使用缓存的情绪分析结果');
+      }
 
       // 将缓存的情绪分析结果存入全局变量，供情绪分析页面使用
       app.globalData.cachedEmotionAnalysis = cachedEmotionAnalysis;
@@ -324,7 +331,7 @@ Page({
       wx.navigateTo({
         url: '/packageChat/pages/emotion-analysis/emotion-analysis?useCache=true',
         fail: (err) => {
-          console.error('跳转失败:', err);
+          console.error('跳转失败:', err.message || err);
           wx.showToast({
             title: '跳转失败',
             icon: 'none'
@@ -338,7 +345,9 @@ Page({
     }
 
     // 如果没有缓存数据，则查询最近的聊天记录
-    console.log('没有缓存的情绪分析结果，查询最近的聊天记录');
+    if (isDev) {
+      console.log('没有缓存的情绪分析结果，查询最近的聊天记录');
+    }
 
     // 使用userService获取用户ID和openid
     const { userId, openid } = userService.getUserIdentifiers(userInfo);
@@ -395,7 +404,7 @@ Page({
       })
       .catch(err => {
         wx.hideLoading();
-        console.error('获取最近聊天失败:', err);
+        console.error('获取最近聊天失败:', err.message || err);
         // 出错时也直接跳转到情绪分析页面
         wx.navigateTo({
           url: '/packageChat/pages/emotion-analysis/emotion-analysis'
@@ -448,18 +457,20 @@ Page({
 
               try {
                 wx.setStorageSync('latestEmotionAnalysis', finalResult);
-                console.log('后台更新情绪分析缓存成功');
+                if (isDev) {
+                  console.log('后台更新情绪分析缓存成功');
+                }
               } catch (e) {
-                console.error('后台更新情绪分析缓存失败:', e);
+                console.error('后台更新情绪分析缓存失败:', e.message || e);
               }
             }
           }).catch(err => {
-            console.error('后台查询情绪分析失败:', err);
+            console.error('后台查询情绪分析失败:', err.message || err);
           });
         }
       })
       .catch(err => {
-        console.error('后台查询最近聊天失败:', err);
+        console.error('后台查询最近聊天失败:', err.message || err);
       });
   },
 
@@ -495,7 +506,9 @@ Page({
    */
   navigateToChat: function (e) {
     const { chatId, roleId } = e.currentTarget.dataset;
-    console.log('跳转到聊天页面，参数：', chatId, roleId);
+    if (isDev) {
+      console.log('跳转到聊天页面，参数：', chatId, roleId);
+    }
 
     if (!roleId) {
       wx.showToast({
@@ -513,7 +526,9 @@ Page({
       url += `&chatId=${chatId}`;
     }
 
-    console.log('跳转到聊天页面:', url);
+    if (isDev) {
+      console.log('跳转到聊天页面:', url);
+    }
 
     // 将角色ID和聊天ID存入全局变量，确保聊天页面可以获取到正确的角色ID
     app.globalData.chatParams = { roleId: roleId, chatId: chatId };
@@ -524,14 +539,16 @@ Page({
       // 如果找到了对应的聊天记录，将角色信息也存入全局变量
       app.globalData.chatParams.roleName = chat.roleName;
       app.globalData.chatParams.roleAvatar = chat.roleAvatar;
-      console.log('存入全局变量的角色信息:', app.globalData.chatParams);
+      if (isDev) {
+        console.log('存入全局变量的角色信息:', app.globalData.chatParams);
+      }
     }
 
     // 跳转到聊天页面
     wx.navigateTo({
       url: url,
       fail: function(err) {
-        console.error('跳转失败:', err);
+        console.error('跳转失败:', err.message || err);
         wx.showToast({
           title: '跳转失败',
           icon: 'none'

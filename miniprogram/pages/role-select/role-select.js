@@ -2,6 +2,9 @@
 const app = getApp();
 const userService = require('../../services/userService');
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 Page({
   /**
    * 页面的初始数据
@@ -73,9 +76,11 @@ Page({
       (prevPage.route === 'pages/role-editor/index' ||
        prevPage.route === 'pages/user/role/edit/index');
 
-    console.log('当前页面:', currentPage.route);
-    console.log('上一页面:', prevPage ? prevPage.route : '无');
-    console.log('是否从角色编辑页面返回:', fromRoleEditor);
+    if (isDev) {
+      console.log('当前页面:', currentPage.route);
+      console.log('上一页面:', prevPage ? prevPage.route : '无');
+      console.log('是否从角色编辑页面返回:', fromRoleEditor);
+    }
 
     // 每次显示页面时加载角色列表，如果从角色编辑页面返回则强制刷新
     this.loadRoles(null, fromRoleEditor);
@@ -102,7 +107,9 @@ Page({
     // 获取当前用户ID
     const userInfo = app.globalData.userInfo;
     if (!userInfo) {
-      console.log('用户未登录，无法加载角色列表');
+      if (isDev) {
+        console.log('用户未登录，无法加载角色列表');
+      }
       this.setData({ loading: false });
       if (callback) callback();
       return;
@@ -110,10 +117,11 @@ Page({
 
     // 使用userService获取用户ID和openid
     const { userId, openid } = userService.getUserIdentifiers(userInfo);
-    console.log('使用用户ID加载角色列表:', userId);
-
-    if (openid) {
-      console.log('用户openid:', openid);
+    if (isDev) {
+      console.log('使用用户ID加载角色列表:', userId);
+      if (openid) {
+        console.log('用户openid:', openid);
+      }
     }
 
     // 尝试从缓存中获取角色列表
@@ -127,7 +135,9 @@ Page({
     if (!forceRefresh && currentTime - cacheTime < cacheExpireTime) {
       const cachedRoles = wx.getStorageSync(cacheKey);
       if (cachedRoles && cachedRoles.length > 0) {
-        console.log('从缓存加载角色列表，角色数量:', cachedRoles.length);
+        if (isDev) {
+          console.log('从缓存加载角色列表，角色数量:', cachedRoles.length);
+        }
 
         // 分离系统角色和用户角色
         const systemRoles = cachedRoles.filter(role => role.creator === 'system' || role.isSystem);
@@ -154,10 +164,9 @@ Page({
     }
 
     // 缓存不存在或已过期，从服务器获取角色列表
-    console.log('从服务器获取角色列表，参数:', {
-      action: 'getRoles',
-      userId: userId
-    });
+    if (isDev) {
+      console.log('从服务器获取角色列表');
+    }
 
     wx.cloud.callFunction({
       name: 'roles',
@@ -167,17 +176,20 @@ Page({
       }
     })
     .then(res => {
-      console.log('从服务器获取角色列表成功:', res.result);
       let roles = res.result.data || [];
 
-      console.log('角色总数:', roles.length);
+      if (isDev) {
+        console.log('角色总数:', roles.length);
+      }
 
       // 分离系统角色和用户角色
       const systemRoles = roles.filter(role => role.creator === 'system' || role.isSystem);
       const userRoles = roles.filter(role => role.creator !== 'system' && !role.isSystem);
 
-      console.log('系统角色数量:', systemRoles.length);
-      console.log('用户角色数量:', userRoles.length);
+      if (isDev) {
+        console.log('系统角色数量:', systemRoles.length);
+        console.log('用户角色数量:', userRoles.length);
+      }
 
       // 获取聊天记录统计，用于推荐角色 - 考虑所有角色（系统角色和用户角色）
       this.getChatsStatistics(roles, openid || userId, (rolesWithStats) => {
@@ -187,7 +199,9 @@ Page({
         // 将角色列表存入缓存
         wx.setStorageSync(cacheKey, roles);
         wx.setStorageSync(cacheTimeKey, currentTime);
-        console.log('角色列表已缓存，过期时间:', new Date(currentTime + cacheExpireTime));
+        if (isDev) {
+          console.log('角色列表已缓存，过期时间:', new Date(currentTime + cacheExpireTime));
+        }
 
         this.setData({
           roles: roles,
@@ -202,7 +216,7 @@ Page({
       });
     })
     .catch(err => {
-      console.error('获取角色列表失败:', err);
+      console.error('获取角色列表失败:', err.message || err);
       wx.showToast({
         title: '获取角色列表失败',
         icon: 'none'
@@ -220,12 +234,16 @@ Page({
    */
   getChatsStatistics: function(roles, userId, callback) {
     if (!roles || roles.length === 0) {
-      console.log('角色列表为空，无法获取聊天统计');
+      if (isDev) {
+        console.log('角色列表为空，无法获取聊天统计');
+      }
       callback(roles);
       return;
     }
 
-    console.log('开始获取聊天记录统计...');
+    if (isDev) {
+      console.log('开始获取聊天记录统计...');
+    }
     const db = wx.cloud.database();
 
     // 查询所有聊天记录
@@ -236,7 +254,9 @@ Page({
       .get()
       .then(res => {
         const chats = res.data || [];
-        console.log(`获取到 ${chats.length} 条聊天记录`);
+        if (isDev) {
+          console.log(`获取到 ${chats.length} 条聊天记录`);
+        }
 
         // 创建角色消息数量映射
         const roleMessageCounts = {};
@@ -251,15 +271,15 @@ Page({
           }
         });
 
-        console.log('角色消息数量统计:', roleMessageCounts);
-
         // 记录消息数量最多的前5个角色
         const topRoleIds = Object.entries(roleMessageCounts)
           .sort((a, b) => b[1] - a[1])
           .slice(0, 5)
           .map(entry => entry[0]);
 
-        console.log('消息数量最多的前5个角色ID:', topRoleIds);
+        if (isDev) {
+          console.log('消息数量最多的前5个角色ID:', topRoleIds);
+        }
 
         // 将消息数量添加到角色对象中
         const rolesWithStats = roles.map(role => {
@@ -274,14 +294,14 @@ Page({
           roleId => !roles.some(role => role._id === roleId)
         );
 
-        if (missingRoleIds.length > 0) {
+        if (missingRoleIds.length > 0 && isDev) {
           console.warn('以下角色ID在聊天统计中存在，但不在角色列表中:', missingRoleIds);
         }
 
         callback(rolesWithStats);
       })
       .catch(err => {
-        console.error('获取聊天记录统计失败:', err);
+        console.error('获取聊天记录统计失败:', err.message || err);
         // 出错时仍然返回原始角色列表
         callback(roles);
       });
@@ -302,11 +322,13 @@ Page({
       return (b.messageCount || 0) - (a.messageCount || 0);
     });
 
-    console.log('按消息数量排序后的前5个角色:', sortedRoles.slice(0, 5).map(role => ({
-      id: role._id,
-      name: role.name,
-      messageCount: role.messageCount || 0
-    })));
+    if (isDev) {
+      console.log('按消息数量排序后的前5个角色:', sortedRoles.slice(0, 5).map(role => ({
+        id: role._id,
+        name: role.name,
+        messageCount: role.messageCount || 0
+      })));
+    }
 
     // 选择前两个有消息记录的角色作为推荐角色，不区分系统角色和用户角色
     const recommendedRoles = sortedRoles

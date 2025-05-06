@@ -7,6 +7,9 @@
 const cloudFuncCaller = require('./cloudFuncCaller');
 const userService = require('./userService');
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 /**
  * 分析用户关注点
  * @param {string} userId 用户ID，默认为当前登录用户
@@ -25,7 +28,9 @@ async function analyzeFocusPoints(userId = null, keywords = null, emotionRecords
 
     // 验证用户ID
     if (!userId) {
-      console.warn('分析用户关注点失败: 用户ID为空');
+      if (isDev) {
+        console.warn('分析用户关注点失败: 用户ID为空');
+      }
       return {
         success: false,
         error: '用户ID不能为空'
@@ -54,13 +59,15 @@ async function analyzeFocusPoints(userId = null, keywords = null, emotionRecords
     }
 
     // 调用云函数
-    console.log('调用云函数分析用户关注点:', params);
+    if (isDev) {
+      console.log('调用云函数分析用户关注点:', params);
+    }
     const result = await cloudFuncCaller.callCloudFunc('analysis', params);
 
     // 返回结果
     return result;
   } catch (error) {
-    console.error('分析用户关注点异常:', error);
+    console.error('分析用户关注点异常:', error.message || error);
     return {
       success: false,
       error: error.message || '分析用户关注点失败'
@@ -85,7 +92,9 @@ async function getUserFocusPoints(userId = null, date = null, forceRefresh = fal
 
     // 验证用户ID
     if (!userId) {
-      console.warn('获取用户关注点失败: 用户ID为空');
+      if (isDev) {
+        console.warn('获取用户关注点失败: 用户ID为空');
+      }
       return {
         success: false,
         error: '用户ID不能为空'
@@ -96,7 +105,9 @@ async function getUserFocusPoints(userId = null, date = null, forceRefresh = fal
     if (!forceRefresh) {
       const cachedData = getCachedFocusPoints(userId, date);
       if (cachedData) {
-        console.log('使用缓存的用户关注点数据');
+        if (isDev) {
+          console.log('使用缓存的用户关注点数据');
+        }
         return cachedData;
       }
     }
@@ -112,7 +123,7 @@ async function getUserFocusPoints(userId = null, date = null, forceRefresh = fal
     // 返回结果
     return result;
   } catch (error) {
-    console.error('获取用户关注点异常:', error);
+    console.error('获取用户关注点异常:', error.message || error);
     return {
       success: false,
       error: error.message || '获取用户关注点失败'
@@ -134,7 +145,7 @@ function getCachedFocusPoints(userId, date) {
   // 生成缓存键
   const dateStr = date ? new Date(date).toISOString().split('T')[0] : 'latest';
   const cacheKey = `${CACHE_KEY_PREFIX}${userId}_${dateStr}`;
-  
+
   const cacheString = wx.getStorageSync(cacheKey);
   if (!cacheString) return null;
 
@@ -150,7 +161,7 @@ function getCachedFocusPoints(userId, date) {
       data: cache.data
     };
   } catch (e) {
-    console.error('解析缓存数据失败:', e);
+    console.error('解析缓存数据失败:', e.message || e);
     return null;
   }
 }
@@ -165,7 +176,7 @@ function cacheFocusPoints(userId, data, date) {
   // 生成缓存键
   const dateStr = date ? new Date(date).toISOString().split('T')[0] : 'latest';
   const cacheKey = `${CACHE_KEY_PREFIX}${userId}_${dateStr}`;
-  
+
   const cacheData = {
     timestamp: Date.now(),
     data: data
@@ -174,7 +185,7 @@ function cacheFocusPoints(userId, data, date) {
   try {
     wx.setStorageSync(cacheKey, JSON.stringify(cacheData));
   } catch (e) {
-    console.error('缓存关注点数据失败:', e);
+    console.error('缓存关注点数据失败:', e.message || e);
   }
 }
 
@@ -200,7 +211,7 @@ function clearFocusPointsCache(userId, date) {
         }
       });
     } catch (e) {
-      console.error('清除关注点缓存失败:', e);
+      console.error('清除关注点缓存失败:', e.message || e);
     }
   }
 }

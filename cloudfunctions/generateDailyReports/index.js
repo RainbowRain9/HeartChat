@@ -8,6 +8,9 @@ cloud.init({
 const db = cloud.database()
 const _ = db.command
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 // 云函数入口函数
 exports.main = async (event, context) => {
   try {
@@ -15,7 +18,7 @@ exports.main = async (event, context) => {
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 1)
     yesterday.setHours(0, 0, 0, 0)
-    
+
     // 查询有情感记录的活跃用户
     const activeUsers = await db.collection('emotionRecords')
       .aggregate()
@@ -31,9 +34,11 @@ exports.main = async (event, context) => {
       })
       .limit(100) // 限制处理用户数量
       .end()
-    
-    console.log(`找到 ${activeUsers.list.length} 个活跃用户`);
-    
+
+    if (isDev) {
+      console.log(`找到 ${activeUsers.list.length} 个活跃用户`);
+    }
+
     // 为每个用户生成报告
     const results = []
     for (const user of activeUsers.list) {
@@ -47,13 +52,13 @@ exports.main = async (event, context) => {
             date: yesterday
           }
         })
-        
+
         results.push({
           userId: user._id,
           success: result.result.success,
           reportId: result.result.reportId
         })
-        
+
         // 如果成功生成报告且用户开启了通知，发送订阅消息
         if (result.result.success && result.result.isNew) {
           try {
@@ -62,30 +67,30 @@ exports.main = async (event, context) => {
               .where({ _id: user._id })
               .field({ reportSettings: 1 })
               .get()
-            
-            if (userInfo.data.length > 0 && 
-                userInfo.data[0].reportSettings && 
+
+            if (userInfo.data.length > 0 &&
+                userInfo.data[0].reportSettings &&
                 userInfo.data[0].reportSettings.notificationEnabled) {
               // 发送订阅消息通知
               await sendReportNotification(user._id, result.result.reportId)
             }
           } catch (notifyError) {
-            console.error(`发送通知失败 (userId: ${user._id}):`, notifyError)
+            console.error(`发送通知失败 (userId: ${user._id}):`, notifyError.message || notifyError)
           }
         }
       } catch (error) {
-        console.error(`为用户 ${user._id} 生成报告失败:`, error)
+        console.error(`为用户 ${user._id} 生成报告失败:`, error.message || error)
         results.push({
           userId: user._id,
           success: false,
-          error: error.message
+          error: error.message || '生成报告失败'
         })
       }
-      
+
       // 添加延迟，避免API调用过于频繁
       await new Promise(resolve => setTimeout(resolve, 500))
     }
-    
+
     return {
       success: true,
       results: results,
@@ -93,10 +98,10 @@ exports.main = async (event, context) => {
       successCount: results.filter(r => r.success).length
     }
   } catch (error) {
-    console.error('批量生成每日报告失败:', error)
+    console.error('批量生成每日报告失败:', error.message || error)
     return {
       success: false,
-      error: error.message
+      error: error.message || '批量生成每日报告失败'
     }
   }
 }
@@ -112,35 +117,41 @@ async function sendReportNotification(userId, reportId) {
     const { data: config } = await db.collection('sys_config')
       .where({ configKey: 'report_template_id' })
       .get()
-    
+
     if (!config || config.length === 0) {
-      console.log('未找到订阅消息模板ID配置')
+      if (isDev) {
+        console.log('未找到订阅消息模板ID配置')
+      }
       return
     }
-    
+
     const templateId = config[0].configValue
-    
+
     // 查询用户的openid
     const { data: user } = await db.collection('users')
       .where({ _id: userId })
       .field({ openid: 1 })
       .get()
-    
+
     if (!user || user.length === 0 || !user[0].openid) {
-      console.log(`未找到用户 ${userId} 的openid`)
+      if (isDev) {
+        console.log(`未找到用户 ${userId} 的openid`)
+      }
       return
     }
-    
+
     // 查询报告内容
     const { data: report } = await db.collection('userReports')
       .doc(reportId)
       .get()
-    
+
     if (!report) {
-      console.log(`未找到报告 ${reportId}`)
+      if (isDev) {
+        console.log(`未找到报告 ${reportId}`)
+      }
       return
     }
-    
+
     // 发送订阅消息
     const result = await cloud.openapi.subscribeMessage.send({
       touser: user[0].openid,
@@ -154,11 +165,13 @@ async function sendReportNotification(userId, reportId) {
         thing5: { value: '点击查看详情' }
       }
     })
-    
-    console.log(`发送通知结果 (userId: ${userId}):`, result)
+
+    if (isDev) {
+      console.log(`发送通知结果 (userId: ${userId}):`, result)
+    }
     return result
   } catch (error) {
-    console.error('发送报告通知失败:', error)
+    console.error('发送报告通知失败:', error.message || error)
     // 不抛出异常，避免影响主流程
   }
 }

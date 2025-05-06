@@ -3,6 +3,9 @@
  * 提供情感分析相关功能
  */
 
+// 是否为开发环境，控制日志输出
+const isDev = false; // 设置为true可以开启详细日志
+
 // 情感类型枚举
 const EmotionTypes = {
   JOY: '喜悦',
@@ -179,7 +182,9 @@ async function analyzeEmotion(text, options = {}) {
   try {
     // 验证参数
     if (!text || typeof text !== 'string' || text.trim() === '') {
-      console.warn('情感分析文本为空');
+      if (isDev) {
+        console.warn('情感分析文本为空');
+      }
       return createDefaultResult();
     }
 
@@ -200,7 +205,9 @@ async function analyzeEmotion(text, options = {}) {
       callParams.history = options.history;
     }
 
-    console.log('发送到云函数的参数:', callParams);
+    if (isDev) {
+      console.log('发送到云函数的参数:', callParams);
+    }
 
     // 调用 analysis 云函数
     const result = await wx.cloud.callFunction({
@@ -223,7 +230,9 @@ async function analyzeEmotion(text, options = {}) {
 
       // 如果有数据，就使用这些数据
       if (result.result.data) {
-        console.log('尝试使用云函数返回的部分数据:', result.result.data);
+        if (isDev) {
+          console.log('尝试使用云函数返回的部分数据');
+        }
         return {
           success: true,
           data: result.result.data
@@ -234,17 +243,15 @@ async function analyzeEmotion(text, options = {}) {
       return createDefaultResult();
     }
 
-    console.log('使用 analysis 云函数分析成功:', result.result);
+    if (isDev) {
+      console.log('使用 analysis 云函数分析成功');
+    }
 
     // 返回分析结果和记录ID（如果有）
     const analysisResult = result.result.result || result.result.data || {};
-    console.log('从云函数返回的原始结果:', analysisResult);
 
     // 如果有关键词，将关键词添加到结果中
     const keywords = result.result.keywords || [];
-    if (keywords.length > 0) {
-      console.log('从云函数返回的关键词:', keywords);
-    }
 
     // 构建完整的结果对象
     const finalResult = {
@@ -260,14 +267,16 @@ async function analyzeEmotion(text, options = {}) {
     // 保存最新的情绪分析结果到本地缓存
     try {
       wx.setStorageSync('latestEmotionAnalysis', finalResult);
-      console.log('已将最新情绪分析结果保存到本地缓存');
+      if (isDev) {
+        console.log('已将最新情绪分析结果保存到本地缓存');
+      }
     } catch (e) {
-      console.error('保存情绪分析结果到本地缓存失败:', e);
+      console.error('保存情绪分析结果到本地缓存失败:', e.message || e);
     }
 
     return finalResult;
   } catch (error) {
-    console.error('情感分析调用失败:', error);
+    console.error('情感分析调用失败:', error.message || error);
     return createDefaultResult();
   }
 }
@@ -331,7 +340,7 @@ async function saveEmotionRecord(emotionData) {
     });
     return result._id;
   } catch (error) {
-    console.error('保存情感记录失败:', error);
+    console.error('保存情感记录失败:', error.message || error);
     throw error;
   }
 }
@@ -344,7 +353,9 @@ async function saveEmotionRecord(emotionData) {
  * @returns {Promise<Array>} 情感历史记录
  */
 async function getEmotionHistory(userId, roleId = null, limit = 10) {
-  console.log('开始获取情感历史记录, 参数:', { userId, roleId, limit });
+  if (isDev) {
+    console.log('开始获取情感历史记录, 参数:', { userId, roleId, limit });
+  }
 
   if (!userId) {
     console.error('获取情感历史记录失败: 用户ID不能为空');
@@ -359,7 +370,9 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
     }
 
     // 尝试使用云函数查询
-    console.log('尝试使用云函数查询情绪历史记录');
+    if (isDev) {
+      console.log('尝试使用云函数查询情绪历史记录');
+    }
 
     // 初始化云环境（如果需要）
     if (!wx.cloud.inited) {
@@ -368,9 +381,11 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
           env: 'rainbowrain-2gt3j8hda726e4fe', // 使用您的实际环境ID
           traceUser: true
         });
-        console.log('云环境初始化成功');
+        if (isDev) {
+          console.log('云环境初始化成功');
+        }
       } catch (initError) {
-        console.error('云环境初始化失败:', initError);
+        console.error('云环境初始化失败:', initError.message || initError);
       }
     }
 
@@ -385,16 +400,20 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
         }
       });
 
-      console.log('云函数返回结果:', JSON.stringify(result));
+      if (isDev) {
+        console.log('云函数返回结果成功');
+      }
     } catch (cloudError) {
-      console.error('调用云函数失败:', cloudError);
+      console.error('调用云函数失败:', cloudError.message || cloudError);
       // 不抛出错误，而是让代码继续执行到备用方案
       result = { result: { success: false, error: cloudError } };
     }
 
     if (result && result.result && result.result.success) {
       const records = result.result.data || [];
-      console.log('云函数获取情绪历史记录成功, 数量:', records.length);
+      if (isDev) {
+        console.log('云函数获取情绪历史记录成功, 数量:', records.length);
+      }
 
       // 处理返回的数据，确保字段格式一致
       const processedData = records.map(record => {
@@ -416,10 +435,10 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
 
       return processedData;
     } else {
-      console.error('云函数返回错误:', result && result.result ? result.result.error : '未知错误');
-
-      // 如果云函数失败，尝试直接使用数据库查询
-      console.log('尝试直接使用数据库查询作为备用方案');
+      if (isDev) {
+        console.error('云函数返回错误:', result && result.result ? result.result.error : '未知错误');
+        console.log('尝试直接使用数据库查询作为备用方案');
+      }
 
       const db = wx.cloud.database();
 
@@ -432,7 +451,9 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
           whereStr += ` && roleId=="${roleId}"`;
         }
 
-        console.log('字符串查询条件:', whereStr);
+        if (isDev) {
+          console.log('字符串查询条件:', whereStr);
+        }
 
         // 查询记录
         dbResult = await db.collection('emotionRecords')
@@ -441,9 +462,11 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
           .limit(limit)
           .get();
 
-        console.log('字符串查询结果数量:', dbResult.data.length);
+        if (isDev && dbResult && dbResult.data) {
+          console.log('字符串查询结果数量:', dbResult.data.length);
+        }
       } catch (stringQueryError) {
-        console.error('字符串查询失败:', stringQueryError);
+        console.error('字符串查询失败:', stringQueryError.message || stringQueryError);
 
         // 如果字符串查询失败，尝试使用对象查询
         try {
@@ -452,7 +475,9 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
             query.roleId = roleId;
           }
 
-          console.log('对象查询条件:', query);
+          if (isDev) {
+            console.log('对象查询条件:', query);
+          }
 
           dbResult = await db.collection('emotionRecords')
             .where(query)
@@ -460,9 +485,11 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
             .limit(limit)
             .get();
 
-          console.log('对象查询结果数量:', dbResult.data.length);
+          if (isDev && dbResult && dbResult.data) {
+            console.log('对象查询结果数量:', dbResult.data.length);
+          }
         } catch (objectQueryError) {
-          console.error('对象查询失败:', objectQueryError);
+          console.error('对象查询失败:', objectQueryError.message || objectQueryError);
 
           // 如果两种查询都失败，返回空数组
           return [];
@@ -475,7 +502,9 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
         return [];
       }
 
-      console.log('备用查询获取情感历史记录成功, 数量:', dbResult.data.length);
+      if (isDev) {
+        console.log('备用查询获取情感历史记录成功, 数量:', dbResult.data.length);
+      }
 
       // 处理返回的数据，确保字段格式一致
       const processedData = dbResult.data.map(record => {
@@ -498,10 +527,12 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
       return processedData;
     }
   } catch (error) {
-    console.error('获取情感历史记录失败:', error);
+    console.error('获取情感历史记录失败:', error.message || error);
 
     // 返回空数组
-    console.log('没有找到情绪历史记录');
+    if (isDev) {
+      console.log('没有找到情绪历史记录');
+    }
     return [];
   }
 }
