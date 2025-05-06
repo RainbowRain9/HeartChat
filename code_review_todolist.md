@@ -70,7 +70,7 @@
 - [x] miniprogram/pages/prompt-editor/prompt-editor.wxml
 - [x] miniprogram/pages/prompt-editor/prompt-editor.wxss
 
-- [x] miniprogram/pages/emotionVault/emotionVault.js
+- [✓] miniprogram/pages/emotionVault/emotionVault.js
 - [x] miniprogram/pages/emotionVault/emotionVault.json
 - [x] miniprogram/pages/emotionVault/emotionVault.wxml
 - [x] miniprogram/pages/emotionVault/emotionVault.wxss
@@ -202,7 +202,7 @@
 ### 工具（Utils）
 
 - [ ] miniprogram/utils/emotionAnalyzer.js
-- [ ] miniprogram/utils/emotionHelper.js
+- [✓] miniprogram/utils/emotionHelper.js
 - [ ] miniprogram/utils/stats.js
 - [ ] miniprogram/utils/auth.js
 - [ ] miniprogram/utils/request.js
@@ -210,6 +210,10 @@
 - [ ] miniprogram/utils/storage.js
 - [ ] miniprogram/utils/formatter.js
 - [ ] miniprogram/utils/keywordClassifier.js
+- [✓] miniprogram/utils/dbHelper.js
+- [✓] miniprogram/utils/chatHelper.js
+- [✓] miniprogram/utils/roleHelper.js
+- [✓] miniprogram/utils/uiHelper.js
 
 ### 配置（Config）
 

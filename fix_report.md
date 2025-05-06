@@ -107,11 +107,25 @@
   - 验证了 agent-ui 组件的路径是否正确
   - 确认了 emotionVault 目录和相关组件的存在
   - 确保了 app.json 中引用的组件路径正确
+- ✅ 优化 home.js 中的代码结构
+  - 优化了第140-157行的查询逻辑，使用数据库查询条件直接获取当前用户的聊天记录，减少数据传输量
+  - 将第168-197行的角色信息获取逻辑抽取为 fetchRoleInfoMap 方法，提高代码可读性和可维护性
+  - 将第200-225行的时间格式化逻辑抽取为 formatChatTime 方法，提高代码可读性和可维护性
+  - 将第227-249行的角色信息处理逻辑抽取为 processRoleInfo 方法，提高代码可读性和可维护性
+  - 添加了详细的 JSDoc 注释，提高代码可读性
+  - 统一了错误处理方式，创建了通用的 navigate 方法，用于处理所有导航操作的错误处理
+  - 修改了所有导航方法，使用通用的 navigate 方法，减少重复代码
 
 ## 待修复的问题
 
 ### 1. 文件过长问题
-- ⬜ miniprogram/pages/emotionVault/emotionVault.js (2201行)
+- ✅ miniprogram/pages/emotionVault/emotionVault.js (2201行 -> 993行)
+  - 创建了 dbHelper.js - 数据库操作相关功能
+  - 创建了 emotionHelper.js - 情感分析相关功能
+  - 创建了 chatHelper.js - 聊天相关功能
+  - 创建了 roleHelper.js - 角色管理相关功能
+  - 创建了 uiHelper.js - 界面交互相关功能
+  - 重构后文件行数减少了1208行（55%）
 - ⬜ miniprogram/pages/emotionVault/emotionVault.wxss (1905行)
 - ⬜ miniprogram/packageEmotion/pages/emotion-history/emotion-history.js (1692行)
 - ⬜ miniprogram/packageChat/pages/chat/chat.js (1911行)

@@ -26,51 +26,73 @@ let isRecording = false;
  * @private
  */
 function initRecorderManager() {
-  if (recorderManager) return;
+  // 如果已经初始化过，直接返回
+  if (recorderManager) {
+    console.log('录音管理器已初始化，直接使用');
+    return recorderManager;
+  }
 
-  recorderManager = wx.getRecorderManager();
+  try {
+    // 获取录音管理器
+    recorderManager = wx.getRecorderManager();
+    console.log('初始化录音管理器成功');
 
-  // 监听录音开始事件
-  recorderManager.onStart(() => {
-    if (isDev) console.log('录音开始');
-    isRecording = true;
-    recognitionResult = ''; // 重置识别结果
-  });
+    // 监听录音开始事件
+    recorderManager.onStart(() => {
+      console.log('录音开始事件触发');
+      isRecording = true;
+      recognitionResult = ''; // 重置识别结果
 
-  // 监听录音结束事件
-  recorderManager.onStop((res) => {
-    if (isDev) console.log('录音结束', res);
-    isRecording = false;
+      // 立即发送业务参数帧，不等待WebSocket连接成功
+      if (socketTask && socketTask.readyState === 1) {
+        sendBusinessParamsFrame();
+      }
+    });
 
-    // 发送结束帧
-    if (socketTask && socketTask.readyState === 1) {
-      sendEndFrame();
-    }
-  });
+    // 监听录音结束事件
+    recorderManager.onStop((res) => {
+      console.log('录音结束事件触发', res);
+      isRecording = false;
 
-  // 监听录音错误事件
-  recorderManager.onError((err) => {
-    console.error('录音错误', err);
-    isRecording = false;
+      // 发送结束帧
+      if (socketTask && socketTask.readyState === 1) {
+        sendEndFrame();
+      }
+    });
 
-    if (errorCallback) {
-      errorCallback(err);
-    }
+    // 监听录音错误事件
+    recorderManager.onError((err) => {
+      console.error('录音错误事件触发', err);
+      isRecording = false;
 
-    // 关闭WebSocket连接
-    closeSocketConnection();
-  });
+      if (errorCallback) {
+        errorCallback(err);
+      }
 
-  // 监听录音帧数据事件
-  recorderManager.onFrameRecorded((res) => {
-    if (!socketTask || socketTask.readyState !== 1) return;
+      // 关闭WebSocket连接
+      closeSocketConnection();
+    });
 
-    // 将音频数据发送到讯飞服务器
-    if (res.frameBuffer && res.frameBuffer.byteLength > 0) {
-      sendAudioFrame(res.frameBuffer);
-    }
-  });
+    // 监听录音帧数据事件
+    recorderManager.onFrameRecorded((res) => {
+      if (!socketTask || socketTask.readyState !== 1) return;
+
+      // 将音频数据发送到讯飞服务器
+      if (res.frameBuffer && res.frameBuffer.byteLength > 0) {
+        // 立即发送音频数据
+        sendAudioFrame(res.frameBuffer);
+      }
+    });
+
+    return recorderManager;
+  } catch (err) {
+    console.error('初始化录音管理器失败', err);
+    throw err;
+  }
 }
+
+// 提前初始化录音管理器，减少首次使用时的延迟
+initRecorderManager();
 
 /**
  * 获取讯飞WebSocket URL
@@ -104,9 +126,14 @@ function connectWebSocket(url) {
   // 关闭已有连接
   closeSocketConnection();
 
-  // 创建新连接
+  // 创建新连接，使用更高优先级
   socketTask = wx.connectSocket({
     url: url,
+    header: {
+      'content-type': 'application/json'
+    },
+    tcpNoDelay: true, // 启用TCP_NODELAY，减少延迟
+    perMessageDeflate: false, // 禁用消息压缩，减少处理时间
     success: () => {
       if (isDev) console.log('WebSocket连接创建成功');
     },
@@ -123,6 +150,10 @@ function connectWebSocket(url) {
     if (isDev) console.log('WebSocket连接已打开');
     // 发送业务参数帧
     sendBusinessParamsFrame();
+
+    // 发送一些静音帧，帮助语音识别系统预热
+    // 这样可以确保开头的内容不会被截断
+    sendSilentFrames();
   });
 
   // 监听连接关闭事件
@@ -139,9 +170,12 @@ function connectWebSocket(url) {
     }
   });
 
-  // 监听消息事件
+  // 监听消息事件，优化处理逻辑
   socketTask.onMessage((res) => {
-    handleRecognitionResult(res.data);
+    // 立即处理识别结果
+    if (res.data) {
+      handleRecognitionResult(res.data);
+    }
   });
 }
 
@@ -209,6 +243,46 @@ function sendAudioFrame(buffer) {
 }
 
 /**
+ * 发送静音帧，帮助语音识别系统预热
+ * @private
+ */
+function sendSilentFrames() {
+  if (!socketTask || socketTask.readyState !== 1) return;
+
+  console.log('发送静音帧预热');
+
+  // 创建一个包含500ms静音的音频帧
+  // 16000采样率 * 0.5秒 * 2字节/样本 = 16000字节
+  const frameSize = 16000;
+  const silentBuffer = new ArrayBuffer(frameSize);
+  const silentView = new Uint8Array(silentBuffer);
+
+  // 填充静音数据（PCM格式的静音是0）
+  for (let i = 0; i < frameSize; i++) {
+    silentView[i] = 0;
+  }
+
+  // 发送静音帧
+  const frame = {
+    data: {
+      status: 1, // 1表示还有后续帧
+      format: 'audio/L16;rate=16000',
+      encoding: 'raw',
+      audio: wx.arrayBufferToBase64(silentBuffer)
+    }
+  };
+
+  socketTask.send({
+    data: JSON.stringify(frame),
+    fail: (err) => {
+      console.error('发送静音帧失败', err);
+    }
+  });
+
+  console.log('静音帧发送完成');
+}
+
+/**
  * 发送结束帧
  * @private
  */
@@ -272,19 +346,30 @@ function handleRecognitionResult(data) {
         recognitionResult += text;
       }
 
-      // 回调中间结果
-      if (resultCallback) {
+      // 立即回调中间结果，不等待
+      if (resultCallback && recognitionResult) {
         resultCallback(recognitionResult);
       }
 
       // 如果是最终结果
       if (result.data.status === 2) {
-        if (finalResultCallback) {
-          finalResultCallback(recognitionResult);
-        }
+        // 确保有最终结果再回调
+        if (finalResultCallback && recognitionResult) {
+          // 延迟回调最终结果，确保所有数据都已处理
+          setTimeout(() => {
+            finalResultCallback(recognitionResult);
 
-        // 关闭连接
-        closeSocketConnection();
+            // 进一步延迟关闭连接，确保数据都已处理
+            setTimeout(() => {
+              closeSocketConnection();
+            }, 200);
+          }, 200);
+        } else {
+          // 延迟关闭连接
+          setTimeout(() => {
+            closeSocketConnection();
+          }, 200);
+        }
       }
     }
   } catch (error) {
@@ -318,29 +403,45 @@ function closeSocketConnection() {
  */
 async function startRecognition(onResult, onError, onFinalResult) {
   try {
+    console.log('开始语音识别流程');
+
     // 保存回调函数
     resultCallback = onResult;
     errorCallback = onError;
     finalResultCallback = onFinalResult;
 
-    // 初始化录音管理器
-    initRecorderManager();
+    // 重置识别结果
+    recognitionResult = '';
+
+    // 确保录音管理器已初始化
+    if (!recorderManager) {
+      initRecorderManager();
+    }
 
     // 获取WebSocket URL
     const url = await getWebSocketUrl();
+    console.log('获取WebSocket URL成功');
 
     // 建立WebSocket连接
     connectWebSocket(url);
 
-    // 开始录音
+    // 添加前置静音缓冲区
+    // 在实际开始录音前，先添加一段静音，给语音识别系统预热时间
+    // 这样可以确保开头的内容不会被截断
+    console.log('准备开始录音');
+
+    // 开始录音，优化参数确保捕获完整语音
     recorderManager.start({
       duration: 60000, // 最长录音时间，单位ms
       sampleRate: 16000, // 采样率
       numberOfChannels: 1, // 录音通道数
       encodeBitRate: 48000, // 编码码率，必须在24000-96000之间
       format: 'pcm', // 音频格式
-      frameSize: 5 // 指定帧大小，单位KB
+      frameSize: 1, // 使用最小帧大小，提高响应速度和捕获率
+      audioSource: 'auto', // 自动选择音频源
     });
+
+    console.log('录音启动命令已发送');
   } catch (error) {
     console.error('开始语音识别失败', error);
     if (errorCallback) {
@@ -353,9 +454,20 @@ async function startRecognition(onResult, onError, onFinalResult) {
  * 停止语音识别
  */
 function stopRecognition() {
-  if (isRecording && recorderManager) {
+  console.log('停止语音识别函数被调用');
+
+  if (recorderManager) {
+    console.log('停止录音');
+
+    // 直接停止录音，不再添加额外延迟
+    // 组件中已经添加了足够的延迟
     recorderManager.stop();
+    console.log('录音停止命令已发送');
+
+    // 不要立即关闭连接，让识别结果回调处理关闭连接
   } else {
+    console.warn('录音管理器不存在，无法停止录音');
+    // 关闭WebSocket连接
     closeSocketConnection();
   }
 }

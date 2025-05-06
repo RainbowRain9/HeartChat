@@ -47,11 +47,111 @@
   box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.03) inset; /* 内阴影增强层次感 */
 }
 
+/* 语音录音按钮 - 添加滑出区域提示 */
+.voice-record-button {
+  flex: 1;
+  height: 72rpx;
+  background-color: #f5f5f7;
+  border-radius: 36rpx;
+  margin: 0 20rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28rpx;
+  color: #666666;
+  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.03) inset;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: visible; /* 改为visible，让提示箭头可见 */
+}
+
+.voice-record-button:active {
+  background-color: #e0e0e0;
+}
+
+/* 上滑取消提示 */
+.voice-record-button::before {
+  content: "";
+  position: absolute;
+  top: -10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30rpx;
+  height: 30rpx;
+  background-color: rgba(74, 108, 247, 0.2);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.voice-record-button:active::before {
+  opacity: 1;
+  animation: upArrow 1.5s infinite;
+}
+
+/* 滑出区域提示 - 四个方向的箭头 */
+.voice-record-button::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  border: 2rpx dashed transparent;
+  border-radius: 36rpx;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.voice-record-button:active::after {
+  border-color: rgba(255, 77, 79, 0.5);
+  box-shadow: 0 0 0 4rpx rgba(255, 77, 79, 0.1);
+  opacity: 1;
+  animation: borderPulse 1.5s infinite;
+}
+
+@keyframes borderPulse {
+  0%, 100% {
+    border-color: rgba(255, 77, 79, 0.5);
+    box-shadow: 0 0 0 4rpx rgba(255, 77, 79, 0.1);
+  }
+  50% {
+    border-color: rgba(255, 77, 79, 0.8);
+    box-shadow: 0 0 0 6rpx rgba(255, 77, 79, 0.2);
+  }
+}
+
+@keyframes upArrow {
+  0% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-20rpx);
+    opacity: 0;
+  }
+}
+
 /* 暗夜模式 - 输入框 */
 .dark .text-input {
   background-color: #343a40;
   color: #f8f9fa;
   box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1) inset;
+}
+
+/* 暗夜模式 - 语音录音按钮 */
+.dark .voice-record-button {
+  background-color: #343a40;
+  color: #adb5bd;
+  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1) inset;
+}
+
+.dark .voice-record-button:active {
+  background-color: #212529;
 }
 
 .send-button {
@@ -88,6 +188,21 @@
   align-items: center;
   justify-content: center;
   height: 200rpx;
+  position: relative;
+}
+
+.recording-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.2s ease;
+}
+
+.recording-content.hidden {
+  opacity: 0;
 }
 
 .recording-hint {
@@ -125,55 +240,59 @@
   color: #adb5bd;
 }
 
-/* 语音识别结果容器 */
-.recognition-container {
+/* 语音识别中状态 */
+.recognition-processing {
   display: flex;
   flex-direction: column;
-  padding: 20rpx 0;
+  align-items: center;
+  justify-content: center;
+  height: 120rpx;
 }
 
-.recognition-text {
-  font-size: 28rpx;
-  color: #333333;
-  background-color: #f5f5f7;
-  border-radius: 36rpx;
-  padding: 20rpx 24rpx;
-  margin-bottom: 20rpx;
-  min-height: 72rpx;
-  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.03) inset;
-}
-
-.dark .recognition-text {
-  background-color: #343a40;
-  color: #f8f9fa;
-  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1) inset;
-}
-
-.recognition-actions {
+.recognition-loading {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10rpx;
 }
 
-.recognition-action {
-  padding: 10rpx 30rpx;
-  font-size: 28rpx;
-  border-radius: 30rpx;
-  margin-left: 20rpx;
-}
-
-.recognition-action.cancel {
-  color: #666666;
-  background-color: #f0f0f0;
-}
-
-.dark .recognition-action.cancel {
-  color: #adb5bd;
-  background-color: #343a40;
-}
-
-.recognition-action.confirm {
-  color: #ffffff;
+.loading-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
   background-color: #4a6cf7;
+  margin: 0 6rpx;
+  animation: loadingDot 1.4s infinite ease-in-out both;
+}
+
+.loading-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.recognition-status {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.dark .loading-dot {
+  background-color: #6c8cff;
+}
+
+.dark .recognition-status {
+  color: #adb5bd;
+}
+
+@keyframes loadingDot {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1.0);
+  }
 }
 
 @keyframes pulse {
@@ -189,4 +308,122 @@
     transform: scale(1);
     opacity: 1;
   }
+}
+
+@keyframes waveAnimation {
+  0%, 100% {
+    height: 20rpx;
+  }
+  50% {
+    height: 50rpx;
+  }
+}
+
+/* 波形样式 */
+.recording-wave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60rpx;
+  width: 200rpx;
+  margin-right: 20rpx;
+  background-color: rgba(74, 108, 247, 0.1);
+  border-radius: 30rpx;
+  padding: 0 10rpx;
+}
+
+.wave-item {
+  width: 6rpx;
+  background-color: #4a6cf7;
+  border-radius: 3rpx;
+  margin: 0 4rpx;
+  animation: waveAnimation 0.8s infinite ease-in-out;
+}
+
+.wave-item:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.wave-item:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.wave-item:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.wave-item:nth-child(5) {
+  animation-delay: 0.2s;
+}
+
+.wave-item:nth-child(6) {
+  animation-delay: 0.1s;
+}
+
+.wave-item:nth-child(7) {
+  animation-delay: 0s;
+}
+
+.dark .wave-item {
+  background-color: #6c8cff;
+}
+
+.dark .recording-wave {
+  background-color: rgba(108, 140, 255, 0.1);
+}
+
+/* 取消区域 - 增强视觉效果 */
+.cancel-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 77, 79, 0.25);
+  border: 4rpx solid rgba(255, 77, 79, 0.7);
+  border-radius: 12rpx;
+  z-index: 100; /* 提高z-index确保显示在最上层 */
+  animation: cancelPulse 0.8s infinite;
+  box-shadow: 0 0 20rpx rgba(255, 77, 79, 0.4);
+}
+
+@keyframes cancelPulse {
+  0%, 100% {
+    background-color: rgba(255, 77, 79, 0.25);
+    transform: scale(1);
+  }
+  50% {
+    background-color: rgba(255, 77, 79, 0.4);
+    transform: scale(1.02);
+  }
+}
+
+.cancel-icon {
+  width: 70rpx;
+  height: 70rpx;
+  margin-bottom: 20rpx;
+  animation: cancelIconShake 0.8s infinite;
+}
+
+@keyframes cancelIconShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5rpx);
+  }
+  75% {
+    transform: translateX(5rpx);
+  }
+}
+
+.cancel-text {
+  font-size: 32rpx;
+  color: #ff4d4f;
+  font-weight: 600;
+  text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1);
 }

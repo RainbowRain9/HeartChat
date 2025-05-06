@@ -1,43 +1,70 @@
 <!-- packageChat/components/chat-input/index.wxml -->
 <view class="chat-input-container {{darkMode ? 'dark' : ''}}">
-  <!-- 录音状态 -->
+  <!-- 录音状态 - 优化结构确保取消区域正确显示 -->
   <view class="recording-container" wx:if="{{isRecording}}">
-    <view class="recording-hint">
-      <view class="recording-icon"></view>
-      <text class="recording-time">{{recordingTime}}s</text>
+    <!-- 录音内容 -->
+    <view class="recording-content {{isCancelling ? 'hidden' : ''}}">
+      <view class="recording-hint">
+        <view class="recording-wave">
+          <view class="wave-item" wx:for="{{[1,2,3,4,5,6,7]}}" wx:key="index" style="height: {{waveSizes[index]}}rpx;"></view>
+        </view>
+        <text class="recording-time">{{recordingTime}}s</text>
+      </view>
+      <text class="recording-tip">{{isCancelling ? '松开手指，取消发送' : '松开发送，上滑或滑出按钮区域取消'}}</text>
     </view>
-    <text class="recording-tip">松开发送，上滑取消</text>
+
+    <!-- 取消区域 - 增强视觉效果 -->
+    <view class="cancel-area" wx:if="{{isCancelling}}">
+      <image class="cancel-icon" src="/images/icons/cancel.png" mode="aspectFit"></image>
+      <text class="cancel-text">松开手指，取消发送</text>
+    </view>
   </view>
 
-  <!-- 语音识别结果 -->
-  <view class="recognition-container" wx:elif="{{showRecognitionResult}}">
-    <view class="recognition-text">{{recognitionText}}</view>
-    <view class="recognition-actions">
-      <view class="recognition-action cancel" bindtap="_resetRecordingState">取消</view>
-      <view class="recognition-action confirm" bindtap="send">发送</view>
+  <!-- 语音识别中状态 - 不再显示确认框，直接发送 -->
+  <view class="recognition-processing" wx:elif="{{isRecognizing && !isRecording}}">
+    <view class="recognition-loading">
+      <view class="loading-dot"></view>
+      <view class="loading-dot"></view>
+      <view class="loading-dot"></view>
     </view>
+    <text class="recognition-status">正在识别...</text>
   </view>
 
   <!-- 输入区域 -->
   <view class="input-area" wx:else>
-    <!-- 语音按钮 -->
-    <view class="voice-button" bindtouchstart="recordStart" bindtouchend="recordEnd" bindtouchmove="recordCancel">
-      <image class="voice-icon" src="/images/icons/voice.png" mode="aspectFit"></image>
+    <!-- 语音/键盘切换按钮 -->
+    <view class="voice-button" bindtap="switchInputMode">
+      <image class="voice-icon" src="{{isVoiceMode ? '/images/icons/keyboard.png' : '/images/icons/voice.png'}}" mode="aspectFit"></image>
     </view>
 
-    <!-- 文本输入框 -->
-    <input class="text-input"
-           type="text"
-           value="{{inputValue}}"
-           placeholder="{{placeholder}}"
-           disabled="{{disabled}}"
-           bindinput="input"
-           bindfocus="onFocus"
-           bindblur="onBlur"
-           adjust-position="{{false}}"
-           cursor-spacing="20"
-           confirm-type="send"
-           bindconfirm="confirm"></input>
+    <!-- 文本输入模式 -->
+    <block wx:if="{{!isVoiceMode}}">
+      <input class="text-input"
+             type="text"
+             value="{{inputValue}}"
+             placeholder="{{placeholder}}"
+             disabled="{{disabled}}"
+             bindinput="input"
+             bindfocus="onFocus"
+             bindblur="onBlur"
+             adjust-position="{{false}}"
+             cursor-spacing="20"
+             confirm-type="send"
+             bindconfirm="confirm"></input>
+    </block>
+
+    <!-- 语音输入模式 -->
+    <block wx:else>
+      <view class="voice-record-button"
+            id="voiceButton"
+            bindtouchstart="recordStart"
+            bindtouchend="recordEnd"
+            bindtouchmove="recordCancel"
+            bindtouchcancel="recordCancel"
+            data-cancel-threshold="30">
+        <text>{{isRecording ? (isCancelling ? '松开手指，取消发送' : '松开发送，滑出取消') : '按住 说话'}}</text>
+      </view>
+    </block>
 
     <!-- 发送按钮 -->
     <view class="send-button {{inputValue ? 'active' : ''}}" bindtap="send">
