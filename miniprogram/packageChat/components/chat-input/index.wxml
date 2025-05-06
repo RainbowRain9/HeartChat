@@ -9,6 +9,15 @@
     <text class="recording-tip">松开发送，上滑取消</text>
   </view>
 
+  <!-- 语音识别结果 -->
+  <view class="recognition-container" wx:elif="{{showRecognitionResult}}">
+    <view class="recognition-text">{{recognitionText}}</view>
+    <view class="recognition-actions">
+      <view class="recognition-action cancel" bindtap="_resetRecordingState">取消</view>
+      <view class="recognition-action confirm" bindtap="send">发送</view>
+    </view>
+  </view>
+
   <!-- 输入区域 -->
   <view class="input-area" wx:else>
     <!-- 语音按钮 -->

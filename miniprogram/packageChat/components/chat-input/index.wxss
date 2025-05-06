@@ -125,6 +125,57 @@
   color: #adb5bd;
 }
 
+/* 语音识别结果容器 */
+.recognition-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx 0;
+}
+
+.recognition-text {
+  font-size: 28rpx;
+  color: #333333;
+  background-color: #f5f5f7;
+  border-radius: 36rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 20rpx;
+  min-height: 72rpx;
+  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.03) inset;
+}
+
+.dark .recognition-text {
+  background-color: #343a40;
+  color: #f8f9fa;
+  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1) inset;
+}
+
+.recognition-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.recognition-action {
+  padding: 10rpx 30rpx;
+  font-size: 28rpx;
+  border-radius: 30rpx;
+  margin-left: 20rpx;
+}
+
+.recognition-action.cancel {
+  color: #666666;
+  background-color: #f0f0f0;
+}
+
+.dark .recognition-action.cancel {
+  color: #adb5bd;
+  background-color: #343a40;
+}
+
+.recognition-action.confirm {
+  color: #ffffff;
+  background-color: #4a6cf7;
+}
+
 @keyframes pulse {
   0% {
     transform: scale(1);

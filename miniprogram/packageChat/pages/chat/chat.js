@@ -773,6 +773,28 @@ Page({
     const { content } = e.detail;
     if (!content.trim()) return;
 
+    // 处理消息发送逻辑
+    await this._processSendMessage(content);
+  },
+
+  /**
+   * 处理语音输入
+   */
+  async handleSendVoice(e) {
+    const { content } = e.detail;
+    if (!content.trim()) return;
+
+    // 处理消息发送逻辑，与文本输入相同
+    await this._processSendMessage(content);
+  },
+
+  /**
+   * 处理消息发送的核心逻辑
+   * @param {string} content 消息内容
+   * @private
+   */
+  async _processSendMessage(content) {
+
     // 添加用户消息到列表
     const currentTime = Date.now();
     console.log('用户消息时间戳:', currentTime);

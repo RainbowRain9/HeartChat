@@ -1,4 +1,7 @@
 // packageChat/components/chat-input/index.js
+// 导入语音服务
+const voiceService = require('../../../services/voiceService');
+
 Component({
   /**
    * 组件的属性列表
@@ -25,7 +28,10 @@ Component({
     inputValue: '',
     isRecording: false,
     recordingTime: 0,
-    recordingTimer: null
+    recordingTimer: null,
+    isRecognizing: false,
+    recognitionText: '',
+    showRecognitionResult: false
   },
 
   /**
@@ -97,19 +103,33 @@ Component({
      * 开始录音
      */
     recordStart: function() {
+      // 显示用户授权请求
+      wx.authorize({
+        scope: 'scope.record',
+        success: () => {
+          this._startVoiceRecognition();
+        },
+        fail: (err) => {
+          console.error('获取录音权限失败', err);
+          wx.showToast({
+            title: '请授权录音权限',
+            icon: 'none'
+          });
+        }
+      });
+    },
+
+    /**
+     * 开始语音识别
+     * @private
+     */
+    _startVoiceRecognition: function() {
       this.setData({
         isRecording: true,
-        recordingTime: 0
-      });
-
-      // 开始录音
-      const recorderManager = wx.getRecorderManager();
-      recorderManager.start({
-        duration: 60000, // 最长录音时间，单位ms
-        sampleRate: 16000, // 采样率
-        numberOfChannels: 1, // 录音通道数
-        encodeBitRate: 48000, // 编码码率
-        format: 'mp3' // 音频格式
+        recordingTime: 0,
+        isRecognizing: true,
+        recognitionText: '',
+        showRecognitionResult: false
       });
 
       // 计时器
@@ -119,17 +139,36 @@ Component({
         });
       }, 1000);
 
-      // 监听录音结束事件
-      recorderManager.onStop((res) => {
-        clearInterval(this.data.recordingTimer);
-        this.setData({
-          isRecording: false,
-          recordingTime: 0
-        });
-
-        // 发送录音文件
-        this.triggerEvent('sendVoice', { tempFilePath: res.tempFilePath, duration: res.duration });
-      });
+      // 开始语音识别
+      voiceService.startRecognition(
+        // 识别结果回调
+        (text) => {
+          this.setData({
+            recognitionText: text
+          });
+        },
+        // 错误回调
+        (error) => {
+          console.error('语音识别错误', error);
+          wx.showToast({
+            title: '语音识别失败',
+            icon: 'none'
+          });
+          this._resetRecordingState();
+        },
+        // 识别完成回调
+        (finalText) => {
+          if (finalText) {
+            this.setData({
+              inputValue: finalText,
+              showRecognitionResult: true,
+              isRecognizing: false
+            });
+          } else {
+            this._resetRecordingState();
+          }
+        }
+      );
     },
 
     /**
@@ -138,26 +177,85 @@ Component({
     recordEnd: function() {
       if (!this.data.isRecording) return;
 
-      const recorderManager = wx.getRecorderManager();
-      recorderManager.stop();
+      clearInterval(this.data.recordingTimer);
+
+      // 停止语音识别
+      voiceService.stopRecognition();
+
+      this.setData({
+        isRecording: false,
+        isRecognizing: true
+      });
+
+      // 延迟一下，等待最终识别结果
+      setTimeout(() => {
+        if (this.data.inputValue && this.data.inputValue.trim()) {
+          // 如果有识别结果，直接发送
+          this.triggerEvent('sendVoice', { content: this.data.inputValue });
+          this.setData({
+            inputValue: '',
+            isRecognizing: false
+          });
+        } else {
+          this._resetRecordingState();
+          wx.showToast({
+            title: '未能识别语音',
+            icon: 'none'
+          });
+        }
+      }, 500);
     },
 
     /**
      * 取消录音
      */
-    recordCancel: function() {
+    recordCancel: function(e) {
       if (!this.data.isRecording) return;
 
+      // 检测是否是上滑取消
+      if (e && e.touches && e.touches[0]) {
+        const touch = e.touches[0];
+        const startY = e.currentTarget.dataset.startY || touch.clientY;
+
+        // 如果上滑距离超过50px，则取消录音
+        if (startY - touch.clientY > 50) {
+          this._cancelRecording();
+        }
+      } else {
+        this._cancelRecording();
+      }
+    },
+
+    /**
+     * 取消录音处理
+     * @private
+     */
+    _cancelRecording: function() {
       clearInterval(this.data.recordingTimer);
+
+      // 停止语音识别
+      voiceService.stopRecognition();
+
+      this._resetRecordingState();
+
+      wx.showToast({
+        title: '已取消',
+        icon: 'none'
+      });
+    },
+
+    /**
+     * 重置录音状态
+     * @private
+     */
+    _resetRecordingState: function() {
       this.setData({
         isRecording: false,
-        recordingTime: 0
+        recordingTime: 0,
+        isRecognizing: false,
+        recognitionText: '',
+        showRecognitionResult: false
       });
-
-      const recorderManager = wx.getRecorderManager();
-      recorderManager.stop();
-
-      // 不触发发送事件
     },
 
     /**

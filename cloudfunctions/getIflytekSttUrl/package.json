@@ -1,0 +1,9 @@
+{
+  "name": "getIflytekSttUrl",
+  "version": "1.0.0",
+  "description": "生成讯飞语音听写WebSocket URL的云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
