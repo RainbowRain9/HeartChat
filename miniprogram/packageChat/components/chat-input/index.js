@@ -108,7 +108,7 @@ Component({
     /**
      * 确认发送（回车键）
      */
-    confirm: function(e) {
+    confirm: function() {
       this.send();
     },
 
@@ -139,7 +139,7 @@ Component({
         console.log('记录起始位置 - X:', this.startX, 'Y:', this.startY);
 
         // 记录按钮位置和尺寸，用于判断是否滑出按钮区域
-        this._recordButtonRect(e);
+        this._recordButtonRect();
       } else {
         console.warn('无法获取起始触摸位置');
       }
@@ -172,7 +172,7 @@ Component({
      * 记录按钮位置和尺寸
      * @private
      */
-    _recordButtonRect: function(e) {
+    _recordButtonRect: function() {
       // 获取按钮元素
       const query = wx.createSelectorQuery().in(this);
       query.select('#voiceButton').boundingClientRect();
@@ -279,7 +279,7 @@ Component({
     },
 
     /**
-     * 结束录音 - 优化结束逻辑，确保正确处理取消状态
+     * 结束录音 - 优化结束逻辑，处理滑出按钮区域的情况
      */
     recordEnd: function() {
       // 如果不在录音状态，直接返回
@@ -294,6 +294,13 @@ Component({
       }
 
       clearInterval(this.data.recordingTimer);
+
+      // 检查是否在按钮区域外松开
+      if (this.isOutsideButton) {
+        console.log('在按钮区域外松开，执行取消');
+        this._cancelRecording();
+        return;
+      }
 
       // 再次检查取消状态，确保最新状态
       if (this.data.isCancelling) {
@@ -426,9 +433,15 @@ Component({
               wx.vibrateShort({
                 type: 'medium'
               });
+
+              // 记录滑出状态，用于在松开时判断
+              this.isOutsideButton = true;
             }
 
-            return;
+            // 继续处理，不要return，让后续的上滑检测也能执行
+          } else {
+            // 如果不在按钮区域外，重置滑出状态
+            this.isOutsideButton = false;
           }
         }
 
@@ -472,11 +485,17 @@ Component({
     },
 
     /**
-     * 取消录音处理 - 优化取消逻辑，确保清除输入框内容
+     * 取消录音处理 - 优化取消逻辑，解决录音错误问题
      * @private
      */
     _cancelRecording: function() {
       console.log('执行取消录音处理');
+
+      // 如果已经不在录音状态，直接返回
+      if (!this.data.isRecording) {
+        console.log('已经不在录音状态，忽略取消操作');
+        return;
+      }
 
       // 停止波形动画
       if (this.waveAnimationTimer) {
@@ -485,39 +504,42 @@ Component({
 
       clearInterval(this.data.recordingTimer);
 
-      // 立即关闭WebSocket连接，不等待结果
+      // 先更新UI状态，避免用户看到延迟
+      this.setData({
+        isCancelling: true,
+        isRecording: false, // 立即更新录音状态，避免重复操作
+        // 立即清除输入框内容，确保不会显示语音识别结果
+        inputValue: ''
+      });
+
+      // 清除保存的最终识别结果
+      this.finalRecognitionResult = null;
+
+      // 重置滑出按钮区域状态
+      this.isOutsideButton = false;
+
+      // 停止语音识别服务
       try {
-        // 直接获取录音管理器并停止
-        const recorderManager = wx.getRecorderManager();
+        // 使用语音服务停止录音，而不是直接操作录音管理器
+        // 这样可以确保状态一致性
+        voiceService.stopRecognition();
 
-        // 先停止录音
-        recorderManager.stop();
-
-        // 确保取消状态被正确设置
-        this.setData({
-          isCancelling: true,
-          // 立即清除输入框内容，确保不会显示语音识别结果
-          inputValue: ''
+        // 震动反馈
+        wx.vibrateShort({
+          type: 'light'
         });
 
-        // 清除保存的最终识别结果
-        this.finalRecognitionResult = null;
+        // 显示取消提示
+        wx.showToast({
+          title: '已取消',
+          icon: 'none'
+        });
 
-        // 延迟一下再重置状态，确保录音确实停止
+        // 延迟一下再完全重置状态，确保录音确实停止
         setTimeout(() => {
-          // 重置状态
+          // 重置所有状态
           this._resetRecordingState();
-
-          // 震动反馈
-          wx.vibrateShort({
-            type: 'light'
-          });
-
-          wx.showToast({
-            title: '已取消',
-            icon: 'none'
-          });
-        }, 100);
+        }, 300);
       } catch (e) {
         console.error('停止录音失败', e);
         // 即使出错也要重置状态

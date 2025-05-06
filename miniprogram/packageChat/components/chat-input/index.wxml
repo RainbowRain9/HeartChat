@@ -1,7 +1,7 @@
 <!-- packageChat/components/chat-input/index.wxml -->
 <view class="chat-input-container {{darkMode ? 'dark' : ''}}">
-  <!-- 录音状态 - 优化结构确保取消区域正确显示 -->
-  <view class="recording-container" wx:if="{{isRecording}}">
+  <!-- 录音状态 - 添加点击停止录音功能 -->
+  <view class="recording-container" wx:if="{{isRecording}}" catchtap="recordEnd">
     <!-- 录音内容 -->
     <view class="recording-content {{isCancelling ? 'hidden' : ''}}">
       <view class="recording-hint">
@@ -10,7 +10,7 @@
         </view>
         <text class="recording-time">{{recordingTime}}s</text>
       </view>
-      <text class="recording-tip">{{isCancelling ? '松开手指，取消发送' : '松开发送，上滑或滑出按钮区域取消'}}</text>
+      <text class="recording-tip">{{isCancelling ? '松开手指，取消发送' : '松开发送，上滑取消，点击界面停止'}}</text>
     </view>
 
     <!-- 取消区域 - 增强视觉效果 -->

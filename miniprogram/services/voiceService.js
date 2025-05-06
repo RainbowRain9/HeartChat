@@ -456,19 +456,25 @@ async function startRecognition(onResult, onError, onFinalResult) {
 function stopRecognition() {
   console.log('停止语音识别函数被调用');
 
+  // 先关闭WebSocket连接，避免继续处理音频数据
+  closeSocketConnection();
+
+  // 重置录音状态
+  isRecording = false;
+
+  // 检查录音管理器是否存在
   if (recorderManager) {
     console.log('停止录音');
 
-    // 直接停止录音，不再添加额外延迟
-    // 组件中已经添加了足够的延迟
-    recorderManager.stop();
-    console.log('录音停止命令已发送');
-
-    // 不要立即关闭连接，让识别结果回调处理关闭连接
+    try {
+      // 直接停止录音，不再添加额外延迟
+      recorderManager.stop();
+      console.log('录音停止命令已发送');
+    } catch (err) {
+      console.error('停止录音失败', err);
+    }
   } else {
     console.warn('录音管理器不存在，无法停止录音');
-    // 关闭WebSocket连接
-    closeSocketConnection();
   }
 }
 

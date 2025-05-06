@@ -189,6 +189,13 @@
   justify-content: center;
   height: 200rpx;
   position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recording-container:active {
+  opacity: 0.9;
+  transform: scale(0.98);
 }
 
 .recording-content {
@@ -233,12 +240,15 @@
 .recording-tip {
   font-size: 24rpx;
   color: #999999;
+  margin-bottom: 20rpx;
 }
 
 /* 暗夜模式 - 录音提示 */
 .dark .recording-tip {
   color: #adb5bd;
 }
+
+
 
 /* 语音识别中状态 */
 .recognition-processing {
