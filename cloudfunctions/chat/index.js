@@ -29,13 +29,16 @@ function splitMessage(message) {
   // 先处理Markdown语法，移除加粗等标记
   const cleanMessage = message.replace(/\*\*([^*]+)\*\*/g, '$1');
 
-  // 定义最大段落长度
-  const MAX_SEGMENT_LENGTH = 120; // 增加到120个字符，减少过度分段
+  // 定义最大段落长度 - 增加到150个字符，使分段更自然
+  const MAX_SEGMENT_LENGTH = 150;
+
+  // 定义最小段落长度 - 避免过短的段落
+  const MIN_SEGMENT_LENGTH = 20;
 
   // 检查消息是否包含列表或编号内容
   const hasListOrNumbering = /\n\s*[-*]\s|\n\s*\d+\.\s/.test(cleanMessage);
 
-  // 如果包含列表或编号，使用更保守的分段方式
+  // 如果包含列表或编号，使用更保守的分段方式，保持列表的完整性
   if (hasListOrNumbering) {
     // 尝试按空行分段，保持列表的完整性
     let segments = cleanMessage.split(/\n\s*\n/);
@@ -49,65 +52,139 @@ function splitMessage(message) {
       segments = segments.filter(segment => segment.trim().length > 0);
     }
 
+    // 确保列表项不会被过度分割
     return segments;
   }
 
-  // 如果不包含列表或编号，使用正常的分段方式
-  // 首先尝试按段落分割
-  let segments = cleanMessage.split(/\n\s*\n/);
+  // 如果不包含列表或编号，使用更智能的分段方式
 
-  // 过滤空段落
+  // 1. 首先尝试按自然段落分割（空行分隔）
+  let segments = cleanMessage.split(/\n\s*\n/);
   segments = segments.filter(segment => segment.trim().length > 0);
 
-  // 如果没有段落分隔符，尝试按换行符分割
+  // 2. 如果没有自然段落或只有一个段落，检查是否有换行符
   if (segments.length === 1 && segments[0].includes('\n')) {
-    segments = segments[0].split(/\n/);
-    segments = segments.filter(segment => segment.trim().length > 0);
+    // 按换行符分割，但保持语义完整性
+    const lines = segments[0].split(/\n/);
+
+    // 重新组合短行，避免过度分段
+    segments = [];
+    let currentSegment = '';
+
+    for (const line of lines) {
+      if (line.trim().length === 0) continue;
+
+      // 如果当前段落加上新行仍然在合理范围内，则合并
+      if (currentSegment.length + line.length < MAX_SEGMENT_LENGTH) {
+        currentSegment += (currentSegment ? '\n' : '') + line;
+      } else {
+        // 否则保存当前段落并开始新段落
+        if (currentSegment.length > 0) {
+          segments.push(currentSegment.trim());
+        }
+        currentSegment = line;
+      }
+    }
+
+    // 添加最后一个段落
+    if (currentSegment.length > 0) {
+      segments.push(currentSegment.trim());
+    }
   }
 
-  // 如果段落仍然过长，按句子分割
+  // 3. 处理过长的段落，按句子分割
   const sentenceSegments = [];
   for (const segment of segments) {
     if (segment.length > MAX_SEGMENT_LENGTH) {
-      // 按句号、问号、感叹号分割
-      const sentences = segment.split(/(?<=[。！？.!?])\s*/);
-      sentenceSegments.push(...sentences.filter(s => s.trim().length > 0));
+      // 改进的句子分割正则表达式，更好地处理中文和英文句子
+      // 匹配中文句号、问号、感叹号，以及英文句号、问号、感叹号后跟空格或行尾的情况
+      const sentences = segment.split(/(?<=[。！？.!?])(?:\s|$)/);
+
+      // 过滤空句子并添加到结果中
+      const filteredSentences = sentences.filter(s => s.trim().length > 0);
+
+      // 合并过短的句子，避免过度分段
+      let currentSentence = '';
+      for (const sentence of filteredSentences) {
+        if (sentence.length < MIN_SEGMENT_LENGTH && currentSentence.length + sentence.length <= MAX_SEGMENT_LENGTH) {
+          // 如果句子很短且合并后不超过最大长度，则合并
+          currentSentence += (currentSentence ? ' ' : '') + sentence;
+        } else if (currentSentence.length + sentence.length <= MAX_SEGMENT_LENGTH) {
+          // 如果合并后不超过最大长度，则合并
+          currentSentence += (currentSentence ? ' ' : '') + sentence;
+        } else {
+          // 否则保存当前句子并开始新句子
+          if (currentSentence.length > 0) {
+            sentenceSegments.push(currentSentence.trim());
+          }
+          currentSentence = sentence;
+        }
+      }
+
+      // 添加最后一个句子
+      if (currentSentence.length > 0) {
+        sentenceSegments.push(currentSentence.trim());
+      }
     } else {
       sentenceSegments.push(segment.trim());
     }
   }
 
-  // 处理过长的句子
+  // 4. 处理仍然过长的句子，按次要标点分割
   const result = [];
   for (const segment of sentenceSegments) {
     if (segment.length > MAX_SEGMENT_LENGTH) {
-      // 将长句子按照逗号、分号等次要标点分割
-      const subSegments = segment.split(/(?<=[，；、,;])\s*/);
+      // 改进的次要标点分割正则表达式，更好地处理中文和英文
+      // 匹配中文逗号、分号、顿号，以及英文逗号、分号后跟空格或行尾的情况
+      const subSegments = segment.split(/(?<=[，；、,;])(?:\s|$)/);
 
-      // 如果分割后的子段落仍然过长，按字符数分割
+      // 合并短分段，避免过度分割
       let currentSegment = '';
       for (const subSegment of subSegments) {
         if (subSegment.trim().length === 0) continue;
 
         if (currentSegment.length + subSegment.length > MAX_SEGMENT_LENGTH) {
+          // 如果合并后超过最大长度，保存当前段落并开始新段落
           if (currentSegment.length > 0) {
             result.push(currentSegment.trim());
             currentSegment = '';
           }
 
-          // 如果单个子段落仍然过长，按字符数强制分割
+          // 如果单个子段落仍然过长，按语义边界尝试分割
           if (subSegment.length > MAX_SEGMENT_LENGTH) {
-            for (let i = 0; i < subSegment.length; i += MAX_SEGMENT_LENGTH) {
-              result.push(subSegment.substr(i, MAX_SEGMENT_LENGTH).trim());
+            // 尝试在空格处分割（适用于英文）
+            if (subSegment.includes(' ')) {
+              const words = subSegment.split(' ');
+              let tempSegment = '';
+
+              for (const word of words) {
+                if (tempSegment.length + word.length + 1 <= MAX_SEGMENT_LENGTH) {
+                  tempSegment += (tempSegment ? ' ' : '') + word;
+                } else {
+                  result.push(tempSegment.trim());
+                  tempSegment = word;
+                }
+              }
+
+              if (tempSegment.length > 0) {
+                currentSegment = tempSegment;
+              }
+            } else {
+              // 如果没有空格（可能是中文），按字符数强制分割，但尽量在词语边界
+              for (let i = 0; i < subSegment.length; i += MAX_SEGMENT_LENGTH) {
+                result.push(subSegment.substr(i, MAX_SEGMENT_LENGTH).trim());
+              }
             }
           } else {
             currentSegment = subSegment;
           }
         } else {
+          // 如果合并后不超过最大长度，则合并
           currentSegment += (currentSegment ? ' ' : '') + subSegment;
         }
       }
 
+      // 添加最后一个段落
       if (currentSegment.length > 0) {
         result.push(currentSegment.trim());
       }
@@ -116,13 +193,16 @@ function splitMessage(message) {
     }
   }
 
-  // 合并过短的段落
+  // 5. 最终处理：合并过短的段落，使分段更自然
   const finalResult = [];
   let currentSegment = '';
 
   for (const segment of result) {
-    // 如果当前段落加上新段落仍然在限制范围内，则合并
-    if (currentSegment.length + segment.length + 1 <= MAX_SEGMENT_LENGTH) {
+    // 如果段落很短且合并后不超过最大长度，则合并
+    if (segment.length < MIN_SEGMENT_LENGTH && currentSegment.length + segment.length + 1 <= MAX_SEGMENT_LENGTH) {
+      currentSegment += (currentSegment ? ' ' : '') + segment;
+    } else if (currentSegment.length + segment.length + 1 <= MAX_SEGMENT_LENGTH) {
+      // 如果合并后不超过最大长度，则合并
       currentSegment += (currentSegment ? ' ' : '') + segment;
     } else {
       // 否则保存当前段落并开始新段落

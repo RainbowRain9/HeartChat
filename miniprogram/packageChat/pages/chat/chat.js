@@ -91,6 +91,9 @@ Page({
     // 监听键盘高度变化
     this.watchKeyboard();
 
+    // 启动定期记忆提取定时器（每5分钟提取一次）
+    this.startMemoryExtractionTimer();
+
     if (isDev) {
       console.log('页面加载参数:', options);
     }
@@ -174,6 +177,9 @@ Page({
     // 保存聊天记录到云端
     this.saveChatHistory();
 
+    // 提取对话记忆
+    this.extractChatMemories();
+
     // 保存聊天记录到本地缓存
     if (this.data.chatId && this.data.messages.length > 0) {
       chatCacheService.saveMessagesToCache(
@@ -190,6 +196,12 @@ Page({
 
     // 移除键盘监听
     this.unwatchKeyboard();
+
+    // 清除定时提取记忆的定时器
+    if (this.memoryExtractionTimer) {
+      clearInterval(this.memoryExtractionTimer);
+      this.memoryExtractionTimer = null;
+    }
   },
 
   /**
@@ -259,8 +271,9 @@ Page({
   /**
    * 加载聊天历史
    * @param {boolean} silentLoad 是否静默加载（不显示加载中状态）
+   * @param {boolean} forceRefresh 是否强制从服务器刷新，忽略缓存
    */
-  async loadChatHistory(silentLoad = false) {
+  async loadChatHistory(silentLoad = false, forceRefresh = false) {
     try {
       if (!silentLoad) {
         this.setData({ loadingHistory: true });
@@ -268,72 +281,65 @@ Page({
 
       // 计算跳过的消息数量
       const skip = (this.data.currentPage - 1) * chatCacheService.PAGE_SIZE;
+      const limit = chatCacheService.PAGE_SIZE;
 
+      // 首先尝试从缓存加载，除非强制刷新
+      if (!forceRefresh && this.data.currentPage > 1) {
+        const cachedMessages = chatCacheService.loadMessagesFromCache(
+          this.data.chatId,
+          this.data.currentPage
+        );
+
+        if (cachedMessages && cachedMessages.length > 0) {
+          if (isDev) {
+            console.log(`从缓存加载第${this.data.currentPage}页消息:`, cachedMessages.length);
+          }
+
+          // 合并消息，避免重复
+          const existingIds = new Set(this.data.messages.map(msg => msg._id));
+          const newMessages = cachedMessages.filter(msg => !existingIds.has(msg._id));
+
+          if (newMessages.length > 0) {
+            // 处理消息时间戳和显示标志
+            const processedMessages = this.processMessages(newMessages);
+
+            this.setData({
+              messages: [...processedMessages.reverse(), ...this.data.messages],
+              hasMoreHistory: processedMessages.length >= limit,
+              loadingHistory: false
+            });
+
+            // 滚动到适当位置
+            this.scrollToPosition('top');
+
+            return; // 成功从缓存加载，直接返回
+          }
+        }
+      }
+
+      // 缓存未命中或强制刷新，从服务器加载
       const result = await wx.cloud.callFunction({
         name: 'chat',
         data: {
           action: 'getChatHistory',
           roleId: this.data.roleId,
+          chatId: this.data.chatId, // 添加chatId参数，优化查询
           skip: skip,
-          limit: chatCacheService.PAGE_SIZE
+          limit: limit,
+          timestamp: Date.now() // 添加时间戳，避免缓存
         }
       });
 
       if (result && result.result) {
         const { chatId, messages, hasMore } = result.result;
 
-        // 如果有历史消息，添加到消息列表前面
+        // 如果有历史消息，处理并添加到消息列表
         if (messages && messages.length > 0) {
-          // 处理消息时间戳和显示标志
-          // 首先按时间戳排序消息
-          messages.sort((a, b) => {
-            const aTime = parseInt(a.timestamp) || 0;
-            const bTime = parseInt(b.timestamp) || 0;
-            return aTime - bTime;
-          });
-
-          // 处理分段消息
-          const messageMap = {};
-          const segmentGroups = {};
-
-          // 首先将所有消息按ID存入映射
-          messages.forEach(msg => {
-            messageMap[msg._id] = msg;
-
-            // 如果是分段消息，按原始消息ID分组
-            if (msg.isSegment && msg.originalMessageId) {
-              if (!segmentGroups[msg.originalMessageId]) {
-                segmentGroups[msg.originalMessageId] = [];
-              }
-              segmentGroups[msg.originalMessageId].push(msg);
-            }
-          });
-
-          // 处理每个分段消息组，确保按分段索引排序
-          Object.keys(segmentGroups).forEach(originalId => {
-            segmentGroups[originalId].sort((a, b) => {
-              return (a.segmentIndex || 0) - (b.segmentIndex || 0);
-            });
-          });
-
-          // 处理消息时间戳和显示标志
-          const processedMessages = messages.map((msg, index) => {
-            // 确保消息有有效的时间戳
-            if (!msg.timestamp || isNaN(msg.timestamp) || msg.timestamp === 'NaN') {
-              msg.timestamp = Date.now();
-              if (isDev) {
-                console.log('修复历史消息时间戳:', msg.timestamp);
-              }
-            }
-
-            // 添加时间戳显示标志
-            msg.showTimestamp = this.shouldShowTimestamp(msg, messages[index - 1]);
-
-            return msg;
-          });
+          // 处理消息，包括时间戳、分段消息和显示标志
+          const processedMessages = this.processMessages(messages);
 
           // 如果是首次加载或刷新，替换消息列表
-          if (this.data.currentPage === 1) {
+          if (this.data.currentPage === 1 || forceRefresh) {
             this.setData({
               chatId,
               messages: processedMessages.reverse(),
@@ -341,35 +347,51 @@ Page({
               fromCache: false
             });
 
-            // 保存到缓存
+            // 保存到缓存，设置为最新消息
             chatCacheService.saveMessagesToCache(
               chatId,
               processedMessages,
-              true,
+              true, // 标记为最新消息
               null,
               this.data.role
             );
+
+            // 滚动到底部
+            this.scrollToBottom();
           } else {
             // 如果是加载更多，则添加到当前消息列表前面
             // 合并消息，避免重复
             const existingIds = new Set(this.data.messages.map(msg => msg._id));
             const newMessages = processedMessages.filter(msg => !existingIds.has(msg._id));
 
-            this.setData({
-              chatId,
-              messages: [...newMessages.reverse(), ...this.data.messages],
-              hasMoreHistory: hasMore
-            });
-
-            // 保存到缓存
             if (newMessages.length > 0) {
+              this.setData({
+                chatId,
+                messages: [...newMessages.reverse(), ...this.data.messages],
+                hasMoreHistory: hasMore
+              });
+
+              // 保存到缓存，指定页码
               chatCacheService.saveMessagesToCache(
                 chatId,
                 newMessages,
-                false,
+                false, // 不是最新消息
                 this.data.currentPage,
                 this.data.role
               );
+
+              // 滚动到加载的新消息位置
+              this.scrollToPosition('top');
+            } else {
+              // 没有新消息，可能已经全部加载
+              this.setData({
+                hasMoreHistory: false
+              });
+
+              wx.showToast({
+                title: '没有更多历史消息',
+                icon: 'none'
+              });
             }
           }
         } else if (chatId) {
@@ -378,13 +400,44 @@ Page({
             chatId,
             hasMoreHistory: false
           });
+
+          // 如果是新聊天，显示欢迎消息
+          if (this.data.messages.length === 0 && this.data.role) {
+            this.addWelcomeMessage();
+          }
         }
       } else {
         throw new Error('获取聊天历史失败');
       }
     } catch (error) {
       console.error('加载聊天历史失败:', error.message || error);
-      if (!silentLoad) {
+
+      // 如果服务器加载失败，尝试从缓存恢复
+      if (!silentLoad && !this.data.fromCache) {
+        const cachedMessages = chatCacheService.loadMessagesFromCache(
+          this.data.chatId || `temp_${this.data.roleId}`
+        );
+
+        if (cachedMessages && cachedMessages.length > 0) {
+          this.setData({
+            messages: cachedMessages,
+            fromCache: true
+          });
+
+          wx.showToast({
+            title: '已从缓存恢复',
+            icon: 'none'
+          });
+
+          // 滚动到底部
+          this.scrollToBottom();
+        } else {
+          wx.showToast({
+            title: '加载历史失败',
+            icon: 'none'
+          });
+        }
+      } else if (!silentLoad) {
         wx.showToast({
           title: '加载历史失败',
           icon: 'none'
@@ -396,26 +449,91 @@ Page({
         loadingHistory: false,
         refreshing: false
       });
+    }
+  },
 
-      // 只在确认没有历史消息时才显示欢迎消息
-      // 判断条件：1. 消息列表为空 2. 有角色信息 3. 不是从缓存加载的
-      if (this.data.messages.length === 0 && this.data.role && !this.data.fromCache) {
-        // 检查是否有聊天ID，如果有则说明是新的聊天
-        if (this.data.chatId) {
-          if (isDev) {
-            console.log('新的聊天，显示欢迎消息');
-          }
-          this.addWelcomeMessage();
-        } else {
-          if (isDev) {
-            console.log('没有聊天ID，不显示欢迎消息');
-          }
+  /**
+   * 处理消息数组，包括时间戳、分段消息和显示标志
+   * @param {Array} messages 消息数组
+   * @returns {Array} 处理后的消息数组
+   */
+  processMessages(messages) {
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return [];
+    }
+
+    // 首先按时间戳排序消息
+    messages.sort((a, b) => {
+      const aTime = parseInt(a.timestamp) || 0;
+      const bTime = parseInt(b.timestamp) || 0;
+      return aTime - bTime;
+    });
+
+    // 处理分段消息
+    const messageMap = {};
+    const segmentGroups = {};
+
+    // 首先将所有消息按ID存入映射
+    messages.forEach(msg => {
+      messageMap[msg._id] = msg;
+
+      // 如果是分段消息，按原始消息ID分组
+      if (msg.isSegment && msg.originalMessageId) {
+        if (!segmentGroups[msg.originalMessageId]) {
+          segmentGroups[msg.originalMessageId] = [];
+        }
+        segmentGroups[msg.originalMessageId].push(msg);
+      }
+    });
+
+    // 处理每个分段消息组，确保按分段索引排序
+    Object.keys(segmentGroups).forEach(originalId => {
+      segmentGroups[originalId].sort((a, b) => {
+        return (a.segmentIndex || 0) - (b.segmentIndex || 0);
+      });
+    });
+
+    // 处理消息时间戳和显示标志
+    return messages.map((msg, index) => {
+      // 确保消息有有效的时间戳
+      if (!msg.timestamp || isNaN(msg.timestamp) || msg.timestamp === 'NaN') {
+        msg.timestamp = Date.now();
+        if (isDev) {
+          console.log('修复历史消息时间戳:', msg.timestamp);
         }
       }
 
-      // 滚动到底部
-      this.scrollToBottom();
-    }
+      // 添加时间戳显示标志
+      msg.showTimestamp = this.shouldShowTimestamp(msg, messages[index - 1]);
+
+      return msg;
+    });
+  },
+
+  /**
+   * 滚动到指定位置
+   * @param {string} position 滚动位置，'top'或'bottom'
+   */
+  scrollToPosition(position) {
+    wx.nextTick(() => {
+      const query = wx.createSelectorQuery();
+
+      if (position === 'top') {
+        // 滚动到新加载消息的位置
+        if (this.data.messages.length > 0) {
+          const scrollView = this.selectComponent('#chat-container');
+          if (scrollView) {
+            scrollView.scrollTo({
+              top: 0,
+              animated: true
+            });
+          }
+        }
+      } else {
+        // 默认滚动到底部
+        this.scrollToBottom();
+      }
+    });
   },
 
   /**
@@ -510,134 +628,45 @@ Page({
 
   /**
    * 加载更多历史消息
+   * 当用户上拉聊天记录时触发，加载更早的历史消息
    */
   async loadMoreHistory() {
+    // 如果正在加载或没有更多历史，直接返回
     if (this.data.loadingHistory || !this.data.hasMoreHistory) return;
 
     // 显示加载状态
     this.setData({ loadingHistory: true });
+
     if (isDev) {
-      console.log('开始加载更多历史消息');
+      console.log('开始加载更多历史消息，当前页码:', this.data.currentPage);
     }
 
     try {
-      // 先尝试从缓存加载
+      // 计算下一页页码
       const nextPage = this.data.currentPage + 1;
-      const cachedMessages = chatCacheService.loadMessagesFromCache(this.data.chatId, nextPage);
 
-      if (cachedMessages && cachedMessages.length > 0) {
-        console.log(`从缓存加载第${nextPage}页消息:`, cachedMessages.length);
+      // 记录当前滚动位置，以便加载后恢复
+      const scrollPosition = await this.getScrollPosition();
 
-        // 合并消息，避免重复
-        const existingIds = new Set(this.data.messages.map(msg => msg._id));
-        const newMessages = cachedMessages.filter(msg => !existingIds.has(msg._id));
+      // 使用优化后的历史记录加载函数，传入当前页码
+      await this.loadChatHistory(false, false);
 
-        if (newMessages.length > 0) {
-          this.setData({
-            messages: [...newMessages, ...this.data.messages],
-            currentPage: nextPage,
-            hasMoreHistory: newMessages.length >= chatCacheService.PAGE_SIZE, // 如果返回不足一页，认为没有更多了
-            loadingHistory: false
-          });
-          return;
-        }
-      }
-
-      // 缓存中没有数据，从服务器加载
-      console.log('缓存中没有数据，从服务器加载第', nextPage, '页');
-
-      // 调用云函数获取历史消息
-      const result = await wx.cloud.callFunction({
-        name: 'chat',
-        data: {
-          action: 'getChatHistory',
-          roleId: this.data.roleId,
-          skip: (nextPage - 1) * chatCacheService.PAGE_SIZE,
-          limit: chatCacheService.PAGE_SIZE
-        }
+      // 更新页码
+      this.setData({
+        currentPage: nextPage
       });
 
-      if (result && result.result) {
-        const { chatId, messages, hasMore } = result.result;
+      // 恢复滚动位置，确保用户体验连贯
+      if (scrollPosition) {
+        this.restoreScrollPosition(scrollPosition);
+      }
 
-        if (messages && messages.length > 0) {
-          // 处理消息时间戳和显示标志
-          // 首先按时间戳排序消息
-          messages.sort((a, b) => {
-            const aTime = parseInt(a.timestamp) || 0;
-            const bTime = parseInt(b.timestamp) || 0;
-            return aTime - bTime;
-          });
-
-          // 处理分段消息
-          const messageMap = {};
-          const segmentGroups = {};
-
-          // 首先将所有消息按ID存入映射
-          messages.forEach(msg => {
-            messageMap[msg._id] = msg;
-
-            // 如果是分段消息，按原始消息ID分组
-            if (msg.isSegment && msg.originalMessageId) {
-              if (!segmentGroups[msg.originalMessageId]) {
-                segmentGroups[msg.originalMessageId] = [];
-              }
-              segmentGroups[msg.originalMessageId].push(msg);
-            }
-          });
-
-          // 处理每个分段消息组，确保按分段索引排序
-          Object.keys(segmentGroups).forEach(originalId => {
-            segmentGroups[originalId].sort((a, b) => {
-              return (a.segmentIndex || 0) - (b.segmentIndex || 0);
-            });
-          });
-
-          // 处理消息时间戳和显示标志
-          const processedMessages = messages.map((msg, index) => {
-            if (!msg.timestamp || isNaN(msg.timestamp) || msg.timestamp === 'NaN') {
-              msg.timestamp = Date.now();
-            }
-
-            // 添加时间戳显示标志
-            msg.showTimestamp = this.shouldShowTimestamp(msg, messages[index - 1]);
-
-            return msg;
-          });
-
-          // 合并消息，避免重复
-          const existingIds = new Set(this.data.messages.map(msg => msg._id));
-          const newMessages = processedMessages.filter(msg => !existingIds.has(msg._id));
-
-          if (newMessages.length > 0) {
-            this.setData({
-              chatId,
-              messages: [...newMessages.reverse(), ...this.data.messages],
-              hasMoreHistory: hasMore,
-              currentPage: nextPage
-            });
-
-            // 保存到缓存
-            chatCacheService.saveMessagesToCache(
-              chatId,
-              newMessages,
-              false,
-              nextPage,
-              this.data.role
-            );
-          } else {
-            this.setData({
-              hasMoreHistory: false
-            });
-          }
-        } else {
-          this.setData({
-            hasMoreHistory: false
-          });
-        }
+      if (isDev) {
+        console.log('加载更多历史消息完成，新页码:', nextPage);
       }
     } catch (error) {
       console.error('加载更多历史消息失败:', error);
+
       wx.showToast({
         title: '加载失败，请重试',
         icon: 'none'
@@ -648,121 +677,100 @@ Page({
   },
 
   /**
+   * 获取当前滚动位置
+   * @returns {Promise<number>} 当前滚动位置
+   */
+  getScrollPosition() {
+    return new Promise((resolve) => {
+      const query = wx.createSelectorQuery();
+      query.select('#chat-container').scrollOffset();
+      query.exec((res) => {
+        if (res && res[0]) {
+          resolve(res[0].scrollTop);
+        } else {
+          resolve(0);
+        }
+      });
+    });
+  },
+
+  /**
+   * 恢复滚动位置
+   * @param {number} position 要恢复的滚动位置
+   */
+  restoreScrollPosition(position) {
+    wx.nextTick(() => {
+      // 获取新加载的消息高度
+      const query = wx.createSelectorQuery();
+      query.select('#chat-container').boundingClientRect();
+      query.exec((res) => {
+        if (res && res[0]) {
+          const scrollView = this.selectComponent('#chat-container');
+          if (scrollView) {
+            // 计算新的滚动位置，考虑新加载的消息高度
+            const newPosition = position + 50; // 添加一点偏移，确保用户能看到新加载的内容
+
+            scrollView.scrollTo({
+              top: newPosition,
+              duration: 100
+            });
+
+            if (isDev) {
+              console.log('恢复滚动位置:', newPosition);
+            }
+          }
+        }
+      });
+    });
+  },
+
+  /**
    * 下拉刷新
+   * 当用户下拉聊天界面时触发，刷新最新消息
    */
   async onRefresh() {
+    // 如果已经在刷新中，直接返回
     if (this.data.refreshing) return;
 
+    // 设置刷新状态并重置页码
     this.setData({
       refreshing: true,
       currentPage: 1 // 重置到第一页
     });
 
     try {
-      console.log('开始下拉刷新，获取最新消息');
+      if (isDev) {
+        console.log('开始下拉刷新，获取最新消息');
+      }
 
-      // 调用云函数获取最新消息
-      const result = await wx.cloud.callFunction({
-        name: 'chat',
-        data: {
-          action: 'getChatHistory',
-          roleId: this.data.roleId,
-          skip: 0,
-          limit: chatCacheService.PAGE_SIZE
-        }
+      // 使用优化后的历史记录加载函数，强制从服务器刷新
+      await this.loadChatHistory(false, true);
+
+      // 显示刷新成功提示
+      wx.showToast({
+        title: '刷新成功',
+        icon: 'success',
+        duration: 1500
       });
 
-      if (result && result.result) {
-        const { chatId, messages, hasMore } = result.result;
+      // 滚动到底部，查看最新消息
+      this.scrollToBottom(100);
 
-        if (messages && messages.length > 0) {
-          // 处理消息时间戳和显示标志
-          // 首先按时间戳排序消息
-          messages.sort((a, b) => {
-            const aTime = parseInt(a.timestamp) || 0;
-            const bTime = parseInt(b.timestamp) || 0;
-            return aTime - bTime;
-          });
-
-          // 处理分段消息
-          const messageMap = {};
-          const segmentGroups = {};
-
-          // 首先将所有消息按ID存入映射
-          messages.forEach(msg => {
-            messageMap[msg._id] = msg;
-
-            // 如果是分段消息，按原始消息ID分组
-            if (msg.isSegment && msg.originalMessageId) {
-              if (!segmentGroups[msg.originalMessageId]) {
-                segmentGroups[msg.originalMessageId] = [];
-              }
-              segmentGroups[msg.originalMessageId].push(msg);
-            }
-          });
-
-          // 处理每个分段消息组，确保按分段索引排序
-          Object.keys(segmentGroups).forEach(originalId => {
-            segmentGroups[originalId].sort((a, b) => {
-              return (a.segmentIndex || 0) - (b.segmentIndex || 0);
-            });
-          });
-
-          // 处理消息时间戳和显示标志
-          const processedMessages = messages.map((msg, index) => {
-            if (!msg.timestamp || isNaN(msg.timestamp) || msg.timestamp === 'NaN') {
-              msg.timestamp = Date.now();
-            }
-
-            // 添加时间戳显示标志
-            msg.showTimestamp = this.shouldShowTimestamp(msg, messages[index - 1]);
-
-            return msg;
-          });
-
-          this.setData({
-            chatId,
-            messages: processedMessages.reverse(),
-            hasMoreHistory: hasMore,
-            fromCache: false
-          });
-
-          // 保存到缓存
-          chatCacheService.saveMessagesToCache(
-            chatId,
-            processedMessages,
-            true,
-            null,
-            this.data.role
-          );
-
-          wx.showToast({
-            title: '刷新成功',
-            icon: 'success',
-            duration: 1500
-          });
-        } else if (chatId) {
-          // 如果没有消息但有聊天ID，说明是新的聊天
-          this.setData({
-            chatId,
-            messages: [],
-            hasMoreHistory: false
-          });
-
-          // 添加欢迎消息
-          this.addWelcomeMessage();
-        }
+      if (isDev) {
+        console.log('下拉刷新完成，已加载最新消息');
       }
     } catch (error) {
       console.error('下拉刷新失败:', error);
+
       wx.showToast({
         title: '刷新失败，请重试',
         icon: 'none'
       });
     } finally {
-      this.setData({ refreshing: false });
-      // 滚动到底部
-      this.scrollToBottom();
+      // 无论成功失败，都结束刷新状态
+      this.setData({
+        refreshing: false
+      });
     }
   },
 
@@ -1224,35 +1232,92 @@ Page({
     // 获取当前要显示的消息
     const aiMessage = pendingAiMessages[currentAiMessageIndex];
 
-    // 计算显示延迟（根据消息长度和内容复杂度）
+    // 计算显示延迟（根据消息长度、内容复杂度和上下文）
     const messageLength = aiMessage.content ? aiMessage.content.length : 0;
 
-    // 基础延迟：300ms + 每个字符的延迟
-    let baseDelay = 300 + messageLength * 8;
+    // 计算平均字符长度（考虑中英文混合情况）
+    const avgCharLength = this.calculateAverageCharLength(aiMessage.content);
 
-    // 根据消息类型调整延迟
-    // 如果消息包含问号，可能是一个问题，增加一点延迟
-    if (aiMessage.content && aiMessage.content.includes('？') || aiMessage.content.includes('?')) {
-      baseDelay += 200;
+    // 估算阅读和打字时间（每分钟200个字符的打字速度）
+    const typingTimePerChar = 60 / 200; // 秒/字符
+    const estimatedTypingTime = messageLength * typingTimePerChar * 1000; // 毫秒
+
+    // 基础延迟：考虑消息长度和复杂度的动态延迟
+    // 短消息使用较短延迟，长消息使用较长但有上限的延迟
+    let baseDelay = Math.min(1500, 300 + estimatedTypingTime * 0.3);
+
+    // 根据消息内容和上下文调整延迟
+
+    // 1. 检查消息类型和内容特征
+    const hasQuestion = aiMessage.content && (
+      aiMessage.content.includes('？') ||
+      aiMessage.content.includes('?') ||
+      /你|您|怎么样|如何|什么|为什么/.test(aiMessage.content)
+    );
+
+    const isGreeting = /你好|早上好|下午好|晚上好|嗨|哈喽|Hello|Hi/.test(aiMessage.content);
+
+    const isEmotional = /[！!]{2,}|[？?]{2,}|哈哈|呵呵|嘻嘻|哭|泪|笑|开心|难过|伤心|生气|愤怒/.test(aiMessage.content);
+
+    const isThinking = /我想|我认为|我觉得|我相信|我猜|可能|也许|或许|应该|大概/.test(aiMessage.content);
+
+    // 2. 根据内容特征调整延迟
+    if (hasQuestion) {
+      // 问题需要思考时间
+      baseDelay += 300;
     }
 
-    // 如果是很短的回复，可能是简单的回应，减少延迟
-    if (messageLength < 10) {
-      baseDelay = Math.max(300, baseDelay / 2);
+    if (isGreeting && messageLength < 15) {
+      // 简短的问候语应该快速回复
+      baseDelay = Math.min(baseDelay, 400);
     }
 
-    // 如果是第一条消息，增加一点延迟，模拟思考时间
+    if (isEmotional) {
+      // 情绪化的回复应该更快，表现出情感的即时性
+      baseDelay *= 0.8;
+    }
+
+    if (isThinking) {
+      // 思考性的回复应该稍慢，表现出思考的过程
+      baseDelay *= 1.2;
+    }
+
+    // 3. 考虑消息在对话中的位置
     if (currentAiMessageIndex === 0) {
-      baseDelay += 500;
+      // 第一条消息需要额外的"思考时间"
+      baseDelay += Math.min(800, messageLength * 2);
+    } else if (currentAiMessageIndex === pendingAiMessages.length - 1) {
+      // 最后一条消息可以稍微延长，表示对话即将结束
+      baseDelay *= 1.1;
+    } else {
+      // 中间消息根据与前一条消息的关联性调整
+      const prevMessage = pendingAiMessages[currentAiMessageIndex - 1];
+
+      // 如果当前消息是对前一条消息的直接延续，减少延迟
+      if (prevMessage && this.areMessagesRelated(prevMessage.content, aiMessage.content)) {
+        baseDelay *= 0.85;
+      }
     }
 
-    // 添加随机性，使延迟看起来更自然
-    const randomFactor = 0.8 + Math.random() * 0.4; // 0.8-1.2的随机因子
+    // 4. 考虑消息长度的非线性影响
+    if (messageLength > 100) {
+      // 长消息不应该等待太久，使用对数缩放
+      baseDelay = Math.min(baseDelay, 300 + Math.log(messageLength) * 300);
+    } else if (messageLength < 10) {
+      // 非常短的消息应该快速显示
+      baseDelay = Math.min(baseDelay, 400);
+    }
 
-    // 计算最终延迟，并设置上下限
-    const delay = Math.min(2000, Math.max(300, Math.floor(baseDelay * randomFactor)));
+    // 5. 添加随机性，使延迟看起来更自然
+    // 使用更窄的随机范围，避免过大的波动
+    const randomFactor = 0.9 + Math.random() * 0.2; // 0.9-1.1的随机因子
 
-    console.log(`显示第 ${currentAiMessageIndex + 1}/${pendingAiMessages.length} 条AI消息，延迟: ${delay}ms`);
+    // 6. 计算最终延迟，并设置合理的上下限
+    const delay = Math.min(2500, Math.max(300, Math.floor(baseDelay * randomFactor)));
+
+    if (isDev) {
+      console.log(`显示第 ${currentAiMessageIndex + 1}/${pendingAiMessages.length} 条AI消息，长度: ${messageLength}，延迟: ${delay}ms`);
+    }
 
     // 添加消息到列表
     setTimeout(() => {
@@ -1272,10 +1337,29 @@ Page({
 
       // 显示下一条消息
       if (currentAiMessageIndex + 1 < pendingAiMessages.length) {
-        // 在消息之间添加一个短暂的延迟，模拟打字间隔
+        // 计算消息之间的延迟，根据当前消息和下一条消息的关系动态调整
+        const nextMessage = pendingAiMessages[currentAiMessageIndex + 1];
+        let interMessageDelay = 500; // 默认间隔
+
+        if (nextMessage) {
+          // 如果下一条消息是当前消息的直接延续，减少间隔
+          if (this.areMessagesRelated(aiMessage.content, nextMessage.content)) {
+            interMessageDelay = 300;
+          }
+          // 如果下一条消息是新话题或转折，增加间隔
+          else if (this.isTopicChange(aiMessage.content, nextMessage.content)) {
+            interMessageDelay = 800;
+          }
+          // 根据下一条消息的长度调整间隔
+          if (nextMessage.content && nextMessage.content.length > 50) {
+            interMessageDelay += 100;
+          }
+        }
+
+        // 在消息之间添加动态延迟，模拟打字间隔
         setTimeout(() => {
           this.showNextAiMessage();
-        }, 500);
+        }, interMessageDelay);
       } else {
         // 所有消息已显示完毕
         this.setData({
@@ -1288,8 +1372,136 @@ Page({
         wx.nextTick(() => {
           this.scrollToBottom(100, true);
         });
+
+        // 检查消息数量，当达到一定阈值时提取记忆
+        // 每10条消息提取一次记忆
+        if (this.data.messages.length % 10 === 0) {
+          if (isDev) {
+            console.log('消息数量达到阈值，触发记忆提取');
+          }
+          this.extractChatMemories();
+        }
       }
     }, delay);
+  },
+
+  /**
+   * 计算消息内容的平均字符长度（考虑中英文混合情况）
+   * @param {string} content 消息内容
+   * @returns {number} 平均字符长度
+   */
+  calculateAverageCharLength(content) {
+    if (!content) return 1;
+
+    // 计算中文字符数量
+    const chineseChars = content.match(/[\u4e00-\u9fa5]/g) || [];
+    const chineseCount = chineseChars.length;
+
+    // 计算英文单词数量（粗略估计）
+    const englishWords = content.match(/[a-zA-Z]+/g) || [];
+    const englishCount = englishWords.length;
+
+    // 计算数字和符号数量
+    const otherChars = content.match(/[0-9\s\p{P}]/gu) || [];
+    const otherCount = otherChars.length;
+
+    // 计算总字符数
+    const totalChars = content.length;
+
+    // 如果主要是中文（中文字符占比超过50%）
+    if (chineseCount / totalChars > 0.5) {
+      return 1.5; // 中文阅读速度通常比英文慢
+    }
+    // 如果主要是英文
+    else if (englishCount > 0) {
+      return 1.0; // 英文标准
+    }
+    // 默认情况
+    return 1.2;
+  },
+
+  /**
+   * 判断两条消息是否相关（是否是同一话题的延续）
+   * @param {string} prevContent 前一条消息内容
+   * @param {string} currentContent 当前消息内容
+   * @returns {boolean} 是否相关
+   */
+  areMessagesRelated(prevContent, currentContent) {
+    if (!prevContent || !currentContent) return false;
+
+    // 1. 检查是否有共同的关键词
+    const prevWords = this.extractKeywords(prevContent);
+    const currentWords = this.extractKeywords(currentContent);
+
+    // 计算共同词的数量
+    const commonWords = prevWords.filter(word => currentWords.includes(word));
+
+    // 如果有多个共同词，可能是相关的
+    if (commonWords.length >= 2) return true;
+
+    // 2. 检查是否有连接词开头，表示承接上文
+    const continuationPatterns = /^(所以|因此|因而|故而|于是|那么|不过|但是|然而|另外|此外|除此之外|总之|总的来说|换句话说)/;
+    if (continuationPatterns.test(currentContent.trim())) return true;
+
+    // 3. 检查是否是问答对
+    const isQuestion = /[？?]$/.test(prevContent.trim());
+    const isAnswer = /^(是的|没错|对|不是|不|可以|不可以|好的|嗯|这样|我认为|我觉得|我想)/i.test(currentContent.trim());
+
+    if (isQuestion && isAnswer) return true;
+
+    return false;
+  },
+
+  /**
+   * 从文本中提取可能的关键词
+   * @param {string} text 文本内容
+   * @returns {Array} 关键词数组
+   */
+  extractKeywords(text) {
+    if (!text) return [];
+
+    // 简单实现：去除常见虚词和标点，分词
+    const stopWords = ['的', '了', '是', '在', '我', '你', '他', '她', '它', '和', '与', '或', '这', '那', '有', '没有', '不', '也', '都', '就', '要', '会', '到', '可以', '能', '被', '把', '给', '让'];
+
+    // 去除标点和空格
+    const cleanText = text.replace(/[\p{P}\s]/gu, ' ');
+
+    // 分词（简单实现，实际应使用专业分词库）
+    // 这里假设中文每个字是一个词，英文按空格分词
+    const words = cleanText.split(/\s+/).filter(word =>
+      word.length > 0 &&
+      !stopWords.includes(word) &&
+      !/^[a-zA-Z]{1,2}$/.test(word) // 过滤掉1-2个字母的英文单词
+    );
+
+    return words;
+  },
+
+  /**
+   * 判断是否是话题转换
+   * @param {string} prevContent 前一条消息内容
+   * @param {string} currentContent 当前消息内容
+   * @returns {boolean} 是否是话题转换
+   */
+  isTopicChange(prevContent, currentContent) {
+    if (!prevContent || !currentContent) return false;
+
+    // 检查是否有明显的话题转换标记
+    const topicChangePatterns = /^(说到这个|换个话题|另外|此外|对了|顺便说一下|还有|除此之外|不说这个了|回到刚才的话题|说起|提到|关于|至于)/;
+
+    if (topicChangePatterns.test(currentContent.trim())) return true;
+
+    // 检查共同关键词，如果几乎没有共同关键词，可能是话题转换
+    const prevWords = this.extractKeywords(prevContent);
+    const currentWords = this.extractKeywords(currentContent);
+
+    // 如果两条消息都有足够的关键词，但几乎没有共同词，可能是话题转换
+    if (prevWords.length >= 3 && currentWords.length >= 3) {
+      const commonWords = prevWords.filter(word => currentWords.includes(word));
+      if (commonWords.length === 0) return true;
+    }
+
+    return false;
   },
 
   /**
@@ -1355,6 +1567,58 @@ Page({
       });
     } catch (error) {
       console.error('保存聊天历史失败:', error);
+    }
+  },
+
+  /**
+   * 提取对话记忆
+   * @param {boolean} silent 是否静默提取（不显示提示）
+   * @returns {Promise<boolean>} 提取是否成功
+   */
+  async extractChatMemories(silent = true) {
+    // 如果消息数量太少，不提取记忆
+    if (!this.data.roleId || !this.data.messages || this.data.messages.length < 5) {
+      if (isDev) {
+        console.log('消息数量不足，不提取记忆');
+      }
+      return false;
+    }
+
+    try {
+      if (isDev) {
+        console.log('开始提取对话记忆...');
+      }
+
+      // 调用云函数提取记忆
+      const result = await wx.cloud.callFunction({
+        name: 'roles',
+        data: {
+          action: 'extractMemories',
+          roleId: this.data.roleId,
+          messages: this.data.messages
+        }
+      });
+
+      if (result && result.result && result.result.success) {
+        if (isDev) {
+          console.log('成功提取记忆:', result.result.memories.length, '条');
+        }
+
+        if (!silent) {
+          wx.showToast({
+            title: '记忆提取成功',
+            icon: 'success'
+          });
+        }
+
+        return true;
+      } else {
+        console.error('提取记忆失败:', result);
+        return false;
+      }
+    } catch (error) {
+      console.error('调用提取记忆云函数失败:', error);
+      return false;
     }
   },
 
@@ -1593,6 +1857,35 @@ Page({
     } catch (error) {
       console.error('获取用户ID失败:', error);
       return null;
+    }
+  },
+
+  /**
+   * 启动定期记忆提取定时器
+   * 每5分钟触发一次记忆提取
+   */
+  startMemoryExtractionTimer() {
+    // 清除可能存在的旧定时器
+    if (this.memoryExtractionTimer) {
+      clearInterval(this.memoryExtractionTimer);
+    }
+
+    // 设置定时器，每5分钟（300000毫秒）触发一次
+    const MEMORY_EXTRACTION_INTERVAL = 5 * 60 * 1000; // 5分钟
+
+    this.memoryExtractionTimer = setInterval(() => {
+      if (isDev) {
+        console.log('定时触发记忆提取');
+      }
+
+      // 只有当消息数量足够且不在发送状态时才提取记忆
+      if (this.data.messages.length >= 5 && !this.data.sending) {
+        this.extractChatMemories();
+      }
+    }, MEMORY_EXTRACTION_INTERVAL);
+
+    if (isDev) {
+      console.log('已启动定期记忆提取定时器，间隔:', MEMORY_EXTRACTION_INTERVAL, '毫秒');
     }
   },
 

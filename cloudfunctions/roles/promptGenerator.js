@@ -139,33 +139,62 @@ async function generatePromptWithMemories(basePrompt, memories) {
   }
 
   try {
-    // 构建记忆描述
-    const memoriesText = memories.map(memory =>
-      `- ${memory.content} (重要性: ${memory.importance})`
-    ).join('\n');
+    // 按类别和重要性组织记忆
+    const organizedMemories = organizeMemoriesByCategory(memories);
 
-    // 调用智谱AI融合提示词和记忆
+    // 构建更结构化的记忆描述
+    let memoriesText = '';
+
+    // 遍历每个类别
+    for (const category in organizedMemories) {
+      // 添加类别标题
+      memoriesText += `【${category}】\n`;
+
+      // 添加该类别下的记忆
+      organizedMemories[category].forEach(memory => {
+        // 添加记忆内容，包括上下文（如果有）
+        const contextInfo = memory.context ? ` (来源: ${memory.context})` : '';
+        memoriesText += `- ${memory.content}${contextInfo}\n`;
+      });
+
+      // 类别之间添加空行
+      memoriesText += '\n';
+    }
+
+    // 调用智谱AI融合提示词和记忆，使用改进的提示词
     const result = await callZhipuAI({
       model: "glm-4-flash",
       messages: [
         {
           role: "system",
-          content: "你是一个提示词优化专家，能够将角色记忆融入到角色提示词中。"
+          content: `你是一个高级提示词优化专家，能够将角色记忆自然地融入到角色提示词中。
+          你的任务是分析角色记忆，识别其中的关键信息，并将这些信息无缝地整合到角色提示词中，
+          使角色能够在对话中自然地展现出对这些记忆的了解，而不是生硬地列举事实。
+          记忆应该影响角色的行为、态度和回应方式，使角色表现得更加个性化和连贯。`
         },
         {
           role: "user",
-          content: `我有一个角色的基础提示词和一些该角色的记忆。请将这些记忆自然地融入到提示词中，使角色能够记住这些信息。
+          content: `我有一个角色的基础提示词和一组该角色关于用户的记忆。请将这些记忆自然地融入到提示词中，使角色能够在对话中展现出对用户的了解。
 
           基础提示词：
           ${basePrompt}
 
-          角色记忆：
+          角色记忆（按类别组织）：
           ${memoriesText}
+
+          融合要求：
+          1. 不要简单地在提示词末尾添加记忆列表，而是将记忆内容自然地融入到提示词的相关部分
+          2. 根据记忆调整角色的行为指导，例如"当用户提到X时，你应该记得Y并做出相应回应"
+          3. 保持提示词的整体风格和语调一致，不要有明显的拼接痕迹
+          4. 确保所有重要记忆都被融入，但可以合并或重新表述相似的记忆
+          5. 添加指导，使角色能够在适当的时机自然地提及这些记忆，而不是生硬地列举
+          6. 记忆应该影响角色的个性和互动方式，使其更加个性化
+          7. 保持提示词的简洁性，不要因为融入记忆而使提示词变得冗长
 
           请给出融合了记忆的完整提示词。不要添加额外的解释，直接给出结果。`
         }
       ],
-      temperature: 0.5,
+      temperature: 0.3, // 降低温度以获得更一致的结果
       max_tokens: 2000
     });
 
@@ -173,7 +202,67 @@ async function generatePromptWithMemories(basePrompt, memories) {
     return result.choices[0].message.content;
   } catch (error) {
     console.error('生成带记忆的提示词失败:', error);
-    // 如果失败，返回基础提示词
+
+    // 如果AI调用失败，尝试使用本地方法融合记忆
+    try {
+      return localMergeMemoriesWithPrompt(basePrompt, memories);
+    } catch (fallbackError) {
+      console.error('本地融合记忆也失败:', fallbackError);
+      // 如果本地方法也失败，返回基础提示词
+      return basePrompt;
+    }
+  }
+}
+
+// 按类别组织记忆
+function organizeMemoriesByCategory(memories) {
+  // 初始化结果对象
+  const result = {};
+
+  // 遍历所有记忆
+  memories.forEach(memory => {
+    // 获取记忆类别，如果没有则归为"其他"
+    const category = memory.category || '其他信息';
+
+    // 如果该类别不存在，创建一个空数组
+    if (!result[category]) {
+      result[category] = [];
+    }
+
+    // 将记忆添加到对应类别
+    result[category].push(memory);
+  });
+
+  // 对每个类别内的记忆按重要性排序
+  for (const category in result) {
+    result[category].sort((a, b) => b.importance - a.importance);
+  }
+
+  return result;
+}
+
+// 本地方法融合记忆和提示词（当AI调用失败时的后备方案）
+function localMergeMemoriesWithPrompt(basePrompt, memories) {
+  if (!memories || memories.length === 0) {
+    return basePrompt;
+  }
+
+  try {
+    // 按重要性排序记忆
+    memories.sort((a, b) => b.importance - a.importance);
+
+    // 构建记忆部分
+    const memorySection = `
+
+关于用户的重要信息：
+${memories.map(memory => `- ${memory.content}`).join('\n')}
+
+请在对话中自然地运用这些信息，使对话更加个性化，但不要直接列举这些事实。根据上下文适当地展示你记得用户的信息。`;
+
+    // 将记忆部分添加到提示词末尾
+    return basePrompt + memorySection;
+  } catch (error) {
+    console.error('本地融合记忆失败:', error);
     return basePrompt;
   }
 }
