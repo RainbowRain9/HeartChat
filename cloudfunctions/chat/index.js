@@ -2,7 +2,9 @@
 /**
  * 聊天相关功能云函数
  * 提供聊天消息发送、历史记录获取、AI回复生成等功能
- * 集成智谱AI (GLM-4-Flash) 生成回复
+ * 集成智谱AI (GLM-4-Flash) 和 Google Gemini 生成回复
+ *
+ * @history 2025-05-01 添加Google Gemini API支持
  */
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
@@ -11,10 +13,11 @@ const db = cloud.database();
 const _ = db.command;
 
 // 是否为开发环境，控制日志输出
-const isDev = false; // 设置为true可以开启详细日志
+const isDev = true; // 设置为true可以开启详细日志
 
-// 导入智谱AI模块
-const bigModelModule = require('./bigmodel');
+// 导入AI模型模块
+const bigModelModule = require('./bigmodel'); // 智谱AI模块
+const geminiModelModule = require('./geminiModel'); // Google Gemini模块
 
 /**
  * 将AI回复分段，使其更像真实聊天
@@ -582,7 +585,14 @@ async function generateAIReply(event, context) {
   console.log('执行 generateAIReply 功能, 参数:', event);
 
   try {
-    const { message, history, roleInfo, includeEmotionAnalysis = false, systemPrompt = null } = event;
+    const {
+      message,
+      history,
+      roleInfo,
+      includeEmotionAnalysis = false,
+      systemPrompt = null,
+      modelType = 'gemini' // 默认使用Google Gemini，可选值：zhipu, gemini
+    } = event;
 
     // 验证参数
     if (!message || typeof message !== 'string' || message.trim() === '') {
@@ -596,14 +606,30 @@ async function generateAIReply(event, context) {
       console.warn('角色信息或prompt缺失, 将使用默认提示词');
     }
 
-    // 调用智谱AI生成回复
-    const aiResult = await bigModelModule.generateChatReply(
-      message,
-      history,
-      roleInfo,
-      includeEmotionAnalysis,
-      systemPrompt // 传递自定义系统提示词（包含用户画像）
-    );
+    let aiResult;
+
+    // 根据modelType选择不同的AI模型
+    if (modelType === 'gemini') {
+      console.log('使用Google Gemini模型生成回复');
+      // 调用Gemini API生成回复
+      aiResult = await geminiModelModule.generateChatReply(
+        message,
+        history,
+        roleInfo,
+        includeEmotionAnalysis,
+        systemPrompt // 传递自定义系统提示词（包含用户画像）
+      );
+    } else {
+      console.log('使用智谱AI模型生成回复');
+      // 调用智谱AI生成回复
+      aiResult = await bigModelModule.generateChatReply(
+        message,
+        history,
+        roleInfo,
+        includeEmotionAnalysis,
+        systemPrompt // 传递自定义系统提示词（包含用户画像）
+      );
+    }
 
     if (!aiResult.success) {
       throw new Error(aiResult.error || 'AI回复生成失败');
@@ -620,6 +646,7 @@ async function generateAIReply(event, context) {
       segments: segments,       // 添加分段数组
       emotionAnalysis: aiResult.emotionAnalysis,
       usage: aiResult.usage,
+      modelType: modelType,     // 添加使用的模型类型
       timestamp: Date.now()
     };
   } catch (error) {
@@ -640,12 +667,16 @@ async function sendMessage(event, context) {
 
   try {
     // 获取请求参数
-    const { chatId, roleId, content, systemPrompt } = event;
+    const { chatId, roleId, content, systemPrompt, modelType = 'gemini' } = event;
 
     // 如果提供了自定义系统提示词（包含用户画像）
     if (systemPrompt) {
       console.log('收到自定义系统提示词（包含用户画像）');
     }
+
+    // 记录使用的模型类型
+    console.log(`使用模型类型: ${modelType}`);
+
 
     // 验证参数
     if (!roleId) {
@@ -794,7 +825,8 @@ async function sendMessage(event, context) {
       history: historyMessages,
       roleInfo: roleInfo,
       includeEmotionAnalysis: false,
-      systemPrompt: systemPrompt // 传递自定义系统提示词（包含用户画像）
+      systemPrompt: systemPrompt, // 传递自定义系统提示词（包含用户画像）
+      modelType: modelType // 传递模型类型
     });
 
     if (!aiReplyResult.success) {
@@ -1137,6 +1169,62 @@ async function checkChatExists(event, context) {
   }
 }
 
+/**
+ * 测试模型连接
+ * @param {Object} event 事件参数
+ * @returns {Promise<Object>} 测试结果
+ */
+async function testConnection(event, context) {
+  try {
+    // 获取请求参数
+    const { modelType = 'gemini' } = event;
+
+    console.log(`测试${modelType}模型连接...`);
+
+    let result;
+
+    // 根据modelType选择不同的AI模型进行测试
+    if (modelType === 'gemini') {
+      // 测试Gemini API连接
+      result = await geminiModelModule.generateChatReply(
+        "测试连接",
+        [],
+        { prompt: "这是一个测试连接的请求，请简短回复。" },
+        false
+      );
+    } else {
+      // 测试智谱AI连接
+      result = await bigModelModule.generateChatReply(
+        "测试连接",
+        [],
+        { prompt: "这是一个测试连接的请求，请简短回复。" },
+        false
+      );
+    }
+
+    if (result.success) {
+      return {
+        success: true,
+        message: `${modelType}模型连接测试成功`,
+        modelType: modelType,
+        reply: result.reply
+      };
+    } else {
+      return {
+        success: false,
+        error: result.error || `${modelType}模型连接测试失败`,
+        modelType: modelType
+      };
+    }
+  } catch (error) {
+    console.error('测试连接失败:', error);
+    return {
+      success: false,
+      error: error.message || '测试连接失败'
+    };
+  }
+}
+
 // 主函数入口
 exports.main = async (event, context) => {
   const { action } = event;
@@ -1165,6 +1253,8 @@ exports.main = async (event, context) => {
       return await clearChatHistory(event, context);
     case 'checkChatExists':
       return await checkChatExists(event, context);
+    case 'testConnection':
+      return await testConnection(event, context);
 
     default:
       return { success: false, error: '未知操作' };

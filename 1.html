@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartChat Logo Options</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin: 0 0 30px 0;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            width: 100%;
+        }
+        
+        @media (max-width: 700px) {
+            .logo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .logo-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 160px;
+            height: 160px;
+            margin-bottom: 15px;
+        }
+        
+        .option-title {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+        }
+        
+        .option-desc {
+            color: #666;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HeartChat 图标设计方案</h1>
+        
+        <div class="logo-grid">
+            <!-- 经典爱心 -->
+            <div class="logo-option">
+                <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 经典爱心形状 -->
+                    <path d="M100 165c-40-30-65-60-65-90 0-25 20-45 45-45 15 0 30 10 35 25 0 0 5-25 35-25 25 0 45 20 45 45 0 30-25 60-65 90z" fill="#FF6B8B"/>
+                    
+                    <!-- 对话气泡 -->
+                    <path d="M100 140c-20 0-35-15-35-35s15-35 35-35 35 15 35 35c0 5-1 10-3 14l8 16-16-8c-7 5-15 8-24 8z" fill="white"/>
+                    
+                    <!-- 对话线条 -->
+                    <line x1="85" y1="95" x2="115" y2="95" stroke="#FF6B8B" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="85" y1="110" x2="105" y2="110" stroke="#FF6B8B" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+                <div class="option-title">经典爱心</div>
+                <div class="option-desc">传统的爱心形状，温暖亲切，直观表达情感交流的核心理念。</div>
+            </div>
+            
+            <!-- 圆润爱心 -->
+            <div class="logo-option">
+                <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 更圆润的爱心形状 -->
+                    <path d="M100 170c-45-30-75-65-75-95 0-30 25-50 50-50 15 0 30 10 35 30 0 0 5-30 40-30 25 0 50 20 50 50 0 30-30 65-75 95z" fill="#FF6B8B"/>
+                    
+                    <!-- 对话气泡 -->
+                    <path d="M100 140c-20 0-35-15-35-35s15-35 35-35 35 15 35 35c0 5-1 10-3 14l8 16-16-8c-7 5-15 8-24 8z" fill="white"/>
+                    
+                    <!-- 对话线条 -->
+                    <line x1="85" y1="95" x2="115" y2="95" stroke="#FF6B8B" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="85" y1="110" x2="105" y2="110" stroke="#FF6B8B" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+                <div class="option-title">圆润爱心</div>
+                <div class="option-desc">更加柔和圆润的爱心，传递温暖包容的情感，视觉上更加友好。</div>
+            </div>
+            
+            <!-- 几何爱心 -->
+            <div class="logo-option">
+                <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 几何风格爱心 -->
+                    <path d="M100 170L40 110C20 90 20 60 40 40S90 20 110 40L100 50L90 40C70 20 40 20 20 40S0 90 20 110L100 170Z" fill="#FF6B8B" transform="translate(50, 15) scale(0.85)"/>
+                    
+                    <!-- 对话气泡 -->
+                    <path d="M100 140c-20 0-35-15-35-35s15-35 35-35 35 15 35 35c0 5-1 10-3 14l8 16-16-8c-7 5-15 8-24 8z" fill="white"/>
+                    
+                    <!-- 对话线条 -->
+                    <line x1="85" y1="95" x2="115" y2="95" stroke="#FF6B8B" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="85" y1="110" x2="105" y2="110" stroke="#FF6B8B" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+                <div class="option-title">几何爱心</div>
+                <div class="option-desc">现代几何风格的爱心，线条更加锐利，传递科技感与现代感。</div>
+            </div>
+            
+            <!-- 双心融合 -->
+            <div class="logo-option">
+                <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 大爱心 -->
+                    <path d="M100 170c-40-30-70-60-70-90 0-25 20-45 45-45 15 0 30 10 35 25 0 0 5-25 35-25 25 0 45 20 45 45 0 30-30 60-70 90z" fill="#FF6B8B"/>
+                    
+                    <!-- 小爱心(对话气泡) -->
+                    <path d="M100 140c-15-10-25-25-25-40 0-15 12-25 25-25 10 0 15 5 20 15 0 0 5-15 20-15 13 0 25 10 25 25 0 15-10 30-25 40l-20 15z" fill="white"/>
+                    
+                    <!-- 对话线条 -->
+                    <line x1="90" y1="105" x2="110" y2="105" stroke="#FF6B8B" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="90" y1="115" x2="105" y2="115" stroke="#FF6B8B" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <div class="option-title">双心融合</div>
+                <div class="option-desc">大小爱心相互融合，象征AI与用户之间的情感连接与共鸣。</div>
+            </div>
+            
+            <!-- 连续爱心 -->
+            <div class="logo-option">
+                <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 背景大爱心 -->
+                    <path d="M100 170c-40-30-70-60-70-90 0-25 20-45 45-45 15 0 30 10 35 25 0 0 5-25 35-25 25 0 45 20 45 45 0 30-30 60-70 90z" fill="#FF6B8B" opacity="0.8"/>
+                    
+                    <!-- 前景小爱心 -->
+                    <path d="M100 150c-25-20-45-40-45-60 0-15 15-30 30-30 10 0 20 5 25 15 0 0 5-15 25-15 15 0 30 15 30 30 0 20-20 40-45 60z" fill="#FF6B8B"/>
+                    
+                    <!-- 对话气泡 -->
+                    <path d="M100 130c-15 0-25-10-25-25s10-25 25-25 25 10 25 25c0 4-1 7-2 10l6 12-12-6c-5 3-10 6-17 6z" fill="white"/>
+                    
+                    <!-- 对话线条 -->
+                    <line x1="90" y1="100" x2="110" y2="100" stroke="#FF6B8B" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="90" y1="110" x2="105" y2="110" stroke="#FF6B8B" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <div class="option-title">连续爱心</div>
+                <div class="option-desc">层叠的爱心设计，表达持续的情感支持与陪伴，增强视觉层次感。</div>
+            </div>
+            
+            <!-- 线条爱心 -->
+            <div class="logo-option">
+                <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 圆形背景 -->
+                    <circle cx="100" cy="100" r="70" fill="#FF6B8B" opacity="0.1"/>
+                    
+                    <!-- 线条爱心 -->
+                    <path d="M100 160c-35-25-60-50-60-80 0-20 15-35 35-35 12 0 25 8 30 20 0 0 5-20 30-20 20 0 35 15 35 35 0 30-25 55-60 80z" 
+                          fill="none" stroke="#FF6B8B" stroke-width="6" stroke-linejoin="round"/>
+                    
+                    <!-- 对话气泡 -->
+                    <path d="M100 135c-18 0-30-12-30-30s12-30 30-30 30 12 30 30c0 5-1 9-3 12l7 14-14-7c-6 4-13 7-20 7z" 
+                          fill="white" stroke="#FF6B8B" stroke-width="2"/>
+                    
+                    <!-- 对话线条 -->
+                    <line x1="85" y1="95" x2="115" y2="95" stroke="#FF6B8B" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="85" y1="110" x2="105" y2="110" stroke="#FF6B8B" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <div class="option-title">线条爱心</div>
+                <div class="option-desc">轮廓线条风格，现代简约，突出对话功能，适合扁平化设计趋势。</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

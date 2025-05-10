@@ -5,7 +5,7 @@
 const axios = require('axios');
 
 // 是否为开发环境，控制日志输出
-const isDev = false; // 设置为true可以开启详细日志
+const isDev = true; // 设置为true可以开启详细日志
 
 // 智谱AI API配置
 // 注意：实际使用时应从环境变量或安全配置中读取API密钥，而不是硬编码

@@ -9,7 +9,8 @@
     "pages/agreement/service",
     "pages/agreement/privacy",
     "pages/role-editor/index",
-    "pages/prompt-editor/prompt-editor"
+    "pages/prompt-editor/prompt-editor",
+    "pages/test-gemini/test-gemini"
   ],
   "subpackages": [
     {

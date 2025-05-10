@@ -3,7 +3,7 @@ const app = getApp();
 const userService = require('../../services/userService');
 
 // 是否为开发环境，控制日志输出
-const isDev = false; // 设置为true可以开启详细日志
+const isDev = true; // 设置为true可以开启详细日志
 
 Page({
   /**

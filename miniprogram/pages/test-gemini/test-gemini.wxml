@@ -1,0 +1,64 @@
+<!--pages/test-gemini/test-gemini.wxml-->
+<view class="container {{darkMode ? 'dark-mode' : ''}}">
+  <view class="header">
+    <view class="title">Gemini API 测试</view>
+    <view class="subtitle">测试Gemini API的连接和功能</view>
+  </view>
+
+  <view class="content">
+    <!-- 云环境初始化状态 -->
+    <view class="section">
+      <view class="section-title">云环境状态</view>
+      <view class="cloud-status {{cloudInit ? 'success' : 'error'}}">
+        <text>{{cloudInit ? '已初始化' : '未初始化'}}</text>
+        <button wx:if="{{!cloudInit}}" class="btn" bindtap="initCloud">初始化云环境</button>
+      </view>
+      <view wx:if="{{errorMessage}}" class="error-message">{{errorMessage}}</view>
+    </view>
+
+    <!-- 模型选择 -->
+    <view class="section">
+      <view class="section-title">模型选择</view>
+      <radio-group class="model-select" bindchange="onModelTypeChange">
+        <label wx:for="{{modelTypes}}" wx:key="*this" class="model-option">
+          <radio value="{{item}}" checked="{{modelType === item}}" color="{{darkMode ? '#4dabf7' : '#007bff'}}" />
+          <text>{{item === 'gemini' ? 'Google Gemini' : '智谱AI'}}</text>
+        </label>
+      </radio-group>
+    </view>
+
+    <!-- 测试消息输入 -->
+    <view class="section">
+      <view class="section-title">测试消息</view>
+      <textarea class="test-message" value="{{testMessage}}" bindinput="onTestMessageInput" placeholder="输入测试消息" maxlength="500"></textarea>
+    </view>
+
+    <!-- 测试按钮 -->
+    <view class="section">
+      <view class="buttons">
+        <button class="btn" bindtap="testConnection" loading="{{testing}}">测试连接</button>
+        <button class="btn" bindtap="testSendMessage" loading="{{testing}}">发送消息</button>
+      </view>
+    </view>
+
+    <!-- 测试结果 -->
+    <view class="section" wx:if="{{testResult}}">
+      <view class="section-title">测试结果</view>
+      <view class="test-result {{testResult.success ? 'success' : 'error'}}">
+        <view class="result-status">
+          <text class="status-icon">{{testResult.success ? '✓' : '✗'}}</text>
+          <text class="status-text">{{testResult.message}}</text>
+        </view>
+        <view class="result-content" wx:if="{{testResult.reply}}">
+          <view class="reply-title">回复内容：</view>
+          <view class="reply-text">{{testResult.reply}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 返回按钮 -->
+  <view class="footer">
+    <button class="btn back-btn" bindtap="goBack">返回</button>
+  </view>
+</view>

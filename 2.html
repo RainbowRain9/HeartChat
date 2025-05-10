@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爱心形式 SVG 示例</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 20px;
+            background-color: #fdf6f6; /* Light pinkish background */
+            color: #333;
+        }
+        .icon-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 30px;
+        }
+        .icon-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+            padding: 25px;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .icon-card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+            color: #d9534f; /* Reddish title */
+        }
+        .icon-card svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+        .icon-card p {
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+        }
+        h1 {
+            color: #c9302c; /* Darker red for main title */
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>爱心的不同形式 SVG</h1>
+
+    <div class="icon-container">
+
+        <div class="icon-card">
+            <h3>经典爱心</h3>
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <title>经典爱心</title>
+                <path d="M50 25 C40 10 10 15 10 40 C10 65 50 90 50 90 C50 90 90 65 90 40 C90 15 60 10 50 25 Z" fill="#E91E63"/>
+            </svg>
+            <p>标准的、广为人知的心形符号。</p>
+        </div>
+
+        <div class="icon-card">
+            <h3>圆润爱心</h3>
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <title>圆润爱心</title>
+                <!-- Softer curves and a less pointy bottom -->
+                <path d="M50 30 C35 15 15 25 15 45 C15 70 45 90 50 95 C55 90 85 70 85 45 C85 25 65 15 50 30 Z" fill="#FF69B4"/>
+            </svg>
+            <p>边角更柔和，整体感觉更可爱、更温馨。</p>
+        </div>
+
+        <div class="icon-card">
+            <h3>轮廓爱心</h3>
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <title>轮廓爱心</title>
+                <path d="M50 25 C40 10 10 15 10 40 C10 65 50 90 50 90 C50 90 90 65 90 40 C90 15 60 10 50 25 Z" fill="none" stroke="#CD5C5C" stroke-width="6"/>
+            </svg>
+            <p>只有边框线条，内部透明，简约现代。</p>
+        </div>
+
+        <div class="icon-card">
+            <h3>分层爱心</h3>
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <title>分层爱心</title>
+                <!-- Outer Heart -->
+                <path d="M50 20 C35 5 5 15 5 40 C5 70 50 95 50 95 C50 95 95 70 95 40 C95 15 65 5 50 20 Z" fill="#FFB6C1"/>
+                <!-- Inner Heart -->
+                <path d="M50 35 C43 25 25 30 25 48 C25 65 50 78 50 78 C50 78 75 65 75 48 C75 30 57 25 50 35 Z" fill="#FFF0F5"/>
+            </svg>
+            <p>一个心形包裹着另一个心形，富有层次感。</p>
+        </div>
+        
+        <div class="icon-card">
+            <h3>优雅爱心</h3>
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <title>优雅爱心</title>
+                <!-- Taller, more slender heart shape -->
+                <path d="M50 15 C30 5 0 25 0 50 C0 80 50 100 50 100 C50 100 100 80 100 50 C100 25 70 5 50 15 Z" fill="#DB7093"/>
+            </svg>
+            <p>形态上稍显修长，给人一种精致、优雅的感觉。</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

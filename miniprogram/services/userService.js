@@ -6,7 +6,7 @@
 const cloudFuncCaller = require('./cloudFuncCaller');
 
 // 是否为开发环境，控制日志输出
-const isDev = false; // 设置为true可以开启详细日志
+const isDev = true; // 设置为true可以开启详细日志
 
 // 缓存相关常量
 const USER_PROFILE_CACHE_KEY = 'user_profile_cache_';

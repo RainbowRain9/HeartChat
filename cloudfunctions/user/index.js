@@ -6,7 +6,7 @@ const db = cloud.database();
 const _ = db.command;
 
 // 是否为开发环境，控制日志输出
-const isDev = false; // 设置为true可以开启详细日志
+const isDev = true; // 设置为true可以开启详细日志
 
 // 导入模块
 // 使用新版本的用户画像处理模块，基于智谱AI实现

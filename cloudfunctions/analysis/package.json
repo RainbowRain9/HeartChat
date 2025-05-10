@@ -1,7 +1,7 @@
 {
   "name": "analysis",
   "version": "1.0.0",
-  "description": "情感分析与关键词提取云函数 - 使用智谱AI (BigModel) API",
+  "description": "情感分析与关键词提取云函数 - 支持智谱AI和Google Gemini API",
   "main": "index.js",
   "dependencies": {
     "wx-server-sdk": "~2.6.3",

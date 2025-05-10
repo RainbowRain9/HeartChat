@@ -1,16 +1,19 @@
 // analysis 云函数 index.js
 /**
  * 情感分析与关键词提取云函数
- * 基于智谱AI (BigModel) API，提供对话文本的情绪识别和关键词提取功能
+ * 基于智谱AI (BigModel) API和Google Gemini API，提供对话文本的情绪识别和关键词提取功能
  * 可以识别出当前会话者所表现出的情绪类别及其置信度
  * 针对正面和负面的情绪，还可给出参考回复话术
- * 同时支持使用智谱AI进行关键词提取、词向量获取和聚类分析
+ * 同时支持使用智谱AI和Google Gemini进行关键词提取、词向量获取和聚类分析
+ *
+ * @history 2025-05-01 添加Google Gemini API支持
  */
 const cloud = require('wx-server-sdk');
 const axios = require('axios');
 
-// 导入智谱AI模块
-const bigModelModule = require('./bigmodel');
+// 导入AI模型模块
+const bigModelModule = require('./bigmodel'); // 智谱AI模块
+const geminiModelModule = require('./geminiModel'); // Google Gemini模块
 // 导入关键词分类器
 const keywordClassifier = require('./keywordClassifier');
 // 导入关键词情感关联模块
@@ -19,7 +22,7 @@ const keywordEmotionLinker = require('./keywordEmotionLinker');
 const userInterestAnalyzer = require('./userInterestAnalyzer');
 
 // 是否为开发环境，控制日志输出
-const isDev = false; // 设置为true可以开启详细日志
+const isDev = true; // 设置为true可以开启详细日志
 
 // 初始化云开发
 cloud.init({
@@ -59,7 +62,7 @@ async function saveEmotionRecord(result, openid, options = {}) {
 }
 
 /**
- * 分析文本情感 (使用智谱AI)
+ * 分析文本情感 (使用智谱AI或Google Gemini)
  * @param {Object} event 事件参数
  * @returns {Promise<Object>} 处理结果
  */
@@ -69,7 +72,16 @@ async function analyzeEmotion(event) {
     const wxContext = cloud.getWXContext();
 
     // 获取参数
-    const { text, history = [], saveRecord = false, roleId = null, chatId = null, extractKeywords = true, linkKeywords = true } = event;
+    const {
+      text,
+      history = [],
+      saveRecord = false,
+      roleId = null,
+      chatId = null,
+      extractKeywords = true,
+      linkKeywords = true,
+      modelType = 'gemini' // 默认使用Google Gemini，可选值：zhipu, gemini
+    } = event;
 
     // 验证文本参数
     if (!text || typeof text !== 'string' || text.trim() === '') {
@@ -79,12 +91,21 @@ async function analyzeEmotion(event) {
       };
     }
 
+    // 记录使用的模型类型
+    console.log(`使用模型类型: ${modelType}`);
+
     // 并行处理情感分析和关键词提取
     const [emotionResponse, keywords] = await Promise.all([
-      // 调用智谱AI情感分析，传入历史消息
-      bigModelModule.analyzeEmotion(text, history),
-      // 如果需要提取关键词，则提取
-      extractKeywords ? bigModelModule.extractKeywords(text, 5) : Promise.resolve([])
+      // 根据modelType选择不同的AI模型进行情感分析
+      modelType === 'gemini'
+        ? geminiModelModule.analyzeEmotion(text, history)
+        : bigModelModule.analyzeEmotion(text, history),
+      // 根据modelType选择不同的AI模型提取关键词
+      extractKeywords
+        ? (modelType === 'gemini'
+            ? geminiModelModule.extractKeywords(text, 5)
+            : bigModelModule.extractKeywords(text, 5))
+        : Promise.resolve([])
     ]);
 
     // 检查智谱AI返回结果
@@ -145,14 +166,14 @@ async function analyzeEmotion(event) {
 }
 
 /**
- * 提取文本关键词 (使用智谱AI)
+ * 提取文本关键词 (使用智谱AI或Google Gemini)
  * @param {Object} event 事件参数
  * @returns {Promise<Object>} 处理结果
  */
 async function extractTextKeywords(event) {
   try {
     // 获取参数
-    const { text, topK = 10 } = event;
+    const { text, topK = 10, modelType = 'gemini' } = event;
 
     // 验证文本参数
     if (!text || typeof text !== 'string' || text.trim() === '') {
@@ -162,13 +183,21 @@ async function extractTextKeywords(event) {
       };
     }
 
-    // 调用智谱AI关键词提取
-    const result = await bigModelModule.extractKeywords(text, topK);
+    // 记录使用的模型类型
+    console.log(`使用模型类型: ${modelType}`);
+
+    // 根据modelType选择不同的AI模型提取关键词
+    let result;
+    if (modelType === 'gemini') {
+      result = await geminiModelModule.extractKeywords(text, topK);
+    } else {
+      result = await bigModelModule.extractKeywords(text, topK);
+    }
 
     // 返回结果
     return result;
   } catch (error) {
-    console.error('智谱AI关键词提取失败:', error.message || error);
+    console.error('关键词提取失败:', error.message || error);
 
     // 返回错误信息
     return {

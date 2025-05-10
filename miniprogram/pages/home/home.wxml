@@ -69,6 +69,14 @@
       <text class="feature-name">关键词提取</text>
       <text class="feature-desc">提取文本中的关键词</text>
     </view>
+
+    <view class="feature-card" bindtap="navigateToTestGemini">
+      <view class="feature-icon gemini-test-icon">
+        <text class="iconfont">🤖</text>
+      </view>
+      <text class="feature-name">Gemini测试</text>
+      <text class="feature-desc">测试Gemini API连接</text>
+    </view>
   </view>
 
   <!-- 最近对话 -->
