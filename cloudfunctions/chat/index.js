@@ -15,9 +15,8 @@ const _ = db.command;
 // 是否为开发环境，控制日志输出
 const isDev = true; // 设置为true可以开启详细日志
 
-// 导入AI模型模块
-const bigModelModule = require('./bigmodel'); // 智谱AI模块
-const geminiModelModule = require('./geminiModel'); // Google Gemini模块
+// 导入统一AI模型服务
+const aiModelService = require('./aiModelService');
 
 /**
  * 将AI回复分段，使其更像真实聊天
@@ -591,7 +590,8 @@ async function generateAIReply(event, context) {
       roleInfo,
       includeEmotionAnalysis = false,
       systemPrompt = null,
-      modelType = 'gemini' // 默认使用Google Gemini，可选值：zhipu, gemini
+      modelType = 'gemini', // 默认使用Google Gemini
+      modelName = null // 具体模型名称，如果为null则使用默认模型
     } = event;
 
     // 验证参数
@@ -606,30 +606,23 @@ async function generateAIReply(event, context) {
       console.warn('角色信息或prompt缺失, 将使用默认提示词');
     }
 
-    let aiResult;
+    // 将modelType转换为平台键名
+    const platformKey = modelType.toUpperCase();
 
-    // 根据modelType选择不同的AI模型
-    if (modelType === 'gemini') {
-      console.log('使用Google Gemini模型生成回复');
-      // 调用Gemini API生成回复
-      aiResult = await geminiModelModule.generateChatReply(
-        message,
-        history,
-        roleInfo,
-        includeEmotionAnalysis,
-        systemPrompt // 传递自定义系统提示词（包含用户画像）
-      );
-    } else {
-      console.log('使用智谱AI模型生成回复');
-      // 调用智谱AI生成回复
-      aiResult = await bigModelModule.generateChatReply(
-        message,
-        history,
-        roleInfo,
-        includeEmotionAnalysis,
-        systemPrompt // 传递自定义系统提示词（包含用户画像）
-      );
-    }
+    console.log(`使用${aiModelService.MODEL_PLATFORMS[platformKey]?.name || modelType}模型生成回复${modelName ? ` (${modelName})` : ''}`);
+
+    // 使用统一AI模型服务生成回复
+    const aiResult = await aiModelService.generateChatReply(
+      message,
+      history,
+      roleInfo,
+      includeEmotionAnalysis,
+      systemPrompt, // 传递自定义系统提示词（包含用户画像）
+      {
+        platform: platformKey,
+        model: modelName
+      }
+    );
 
     if (!aiResult.success) {
       throw new Error(aiResult.error || 'AI回复生成失败');
@@ -667,7 +660,7 @@ async function sendMessage(event, context) {
 
   try {
     // 获取请求参数
-    const { chatId, roleId, content, systemPrompt, modelType = 'gemini' } = event;
+    const { chatId, roleId, content, systemPrompt, modelType = 'gemini', modelName = null } = event;
 
     // 如果提供了自定义系统提示词（包含用户画像）
     if (systemPrompt) {
@@ -826,7 +819,8 @@ async function sendMessage(event, context) {
       roleInfo: roleInfo,
       includeEmotionAnalysis: false,
       systemPrompt: systemPrompt, // 传递自定义系统提示词（包含用户画像）
-      modelType: modelType // 传递模型类型
+      modelType: modelType, // 传递模型类型
+      modelName: modelName // 传递具体模型名称
     });
 
     if (!aiReplyResult.success) {
@@ -1183,24 +1177,20 @@ async function testConnection(event, context) {
 
     let result;
 
-    // 根据modelType选择不同的AI模型进行测试
-    if (modelType === 'gemini') {
-      // 测试Gemini API连接
-      result = await geminiModelModule.generateChatReply(
-        "测试连接",
-        [],
-        { prompt: "这是一个测试连接的请求，请简短回复。" },
-        false
-      );
-    } else {
-      // 测试智谱AI连接
-      result = await bigModelModule.generateChatReply(
-        "测试连接",
-        [],
-        { prompt: "这是一个测试连接的请求，请简短回复。" },
-        false
-      );
-    }
+    // 将modelType转换为平台键名
+    const platformKey = modelType.toUpperCase();
+
+    console.log(`测试${aiModelService.MODEL_PLATFORMS[platformKey]?.name || modelType}连接`);
+
+    // 使用统一AI模型服务测试连接
+    result = await aiModelService.generateChatReply(
+      "测试连接",
+      [],
+      { prompt: "这是一个测试连接的请求，请简短回复。" },
+      false,
+      null,
+      { platform: platformKey }
+    );
 
     if (result.success) {
       return {
@@ -1221,6 +1211,37 @@ async function testConnection(event, context) {
     return {
       success: false,
       error: error.message || '测试连接失败'
+    };
+  }
+}
+
+/**
+ * 获取模型列表
+ * @param {Object} event 事件参数
+ * @returns {Promise<Object>} 模型列表
+ */
+async function getModelList(event) {
+  try {
+    // 获取请求参数
+    const { modelType = 'gemini' } = event;
+
+    console.log(`获取${modelType}模型列表...`);
+
+    // 将modelType转换为平台键名
+    const platformKey = modelType.toUpperCase();
+
+    // 使用统一AI模型服务获取模型列表
+    const models = await aiModelService.getAvailableModels(platformKey);
+
+    return {
+      success: true,
+      models: models
+    };
+  } catch (error) {
+    console.error('获取模型列表失败:', error);
+    return {
+      success: false,
+      error: error.message || '获取模型列表失败'
     };
   }
 }
@@ -1255,6 +1276,8 @@ exports.main = async (event, context) => {
       return await checkChatExists(event, context);
     case 'testConnection':
       return await testConnection(event, context);
+    case 'getModelList':
+      return await getModelList(event);
 
     default:
       return { success: false, error: '未知操作' };

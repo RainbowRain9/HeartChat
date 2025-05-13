@@ -9,11 +9,9 @@
  * @history 2025-05-01 添加Google Gemini API支持
  */
 const cloud = require('wx-server-sdk');
-const axios = require('axios');
 
-// 导入AI模型模块
-const bigModelModule = require('./bigmodel'); // 智谱AI模块
-const geminiModelModule = require('./geminiModel'); // Google Gemini模块
+// 导入统一AI模型服务
+const aiModelService = require('./aiModelService');
 // 导入关键词分类器
 const keywordClassifier = require('./keywordClassifier');
 // 导入关键词情感关联模块
@@ -96,16 +94,12 @@ async function analyzeEmotion(event) {
 
     // 并行处理情感分析和关键词提取
     const [emotionResponse, keywords] = await Promise.all([
-      // 根据modelType选择不同的AI模型进行情感分析
-      modelType === 'gemini'
-        ? geminiModelModule.analyzeEmotion(text, history)
-        : bigModelModule.analyzeEmotion(text, history),
-      // 根据modelType选择不同的AI模型提取关键词
+      // 使用统一AI模型服务进行情感分析
+      aiModelService.analyzeEmotion(text, history, { platform: modelType.toUpperCase() }),
+      // 使用统一AI模型服务提取关键词
       extractKeywords
-        ? (modelType === 'gemini'
-            ? geminiModelModule.extractKeywords(text, 5)
-            : bigModelModule.extractKeywords(text, 5))
-        : Promise.resolve([])
+        ? aiModelService.extractKeywords(text, 5, { platform: modelType.toUpperCase() })
+        : Promise.resolve({ success: true, data: { keywords: [] } })
     ]);
 
     // 检查智谱AI返回结果
@@ -122,10 +116,10 @@ async function analyzeEmotion(event) {
       }
 
       // 如果需要关联关键词和情感，并且成功提取到关键词
-      if (linkKeywords && extractKeywords && keywords && keywords.length > 0) {
+      if (linkKeywords && extractKeywords && keywords && keywords.success && keywords.data && keywords.data.keywords && keywords.data.keywords.length > 0) {
         try {
           // 异步关联关键词和情感，不阻塞主流程
-          keywordEmotionLinker.linkKeywordsToEmotion(wxContext.OPENID, keywords, emotionResponse.result)
+          keywordEmotionLinker.linkKeywordsToEmotion(wxContext.OPENID, keywords.data.keywords, emotionResponse.result)
             .then(success => {
               if (isDev) {
                 console.log('关联关键词和情感' + (success ? '成功' : '失败'));
@@ -145,7 +139,7 @@ async function analyzeEmotion(event) {
         success: true,
         result: emotionResponse.result,
         recordId: recordId,
-        keywords: keywords
+        keywords: keywords.data ? keywords.data.keywords : []
       };
     } else {
       // 智谱AI返回错误
@@ -186,13 +180,8 @@ async function extractTextKeywords(event) {
     // 记录使用的模型类型
     console.log(`使用模型类型: ${modelType}`);
 
-    // 根据modelType选择不同的AI模型提取关键词
-    let result;
-    if (modelType === 'gemini') {
-      result = await geminiModelModule.extractKeywords(text, topK);
-    } else {
-      result = await bigModelModule.extractKeywords(text, topK);
-    }
+    // 使用统一AI模型服务提取关键词
+    const result = await aiModelService.extractKeywords(text, topK, { platform: modelType.toUpperCase() });
 
     // 返回结果
     return result;
@@ -240,8 +229,8 @@ async function getWordVectors(event) {
       console.log('调用智谱AI词向量获取, 输入:', textArray);
     }
 
-    // 调用智谱AI词向量获取
-    const result = await bigModelModule.getEmbeddings(textArray);
+    // 调用统一AI模型服务获取词向量
+    const result = await aiModelService.getEmbeddings(textArray, { platform: 'ZHIPU' });
 
     if (isDev) {
       console.log('智谱AI词向量获取结果:', result);
@@ -276,8 +265,8 @@ async function clusterKeywords(event) {
       };
     }
 
-    // 调用智谱AI聚类分析
-    const result = await bigModelModule.clusterKeywords(text, threshold, minClusterSize);
+    // 调用统一AI模型服务进行聚类分析
+    const result = await aiModelService.clusterKeywords(text, threshold, minClusterSize, { platform: 'ZHIPU' });
 
     // 返回结果
     return result;
@@ -310,8 +299,8 @@ async function analyzeUserInterests(event) {
       };
     }
 
-    // 调用智谱AI用户兴趣分析
-    const result = await bigModelModule.analyzeUserInterests(messages);
+    // 调用统一AI模型服务进行用户兴趣分析
+    const result = await aiModelService.analyzeUserInterests(messages, { platform: 'ZHIPU' });
 
     // 返回结果
     return result;

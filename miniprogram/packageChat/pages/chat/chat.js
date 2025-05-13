@@ -7,6 +7,8 @@ const chatCacheService = require('../../../services/chatCacheService');
 const keywordService = require('../../../services/keywordService');
 // 导入用户兴趣服务
 const userInterestsService = require('../../../services/userInterestsService');
+// 导入模型服务
+const modelService = require('../../../services/modelService');
 
 // 是否为开发环境，控制日志输出
 const isDev = true; // 设置为true可以开启详细日志
@@ -41,6 +43,8 @@ Page({
     manualScroll: false, // 是否手动滚动
     lastScrollTop: 0, // 上次滚动位置
     openId: '', // 用户ID
+    selectedModelType: '', // 当前选择的模型类型
+    selectedModel: '', // 当前选择的模型
     // 默认情绪分析数据结构
     defaultEmotionData: {
       primary_emotion: 'calm',
@@ -87,6 +91,14 @@ Page({
         darkMode: app.globalData.darkMode || false
       });
     }
+
+    // 获取当前选择的模型类型和模型
+    const selectedModelType = modelService.getSelectedModelType();
+    const selectedModel = modelService.getSelectedModel(selectedModelType);
+    this.setData({
+      selectedModelType,
+      selectedModel
+    });
 
     // 监听键盘高度变化
     this.watchKeyboard();
@@ -836,6 +848,10 @@ Page({
     this.scrollToBottom(0);
 
     try {
+      // 获取当前选择的模型类型和模型
+      const modelType = this.data.selectedModelType || modelService.getSelectedModelType();
+      const modelName = this.data.selectedModel || modelService.getSelectedModel(modelType);
+
       // 调用云函数发送消息
       const result = await wx.cloud.callFunction({
         name: 'chat',
@@ -844,7 +860,9 @@ Page({
           chatId: this.data.chatId,
           roleId: this.data.roleId,
           content,
-          systemPrompt: this.systemPrompt // 使用包含用户画像的系统提示
+          systemPrompt: this.systemPrompt, // 使用包含用户画像的系统提示
+          modelType: modelType, // 传递模型类型
+          modelName: modelName // 传递具体模型名称
         }
       });
 
@@ -1992,6 +2010,29 @@ Page({
           url: '/pages/home/home'
         });
       }
+    });
+  },
+
+  /**
+   * 处理模型变更
+   * @param {Object} e 事件对象
+   */
+  handleModelChange(e) {
+    const { modelType, modelName } = e.detail;
+
+    this.setData({
+      selectedModelType: modelType,
+      selectedModel: modelName
+    });
+
+    let toastText = `已切换到${modelService.getModelDisplayName(modelType)}`;
+    if (modelName) {
+      toastText += ` (${modelName})`;
+    }
+
+    wx.showToast({
+      title: toastText,
+      icon: 'none'
     });
   },
 

@@ -20,7 +20,10 @@
         </view>
       </view>
       <view class="nav-right">
-        <!-- 导航栏右侧预留空间 -->
+        <!-- 模型选择器 -->
+        <view class="model-selector-container">
+          <model-selector darkMode="{{darkMode}}" bind:modelChange="handleModelChange"></model-selector>
+        </view>
       </view>
     </view>
   </view>

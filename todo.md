@@ -467,7 +467,7 @@
     - [ ] 更新 API 文档
 - [ ] **部署上线**: 提交审核，发布小程序
 
-## 集成 Google Gemini API
+## 集成多模型支持
 - [x] 编写 Gemini API 集成开发文档 (@docs/开发文档/Gemini_API集成开发文档.md)
 - [x] 创建 Gemini API 使用文档 (@docs/使用文档/Gemini API集成文档.md)
 - [x] 创建 `cloudfunctions/chat/geminiModel.js` 实现聊天功能
@@ -478,7 +478,42 @@
 - [x] 配置 Gemini API 基础URL为 `https://apiv2.aliyahzombie.top`
 - [x] 配置 Gemini 模型ID为 `gemini-2.5-flash-preview-04-17`
 - [x] 修改默认模型类型为 Gemini
-- [ ] (后续优化) 实现模型切换界面
+- [x] 优化 `geminiModel.js` 中的提示词设计，参考 `bigmodel.js` 中的提示词格式
+- [x] 增强情感分析功能，支持更详细的情感维度分析
+- [x] 添加关键词聚类、用户兴趣分析和报告生成等功能
+- [x] 实现与智谱AI模块相同的接口和返回格式，确保兼容性
+- [x] 优化JSON解析逻辑，提高解析成功率
+- [x] 添加对历史消息的处理支持，提高对话连贯性
+- [x] 优化消息格式转换，适配Gemini API的请求格式
+- [x] 实现系统提示词的转换，解决Gemini不支持system角色的问题
+- [x] 增强错误处理逻辑，提供更详细的错误信息
+- [x] 优化重试机制，实现指数退避策略
+- [x] 添加更多日志记录点，方便问题诊断
+- [x] 更新 Gemini API 配置指南文档，添加最新功能说明
+- [x] 创建 `cloudfunctions/chat/openaiModel.js` 实现OpenAI聊天功能
+- [x] 修改 `cloudfunctions/chat/index.js` 添加对 OpenAI API 的支持
+- [x] 更新 `miniprogram/services/modelService.js` 添加OpenAI模型类型
+- [x] 创建 `miniprogram/components/model-selector/model-selector.js` 实现模型选择器组件
+- [x] 在聊天界面集成模型选择器组件
+- [x] 实现模型切换功能，支持在不同模型间切换
+- [x] 优化模型选择器UI，提供更好的用户体验
+- [x] 创建 `cloudfunctions/chat/crondModel.js` 实现Crond API聊天功能
+- [x] 创建 `cloudfunctions/chat/closeaiModel.js` 实现CloseAI聊天功能
+- [x] 修改 `cloudfunctions/chat/index.js` 添加对 Crond API 和 CloseAI 的支持
+- [x] 更新 `miniprogram/services/modelService.js` 添加Crond和CloseAI模型类型
+- [x] 实现动态获取模型列表功能
+- [x] 更新模型选择器组件，支持两级选择（模型平台和具体模型）
+- [x] 创建多模型集成文档 (@docs/使用文档/多模型集成文档.md)
+- [x] 创建 `cloudfunctions/chat/aiModelService.js` 实现统一AI模型服务
+- [x] 重构 `cloudfunctions/chat/index.js` 使用统一AI模型服务
+- [x] 创建统一AI模型服务设计文档 (@docs/开发文档/统一AI模型服务设计文档.md)
+- [x] 创建 `cloudfunctions/analysis/aiModelService.js` 实现统一AI模型服务
+- [x] 重构 `cloudfunctions/analysis/index.js` 使用统一AI模型服务
+- [x] 创建Analysis云函数统一AI模型服务设计文档 (@doc/开发文档/analysis云函数统一AI模型服务设计文档.md)
+- [x] 更新 `cloudfunctions/analysis/aiModelService.js` 添加对OpenAI、Crond API和CloseAI的支持
+- [x] 更新 `cloudfunctions/analysis/aiModelService_part2.js` 添加对OpenAI、Crond API和CloseAI的支持
+- [x] 更新 `cloudfunctions/analysis/aiModelService_part3.js` 添加对OpenAI、Crond API和CloseAI的支持
+- [x] 更新Analysis云函数统一AI模型服务设计文档，添加对新API平台的支持
 - [ ] (后续优化) 实现模型参数调整功能
 - [ ] (后续优化) 实现模型性能对比分析工具
-- [ ] (后续探索) 将 Gemini 应用于其他功能，如情感分析增强、每日报告内容生成等
+- [ ] (后续探索) 将不同模型应用于其他功能，如情感分析增强、每日报告内容生成等

@@ -1,0 +1,84 @@
+<!-- components/model-selector/model-selector.wxml -->
+<view class="model-selector {{darkMode ? 'dark' : ''}}">
+  <!-- 当前选择的模型 -->
+  <view class="selected-model" bindtap="showModelSelector">
+    <view class="model-icon">
+      <image class="icon" src="/images/icons/ai.png" mode="aspectFit"></image>
+    </view>
+    <view class="model-name">
+      <text>{{modelDisplayNames[selectedModelType]}}</text>
+      <text class="model-subname">{{selectedModel}}</text>
+    </view>
+    <view class="arrow-icon">
+      <image class="icon" src="/images/icons/arrow-down.png" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <!-- 模型类型选择弹窗 -->
+  <view class="model-selector-popup {{showSelector ? 'show' : ''}}" catchtap="hideModelSelector">
+    <view class="model-selector-content" catchtap="stopPropagation">
+      <view class="popup-header">
+        <text class="popup-title">选择AI模型平台</text>
+        <view class="close-btn" bindtap="hideModelSelector">
+          <image class="icon" src="/images/icons/close.png" mode="aspectFit"></image>
+        </view>
+      </view>
+
+      <view class="model-list">
+        <block wx:for="{{modelTypes}}" wx:key="*this">
+          <view class="model-item {{item === selectedModelType ? 'selected' : ''}}"
+                data-model-type="{{item}}"
+                bindtap="selectModelType">
+            <view class="model-item-icon">
+              <image class="icon" src="/images/icons/{{item}}.png" mode="aspectFit"></image>
+            </view>
+            <view class="model-item-info">
+              <view class="model-item-name">{{modelDisplayNames[item]}}</view>
+              <view class="model-item-desc">{{modelDescriptions[item]}}</view>
+            </view>
+            <view class="model-item-check" wx:if="{{item === selectedModelType}}">
+              <image class="icon" src="/images/icons/check.png" mode="aspectFit"></image>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <!-- 模型列表选择弹窗 -->
+  <view class="model-selector-popup {{showModelList ? 'show' : ''}}" catchtap="hideModelListSelector">
+    <view class="model-selector-content" catchtap="stopPropagation">
+      <view class="popup-header">
+        <text class="popup-title">选择{{modelDisplayNames[selectedModelType]}}模型</text>
+        <view class="close-btn" bindtap="hideModelListSelector">
+          <image class="icon" src="/images/icons/close.png" mode="aspectFit"></image>
+        </view>
+      </view>
+
+      <view class="model-list">
+        <block wx:for="{{currentModelList}}" wx:key="*this">
+          <view class="model-item {{item === selectedModel ? 'selected' : ''}}"
+                data-model-name="{{item}}"
+                bindtap="selectModel">
+            <view class="model-item-icon">
+              <image class="icon" src="/images/icons/model.png" mode="aspectFit"></image>
+            </view>
+            <view class="model-item-info">
+              <view class="model-item-name">{{item}}</view>
+              <view class="model-item-desc">{{selectedModelType}} 模型</view>
+            </view>
+            <view class="model-item-check" wx:if="{{item === selectedModel}}">
+              <image class="icon" src="/images/icons/check.png" mode="aspectFit"></image>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中遮罩 -->
+  <view class="loading-mask" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在连接模型...</text>
+  </view>
+</view>
