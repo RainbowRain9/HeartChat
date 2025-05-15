@@ -60,11 +60,13 @@
     <!-- 消息列表 -->
     <block wx:for="{{messages}}" wx:key="_id">
       <!-- 消息气泡 - 已在气泡组件中显示时间 -->
-      <chat-bubble message="{{item}}"
+      <chat-bubble class="chat-bubble"
+                  message="{{item}}"
                   isSender="{{item.sender_type === 'user'}}"
                   showTime="{{false}}"
                   showEmotionTag="{{true}}"
                   darkMode="{{darkMode}}"
+                  bubbleStyle="{{bubbleStyle}}"
                   bind:delete="handleDeleteMessage"></chat-bubble>
     </block>
 

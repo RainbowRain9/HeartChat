@@ -2273,6 +2273,8 @@ Page({
     }
 
     const newPrompt = this.data.editingRolePrompt.trim();
+
+    // 检查是否为空
     if (!newPrompt) {
       wx.showToast({
         title: '角色设定不能为空',
@@ -2281,6 +2283,89 @@ Page({
       return;
     }
 
+    // 检查字数限制
+    const MAX_PROMPT_LENGTH = 2000; // 设置最大字数限制
+    if (newPrompt.length > MAX_PROMPT_LENGTH) {
+      wx.showToast({
+        title: `设定不能超过${MAX_PROMPT_LENGTH}字`,
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 格式检查 - 检查是否包含基本的角色描述要素
+    const formatCheck = this.checkRolePromptFormat(newPrompt);
+    if (!formatCheck.valid) {
+      wx.showModal({
+        title: '设定格式建议',
+        content: formatCheck.message,
+        confirmText: '仍然保存',
+        cancelText: '返回修改',
+        success: async (res) => {
+          if (res.confirm) {
+            // 用户选择仍然保存
+            await this.performSaveRolePrompt(newPrompt);
+          }
+        }
+      });
+      return;
+    }
+
+    // 格式正确，直接保存
+    await this.performSaveRolePrompt(newPrompt);
+  },
+
+  /**
+   * 检查角色设定格式
+   * @param {string} prompt 角色设定
+   * @returns {Object} 检查结果，包含valid和message字段
+   */
+  checkRolePromptFormat(prompt) {
+    // 检查是否包含基本的角色描述要素
+    const result = {
+      valid: true,
+      message: ''
+    };
+
+    const suggestions = [];
+
+    // 检查长度是否太短
+    if (prompt.length < 50) {
+      suggestions.push('角色设定过短，建议详细描述角色的性格、背景和说话风格');
+      result.valid = false;
+    }
+
+    // 检查是否包含角色性格描述
+    if (!prompt.includes('性格') && !prompt.includes('个性') && !prompt.includes('character')) {
+      suggestions.push('建议添加角色性格描述');
+      result.valid = false;
+    }
+
+    // 检查是否包含角色背景
+    if (!prompt.includes('背景') && !prompt.includes('经历') && !prompt.includes('background')) {
+      suggestions.push('建议添加角色背景或经历描述');
+      result.valid = false;
+    }
+
+    // 检查是否包含说话风格
+    if (!prompt.includes('说话') && !prompt.includes('语气') && !prompt.includes('风格') && !prompt.includes('style')) {
+      suggestions.push('建议描述角色的说话风格或语气特点');
+      result.valid = false;
+    }
+
+    // 如果有建议，组合成消息
+    if (suggestions.length > 0) {
+      result.message = '为了让AI更好地理解角色，建议完善以下内容：\n' + suggestions.join('\n');
+    }
+
+    return result;
+  },
+
+  /**
+   * 执行保存角色设定的操作
+   * @param {string} newPrompt 新的角色设定
+   */
+  async performSaveRolePrompt(newPrompt) {
     wx.showLoading({
       title: '保存中...',
       mask: true
@@ -2438,13 +2523,25 @@ Page({
    */
   updateBubbleStyle() {
     // 获取所有气泡组件并更新样式
-    const bubbles = this.selectAllComponents('chat-bubble');
+    const bubbles = this.selectAllComponents('.chat-bubble');
     if (bubbles && bubbles.length > 0) {
+      console.log(`找到 ${bubbles.length} 个气泡组件，更新样式为: ${this.data.bubbleStyle}`);
       bubbles.forEach(bubble => {
-        if (bubble && bubble.setBubbleStyle) {
+        if (bubble && typeof bubble.setBubbleStyle === 'function') {
           bubble.setBubbleStyle(this.data.bubbleStyle);
+        } else {
+          console.warn('气泡组件缺少setBubbleStyle方法');
         }
       });
+    } else {
+      console.warn('未找到气泡组件');
+    }
+
+    // 保存气泡样式到本地缓存
+    try {
+      wx.setStorageSync('chat_bubble_style', this.data.bubbleStyle);
+    } catch (error) {
+      console.error('保存气泡样式失败:', error.message || error);
     }
   },
 

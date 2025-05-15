@@ -591,7 +591,12 @@ async function generateAIReply(event, context) {
       includeEmotionAnalysis = false,
       systemPrompt = null,
       modelType = 'gemini', // 默认使用Google Gemini
-      modelName = null // 具体模型名称，如果为null则使用默认模型
+      modelName = null, // 具体模型名称，如果为null则使用默认模型
+      temperature = 0.7, // 温度参数
+      max_tokens = 2048, // 最大token数
+      top_p = 1.0, // top_p参数
+      presence_penalty = 0.0, // 存在惩罚参数
+      frequency_penalty = 0.0 // 频率惩罚参数
     } = event;
 
     // 验证参数
@@ -620,7 +625,12 @@ async function generateAIReply(event, context) {
       systemPrompt, // 传递自定义系统提示词（包含用户画像）
       {
         platform: platformKey,
-        model: modelName
+        model: modelName,
+        temperature: temperature,
+        max_tokens: max_tokens,
+        top_p: top_p,
+        presence_penalty: presence_penalty,
+        frequency_penalty: frequency_penalty
       }
     );
 
@@ -660,7 +670,35 @@ async function sendMessage(event, context) {
 
   try {
     // 获取请求参数
-    const { chatId, roleId, content, systemPrompt, modelType = 'gemini', modelName = null } = event;
+    const {
+      chatId,
+      roleId,
+      content,
+      systemPrompt,
+      modelType = 'gemini',
+      modelName = null,
+      modelParams = {}, // 模型参数
+      chatMemoryLength = 20 // 对话记忆长度
+    } = event;
+
+    // 解构模型参数，设置默认值
+    const {
+      temperature = 0.7,
+      maxTokens = 2048,
+      topP = 1.0,
+      presencePenalty = 0.0,
+      frequencyPenalty = 0.0
+    } = modelParams;
+
+    // 记录模型参数
+    console.log('模型参数:', {
+      temperature,
+      maxTokens,
+      topP,
+      presencePenalty,
+      frequencyPenalty,
+      chatMemoryLength
+    });
 
     // 如果提供了自定义系统提示词（包含用户画像）
     if (systemPrompt) {
@@ -668,8 +706,7 @@ async function sendMessage(event, context) {
     }
 
     // 记录使用的模型类型
-    console.log(`使用模型类型: ${modelType}`);
-
+    console.log(`使用模型类型: ${modelType}, 模型名称: ${modelName || '默认'}`);
 
     // 验证参数
     if (!roleId) {
@@ -757,12 +794,12 @@ async function sendMessage(event, context) {
       }
     }
 
-    // 获取历史消息（最近10条）
-    console.log('获取历史消息, chatId:', currentChatId);
+    // 获取历史消息，根据设置的记忆长度
+    console.log('获取历史消息, chatId:', currentChatId, '记忆长度:', chatMemoryLength);
     const historyResult = await db.collection('messages')
       .where({ chatId: currentChatId })
       .orderBy('createTime', 'desc')
-      .limit(10)
+      .limit(chatMemoryLength) // 使用设置的记忆长度
       .get();
 
     // 将消息转换为智谱AI所需的格式
@@ -820,7 +857,12 @@ async function sendMessage(event, context) {
       includeEmotionAnalysis: false,
       systemPrompt: systemPrompt, // 传递自定义系统提示词（包含用户画像）
       modelType: modelType, // 传递模型类型
-      modelName: modelName // 传递具体模型名称
+      modelName: modelName, // 传递具体模型名称
+      temperature: temperature, // 传递温度参数
+      max_tokens: maxTokens, // 传递最大token数
+      top_p: topP, // 传递top_p参数
+      presence_penalty: presencePenalty, // 传递存在惩罚参数
+      frequency_penalty: frequencyPenalty // 传递频率惩罚参数
     });
 
     if (!aiReplyResult.success) {

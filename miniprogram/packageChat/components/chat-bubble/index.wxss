@@ -41,7 +41,6 @@
 
 .chat-bubble {
   padding: 20rpx 24rpx; /* 增加内边距，使文本与气泡边缘有更好的间距 */
-  border-radius: 20rpx; /* 增加圆角半径 */
   word-wrap: break-word;
   max-width: 100%;
   box-sizing: border-box;
@@ -50,13 +49,42 @@
   width: auto; /* 改回自适应宽度，避免气泡过宽 */
 }
 
+/* 默认样式 */
+.chat-bubble.style-default {
+  border-radius: 20rpx; /* 默认圆角半径 */
+}
+
+/* 圆角样式 */
+.chat-bubble.style-rounded {
+  border-radius: 30rpx; /* 更大的圆角半径 */
+}
+
+/* 方形样式 */
+.chat-bubble.style-square {
+  border-radius: 8rpx; /* 更小的圆角半径 */
+}
+
 .sender-bubble {
   background-color: #95EC69; /* 参考微信绿色气泡 */
   color: #000000; /* 黑色文字 */
-  border-bottom-right-radius: 8rpx; /* 增加右下角的圆角半径 */
   margin-left: auto; /* 将发送者气泡推到右边 */
   max-width: 85%; /* 调整最大宽度，使气泡不要太宽 */
   box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
+}
+
+/* 默认样式 - 发送者气泡 */
+.sender-bubble.style-default {
+  border-bottom-right-radius: 8rpx; /* 默认样式右下角的圆角半径 */
+}
+
+/* 圆角样式 - 发送者气泡 */
+.sender-bubble.style-rounded {
+  border-bottom-right-radius: 12rpx; /* 圆角样式右下角的圆角半径 */
+}
+
+/* 方形样式 - 发送者气泡 */
+.sender-bubble.style-square {
+  border-bottom-right-radius: 2rpx; /* 方形样式右下角的圆角半径 */
 }
 
 /* 暗夜模式 - 发送者气泡 */
@@ -69,11 +97,25 @@
 .receiver-bubble {
   background-color: #ffffff; /* 参考微信白色气泡 */
   color: #000000; /* 黑色文字 */
-  border-bottom-left-radius: 8rpx; /* 增加左下角的圆角半径 */
   border: 1rpx solid #e2e2e2; /* 添加边框 */
   margin-right: auto; /* 将接收者气泡推到左边 */
   max-width: 85%; /* 调整最大宽度，使气泡不要太宽 */
   box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05); /* 添加轻微阴影 */
+}
+
+/* 默认样式 - 接收者气泡 */
+.receiver-bubble.style-default {
+  border-bottom-left-radius: 8rpx; /* 默认样式左下角的圆角半径 */
+}
+
+/* 圆角样式 - 接收者气泡 */
+.receiver-bubble.style-rounded {
+  border-bottom-left-radius: 12rpx; /* 圆角样式左下角的圆角半径 */
+}
+
+/* 方形样式 - 接收者气泡 */
+.receiver-bubble.style-square {
+  border-bottom-left-radius: 2rpx; /* 方形样式左下角的圆角半径 */
 }
 
 /* 暗夜模式 - 接收者气泡 */

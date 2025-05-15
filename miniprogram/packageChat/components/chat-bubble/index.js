@@ -23,6 +23,10 @@ Component({
     darkMode: {
       type: Boolean,
       value: false
+    },
+    bubbleStyle: {
+      type: String,
+      value: 'default'
     }
   },
 
@@ -30,7 +34,8 @@ Component({
    * 组件的初始数据
    */
   data: {
-    formattedTime: ''
+    formattedTime: '',
+    currentBubbleStyle: 'default' // 当前气泡样式
   },
 
   /**
@@ -40,6 +45,13 @@ Component({
     'message.timestamp': function(timestamp) {
       if (timestamp) {
         this.formatTime(timestamp);
+      }
+    },
+    'bubbleStyle': function(newStyle) {
+      if (newStyle) {
+        this.setData({
+          currentBubbleStyle: newStyle
+        });
       }
     }
   },
@@ -89,6 +101,18 @@ Component({
         console.error('格式化时间失败:', error);
         this.setData({
           formattedTime: ''
+        });
+      }
+    },
+
+    /**
+     * 设置气泡样式
+     * @param {string} style 气泡样式，可选值：default, rounded, square
+     */
+    setBubbleStyle(style) {
+      if (style && ['default', 'rounded', 'square'].includes(style)) {
+        this.setData({
+          currentBubbleStyle: style
         });
       }
     },

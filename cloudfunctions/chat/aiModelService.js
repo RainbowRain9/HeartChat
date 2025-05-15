@@ -17,7 +17,7 @@ const axios = require('axios');
 const MODEL_PLATFORMS = {
   // 智谱AI
   ZHIPU: {
-    name: '智谱AI',
+    name: '智谱',
     baseUrl: 'https://open.bigmodel.cn/api/paas/v4',
     apiKeyEnv: 'ZHIPU_API_KEY',
     defaultModel: 'glm-4-flash',
@@ -53,7 +53,7 @@ const MODEL_PLATFORMS = {
   },
   // Crond API
   CROND: {
-    name: 'Crond API',
+    name: 'ChatGpt',
     baseUrl: 'https://new.crond.dev/v1',
     apiKeyEnv: 'CROND_API_KEY',
     defaultModel: 'gpt-4o-mini',
@@ -65,7 +65,7 @@ const MODEL_PLATFORMS = {
   },
   // CloseAI
   CLOSEAI: {
-    name: 'CloseAI',
+    name: 'DeepSeek',
     baseUrl: 'https://api.closeai.im/v1',
     apiKeyEnv: 'CLOSEAI_API_KEY',
     defaultModel: 'deepseek-ai/DeepSeek-V3-0324',
@@ -362,7 +362,7 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
  * @param {Object} roleInfo 角色信息
  * @param {boolean} includeEmotionAnalysis 是否包含情绪分析
  * @param {string} customSystemPrompt 自定义系统提示词
- * @param {Object} options 选项，包括平台和模型
+ * @param {Object} options 选项，包括平台、模型和模型参数
  * @returns {Promise<Object>} 生成的回复
  */
 async function generateChatReply(userMessage, history = [], roleInfo = {}, includeEmotionAnalysis = false, customSystemPrompt = null, options = {}) {
@@ -379,6 +379,24 @@ async function generateChatReply(userMessage, history = [], roleInfo = {}, inclu
     const platformKey = options.platform || 'GEMINI';
     const platform = getPlatformConfig(platformKey);
     const modelName = options.model || platform.defaultModel;
+
+    // 获取模型参数
+    const temperature = options.temperature !== undefined ? options.temperature : 0.7;
+    const max_tokens = options.max_tokens !== undefined ? options.max_tokens : 2048;
+    const top_p = options.top_p !== undefined ? options.top_p : 1.0;
+    const presence_penalty = options.presence_penalty !== undefined ? options.presence_penalty : 0.0;
+    const frequency_penalty = options.frequency_penalty !== undefined ? options.frequency_penalty : 0.0;
+
+    // 记录模型参数
+    if (isDev) {
+      console.log('模型参数:', {
+        temperature,
+        max_tokens,
+        top_p,
+        presence_penalty,
+        frequency_penalty
+      });
+    }
 
     // 构建系统提示词
     let systemPrompt = '';
@@ -413,8 +431,11 @@ async function generateChatReply(userMessage, history = [], roleInfo = {}, inclu
     const response = await callModelApi({
       model: modelName,
       messages: messages,
-      temperature: 0.7,
-      max_tokens: 2048
+      temperature: temperature,
+      max_tokens: max_tokens,
+      top_p: top_p,
+      presence_penalty: presence_penalty,
+      frequency_penalty: frequency_penalty
     }, platformKey);
 
     // 情绪分析将完全由专门的云函数 @cloudfunctions\analysis/ 处理

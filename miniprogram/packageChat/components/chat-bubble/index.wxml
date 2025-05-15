@@ -3,8 +3,8 @@
   <!-- 时间显示 - 根据消息的showTimestamp属性决定是否显示 -->
   <view class="message-time" wx:if="{{formattedTime && (message.showTimestamp || showTime)}}">{{formattedTime}}</view>
 
-  <!-- 消息气泡 -->
-  <view class="chat-bubble {{isSender ? 'sender-bubble' : 'receiver-bubble'}}" bindlongpress="handleLongPress">
+  <!-- 消息气泡 - 根据当前气泡样式应用不同的类 -->
+  <view class="chat-bubble {{isSender ? 'sender-bubble' : 'receiver-bubble'}} style-{{currentBubbleStyle}}" bindlongpress="handleLongPress">
     <text class="message-content" user-select="true">{{message.content}}</text>
   </view>
 
