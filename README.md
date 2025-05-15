@@ -748,6 +748,20 @@ async function analyzeEmotion(text) {
 
 ## 六、版本更新记录
 
+### v1.5.3 (模型切换修复与UI优化)
+- fix: 修复模型切换后消息发送失败的问题，确保正确传递模型类型和模型名称参数。
+- fix: 增强aiModelService.js中对不同模型平台的支持，包括请求格式和响应解析。
+- style: 优化导航栏UI布局，将情绪分析按钮移至聊天界面右下角，解决空间不足问题。
+- style: 调整按钮样式和位置，确保在暗夜模式下正常显示。
+
+修改文件：
+- `miniprogram/packageChat/pages/chat/chat.js`
+- `miniprogram/packageChat/pages/chat/chat.wxml`
+- `miniprogram/packageChat/pages/chat/chat.wxss`
+- `miniprogram/components/model-selector/model-selector.wxss`
+- `cloudfunctions/chat/aiModelService.js`
+
+
 ### v1.5.2 (聊天界面多模型切换)
 - feat: 在聊天界面导航栏中集成模型选择器组件，允许用户实时切换不同的AI模型。
 - feat: 优化模型选择器组件样式，使其与情绪分析按钮协调一致。
@@ -755,6 +769,7 @@ async function analyzeEmotion(text) {
 - feat: 保存用户的模型选择偏好到本地缓存。
 - feat: 确保与现有的云函数架构兼容。
 - style: 支持暗夜模式。
+
 
 ### v1.5.1 (新增AI模型服务)
 - feat: 统一AI模型服务，支持多种AI模型平台。
