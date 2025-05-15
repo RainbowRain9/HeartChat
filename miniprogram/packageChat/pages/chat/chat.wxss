@@ -113,7 +113,16 @@
 }
 
 .nav-right {
-  width: 87rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 200rpx;
+}
+
+/* 模型选择器容器 */
+.model-selector-container {
+  margin-right: 20rpx;
+  width: auto;
 }
 
 /* 情绪分析按钮容器 */
@@ -124,22 +133,20 @@
 
 /* 情绪分析按钮样式 */
 .emotion-btn {
-  width: 80rpx;
-  height: 80rpx;
+  width: 60rpx;
+  height: 60rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  border-radius: 20rpx;
+  background-color: #f5f5f5;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .dark .emotion-btn {
-  background-color: rgba(33, 37, 41, 0.85);
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+  background-color: #333;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.3);
 }
 
 .emotion-btn:active {
@@ -152,8 +159,8 @@
 }
 
 .emotion-icon {
-  width: 48rpx;
-  height: 48rpx;
+  width: 40rpx;
+  height: 40rpx;
   opacity: 0.8;
 }
 

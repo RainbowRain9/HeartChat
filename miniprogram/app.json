@@ -70,7 +70,8 @@
     "emotion-history": "/components/emotion-history/emotion-history",
     "emotion-analysis": "/components/emotion-analysis/emotion-analysis",
     "role-card": "/components/role-card/role-card",
-    "ec-canvas": "/components/ec-canvas/ec-canvas"
+    "ec-canvas": "/components/ec-canvas/ec-canvas",
+    "model-selector": "/components/model-selector/model-selector"
   },
   "requiredPrivateInfos": [],
   "requiredBackgroundModes": [
