@@ -24,10 +24,6 @@
         <view class="model-selector-container">
           <model-selector darkMode="{{darkMode}}" bind:modelChange="handleModelChange"></model-selector>
         </view>
-        <!-- 情绪分析按钮 -->
-        <view class="emotion-btn" bindtap="handleShowEmotionAnalysis">
-          <image class="emotion-icon" src="/images/icons/emotion.png" mode="aspectFit"></image>
-        </view>
       </view>
     </view>
   </view>
@@ -95,6 +91,11 @@
   <!-- 回到底部按钮 -->
   <view class="to-bottom-btn {{manualScroll ? 'show' : ''}}" catchtap="scrollToBottom" data-force="true">
     <image class="to-bottom-icon" src="/images/icons/arrow-down.png" mode="aspectFit"></image>
+  </view>
+
+  <!-- 浮动情绪分析按钮 -->
+  <view class="floating-emotion-btn" bindtap="handleShowEmotionAnalysis">
+    <image class="emotion-icon" src="/images/icons/emotion.png" mode="aspectFit"></image>
   </view>
 
   <!-- 输入框 -->

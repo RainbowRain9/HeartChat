@@ -126,6 +126,8 @@ function getPlatformConfig(platformKey) {
  * @returns {Array|Object} 格式化后的消息
  */
 function formatMessages(messages, platformKey) {
+  console.log(`格式化消息为${platformKey}格式`, messages);
+
   if (platformKey === 'GEMINI') {
     // Gemini使用特殊格式
     const formattedMessages = [];
@@ -156,12 +158,23 @@ function formatMessages(messages, platformKey) {
       if (firstUserIndex >= 0) {
         const userMsg = contents[firstUserIndex].parts[0].text;
         contents[firstUserIndex].parts[0].text = `${systemPrompt}\n\n${userMsg}`;
+      } else {
+        // 如果没有用户消息，添加一个系统消息
+        contents.unshift({
+          role: 'user',
+          parts: [{ text: systemPrompt }]
+        });
       }
     }
 
+    console.log('格式化后的Gemini消息:', { contents });
     return { contents };
+  } else if (platformKey === 'WHIMSY') {
+    // Whimsy使用类似OpenAI的格式，但需要特殊处理
+    return messages;
   } else {
-    // 其他平台使用标准格式
+    // 其他平台(OpenAI, Crond, CloseAI, 智谱AI)使用标准格式
+    console.log('使用标准格式消息');
     return messages;
   }
 }
@@ -173,6 +186,8 @@ function formatMessages(messages, platformKey) {
  * @returns {Object} 解析后的响应
  */
 function parseResponse(response, platformKey) {
+  console.log(`解析${platformKey}响应:`, JSON.stringify(response, null, 2));
+
   if (platformKey === 'GEMINI') {
     // Gemini响应格式
     if (response && response.candidates && response.candidates.length > 0) {
@@ -184,8 +199,24 @@ function parseResponse(response, platformKey) {
         };
       }
     }
+  } else if (platformKey === 'WHIMSY') {
+    // Whimsy响应格式 (类似OpenAI)
+    if (response && response.choices && response.choices.length > 0) {
+      return {
+        content: response.choices[0].message.content,
+        usage: response.usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
+      };
+    }
+  } else if (platformKey === 'ZHIPU') {
+    // 智谱AI响应格式
+    if (response && response.choices && response.choices.length > 0) {
+      return {
+        content: response.choices[0].message.content,
+        usage: response.usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
+      };
+    }
   } else {
-    // 标准响应格式 (OpenAI, Crond, CloseAI, 智谱AI)
+    // 标准响应格式 (OpenAI, Crond, CloseAI)
     if (response && response.choices && response.choices.length > 0) {
       return {
         content: response.choices[0].message.content,
@@ -194,6 +225,7 @@ function parseResponse(response, platformKey) {
     }
   }
 
+  console.error('无法解析API响应:', JSON.stringify(response, null, 2));
   throw new Error('无法解析API响应');
 }
 
@@ -209,7 +241,7 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
   try {
     // 获取平台配置
     const platform = getPlatformConfig(platformKey);
-    
+
     // 获取API密钥
     const apiKey = getApiKey(platformKey);
 
@@ -230,7 +262,31 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
           topP: params.top_p || 1
         }
       };
+    } else if (platformKey === 'WHIMSY') {
+      // Whimsy API 使用类似OpenAI的格式
+      requestBody = {
+        model: params.model || platform.defaultModel,
+        messages: formattedMessages,
+        temperature: params.temperature || 0.7,
+        max_tokens: params.max_tokens || 2048,
+        top_p: params.top_p || 1
+      };
+    } else if (platformKey === 'ZHIPU') {
+      // 智谱AI API
+      requestBody = {
+        model: params.model || platform.defaultModel,
+        messages: formattedMessages,
+        temperature: params.temperature || 0.7,
+        max_tokens: params.max_tokens || 2048,
+        top_p: params.top_p || 1
+      };
+
+      // 如果有response_format参数，添加到请求体
+      if (params.response_format) {
+        requestBody.response_format = params.response_format;
+      }
     } else {
+      // 其他平台(OpenAI, Crond, CloseAI)使用标准格式
       requestBody = {
         model: params.model || platform.defaultModel,
         messages: formattedMessages,
@@ -240,6 +296,11 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
         frequency_penalty: params.frequency_penalty || 0,
         presence_penalty: params.presence_penalty || 0
       };
+
+      // 如果有response_format参数，添加到请求体
+      if (params.response_format) {
+        requestBody.response_format = params.response_format;
+      }
     }
 
     if (isDev) {
@@ -389,7 +450,7 @@ async function getAvailableModels(platformKey) {
   try {
     // 获取平台配置
     const platform = getPlatformConfig(platformKey);
-    
+
     // 返回平台支持的模型列表
     return platform.models;
   } catch (error) {

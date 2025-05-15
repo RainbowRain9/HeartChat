@@ -852,6 +852,8 @@ Page({
       const modelType = this.data.selectedModelType || modelService.getSelectedModelType();
       const modelName = this.data.selectedModel || modelService.getSelectedModel(modelType);
 
+      console.log('发送消息使用模型:', modelType, modelName);
+
       // 调用云函数发送消息
       const result = await wx.cloud.callFunction({
         name: 'chat',
@@ -861,7 +863,7 @@ Page({
           roleId: this.data.roleId,
           content,
           systemPrompt: this.systemPrompt, // 使用包含用户画像的系统提示
-          modelType: modelType, // 传递模型类型
+          modelType: modelType.toLowerCase(), // 传递模型类型，确保小写
           modelName: modelName // 传递具体模型名称
         }
       });
@@ -2020,20 +2022,35 @@ Page({
   handleModelChange(e) {
     const { modelType, modelName } = e.detail;
 
+    console.log('模型切换:', modelType, modelName);
+
+    // 更新页面状态
     this.setData({
       selectedModelType: modelType,
       selectedModel: modelName
     });
 
-    let toastText = `已切换到${modelService.getModelDisplayName(modelType)}`;
-    if (modelName) {
-      toastText += ` (${modelName})`;
-    }
+    // 保存到本地缓存，确保下次打开页面时使用相同的模型
+    try {
+      modelService.setSelectedModelType(modelType);
+      modelService.setSelectedModel(modelType, modelName);
 
-    wx.showToast({
-      title: toastText,
-      icon: 'none'
-    });
+      let toastText = `已切换到${modelService.getModelDisplayName(modelType)}`;
+      if (modelName) {
+        toastText += ` (${modelName})`;
+      }
+
+      wx.showToast({
+        title: toastText,
+        icon: 'none'
+      });
+    } catch (error) {
+      console.error('保存模型选择失败:', error);
+      wx.showToast({
+        title: '模型切换失败',
+        icon: 'none'
+      });
+    }
   },
 
   /**

@@ -116,13 +116,15 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  min-width: 200rpx;
+  min-width: 240rpx;
+  padding-right: 10rpx;
 }
 
 /* 模型选择器容器 */
 .model-selector-container {
-  margin-right: 20rpx;
+  margin-right: 16rpx;
   width: auto;
+  flex: 0 0 auto;
 }
 
 /* 情绪分析按钮容器 */
@@ -142,6 +144,7 @@
   background-color: #f5f5f5;
   box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
+  flex: 0 0 auto;
 }
 
 .dark .emotion-btn {
@@ -433,7 +436,7 @@
 .to-bottom-btn {
   position: fixed;
   right: 0rpx;
-  bottom: 200rpx;
+  bottom: 280rpx; /* 调整位置，为情绪分析按钮留出空间 */
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
@@ -448,6 +451,23 @@
   transition: all 0.3s ease;
 }
 
+/* 浮动情绪分析按钮 */
+.floating-emotion-btn {
+  position: fixed;
+  right: 0rpx;
+  bottom: 200rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 99, 132, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  z-index: 900;
+  transition: all 0.3s ease;
+}
+
 .to-bottom-btn.show {
   opacity: 1;
   transform: scale(1);
@@ -455,6 +475,10 @@
 
 .dark .to-bottom-btn {
   background-color: rgba(74, 108, 247, 0.7);
+}
+
+.dark .floating-emotion-btn {
+  background-color: rgba(255, 99, 132, 0.7);
 }
 
 .to-bottom-icon {
