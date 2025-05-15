@@ -4,6 +4,7 @@
   "usingComponents": {
     "chat-bubble": "../../components/chat-bubble/index",
     "chat-input": "../../components/chat-input/index",
-    "emotion-dashboard": "/components/emotion-dashboard/emotion-dashboard"
+    "emotion-dashboard": "/components/emotion-dashboard/emotion-dashboard",
+    "model-selector": "/components/model-selector/model-selector"
   }
 }

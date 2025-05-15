@@ -235,3 +235,149 @@
     transform: rotate(360deg);
   }
 }
+
+.model-selector-trigger {
+  display: flex;
+  align-items: center;
+  padding: 10rpx 15rpx;
+  /* border: 1px solid #ccc; */ /* 移除边框，使其更像一个图标按钮 */
+  border-radius: 8rpx;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: transparent; /* 默认透明背景 */
+}
+
+.model-selector-trigger.dark-mode {
+  /* border-color: #555; */ /* 暗黑模式下边框颜色 */
+  background-color: transparent; /* 暗黑模式下透明背景 */
+}
+
+.current-model-icon {
+  width: 40rpx; /* 调整图标大小与情感分析图标接近 */
+  height: 40rpx;
+  margin-right: 10rpx;
+}
+
+.model-selector-trigger.dark-mode .current-model-icon {
+ filter: invert(100%); /* 暗黑模式下图标反色 */
+}
+
+.current-model-name {
+  font-size: 24rpx;
+  color: #333;
+  /* display: none; */ /* 可以考虑默认不显示文字，只显示图标，以节省空间 */
+}
+
+.model-selector-trigger.dark-mode .current-model-name {
+  color: #ddd;
+}
+
+.dropdown-arrow {
+  width: 24rpx;
+  height: 24rpx;
+  margin-left: 8rpx;
+  transition: transform 0.3s;
+}
+
+.model-selector-trigger.dark-mode .dropdown-arrow {
+ filter: invert(100%);
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.model-options-popup {
+  position: fixed; /* 使用fixed定位使其悬浮 */
+  top: calc(var(--status-bar-height, 0px) + 88rpx + 10rpx); /* 根据导航栏高度调整，增加一点间距 */
+  right: 20rpx; /* 调整弹出位置，使其在选择器下方偏右 */
+  width: auto; /* 宽度自适应内容 */
+  min-width: 300rpx; /* 最小宽度 */
+  max-width: 500rpx; /* 最大宽度 */
+  max-height: 60vh; /* 最大高度，超出可滚动 */
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 12rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+  z-index: 1010; /* 比导航栏高 */
+  padding: 10rpx 0;
+}
+
+.model-options-popup.dark-mode {
+  background-color: #2C2C2C; /* 暗黑模式背景 */
+  border-color: #444;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
+}
+
+.provider-group {
+  margin-bottom: 10rpx;
+}
+
+.provider-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #555;
+  padding: 15rpx 25rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.model-options-popup.dark-mode .provider-name {
+  color: #bbb;
+  border-bottom-color: #3a3a3a;
+}
+
+.model-option {
+  padding: 20rpx 25rpx;
+  font-size: 26rpx;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.model-option.selected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.model-options-popup.dark-mode .model-option {
+  color: #ddd;
+}
+
+.model-options-popup.dark-mode .model-option:hover {
+  background-color: #3a3a3a;
+}
+
+.model-options-popup.dark-mode .model-option.selected {
+  background-color: #003769;
+  color: #75bfff;
+}
+
+.model-option:hover {
+  background-color: #f0f0f0;
+}
+
+.checkmark-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-left: 15rpx;
+}
+
+/* 遮罩层 */
+.model-selector-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* 半透明黑色 */
+  z-index: 1005; /* 低于弹窗，高于页面其他内容 */
+}
+
+.model-selector-overlay.dark-mode {
+  background-color: rgba(0, 0, 0, 0.6); /* 暗黑模式下更暗的遮罩 */
+}
