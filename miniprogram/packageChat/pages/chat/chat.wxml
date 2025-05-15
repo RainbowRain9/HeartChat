@@ -20,12 +20,14 @@
         </view>
       </view>
       <view class="nav-right">
-        <!-- 模型选择器 -->
-        <view class="model-selector-container">
-          <model-selector darkMode="{{darkMode}}" bind:modelChange="handleModelChange"></model-selector>
-        </view>
+        <!-- 预留空间，确保导航栏布局平衡 -->
       </view>
     </view>
+  </view>
+
+  <!-- 对话设置按钮 - 位于胶囊按钮下方 -->
+  <view class="chat-settings-btn" style="top: {{statusBarHeight + navBarHeight + 10}}px;" bindtap="toggleChatSettings">
+    <image class="settings-icon" src="/images/icons/settings.png" mode="aspectFit"></image>
   </view>
 
   <!-- 聊天内容 -->
@@ -94,7 +96,7 @@
   </view>
 
   <!-- 浮动情绪分析按钮 -->
-  <view class="floating-emotion-btn" bindtap="handleShowEmotionAnalysis">
+  <view class="floating-emotion-btn" bindtap="analyzeEmotion">
     <image class="emotion-icon" src="/images/icons/emotion.png" mode="aspectFit"></image>
   </view>
 
@@ -122,6 +124,212 @@
         bind:close="handleCloseEmotionAnalysis"
         bind:viewMore="handleViewEmotionDetail"
       ></emotion-dashboard>
+    </view>
+  </view>
+
+  <!-- 对话设置面板 -->
+  <view class="chat-settings-panel {{showChatSettings ? 'show' : ''}}" bindtap="closeChatSettings">
+    <view class="chat-settings-content {{darkMode ? 'dark' : ''}}" catchtap="stopPropagation">
+      <view class="settings-header">
+        <text class="settings-title">对话设置</text>
+        <view class="settings-close" bindtap="closeChatSettings">
+          <image class="icon-small" src="/images/icons/close.png" mode="aspectFit"></image>
+        </view>
+      </view>
+
+      <!-- 设置选项列表 -->
+      <scroll-view scroll-y class="settings-scroll-view">
+        <!-- 模型选择部分 -->
+        <view class="settings-section">
+          <view class="settings-section-header">
+            <text class="settings-section-title">AI模型</text>
+          </view>
+          <view class="settings-section-content">
+            <view class="model-selector-wrapper">
+              <model-selector darkMode="{{darkMode}}" bind:modelChange="handleModelChange"></model-selector>
+            </view>
+          </view>
+        </view>
+
+        <!-- 模型参数调整 -->
+        <view class="settings-section">
+          <view class="settings-section-header">
+            <text class="settings-section-title">模型参数</text>
+          </view>
+          <view class="settings-section-content">
+            <!-- 温度滑块 -->
+            <view class="settings-item">
+              <view class="settings-item-label">
+                <text>温度</text>
+                <text class="settings-item-value">{{modelParams.temperature}}</text>
+              </view>
+              <slider
+                min="0"
+                max="2"
+                step="0.1"
+                value="{{modelParams.temperature}}"
+                block-size="24"
+                activeColor="{{darkMode ? '#5e72e4' : '#4a6cf7'}}"
+                backgroundColor="{{darkMode ? '#343a40' : '#e9ecef'}}"
+                bindchange="handleTemperatureChange"
+              ></slider>
+              <view class="settings-item-desc">
+                <text>较低的值使回答更确定，较高的值使回答更随机</text>
+              </view>
+            </view>
+
+            <!-- 最大Token数滑块 -->
+            <view class="settings-item">
+              <view class="settings-item-label">
+                <text>最大Token数</text>
+                <text class="settings-item-value">{{modelParams.maxTokens}}</text>
+              </view>
+              <slider
+                min="256"
+                max="4096"
+                step="256"
+                value="{{modelParams.maxTokens}}"
+                block-size="24"
+                activeColor="{{darkMode ? '#5e72e4' : '#4a6cf7'}}"
+                backgroundColor="{{darkMode ? '#343a40' : '#e9ecef'}}"
+                bindchange="handleMaxTokensChange"
+              ></slider>
+              <view class="settings-item-desc">
+                <text>控制回答的最大长度</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 对话记忆长度设置 -->
+        <view class="settings-section">
+          <view class="settings-section-header">
+            <text class="settings-section-title">对话记忆</text>
+          </view>
+          <view class="settings-section-content">
+            <view class="settings-item">
+              <view class="settings-item-label">
+                <text>保留历史消息数</text>
+                <text class="settings-item-value">{{chatMemoryLength}}</text>
+              </view>
+              <slider
+                min="5"
+                max="50"
+                step="5"
+                value="{{chatMemoryLength}}"
+                block-size="24"
+                activeColor="{{darkMode ? '#5e72e4' : '#4a6cf7'}}"
+                backgroundColor="{{darkMode ? '#343a40' : '#e9ecef'}}"
+                bindchange="handleMemoryLengthChange"
+              ></slider>
+              <view class="settings-item-desc">
+                <text>控制AI记忆的历史消息数量</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 角色设定查看与微调 -->
+        <view class="settings-section">
+          <view class="settings-section-header">
+            <text class="settings-section-title">角色设定</text>
+          </view>
+          <view class="settings-section-content">
+            <view class="settings-item">
+              <view class="role-prompt-preview">
+                <text>{{role.prompt || '暂无角色设定'}}</text>
+              </view>
+              <view class="settings-action-btn" bindtap="showRolePromptEditor">
+                <text>微调角色设定</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 消息气泡样式选择 -->
+        <view class="settings-section">
+          <view class="settings-section-header">
+            <text class="settings-section-title">气泡样式</text>
+          </view>
+          <view class="settings-section-content">
+            <view class="bubble-style-options">
+              <view class="bubble-style-option {{bubbleStyle === 'default' ? 'selected' : ''}}"
+                    data-style="default"
+                    bindtap="selectBubbleStyle">
+                <view class="bubble-preview default-bubble"></view>
+                <text>默认</text>
+              </view>
+              <view class="bubble-style-option {{bubbleStyle === 'rounded' ? 'selected' : ''}}"
+                    data-style="rounded"
+                    bindtap="selectBubbleStyle">
+                <view class="bubble-preview rounded-bubble"></view>
+                <text>圆角</text>
+              </view>
+              <view class="bubble-style-option {{bubbleStyle === 'square' ? 'selected' : ''}}"
+                    data-style="square"
+                    bindtap="selectBubbleStyle">
+                <view class="bubble-preview square-bubble"></view>
+                <text>方形</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 自动情感分析开关 -->
+        <view class="settings-section">
+          <view class="settings-section-header">
+            <text class="settings-section-title">自动情感分析</text>
+          </view>
+          <view class="settings-section-content">
+            <view class="settings-item switch-item">
+              <text>对话结束后自动分析情感</text>
+              <switch
+                checked="{{autoEmotionAnalysis}}"
+                color="{{darkMode ? '#5e72e4' : '#4a6cf7'}}"
+                bindchange="toggleAutoEmotionAnalysis"
+              ></switch>
+            </view>
+          </view>
+        </view>
+
+        <!-- 导出对话记录功能 -->
+        <view class="settings-section">
+          <view class="settings-section-header">
+            <text class="settings-section-title">对话记录</text>
+          </view>
+          <view class="settings-section-content">
+            <view class="settings-action-btn" bindtap="exportChatHistory">
+              <text>导出对话记录</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 角色设定编辑器弹窗 -->
+  <view class="role-prompt-editor {{showRolePromptEditor ? 'show' : ''}}" bindtap="closeRolePromptEditor">
+    <view class="role-prompt-editor-content {{darkMode ? 'dark' : ''}}" catchtap="stopPropagation">
+      <view class="editor-header">
+        <text class="editor-title">编辑角色设定</text>
+        <view class="editor-close" bindtap="closeRolePromptEditor">
+          <image class="icon-small" src="/images/icons/close.png" mode="aspectFit"></image>
+        </view>
+      </view>
+      <view class="editor-body">
+        <textarea
+          class="role-prompt-textarea"
+          value="{{editingRolePrompt}}"
+          bindinput="handleRolePromptInput"
+          placeholder="输入角色设定..."
+          maxlength="2000"
+          auto-height
+        ></textarea>
+      </view>
+      <view class="editor-footer">
+        <view class="editor-cancel-btn" bindtap="closeRolePromptEditor">取消</view>
+        <view class="editor-save-btn" bindtap="saveRolePrompt">保存</view>
+      </view>
     </view>
   </view>
 </view>

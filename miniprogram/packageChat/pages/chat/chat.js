@@ -45,6 +45,19 @@ Page({
     openId: '', // 用户ID
     selectedModelType: '', // 当前选择的模型类型
     selectedModel: '', // 当前选择的模型
+    showChatSettings: false, // 是否显示对话设置面板
+    showRolePromptEditor: false, // 是否显示角色设定编辑器
+    editingRolePrompt: '', // 正在编辑的角色设定
+    modelParams: { // 模型参数
+      temperature: 0.7, // 温度
+      maxTokens: 2048, // 最大token数
+      topP: 1.0, // Top P
+      presencePenalty: 0.0, // 存在惩罚
+      frequencyPenalty: 0.0 // 频率惩罚
+    },
+    chatMemoryLength: 20, // 对话记忆长度
+    bubbleStyle: 'default', // 消息气泡样式
+    autoEmotionAnalysis: true, // 自动情感分析
     // 默认情绪分析数据结构
     defaultEmotionData: {
       primary_emotion: 'calm',
@@ -90,6 +103,44 @@ Page({
       this.setData({
         darkMode: app.globalData.darkMode || false
       });
+    }
+
+    // 尝试加载用户设置
+    try {
+      // 从本地缓存加载设置
+      const modelParams = wx.getStorageSync('chat_model_params');
+      const chatMemoryLength = wx.getStorageSync('chat_memory_length');
+      const bubbleStyle = wx.getStorageSync('chat_bubble_style');
+      const autoEmotionAnalysis = wx.getStorageSync('chat_auto_emotion_analysis');
+
+      // 更新数据
+      const newData = {};
+
+      if (modelParams) {
+        newData.modelParams = modelParams;
+      }
+
+      if (chatMemoryLength) {
+        newData.chatMemoryLength = chatMemoryLength;
+      }
+
+      if (bubbleStyle) {
+        newData.bubbleStyle = bubbleStyle;
+      }
+
+      if (autoEmotionAnalysis !== undefined) {
+        newData.autoEmotionAnalysis = autoEmotionAnalysis;
+      }
+
+      if (Object.keys(newData).length > 0) {
+        this.setData(newData);
+      }
+
+      if (isDev) {
+        console.log('已加载用户设置:', newData);
+      }
+    } catch (error) {
+      console.error('加载用户设置失败:', error.message || error);
     }
 
     // 获取当前选择的模型类型和模型
@@ -204,6 +255,21 @@ Page({
       if (isDev) {
         console.log('已保存聊天记录到本地缓存');
       }
+    }
+
+    // 保存用户设置
+    try {
+      // 保存到本地缓存
+      wx.setStorageSync('chat_model_params', this.data.modelParams);
+      wx.setStorageSync('chat_memory_length', this.data.chatMemoryLength);
+      wx.setStorageSync('chat_bubble_style', this.data.bubbleStyle);
+      wx.setStorageSync('chat_auto_emotion_analysis', this.data.autoEmotionAnalysis);
+
+      if (isDev) {
+        console.log('已保存用户设置');
+      }
+    } catch (error) {
+      console.error('保存用户设置失败:', error.message || error);
     }
 
     // 移除键盘监听
@@ -854,6 +920,12 @@ Page({
 
       console.log('发送消息使用模型:', modelType, modelName);
 
+      // 获取模型参数
+      const { temperature, maxTokens, topP, presencePenalty, frequencyPenalty } = this.data.modelParams;
+
+      // 获取对话记忆长度
+      const chatMemoryLength = this.data.chatMemoryLength;
+
       // 调用云函数发送消息
       const result = await wx.cloud.callFunction({
         name: 'chat',
@@ -864,7 +936,15 @@ Page({
           content,
           systemPrompt: this.systemPrompt, // 使用包含用户画像的系统提示
           modelType: modelType.toLowerCase(), // 传递模型类型，确保小写
-          modelName: modelName // 传递具体模型名称
+          modelName: modelName, // 传递具体模型名称
+          modelParams: {
+            temperature,
+            maxTokens,
+            topP,
+            presencePenalty,
+            frequencyPenalty
+          },
+          chatMemoryLength
         }
       });
 
@@ -935,6 +1015,11 @@ Page({
         // 情绪分析将完全由专门的云函数 @cloudfunctions\analysis/ 处理
         // 手动进行情绪分析
         this.analyzeUserEmotion(content, message._id);
+
+        // 如果启用了自动情感分析，在对话结束后分析情感
+        if (this.data.autoEmotionAnalysis) {
+          this.analyzeEmotionAfterDelay();
+        }
       } else {
         throw new Error(result?.result?.error || '发送消息失败');
       }
@@ -1781,6 +1866,73 @@ Page({
   },
 
   /**
+   * 分析情绪
+   */
+  analyzeEmotion() {
+    if (!this.data.emotionAnalysis || this.data.emotionAnalysis === this.data.defaultEmotionData) {
+      // 如果没有情绪分析数据或者是默认数据，尝试分析最后一条用户消息
+      const userMessages = this.data.messages.filter(msg => msg.sender_type === 'user');
+      if (userMessages.length > 0) {
+        const lastUserMessage = userMessages[userMessages.length - 1];
+
+        // 先使用默认数据显示弹窗，同时开始分析
+        this.setData({
+          emotionAnalysis: this.data.defaultEmotionData,
+          showEmotionAnalysis: true
+        });
+
+        // 开始分析
+        this.analyzeUserEmotion(lastUserMessage.content)
+          .then(data => {
+            // 分析完成后更新弹窗数据
+            this.setData({
+              emotionAnalysis: data
+            });
+          })
+          .catch(err => {
+            console.error('分析失败:', err);
+          });
+
+        wx.showToast({
+          title: '正在分析情绪...',
+          icon: 'loading',
+          duration: 1000
+        });
+      } else {
+        // 没有用户消息，使用默认数据
+        this.setData({
+          emotionAnalysis: this.data.defaultEmotionData,
+          showEmotionAnalysis: true
+        });
+      }
+      return;
+    }
+
+    // 已有情绪分析数据，直接显示
+    this.setData({
+      showEmotionAnalysis: true
+    });
+  },
+
+  /**
+   * 延迟分析情感
+   * 在对话结束后等待一段时间再分析，避免频繁分析
+   */
+  analyzeEmotionAfterDelay() {
+    // 清除之前的定时器
+    if (this.emotionAnalysisTimer) {
+      clearTimeout(this.emotionAnalysisTimer);
+    }
+
+    // 设置新的定时器，延迟3秒后分析
+    this.emotionAnalysisTimer = setTimeout(() => {
+      if (!this.data.sending) {
+        this.analyzeEmotion();
+      }
+    }, 3000);
+  },
+
+  /**
    * 阻止事件冒泡
    */
   stopPropagation() {
@@ -2027,7 +2179,8 @@ Page({
     // 更新页面状态
     this.setData({
       selectedModelType: modelType,
-      selectedModel: modelName
+      selectedModel: modelName,
+      showChatSettings: false // 关闭设置面板
     });
 
     // 保存到本地缓存，确保下次打开页面时使用相同的模型
@@ -2052,6 +2205,366 @@ Page({
       });
     }
   },
+
+  /**
+   * 切换对话设置面板
+   */
+  toggleChatSettings() {
+    this.setData({
+      showChatSettings: !this.data.showChatSettings
+    });
+  },
+
+  /**
+   * 关闭对话设置面板
+   */
+  closeChatSettings() {
+    this.setData({
+      showChatSettings: false
+    });
+  },
+
+  /**
+   * 显示角色设定编辑器
+   */
+  showRolePromptEditor() {
+    if (this.data.role && this.data.role.prompt) {
+      this.setData({
+        editingRolePrompt: this.data.role.prompt,
+        showRolePromptEditor: true
+      });
+    } else {
+      wx.showToast({
+        title: '角色设定不可用',
+        icon: 'none'
+      });
+    }
+  },
+
+  /**
+   * 关闭角色设定编辑器
+   */
+  closeRolePromptEditor() {
+    this.setData({
+      showRolePromptEditor: false
+    });
+  },
+
+  /**
+   * 处理角色设定输入
+   * @param {Object} e 事件对象
+   */
+  handleRolePromptInput(e) {
+    this.setData({
+      editingRolePrompt: e.detail.value
+    });
+  },
+
+  /**
+   * 保存角色设定
+   */
+  async saveRolePrompt() {
+    if (!this.data.role || !this.data.roleId) {
+      wx.showToast({
+        title: '角色信息不可用',
+        icon: 'none'
+      });
+      return;
+    }
+
+    const newPrompt = this.data.editingRolePrompt.trim();
+    if (!newPrompt) {
+      wx.showToast({
+        title: '角色设定不能为空',
+        icon: 'none'
+      });
+      return;
+    }
+
+    wx.showLoading({
+      title: '保存中...',
+      mask: true
+    });
+
+    try {
+      // 调用云函数更新角色设定
+      const result = await wx.cloud.callFunction({
+        name: 'roles',
+        data: {
+          action: 'updateRolePrompt',
+          roleId: this.data.roleId,
+          prompt: newPrompt
+        }
+      });
+
+      if (result && result.result && result.result.success) {
+        // 更新本地角色信息
+        const updatedRole = { ...this.data.role, prompt: newPrompt };
+        this.setData({
+          role: updatedRole,
+          showRolePromptEditor: false
+        });
+
+        // 更新角色系统提示
+        await this.updateRoleSystemPrompt();
+
+        wx.showToast({
+          title: '角色设定已保存',
+          icon: 'success'
+        });
+      } else {
+        throw new Error('更新角色设定失败');
+      }
+    } catch (error) {
+      console.error('保存角色设定失败:', error.message || error);
+      wx.showToast({
+        title: '保存失败',
+        icon: 'none'
+      });
+    } finally {
+      wx.hideLoading();
+    }
+  },
+
+  /**
+   * 处理温度参数变更
+   * @param {Object} e 事件对象
+   */
+  handleTemperatureChange(e) {
+    const temperature = parseFloat(e.detail.value);
+    this.setData({
+      'modelParams.temperature': temperature
+    });
+
+    // 保存到本地缓存
+    try {
+      // 保存到本地缓存
+      wx.setStorageSync('chat_model_params', this.data.modelParams);
+      wx.setStorageSync('chat_memory_length', this.data.chatMemoryLength);
+      wx.setStorageSync('chat_bubble_style', this.data.bubbleStyle);
+      wx.setStorageSync('chat_auto_emotion_analysis', this.data.autoEmotionAnalysis);
+
+      if (isDev) {
+        console.log('已保存用户设置');
+      }
+    } catch (error) {
+      console.error('保存用户设置失败:', error.message || error);
+    }
+  },
+
+  /**
+   * 处理最大Token数变更
+   * @param {Object} e 事件对象
+   */
+  handleMaxTokensChange(e) {
+    const maxTokens = parseInt(e.detail.value);
+    this.setData({
+      'modelParams.maxTokens': maxTokens
+    });
+
+    // 保存到本地缓存
+    try {
+      // 保存到本地缓存
+      wx.setStorageSync('chat_model_params', this.data.modelParams);
+      wx.setStorageSync('chat_memory_length', this.data.chatMemoryLength);
+      wx.setStorageSync('chat_bubble_style', this.data.bubbleStyle);
+      wx.setStorageSync('chat_auto_emotion_analysis', this.data.autoEmotionAnalysis);
+
+      if (isDev) {
+        console.log('已保存用户设置');
+      }
+    } catch (error) {
+      console.error('保存用户设置失败:', error.message || error);
+    }
+  },
+
+  /**
+   * 处理对话记忆长度变更
+   * @param {Object} e 事件对象
+   */
+  handleMemoryLengthChange(e) {
+    const chatMemoryLength = parseInt(e.detail.value);
+    this.setData({
+      chatMemoryLength
+    });
+
+    // 保存到本地缓存
+    try {
+      // 保存到本地缓存
+      wx.setStorageSync('chat_model_params', this.data.modelParams);
+      wx.setStorageSync('chat_memory_length', this.data.chatMemoryLength);
+      wx.setStorageSync('chat_bubble_style', this.data.bubbleStyle);
+      wx.setStorageSync('chat_auto_emotion_analysis', this.data.autoEmotionAnalysis);
+
+      if (isDev) {
+        console.log('已保存用户设置');
+      }
+    } catch (error) {
+      console.error('保存用户设置失败:', error.message || error);
+    }
+  },
+
+  /**
+   * 选择气泡样式
+   * @param {Object} e 事件对象
+   */
+  selectBubbleStyle(e) {
+    const bubbleStyle = e.currentTarget.dataset.style;
+    this.setData({
+      bubbleStyle
+    });
+
+    // 保存到本地缓存
+    try {
+      // 保存到本地缓存
+      wx.setStorageSync('chat_model_params', this.data.modelParams);
+      wx.setStorageSync('chat_memory_length', this.data.chatMemoryLength);
+      wx.setStorageSync('chat_bubble_style', this.data.bubbleStyle);
+      wx.setStorageSync('chat_auto_emotion_analysis', this.data.autoEmotionAnalysis);
+
+      if (isDev) {
+        console.log('已保存用户设置');
+      }
+    } catch (error) {
+      console.error('保存用户设置失败:', error.message || error);
+    }
+
+    // 通知气泡组件更新样式
+    this.updateBubbleStyle();
+  },
+
+  /**
+   * 更新气泡样式
+   */
+  updateBubbleStyle() {
+    // 获取所有气泡组件并更新样式
+    const bubbles = this.selectAllComponents('chat-bubble');
+    if (bubbles && bubbles.length > 0) {
+      bubbles.forEach(bubble => {
+        if (bubble && bubble.setBubbleStyle) {
+          bubble.setBubbleStyle(this.data.bubbleStyle);
+        }
+      });
+    }
+  },
+
+  /**
+   * 切换自动情感分析
+   * @param {Object} e 事件对象
+   */
+  toggleAutoEmotionAnalysis(e) {
+    const autoEmotionAnalysis = e.detail.value;
+    this.setData({
+      autoEmotionAnalysis
+    });
+
+    // 保存到本地缓存
+    try {
+      // 保存到本地缓存
+      wx.setStorageSync('chat_model_params', this.data.modelParams);
+      wx.setStorageSync('chat_memory_length', this.data.chatMemoryLength);
+      wx.setStorageSync('chat_bubble_style', this.data.bubbleStyle);
+      wx.setStorageSync('chat_auto_emotion_analysis', this.data.autoEmotionAnalysis);
+
+      if (isDev) {
+        console.log('已保存用户设置');
+      }
+    } catch (error) {
+      console.error('保存用户设置失败:', error.message || error);
+    }
+  },
+
+  /**
+   * 导出对话记录
+   */
+  exportChatHistory() {
+    if (!this.data.messages || this.data.messages.length === 0) {
+      wx.showToast({
+        title: '没有对话记录可导出',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      // 格式化对话记录
+      const roleName = this.data.role ? this.data.role.name : '角色';
+      let exportContent = `# ${roleName}的对话记录\n\n`;
+      exportContent += `导出时间: ${new Date().toLocaleString()}\n\n`;
+
+      this.data.messages.forEach(msg => {
+        const sender = msg.sender_type === 'user' ? '我' : roleName;
+        const time = new Date(parseInt(msg.timestamp)).toLocaleString();
+        exportContent += `## ${sender} (${time})\n\n${msg.content}\n\n`;
+      });
+
+      // 保存到本地文件
+      const fileName = `${roleName}_对话记录_${new Date().getTime()}.md`;
+
+      // 使用微信API保存文件
+      wx.getSavedFileList({
+        success: (res) => {
+          // 清理旧的导出文件，避免占用过多存储空间
+          if (res.fileList && res.fileList.length > 5) {
+            res.fileList.slice(0, res.fileList.length - 5).forEach(file => {
+              wx.removeSavedFile({
+                filePath: file.filePath
+              });
+            });
+          }
+
+          // 保存新文件
+          const filePath = `${wx.env.USER_DATA_PATH}/${fileName}`;
+          wx.getFileSystemManager().writeFile({
+            filePath,
+            data: exportContent,
+            encoding: 'utf8',
+            success: () => {
+              // 保存成功后，提示用户
+              wx.showModal({
+                title: '导出成功',
+                content: `对话记录已导出为 ${fileName}，是否分享或保存到手机？`,
+                confirmText: '分享/保存',
+                success: (res) => {
+                  if (res.confirm) {
+                    // 分享文件
+                    wx.shareFileMessage({
+                      filePath,
+                      success: () => {
+                        console.log('分享文件成功');
+                      },
+                      fail: (error) => {
+                        console.error('分享文件失败:', error);
+                        wx.showToast({
+                          title: '分享失败',
+                          icon: 'none'
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            },
+            fail: (error) => {
+              console.error('保存文件失败:', error);
+              wx.showToast({
+                title: '导出失败',
+                icon: 'none'
+              });
+            }
+          });
+        }
+      });
+    } catch (error) {
+      console.error('导出对话记录失败:', error.message || error);
+      wx.showToast({
+        title: '导出失败',
+        icon: 'none'
+      });
+    }
+  },
+
+
 
   /**
    * 加载图片资源

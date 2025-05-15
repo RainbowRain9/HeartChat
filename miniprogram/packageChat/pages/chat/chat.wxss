@@ -116,7 +116,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  min-width: 240rpx;
+  min-width: 90rpx;
   padding-right: 10rpx;
 }
 
@@ -170,6 +170,479 @@
 .dark .emotion-icon {
   opacity: 0.9;
   filter: brightness(1.2);
+}
+
+/* 对话设置按钮 */
+.chat-settings-btn {
+  position: fixed;
+  right: 20rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  z-index: 900;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.dark .chat-settings-btn {
+  background-color: rgba(33, 37, 41, 0.85);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+}
+
+.chat-settings-btn:active {
+  transform: scale(0.95);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .chat-settings-btn:active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.settings-icon {
+  width: 48rpx;
+  height: 48rpx;
+  opacity: 0.8;
+}
+
+.dark .settings-icon {
+  opacity: 0.9;
+  filter: brightness(1.2);
+}
+
+/* 对话设置面板 */
+.chat-settings-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.chat-settings-panel.show {
+  width: 100%;
+}
+
+.chat-settings-content {
+  position: absolute;
+  top: 0;
+  right: -80%;
+  width: 80%;
+  height: 100%;
+  background-color: #ffffff;
+  box-shadow: -4rpx 0 20rpx rgba(0, 0, 0, 0.15);
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-settings-panel.show .chat-settings-content {
+  right: 0;
+}
+
+.dark .chat-settings-content {
+  background-color: #212529;
+  box-shadow: -4rpx 0 20rpx rgba(0, 0, 0, 0.3);
+}
+
+.settings-header {
+  padding: 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #e9ecef;
+}
+
+.dark .settings-header {
+  border-bottom: 1rpx solid #343a40;
+}
+
+.settings-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.dark .settings-title {
+  color: #f8f9fa;
+}
+
+.settings-close {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-small {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.dark .icon-small {
+  filter: brightness(1.2);
+}
+
+.settings-scroll-view {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 设置部分样式 */
+.settings-section {
+  margin-bottom: 30rpx;
+  border-bottom: 1rpx solid #e9ecef;
+}
+
+.dark .settings-section {
+  border-bottom: 1rpx solid #343a40;
+}
+
+.settings-section:last-child {
+  border-bottom: none;
+}
+
+.settings-section-header {
+  padding: 20rpx 30rpx;
+}
+
+.settings-section-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #4a6cf7;
+}
+
+.dark .settings-section-title {
+  color: #5e72e4;
+}
+
+.settings-section-content {
+  padding: 0 30rpx 20rpx;
+}
+
+/* 设置项样式 */
+.settings-item {
+  margin-bottom: 20rpx;
+}
+
+.settings-item-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.dark .settings-item-label {
+  color: #f8f9fa;
+}
+
+.settings-item-value {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.dark .settings-item-value {
+  color: #adb5bd;
+}
+
+.settings-item-desc {
+  font-size: 24rpx;
+  color: #999999;
+  margin-top: 10rpx;
+}
+
+.dark .settings-item-desc {
+  color: #6c757d;
+}
+
+/* 开关项样式 */
+.switch-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 模型选择器包装 */
+.model-selector-wrapper {
+  margin: 20rpx 0;
+}
+
+/* 角色提示词预览 */
+.role-prompt-preview {
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  max-height: 200rpx;
+  overflow-y: auto;
+  font-size: 26rpx;
+  color: #333333;
+  border: 1rpx solid #e9ecef;
+}
+
+.dark .role-prompt-preview {
+  background-color: #343a40;
+  color: #f8f9fa;
+  border: 1rpx solid #495057;
+}
+
+/* 操作按钮 */
+.settings-action-btn {
+  background-color: #4a6cf7;
+  color: #ffffff;
+  padding: 20rpx 0;
+  border-radius: 12rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 500;
+  margin: 20rpx 0;
+  transition: all 0.3s ease;
+}
+
+.settings-action-btn:active {
+  transform: scale(0.98);
+  background-color: #3a5bd9;
+}
+
+.dark .settings-action-btn {
+  background-color: #5e72e4;
+}
+
+.dark .settings-action-btn:active {
+  background-color: #4a5fcb;
+}
+
+/* 气泡样式选择 */
+.bubble-style-options {
+  display: flex;
+  justify-content: space-between;
+  margin: 20rpx 0;
+}
+
+.bubble-style-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30%;
+}
+
+.bubble-preview {
+  width: 120rpx;
+  height: 80rpx;
+  margin-bottom: 10rpx;
+  border: 1rpx solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.dark .bubble-preview {
+  border: 1rpx solid #343a40;
+}
+
+.default-bubble {
+  border-radius: 18rpx;
+  background-color: #e9ecef;
+}
+
+.dark .default-bubble {
+  background-color: #343a40;
+}
+
+.rounded-bubble {
+  border-radius: 40rpx;
+  background-color: #e9ecef;
+}
+
+.dark .rounded-bubble {
+  background-color: #343a40;
+}
+
+.square-bubble {
+  border-radius: 8rpx;
+  background-color: #e9ecef;
+}
+
+.dark .square-bubble {
+  background-color: #343a40;
+}
+
+.bubble-style-option.selected .bubble-preview {
+  border: 3rpx solid #4a6cf7;
+  transform: scale(1.05);
+}
+
+.dark .bubble-style-option.selected .bubble-preview {
+  border: 3rpx solid #5e72e4;
+}
+
+.bubble-style-option text {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.dark .bubble-style-option text {
+  color: #adb5bd;
+}
+
+.bubble-style-option.selected text {
+  color: #4a6cf7;
+  font-weight: 500;
+}
+
+.dark .bubble-style-option.selected text {
+  color: #5e72e4;
+}
+
+/* 角色设定编辑器 */
+.role-prompt-editor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1002;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.role-prompt-editor.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.role-prompt-editor-content {
+  width: 85%;
+  max-height: 85%;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.role-prompt-editor.show .role-prompt-editor-content {
+  transform: scale(1);
+}
+
+.dark .role-prompt-editor-content {
+  background-color: #212529;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+}
+
+.editor-header {
+  padding: 20rpx 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #e9ecef;
+}
+
+.dark .editor-header {
+  border-bottom: 1rpx solid #343a40;
+}
+
+.editor-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.dark .editor-title {
+  color: #f8f9fa;
+}
+
+.editor-close {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.editor-body {
+  flex: 1;
+  padding: 20rpx 30rpx;
+  overflow-y: auto;
+}
+
+.role-prompt-textarea {
+  width: 100%;
+  min-height: 400rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #333333;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  border: 1rpx solid #e9ecef;
+}
+
+.dark .role-prompt-textarea {
+  color: #f8f9fa;
+  background-color: #343a40;
+  border: 1rpx solid #495057;
+}
+
+.editor-footer {
+  padding: 20rpx 30rpx;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1rpx solid #e9ecef;
+}
+
+.dark .editor-footer {
+  border-top: 1rpx solid #343a40;
+}
+
+.editor-cancel-btn, .editor-save-btn {
+  padding: 15rpx 30rpx;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  margin-left: 20rpx;
+}
+
+.editor-cancel-btn {
+  background-color: #f8f9fa;
+  color: #666666;
+  border: 1rpx solid #e9ecef;
+}
+
+.dark .editor-cancel-btn {
+  background-color: #343a40;
+  color: #adb5bd;
+  border: 1rpx solid #495057;
+}
+
+.editor-save-btn {
+  background-color: #4a6cf7;
+  color: #ffffff;
+}
+
+.dark .editor-save-btn {
+  background-color: #5e72e4;
 }
 
 /* 聊天内容 */
