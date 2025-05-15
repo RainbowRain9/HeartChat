@@ -45,7 +45,7 @@ const MODEL_PLATFORMS = {
   },
   // WHIMSY
   WHIMSY: {
-    name: 'Whimsy',
+    name: 'Whimsy AI',
     baseUrl: 'https://doi9.top/v1',
     apiKeyEnv: 'WHIMSY_API_KEY',
     defaultModel: 'gemini-2.5-flash-preview-04-17-non-thinking',
@@ -57,7 +57,7 @@ const MODEL_PLATFORMS = {
   },
   // Crond API
   CROND: {
-    name: 'Crond API',
+    name: 'OpenAI (Crond)',
     baseUrl: 'https://new.crond.dev/v1',
     apiKeyEnv: 'CROND_API_KEY',
     defaultModel: 'gpt-4o-mini',
@@ -69,7 +69,7 @@ const MODEL_PLATFORMS = {
   },
   // CloseAI
   CLOSEAI: {
-    name: 'CloseAI',
+    name: 'DeepSeek AI',
     baseUrl: 'https://api.closeai.im/v1',
     apiKeyEnv: 'CLOSEAI_API_KEY',
     defaultModel: 'deepseek-ai/DeepSeek-V3-0324',

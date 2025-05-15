@@ -22,7 +22,7 @@
       <radio-group class="model-select" bindchange="onModelTypeChange">
         <label wx:for="{{modelTypes}}" wx:key="*this" class="model-option">
           <radio value="{{item}}" checked="{{modelType === item}}" color="{{darkMode ? '#4dabf7' : '#007bff'}}" />
-          <text>{{item === 'gemini' ? 'Google Gemini' : '智谱AI'}}</text>
+          <text>{{modelDisplayNames[item] || item}}</text>
         </label>
       </radio-group>
     </view>

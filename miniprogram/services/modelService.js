@@ -96,9 +96,9 @@ function getModelDisplayName(modelType) {
     case MODEL_TYPES.OPENAI:
       return 'OpenAI';
     case MODEL_TYPES.CROND:
-      return 'Crond API';
+      return 'OpenAI (Crond)';
     case MODEL_TYPES.CLOSEAI:
-      return 'CloseAI';
+      return 'DeepSeek AI';
     default:
       return '未知模型';
   }
@@ -165,17 +165,17 @@ function getModelConfig(modelType) {
       };
     case MODEL_TYPES.CROND:
       return {
-        name: 'Crond API',
+        name: 'OpenAI (Crond)',
         models: ['gpt-4o-mini', 'deepseek-v3', 'o3-mini'],
         features: ['对话生成', '高级推理'],
-        description: 'Crond API提供多种大语言模型，支持高质量的对话生成和推理能力。'
+        description: 'Crond API提供OpenAI和其他大语言模型，支持高质量的对话生成和推理能力。'
       };
     case MODEL_TYPES.CLOSEAI:
       return {
-        name: 'CloseAI',
+        name: 'DeepSeek AI',
         models: ['deepseek-ai/DeepSeek-V3-0324'],
         features: ['对话生成', '中文理解'],
-        description: 'CloseAI提供DeepSeek系列模型，具有出色的中文理解能力和对话生成能力。'
+        description: 'DeepSeek AI提供先进的大语言模型，具有出色的中文理解能力和对话生成能力。'
       };
     default:
       return {

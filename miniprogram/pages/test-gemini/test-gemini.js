@@ -18,6 +18,13 @@ Page({
     errorMessage: '',
     modelType: 'gemini', // 默认使用Gemini模型
     modelTypes: ['gemini', 'zhipu'],
+    modelDisplayNames: {
+      'gemini': 'Google Gemini',
+      'zhipu': '智谱AI',
+      'openai': 'OpenAI',
+      'crond': 'OpenAI (Crond)',
+      'closeai': 'DeepSeek AI'
+    },
     testMessage: '你好，这是一个测试消息。',
     cloudInit: false
   },

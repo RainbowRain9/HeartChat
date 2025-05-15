@@ -17,7 +17,7 @@ const axios = require('axios');
 const MODEL_PLATFORMS = {
   // 智谱AI
   ZHIPU: {
-    name: '智谱',
+    name: '智谱AI',
     baseUrl: 'https://open.bigmodel.cn/api/paas/v4',
     apiKeyEnv: 'ZHIPU_API_KEY',
     defaultModel: 'glm-4-flash',
@@ -41,7 +41,7 @@ const MODEL_PLATFORMS = {
   },
   // WHIMSY
   WHIMSY: {
-    name: 'Whimsy',
+    name: 'Whimsy AI',
     baseUrl: 'https://doi9.top/v1',
     apiKeyEnv: 'WHIMSY_API_KEY',
     defaultModel: 'gemini-2.5-flash-preview-04-17-non-thinking',
@@ -53,7 +53,7 @@ const MODEL_PLATFORMS = {
   },
   // Crond API
   CROND: {
-    name: 'ChatGpt',
+    name: 'OpenAI (Crond)',
     baseUrl: 'https://new.crond.dev/v1',
     apiKeyEnv: 'CROND_API_KEY',
     defaultModel: 'gpt-4o-mini',
@@ -65,7 +65,7 @@ const MODEL_PLATFORMS = {
   },
   // CloseAI
   CLOSEAI: {
-    name: 'DeepSeek',
+    name: 'DeepSeek AI',
     baseUrl: 'https://api.closeai.im/v1',
     apiKeyEnv: 'CLOSEAI_API_KEY',
     defaultModel: 'deepseek-ai/DeepSeek-V3-0324',
