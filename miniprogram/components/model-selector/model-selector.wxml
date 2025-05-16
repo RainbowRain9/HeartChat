@@ -3,14 +3,16 @@
   <!-- 当前选择的模型 -->
   <view class="selected-model" bindtap="showModelSelector">
     <view class="model-icon">
-      <image class="icon" src="/images/icons/ai.png" mode="aspectFit"></image>
+      <view class="model-icon-bg {{selectedModelType}}">
+        <text class="model-icon-text">{{modelDisplayNames[selectedModelType].substr(0, 1)}}</text>
+      </view>
     </view>
     <view class="model-name">
       <text>{{modelDisplayNames[selectedModelType]}}</text>
       <text class="model-subname">{{selectedModel}}</text>
     </view>
     <view class="arrow-icon">
-      <image class="icon" src="/images/icons/arrow-down.png" mode="aspectFit"></image>
+      <view class="arrow-down"></view>
     </view>
   </view>
 
@@ -20,7 +22,7 @@
       <view class="popup-header">
         <text class="popup-title">选择AI模型平台</text>
         <view class="close-btn" bindtap="hideModelSelector">
-          <image class="icon" src="/images/icons/close.png" mode="aspectFit"></image>
+          <view class="close-icon"></view>
         </view>
       </view>
 
@@ -30,19 +32,21 @@
                 data-model-type="{{item}}"
                 bindtap="selectModelType">
             <view class="model-item-icon">
-              <image class="icon" src="/images/icons/{{item}}.png" mode="aspectFit"></image>
+              <view class="model-icon-bg {{item}}">
+                <text class="model-icon-text">{{modelDisplayNames[item].substr(0, 1)}}</text>
+              </view>
             </view>
             <view class="model-item-info">
               <view class="model-item-name">{{modelDisplayNames[item]}}</view>
-              <view class="model-item-desc">{{modelDescriptions[item]}}</view>
-            </view>
-            <view class="model-item-features">
-              <view class="feature-tag" wx:for="{{modelFeatures[item]}}" wx:for-item="feature" wx:key="*this">
-                {{feature}}
+              <view class="model-item-desc">{{modelShortDescriptions[item] || '提供高质量的对话生成能力'}}</view>
+              <!-- API密钥状态指示器 -->
+              <view class="api-key-status {{apiKeyStatus[item] ? 'valid' : 'invalid'}}">
+                <view class="status-dot"></view>
+                <text class="status-text">{{apiKeyStatus[item] ? 'API密钥有效' : 'API密钥未设置'}}</text>
               </view>
             </view>
             <view class="model-item-check" wx:if="{{item === selectedModelType}}">
-              <image class="icon" src="/images/icons/check.png" mode="aspectFit"></image>
+              <view class="check-icon"></view>
             </view>
           </view>
         </block>
@@ -56,7 +60,7 @@
       <view class="popup-header">
         <text class="popup-title">选择{{modelDisplayNames[selectedModelType]}}模型</text>
         <view class="close-btn" bindtap="hideModelListSelector">
-          <image class="icon" src="/images/icons/close.png" mode="aspectFit"></image>
+          <view class="close-icon"></view>
         </view>
       </view>
 
@@ -66,14 +70,16 @@
                 data-model-name="{{item}}"
                 bindtap="selectModel">
             <view class="model-item-icon">
-              <image class="icon" src="/images/icons/model.png" mode="aspectFit"></image>
+              <view class="model-icon-bg {{selectedModelType}}">
+                <text class="model-icon-text">M</text>
+              </view>
             </view>
             <view class="model-item-info">
               <view class="model-item-name">{{item}}</view>
               <view class="model-item-desc">{{modelDescriptions[selectedModelType]}}</view>
             </view>
             <view class="model-item-check" wx:if="{{item === selectedModel}}">
-              <image class="icon" src="/images/icons/check.png" mode="aspectFit"></image>
+              <view class="check-icon"></view>
             </view>
           </view>
         </block>

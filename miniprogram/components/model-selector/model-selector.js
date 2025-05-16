@@ -35,7 +35,8 @@ Component({
     currentModelList: [],
     selectedModel: '',
     modelDescriptions: {},
-    modelFeatures: {}
+    modelShortDescriptions: {}, // 简短描述
+    apiKeyStatus: {} // 存储API密钥状态
   },
 
   /**
@@ -65,14 +66,45 @@ Component({
         // 构建模型显示名称映射
         const modelDisplayNames = {};
         const modelDescriptions = {};
-        const modelFeatures = {};
+        const modelShortDescriptions = {};
+        const apiKeyStatus = {};
+
+        // 获取API密钥状态
+        await this.checkApiKeyStatus(modelTypes, apiKeyStatus);
+
         modelTypes.forEach(type => {
           modelDisplayNames[type] = modelService.getModelDisplayName(type);
 
           // 获取模型描述和特性
           const config = modelService.getModelConfig(type);
           modelDescriptions[type] = config.description;
-          modelFeatures[type] = config.features || [];
+
+          // 设置简短描述和详细介绍
+          switch(type) {
+            case 'zhipu':
+              modelShortDescriptions[type] = '智谱AI开发 | 中文理解能力出色 | 适合日常对话';
+              break;
+            case 'gemini':
+              modelShortDescriptions[type] = 'Google开发 | 多模态理解能力强 | 适合创意内容生成';
+              break;
+            case 'openai':
+              modelShortDescriptions[type] = 'OpenAI开发 | 通用能力均衡 | 适合各类任务';
+              break;
+            case 'crond':
+              modelShortDescriptions[type] = 'Crond提供 | 高性价比选择 | 适合日常使用';
+              break;
+            case 'closeai':
+              modelShortDescriptions[type] = 'DeepSeek开发 | 中文理解优秀 | 适合本地化内容';
+              break;
+            case 'grok':
+              modelShortDescriptions[type] = 'xAI开发 | 实时信息获取 | 适合代码和创意写作';
+              break;
+            case 'claude':
+              modelShortDescriptions[type] = 'Anthropic开发 | 长文本处理出色 | 适合复杂推理';
+              break;
+            default:
+              modelShortDescriptions[type] = '提供高质量对话 | 支持多种任务';
+          }
         });
 
         // 获取当前选择的模型
@@ -86,15 +118,53 @@ Component({
           modelDisplayNames,
           selectedModelType,
           modelDescriptions,
-          modelFeatures,
+          modelShortDescriptions,
           selectedModel,
-          currentModelList
+          currentModelList,
+          apiKeyStatus
         });
       } catch (error) {
         console.error('初始化模型选择器失败:', error.message || error);
         wx.showToast({
           title: '初始化模型选择器失败',
           icon: 'none'
+        });
+      }
+    },
+
+    /**
+     * 检查API密钥状态
+     * @param {Array} modelTypes 模型类型数组
+     * @param {Object} apiKeyStatus API密钥状态对象
+     */
+    async checkApiKeyStatus(modelTypes, apiKeyStatus) {
+      try {
+        // 调用云函数获取API密钥状态
+        const result = await wx.cloud.callFunction({
+          name: 'chat',
+          data: {
+            action: 'checkApiKeyStatus'
+          }
+        });
+
+        if (result && result.result && result.result.success) {
+          const keyStatus = result.result.keyStatus || {};
+
+          // 更新API密钥状态
+          modelTypes.forEach(type => {
+            apiKeyStatus[type] = !!keyStatus[type.toUpperCase()];
+          });
+        } else {
+          // 如果获取失败，默认所有API密钥都有效
+          modelTypes.forEach(type => {
+            apiKeyStatus[type] = true;
+          });
+        }
+      } catch (error) {
+        console.error('检查API密钥状态失败:', error.message || error);
+        // 如果出错，默认所有API密钥都有效
+        modelTypes.forEach(type => {
+          apiKeyStatus[type] = true;
         });
       }
     },

@@ -22,6 +22,7 @@ const MODEL_TYPES = {
   OPENAI: 'openai',   // ChatGPT
   CROND: 'crond',     // ChatGPT (Crond)
   CLOSEAI: 'closeai', // DeepSeek
+  GROK: 'grok',       // Grok
   CLAUDE: 'claude'    // Claude
 };
 
@@ -100,6 +101,8 @@ function getModelDisplayName(modelType) {
       return 'ChatGPT (Crond)';
     case MODEL_TYPES.CLOSEAI:
       return 'DeepSeek';
+    case MODEL_TYPES.GROK:
+      return 'Grok';
     case MODEL_TYPES.CLAUDE:
       return 'Claude';
     default:
@@ -179,6 +182,13 @@ function getModelConfig(modelType) {
         models: ['deepseek-ai/DeepSeek-V3-0324'],
         features: ['对话生成', '中文理解'],
         description: 'DeepSeek提供先进的大语言模型，具有出色的中文理解能力和对话生成能力。'
+      };
+    case MODEL_TYPES.GROK:
+      return {
+        name: 'Grok',
+        models: ['grok-3', 'grok-3-beta', 'grok-vision-beta'],
+        features: ['实时信息获取', '代码生成', '创意写作'],
+        description: 'Grok是xAI公司开发的AI助手，具有实时信息获取能力，擅长代码生成和创意写作，支持多种任务。'
       };
     case MODEL_TYPES.CLAUDE:
       return {
