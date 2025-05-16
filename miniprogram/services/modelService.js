@@ -18,10 +18,11 @@ const isDev = true; // 设置为true可以开启详细日志
 // 模型类型常量
 const MODEL_TYPES = {
   ZHIPU: 'zhipu',     // 智谱AI
-  GEMINI: 'gemini',   // Google Gemini
-  OPENAI: 'openai',   // OpenAI
-  CROND: 'crond',     // Crond API
-  CLOSEAI: 'closeai'  // CloseAI API
+  GEMINI: 'gemini',   // Gemini
+  OPENAI: 'openai',   // ChatGPT
+  CROND: 'crond',     // ChatGPT (Crond)
+  CLOSEAI: 'closeai', // DeepSeek
+  CLAUDE: 'claude'    // Claude
 };
 
 // 默认模型类型
@@ -92,13 +93,15 @@ function getModelDisplayName(modelType) {
     case MODEL_TYPES.ZHIPU:
       return '智谱AI';
     case MODEL_TYPES.GEMINI:
-      return 'Google Gemini';
+      return 'Gemini';
     case MODEL_TYPES.OPENAI:
-      return 'OpenAI';
+      return 'ChatGPT';
     case MODEL_TYPES.CROND:
-      return 'OpenAI (Crond)';
+      return 'ChatGPT (Crond)';
     case MODEL_TYPES.CLOSEAI:
-      return 'DeepSeek AI';
+      return 'DeepSeek';
+    case MODEL_TYPES.CLAUDE:
+      return 'Claude';
     default:
       return '未知模型';
   }
@@ -151,31 +154,38 @@ function getModelConfig(modelType) {
       };
     case MODEL_TYPES.GEMINI:
       return {
-        name: 'Google Gemini',
+        name: 'Gemini',
         models: ['gemini-2.5-flash-preview-04-17'],
         features: ['情感分析', '关键词提取', '多模态理解'],
-        description: 'Google Gemini是一个强大的多模态AI模型，支持文本、图像等多种输入，提供高质量的对话生成和分析功能。'
+        description: 'Gemini是一个强大的多模态AI模型，支持文本、图像等多种输入，提供高质量的对话生成和分析功能。'
       };
     case MODEL_TYPES.OPENAI:
       return {
-        name: 'OpenAI',
+        name: 'ChatGPT',
         models: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo'],
         features: ['情感分析', '关键词提取', '用户画像', '高级推理'],
-        description: 'OpenAI提供业界领先的大语言模型，具有强大的理解能力和生成能力，支持多种语言和复杂任务。'
+        description: 'ChatGPT提供业界领先的大语言模型，具有强大的理解能力和生成能力，支持多种语言和复杂任务。'
       };
     case MODEL_TYPES.CROND:
       return {
-        name: 'OpenAI (Crond)',
+        name: 'ChatGPT (Crond)',
         models: ['gpt-4o-mini', 'deepseek-v3', 'o3-mini'],
         features: ['对话生成', '高级推理'],
-        description: 'Crond API提供OpenAI和其他大语言模型，支持高质量的对话生成和推理能力。'
+        description: 'Crond API提供ChatGPT和其他大语言模型，支持高质量的对话生成和推理能力。'
       };
     case MODEL_TYPES.CLOSEAI:
       return {
-        name: 'DeepSeek AI',
+        name: 'DeepSeek',
         models: ['deepseek-ai/DeepSeek-V3-0324'],
         features: ['对话生成', '中文理解'],
-        description: 'DeepSeek AI提供先进的大语言模型，具有出色的中文理解能力和对话生成能力。'
+        description: 'DeepSeek提供先进的大语言模型，具有出色的中文理解能力和对话生成能力。'
+      };
+    case MODEL_TYPES.CLAUDE:
+      return {
+        name: 'Claude',
+        models: ['claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307'],
+        features: ['对话生成', '上下文理解', '创意写作'],
+        description: 'Claude是Anthropic公司开发的AI助手，擅长自然对话、创意写作和复杂推理，具有出色的上下文理解能力。'
       };
     default:
       return {

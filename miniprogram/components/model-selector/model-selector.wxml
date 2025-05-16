@@ -36,6 +36,11 @@
               <view class="model-item-name">{{modelDisplayNames[item]}}</view>
               <view class="model-item-desc">{{modelDescriptions[item]}}</view>
             </view>
+            <view class="model-item-features">
+              <view class="feature-tag" wx:for="{{modelFeatures[item]}}" wx:for-item="feature" wx:key="*this">
+                {{feature}}
+              </view>
+            </view>
             <view class="model-item-check" wx:if="{{item === selectedModelType}}">
               <image class="icon" src="/images/icons/check.png" mode="aspectFit"></image>
             </view>
@@ -65,7 +70,7 @@
             </view>
             <view class="model-item-info">
               <view class="model-item-name">{{item}}</view>
-              <view class="model-item-desc">{{selectedModelType}} 模型</view>
+              <view class="model-item-desc">{{modelDescriptions[selectedModelType]}}</view>
             </view>
             <view class="model-item-check" wx:if="{{item === selectedModel}}">
               <image class="icon" src="/images/icons/check.png" mode="aspectFit"></image>
@@ -77,7 +82,7 @@
   </view>
 
   <!-- 加载中遮罩 -->
-  <view class="loading-mask" wx:if="{{loading}}">
+  <view class="loading-overlay {{loading ? 'show' : ''}}" catchtap="stopPropagation">
     <view class="loading-spinner"></view>
     <text class="loading-text">正在连接模型...</text>
   </view>

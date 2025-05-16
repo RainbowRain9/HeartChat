@@ -34,7 +34,8 @@ Component({
     showModelList: false,
     currentModelList: [],
     selectedModel: '',
-    modelDescriptions: {}
+    modelDescriptions: {},
+    modelFeatures: {}
   },
 
   /**
@@ -64,12 +65,14 @@ Component({
         // 构建模型显示名称映射
         const modelDisplayNames = {};
         const modelDescriptions = {};
+        const modelFeatures = {};
         modelTypes.forEach(type => {
           modelDisplayNames[type] = modelService.getModelDisplayName(type);
 
-          // 获取模型描述
+          // 获取模型描述和特性
           const config = modelService.getModelConfig(type);
           modelDescriptions[type] = config.description;
+          modelFeatures[type] = config.features || [];
         });
 
         // 获取当前选择的模型
@@ -83,6 +86,7 @@ Component({
           modelDisplayNames,
           selectedModelType,
           modelDescriptions,
+          modelFeatures,
           selectedModel,
           currentModelList
         });

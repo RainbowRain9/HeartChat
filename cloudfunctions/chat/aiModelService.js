@@ -29,7 +29,7 @@ const MODEL_PLATFORMS = {
   },
   // Google Gemini
   GEMINI: {
-    name: 'Google Gemini',
+    name: 'Gemini',
     baseUrl: 'https://apiv2.aliyahzombie.top',
     apiKeyEnv: 'GEMINI_API_KEY',
     defaultModel: 'gemini-2.5-flash-preview-04-17',
@@ -53,7 +53,7 @@ const MODEL_PLATFORMS = {
   },
   // OpenAI (添加OpenAI平台配置)
   OPENAI: {
-    name: 'OpenAI',
+    name: 'ChatGPT',
     baseUrl: 'https://api.openai.com/v1',
     apiKeyEnv: 'OPENAI_API_KEY',
     defaultModel: 'gpt-3.5-turbo',
@@ -65,7 +65,7 @@ const MODEL_PLATFORMS = {
   },
   // Crond API
   CROND: {
-    name: 'OpenAI (Crond)',
+    name: 'ChatGPT (Crond)',
     baseUrl: 'https://new.crond.dev/v1',
     apiKeyEnv: 'CROND_API_KEY',
     defaultModel: 'gpt-4o-mini',
@@ -75,9 +75,9 @@ const MODEL_PLATFORMS = {
       chat: '/chat/completions'
     }
   },
-  // CloseAI
+  // DeepSeek AI
   CLOSEAI: {
-    name: 'DeepSeek AI',
+    name: 'DeepSeek',
     baseUrl: 'https://api.closeai.im/v1',
     apiKeyEnv: 'CLOSEAI_API_KEY',
     defaultModel: 'deepseek-ai/DeepSeek-V3-0324',
@@ -85,6 +85,18 @@ const MODEL_PLATFORMS = {
     authType: 'Bearer',
     endpoints: {
       chat: '/chat/completions'
+    }
+  },
+  // Claude AI
+  CLAUDE: {
+    name: 'Claude',
+    baseUrl: 'https://test.wisdgod.com',
+    apiKeyEnv: 'CLAUDE_API_KEY',
+    defaultModel: 'claude-3-7-sonnet-20250219',
+    models: ['claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'],
+    authType: 'Bearer',
+    endpoints: {
+      chat: '/v1/messages'
     }
   }
 };
@@ -186,6 +198,41 @@ function formatMessages(messages, platformKey) {
 
     console.log('格式化后的Gemini消息:', { contents });
     return { contents };
+  } else if (platformKey === 'CLAUDE') {
+    // Claude使用特殊格式
+    let systemPrompt = '';
+    const claudeMessages = [];
+
+    // 提取系统提示词
+    for (const msg of messages) {
+      if (msg.role === 'system') {
+        systemPrompt = msg.content;
+        break;
+      }
+    }
+
+    // 构建Claude格式的消息
+    for (const msg of messages) {
+      if (msg.role !== 'system') {
+        claudeMessages.push({
+          role: msg.role === 'user' ? 'user' : 'assistant',
+          content: msg.content
+        });
+      }
+    }
+
+    // 返回Claude格式的请求体
+    const claudeBody = {
+      messages: claudeMessages
+    };
+
+    // 如果有系统提示词，添加system字段
+    if (systemPrompt) {
+      claudeBody.system = systemPrompt;
+    }
+
+    console.log('格式化后的Claude消息:', claudeBody);
+    return claudeBody;
   } else if (platformKey === 'WHIMSY') {
     // Whimsy使用类似OpenAI的格式，但需要特殊处理
     return messages;
@@ -215,6 +262,18 @@ function parseResponse(response, platformKey) {
           usage: response.usageMetadata || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
         };
       }
+    }
+  } else if (platformKey === 'CLAUDE') {
+    // Claude响应格式
+    if (response && response.content) {
+      return {
+        content: response.content,
+        usage: {
+          prompt_tokens: response.usage?.input_tokens || 0,
+          completion_tokens: response.usage?.output_tokens || 0,
+          total_tokens: (response.usage?.input_tokens || 0) + (response.usage?.output_tokens || 0)
+        }
+      };
     }
   } else if (platformKey === 'WHIMSY') {
     // Whimsy响应格式 (类似OpenAI)
@@ -278,6 +337,15 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
           maxOutputTokens: params.max_tokens || 2048,
           topP: params.top_p || 1
         }
+      };
+    } else if (platformKey === 'CLAUDE') {
+      // Claude API
+      requestBody = {
+        model: params.model || platform.defaultModel,
+        ...formattedMessages, // 包含messages和可选的system字段
+        temperature: params.temperature || 0.7,
+        max_tokens: params.max_tokens || 2048,
+        top_p: params.top_p || 1
       };
     } else if (platformKey === 'WHIMSY') {
       // Whimsy API 使用类似OpenAI的格式
