@@ -212,40 +212,9 @@ function formatMessages(messages, platformKey) {
     return { contents };
 
   } else if (platformKey === 'CLAUDE') {
-    // Claude使用特殊格式
-    let systemPrompt = '';
-    const claudeMessages = [];
-
-    // 提取系统提示词
-    for (const msg of messages) {
-      if (msg.role === 'system') {
-        systemPrompt = msg.content;
-        break;
-      }
-    }
-
-    // 构建Claude格式的消息
-    for (const msg of messages) {
-      if (msg.role !== 'system') {
-        claudeMessages.push({
-          role: msg.role === 'user' ? 'user' : 'assistant',
-          content: msg.content
-        });
-      }
-    }
-
-    // 返回Claude格式的请求体
-    const claudeBody = {
-      messages: claudeMessages
-    };
-
-    // 如果有系统提示词，添加system字段
-    if (systemPrompt) {
-      claudeBody.system = systemPrompt;
-    }
-
-    console.log('格式化后的Claude消息:', claudeBody);
-    return claudeBody;
+    // Claude现在使用与OpenAI相同的格式，不需要特殊处理
+    console.log('使用标准格式处理Claude消息');
+    return messages;
   } else if (platformKey === 'WHIMSY' || platformKey === 'GROK') {
     // Whimsy和Grok使用类似OpenAI的格式，但需要特殊处理
     return messages;
@@ -278,15 +247,11 @@ function parseResponse(response, platformKey) {
     }
 
   } else if (platformKey === 'CLAUDE') {
-    // Claude响应格式
-    if (response && response.content) {
+    // Claude响应格式 - 使用与OpenAI相同的格式
+    if (response && response.choices && response.choices.length > 0) {
       return {
-        content: response.content,
-        usage: {
-          prompt_tokens: response.usage?.input_tokens || 0,
-          completion_tokens: response.usage?.output_tokens || 0,
-          total_tokens: (response.usage?.input_tokens || 0) + (response.usage?.output_tokens || 0)
-        }
+        content: response.choices[0].message.content,
+        usage: response.usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
       };
     }
   } else if (platformKey === 'WHIMSY' || platformKey === 'GROK') {
@@ -354,13 +319,15 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
       };
 
     } else if (platformKey === 'CLAUDE') {
-      // Claude API
+      // Claude API - 使用与OpenAI相同的格式
       requestBody = {
         model: params.model || platform.defaultModel,
-        ...formattedMessages, // 包含messages和可选的system字段
+        messages: formattedMessages,
         temperature: params.temperature || 0.7,
         max_tokens: params.max_tokens || 2048,
-        top_p: params.top_p || 1
+        top_p: params.top_p || 1,
+        frequency_penalty: params.frequency_penalty || 0,
+        presence_penalty: params.presence_penalty || 0
       };
     } else if (platformKey === 'WHIMSY' || platformKey === 'GROK') {
       // Whimsy和Grok API 使用类似OpenAI的格式

@@ -9,14 +9,15 @@
 .selected-model {
   display: flex;
   align-items: center;
-  padding: 8rpx 16rpx;
+  padding: 10rpx 16rpx; /* 修改内边距，减少左右内边距 */
   background-color: #f8f8f8;
-  border-radius: 24rpx;
+  border-radius: 20rpx;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
-  max-width: 180rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.06);
+  max-width: 200rpx; /* 增加最大宽度，使内容更容易显示 */
   border: 1px solid rgba(0, 0, 0, 0.05);
+  margin: 0; /* 移除可能的外边距 */
 }
 
 .dark .selected-model {
@@ -29,10 +30,11 @@
 .model-icon {
   width: 44rpx;
   height: 44rpx;
-  margin-right: 10rpx;
+  margin-right: 8rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0; /* 防止图标被压缩 */
 }
 
 .model-icon-bg {
@@ -46,6 +48,9 @@
   color: white;
   font-size: 24rpx;
   text-transform: uppercase;
+  overflow: hidden; /* 确保内容不溢出 */
+  min-width: 44rpx; /* 确保最小宽度 */
+  min-height: 44rpx; /* 确保最小高度 */
 }
 
 /* 为每个模型平台设置独特的颜色 */
@@ -86,21 +91,24 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  font-size: 24rpx;
+  font-size: 22rpx;
   font-weight: 500;
-  max-width: 100rpx;
+  min-width: 0; /* 确保flex子项可以收缩 */
+  max-width: 120rpx; /* 增加最大宽度，使内容更容易显示 */
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  line-height: 1.2; /* 减小行高，使整体更紧凑 */
 }
 
 .model-subname {
-  font-size: 20rpx;
+  font-size: 18rpx;
   color: #666;
-  margin-top: 4rpx;
+  margin-top: 2rpx; /* 减少上边距 */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2; /* 减小行高 */
 }
 
 .dark .model-subname {
@@ -108,12 +116,12 @@
 }
 
 .arrow-icon {
-  width: 24rpx;
-  height: 24rpx;
+  width: 20rpx;
+  height: 20rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 4rpx;
+  margin-left: 2rpx;
 }
 
 .arrow-down {
@@ -375,6 +383,7 @@
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2; /* 标准属性，增加兼容性 */
   -webkit-box-orient: vertical;
   max-width: 100%;
   padding-right: 20rpx;

@@ -1234,7 +1234,7 @@ async function testConnection(event, context) {
 
     // 创建一个带超时的Promise
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('连接超时(5秒)')), 5000);
+      setTimeout(() => reject(new Error('连接超时(10秒)')), 10000);
     });
 
     // 使用Promise.race来实现超时控制
