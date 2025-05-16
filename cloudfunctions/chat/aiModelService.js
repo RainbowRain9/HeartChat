@@ -378,6 +378,14 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
 
     try {
       // 发送请求，添加超时设置
+      // 为不同模型设置不同的超时时间，Claude模型需要更长的响应时间
+      let timeoutMs = 20000; // 默认20秒超时
+      if (platformKey === 'CLAUDE') {
+        timeoutMs = 30000; // Claude模型设置30秒超时
+      }
+
+      console.log(`为${platform.name}设置API超时时间: ${timeoutMs}ms`);
+
       const response = await axios({
         method: 'POST',
         url: url,
@@ -386,7 +394,7 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
           'Authorization': `${platform.authType} ${apiKey}`
         },
         data: requestBody,
-        timeout: 8000 // 设置8秒超时
+        timeout: timeoutMs // 设置超时时间
       });
 
       // 检查响应状态

@@ -1232,9 +1232,16 @@ async function testConnection(event, context) {
 
     console.log(`测试${platformConfig.name}连接，API地址: ${platformConfig.baseUrl}`);
 
-    // 创建一个带超时的Promise
+    // 创建一个带超时的Promise，为Claude模型设置更长的超时时间
+    let timeoutMs = 20000; // 默认20秒超时
+    if (platformKey === 'CLAUDE') {
+      timeoutMs = 30000; // Claude模型设置30秒超时
+    }
+
+    console.log(`为${platformConfig.name}测试连接设置超时时间: ${timeoutMs}ms`);
+
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('连接超时(10秒)')), 10000);
+      setTimeout(() => reject(new Error(`连接超时(${timeoutMs/1000}秒)`)), timeoutMs);
     });
 
     // 使用Promise.race来实现超时控制
