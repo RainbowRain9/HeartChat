@@ -55,6 +55,19 @@ const MODEL_PLATFORMS = {
       chat: '/chat/completions'
     }
   },
+  // OpenAI (添加OpenAI平台配置)
+  OPENAI: {
+    name: 'OpenAI',
+    baseUrl: 'https://api.openai.com/v1',
+    apiKeyEnv: 'OPENAI_API_KEY',
+    defaultModel: 'gpt-3.5-turbo',
+    models: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo'],
+    authType: 'Bearer',
+    endpoints: {
+      chat: '/chat/completions',
+      embedding: '/embeddings'
+    }
+  },
   // Crond API
   CROND: {
     name: 'OpenAI (Crond)',

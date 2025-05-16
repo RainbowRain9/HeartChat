@@ -1217,42 +1217,75 @@ async function testConnection(event, context) {
 
     console.log(`测试${modelType}模型连接...`);
 
-    let result;
-
     // 将modelType转换为平台键名
     const platformKey = modelType.toUpperCase();
 
-    console.log(`测试${aiModelService.MODEL_PLATFORMS[platformKey]?.name || modelType}连接`);
+    // 获取平台配置
+    const platformConfig = aiModelService.MODEL_PLATFORMS[platformKey];
+    if (!platformConfig) {
+      return {
+        success: false,
+        error: `未知的模型类型: ${modelType}`,
+        modelType: modelType
+      };
+    }
 
-    // 使用统一AI模型服务测试连接
-    result = await aiModelService.generateChatReply(
-      "测试连接",
-      [],
-      { prompt: "这是一个测试连接的请求，请简短回复。" },
-      false,
-      null,
-      { platform: platformKey }
-    );
+    console.log(`测试${platformConfig.name}连接，API地址: ${platformConfig.baseUrl}`);
+
+    // 创建一个带超时的Promise
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('连接超时(5秒)')), 5000);
+    });
+
+    // 使用Promise.race来实现超时控制
+    const result = await Promise.race([
+      aiModelService.generateChatReply(
+        "测试连接",
+        [],
+        { prompt: "这是一个测试连接的请求，请简短回复。" },
+        false,
+        null,
+        {
+          platform: platformKey,
+          max_tokens: 50 // 减少token数量，加快响应速度
+        }
+      ),
+      timeoutPromise
+    ]);
 
     if (result.success) {
       return {
         success: true,
-        message: `${modelType}模型连接测试成功`,
+        message: `${platformConfig.name}连接测试成功`,
         modelType: modelType,
         reply: result.reply
       };
     } else {
       return {
         success: false,
-        error: result.error || `${modelType}模型连接测试失败`,
+        error: result.error || `${platformConfig.name}连接测试失败`,
         modelType: modelType
       };
     }
   } catch (error) {
     console.error('测试连接失败:', error);
+
+    // 提供更详细的错误信息
+    let errorMessage = error.message || '测试连接失败';
+
+    // 检查是否是超时错误
+    if (errorMessage.includes('超时')) {
+      errorMessage = `连接超时，请检查API密钥和网络连接。如果问题持续存在，该模型服务器可能暂时不可用。`;
+    }
+    // 检查是否是API密钥错误
+    else if (errorMessage.includes('API key') || errorMessage.includes('密钥') || errorMessage.includes('unauthorized')) {
+      errorMessage = `API密钥无效或未设置。请检查云函数环境变量中是否正确设置了API密钥。`;
+    }
+
     return {
       success: false,
-      error: error.message || '测试连接失败'
+      error: errorMessage,
+      modelType: event.modelType || 'gemini'
     };
   }
 }

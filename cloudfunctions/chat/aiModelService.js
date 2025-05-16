@@ -51,6 +51,18 @@ const MODEL_PLATFORMS = {
       chat: '/chat/completions'
     }
   },
+  // OpenAI (添加OpenAI平台配置)
+  OPENAI: {
+    name: 'OpenAI',
+    baseUrl: 'https://api.openai.com/v1',
+    apiKeyEnv: 'OPENAI_API_KEY',
+    defaultModel: 'gpt-3.5-turbo',
+    models: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo'],
+    authType: 'Bearer',
+    endpoints: {
+      chat: '/chat/completions'
+    }
+  },
   // Crond API
   CROND: {
     name: 'OpenAI (Crond)',
@@ -99,7 +111,12 @@ function getApiKey(platformKey) {
 
   const apiKey = process.env[platform.apiKeyEnv];
   if (!apiKey) {
-    throw new Error(`未设置${platform.apiKeyEnv}环境变量`);
+    throw new Error(`未设置${platform.name}的API密钥 (${platform.apiKeyEnv}环境变量)。请在云开发控制台中添加此环境变量。`);
+  }
+
+  // 检查API密钥是否看起来有效
+  if (apiKey.length < 10) {
+    console.warn(`警告: ${platform.name}的API密钥 (${platform.apiKeyEnv}) 长度异常短，可能无效`);
   }
 
   return apiKey;
@@ -310,7 +327,7 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
     console.log('发送请求到:', url);
 
     try {
-      // 发送请求
+      // 发送请求，添加超时设置
       const response = await axios({
         method: 'POST',
         url: url,
@@ -318,7 +335,8 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
           'Content-Type': 'application/json',
           'Authorization': `${platform.authType} ${apiKey}`
         },
-        data: requestBody
+        data: requestBody,
+        timeout: 8000 // 设置8秒超时
       });
 
       // 检查响应状态
@@ -346,12 +364,33 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
         return callModelApi(params, platformKey, retryCount - 1, retryDelay * 2);
       }
 
+      // 处理超时错误
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        console.error(`调用${platformKey} API超时`);
+        throw new Error(`连接超时: ${platform.name}服务器响应时间过长`);
+      }
+
+      // 处理API密钥错误
+      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        console.error(`调用${platformKey} API认证失败: ${error.response.status}`);
+        throw new Error(`API密钥无效: 请检查${platform.apiKeyEnv}环境变量`);
+      }
+
       // 其他错误或重试次数用完，抛出异常
       throw error;
     }
   } catch (error) {
     console.error(`调用${platformKey} API失败:`, error);
-    throw error;
+
+    // 格式化错误信息，使其更易读
+    let errorMessage = error.message || `调用${platform.name} API失败`;
+
+    // 如果是网络错误，提供更具体的信息
+    if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+      errorMessage = `网络错误: 无法连接到${platform.name}服务器 (${platform.baseUrl})`;
+    }
+
+    throw new Error(errorMessage);
   }
 }
 
