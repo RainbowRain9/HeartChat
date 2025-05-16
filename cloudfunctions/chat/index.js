@@ -1321,6 +1321,49 @@ async function getModelList(event) {
   }
 }
 
+/**
+ * 检查API密钥状态
+ * @returns {Promise<Object>} API密钥状态
+ */
+async function checkApiKeyStatus() {
+  try {
+    console.log('检查API密钥状态...');
+
+    // 获取所有平台配置
+    const platforms = aiModelService.MODEL_PLATFORMS;
+
+    // 初始化API密钥状态对象
+    const keyStatus = {};
+
+    // 检查每个平台的API密钥
+    for (const [key, platform] of Object.entries(platforms)) {
+      try {
+        // 获取API密钥
+        const apiKey = process.env[platform.apiKeyEnv];
+
+        // 检查API密钥是否存在
+        keyStatus[key] = !!apiKey;
+
+        console.log(`${platform.name} API密钥状态: ${keyStatus[key] ? '有效' : '未设置'}`);
+      } catch (err) {
+        console.error(`检查${platform.name} API密钥失败:`, err);
+        keyStatus[key] = false;
+      }
+    }
+
+    return {
+      success: true,
+      keyStatus: keyStatus
+    };
+  } catch (error) {
+    console.error('检查API密钥状态失败:', error);
+    return {
+      success: false,
+      error: error.message || '检查API密钥状态失败'
+    };
+  }
+}
+
 // 主函数入口
 exports.main = async (event, context) => {
   const { action } = event;
@@ -1353,6 +1396,8 @@ exports.main = async (event, context) => {
       return await testConnection(event, context);
     case 'getModelList':
       return await getModelList(event);
+    case 'checkApiKeyStatus':
+      return await checkApiKeyStatus();
 
     default:
       return { success: false, error: '未知操作' };

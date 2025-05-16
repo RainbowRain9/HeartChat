@@ -98,8 +98,8 @@ ${text}
         success: false,
         error: '返回的关键词提取结果为空'
       };
-    } else if (platformKey === 'OPENAI' || platformKey === 'CROND' || platformKey === 'CLOSEAI') {
-      // OpenAI, Crond API, CloseAI 处理
+    } else if (platformKey === 'OPENAI' || platformKey === 'CROND' || platformKey === 'CLOSEAI' || platformKey === 'GROK' || platformKey === 'CLAUDE') {
+      // OpenAI, Crond API, CloseAI, Grok, Claude 处理
       // 构建Prompt
       const messages = [
         {

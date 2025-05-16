@@ -48,7 +48,7 @@ const MODEL_PLATFORMS = {
     name: 'Whimsy AI',
     baseUrl: 'https://doi9.top/v1',
     apiKeyEnv: 'WHIMSY_API_KEY',
-    defaultModel: 'gemini-2.5-flash-preview-04-17-non-thinking',
+    defaultModel: 'gemini-2.5-pro-preview-05-06',
     models: ['gemini-2.5-pro-preview-05-06', 'gemini-2.5-flash-preview-04-17-non-thinking', 'gemini-2.5-flash-preview-04-17'],
     authType: 'Bearer',
     endpoints: {
@@ -92,16 +92,28 @@ const MODEL_PLATFORMS = {
       chat: '/chat/completions'
     }
   },
-  // Claude AI
-  CLAUDE: {
-    name: 'Claude',
-    baseUrl: 'https://api.anthropic.com',
-    apiKeyEnv: 'CLAUDE_API_KEY',
-    defaultModel: 'claude-3-opus-20240229',
-    models: ['claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307'],
+  // Grok
+  GROK: {
+    name: 'Grok',
+    baseUrl: 'https://neolovec.com/v1',
+    apiKeyEnv: 'GROK_API_KEY',
+    defaultModel: 'grok-3',
+    models: ['grok-3', 'grok-3-beta', 'grok-vision-beta'],
     authType: 'Bearer',
     endpoints: {
-      chat: '/v1/messages'
+      chat: '/chat/completions'
+    }
+  },
+  // Claude
+  CLAUDE: {
+    name: 'Claude',
+    baseUrl: 'https://demo.voapi.top/v1',
+    apiKeyEnv: 'CLAUDE_API_KEY',
+    defaultModel: 'claude-3-5-sonnet-20240620',
+    models: ['claude-3-5-sonnet-20240620', 'gpt-4o-mini-2024-07-18', 'qwen-turbo'],
+    authType: 'Bearer',
+    endpoints: {
+      chat: '/chat/completions'
     }
   }
 };
@@ -402,125 +414,6 @@ async function analyzeEmotion(text, history = [], options = {}) {
         success: false,
         error: '返回的情感分析结果为空'
       };
-    } else if (platformKey === 'CLAUDE') {
-      // Claude特殊处理
-      // 构建系统提示词
-      const systemPrompt = `你是一个专业且富有同理心的情感分析助手。请细致分析用户提供的文本，并可选择性地参考之前的对话上下文（如果提供），以JSON格式返回全面的情感分析结果。
-
-返回的JSON对象应包含以下字段：
-- primary_emotion: (String) 检测到的主要情感类型，必须使用中文表达 (例如: "焦虑", "喜悦", "愤怒", "平静", "悲伤", "惊讶", "厌恶", "期待", "紧迫", "失望", "疲惫" 等)。
-- secondary_emotions: (Array<String>) 检测到的次要情感，必须使用中文表达（最多2个，按强度排序，如果没有则为空数组 []）。
-- intensity: (Float) 主要情感的强度，范围 0.0 (几乎没有) 到 1.0 (非常强烈)。
-- valence: (Float) 情感的愉悦度/极性，范围 -1.0 (非常负面) 到 1.0 (非常正面)，0.0 代表中性。
-- arousal: (Float) 情感的激动/唤醒水平，范围 0.0 (非常平静/低能量) 到 1.0 (非常激动/高能量)。
-- trend: (String) 与上一轮分析相比的情绪变化趋势，必须使用中文表达 ("上升", "下降", "稳定")。如果无法判断或无上一轮数据，则为 "未知"。请同时提供英文字段名 trend_en ("rising", "falling", "stable", "unknown")。
-- attention_level: (String) 估计的用户在对话中的注意力或投入程度，必须使用中文表达 ("高", "中", "低")。请同时提供英文字段名 attention_level_en ("high", "medium", "low")。
-- radar_dimensions: (Object) 针对以下维度的评分估计 (范围 0.0 到 1.0): {"trust": Float (信任度), "openness": Float (开放度), "resistance": Float (抗拒/防御), "stress": Float (压力水平), "control": Float (控制感/确定性)}。请根据对话内容合理估计。
-- topic_keywords: (Array<String>) 与当前讨论**主题**相关的关键词，必须使用中文表达，最多5个，按重要性排序。
-- emotion_triggers: (Array<String>) 最可能引发当前主要情感的用户文本中的关键词或短语，必须使用中文表达，最多3个。
-- suggestions: (Array<String>) 基于当前情感、主题和维度分析，提供1-3条具体、可行的建议策略或共情回应，必须使用中文表达。
-- summary: (String) 用一句中文简洁地总结用户当前的情感状态、可能的原因以及关键特征。
-
-请确保输出是严格的JSON格式。如果某些字段无法可靠判断，可以使用合理的默认值（如 intensity: 0.5, valence: 0.0, arousal: 0.5, trend: "未知", attention_level: "中", radar_dimensions 各项为 0.5）或返回空数组/null（对于 secondary_emotions, emotion_triggers）。
-
-重要提示：所有文本字段必须使用中文返回，不要使用英文。这对于前端显示和情感颜色分类至关重要。`;
-
-      // 构建Claude格式的消息
-      const claudeMessages = [];
-
-      // 如果有历史消息，添加到消息中
-      if (Array.isArray(history) && history.length > 0) {
-        // 最多添加5条历史消息作为上下文
-        const contextMessages = history.slice(-5);
-        contextMessages.forEach(msg => {
-          if (msg.role && msg.content) {
-            claudeMessages.push({
-              role: msg.role === 'user' ? 'user' : 'assistant',
-              content: msg.content
-            });
-          }
-        });
-      }
-
-      // 添加当前用户消息
-      claudeMessages.push({
-        role: 'user',
-        content: text
-      });
-
-      // 调用Claude API
-      const response = await callModelApi({
-        model: modelName,
-        body: {
-          messages: claudeMessages,
-          system: systemPrompt,
-          temperature: 0.3,
-          max_tokens: 2048
-        }
-      }, platformKey);
-
-      // 解析API响应
-      if (response && response.content) {
-        try {
-          // 尝试解析JSON响应
-          const content = response.content;
-          // 提取JSON部分
-          const jsonMatch = content.match(/\{[\s\S]*\}/);
-          const jsonStr = jsonMatch ? jsonMatch[0] : content;
-          const result = JSON.parse(jsonStr);
-
-          // 构建标准化的返回结果
-          return {
-            success: true,
-            result: {
-              // 兼容旧版字段
-              type: result.primary_emotion || result.emotion_type || '平静',
-              intensity: result.intensity || 0.5,
-              keywords: result.topic_keywords || result.keywords || [],
-              suggestions: result.suggestions || [],
-              report: result.summary || result.report || '无法生成情感报告',
-              originalText: text,
-              // 新增字段
-              primary_emotion: result.primary_emotion || result.emotion_type || '平静',
-              secondary_emotions: result.secondary_emotions || [],
-              valence: result.valence || 0.0,
-              arousal: result.arousal || 0.5,
-              trend: result.trend || '未知',
-              trend_en: result.trend_en || 'unknown',
-              attention_level: result.attention_level || '中',
-              attention_level_en: result.attention_level_en || 'medium',
-              radar_dimensions: result.radar_dimensions || {
-                trust: 0.5,
-                openness: 0.5,
-                resistance: 0.5,
-                stress: 0.5,
-                control: 0.5
-              },
-              topic_keywords: result.topic_keywords || [],
-              emotion_triggers: result.emotion_triggers || [],
-              summary: result.summary || result.report || '无法生成情感报告'
-            },
-            usage: {
-              prompt_tokens: response.usage?.input_tokens || 0,
-              completion_tokens: response.usage?.output_tokens || 0,
-              total_tokens: (response.usage?.input_tokens || 0) + (response.usage?.output_tokens || 0)
-            }
-          };
-        } catch (parseError) {
-          console.error('解析JSON响应失败:', parseError.message || parseError);
-          return {
-            success: false,
-            error: '解析情感分析结果失败'
-          };
-        }
-      }
-
-      return {
-        success: false,
-        error: '返回的情感分析结果为空'
-      };
-
-
     } else if (platformKey === 'OPENAI' || platformKey === 'CROND' || platformKey === 'CLOSEAI') {
       // OpenAI, Crond API, CloseAI 处理
       // 构建消息数组

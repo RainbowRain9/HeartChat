@@ -87,16 +87,28 @@ const MODEL_PLATFORMS = {
       chat: '/chat/completions'
     }
   },
-  // Claude AI
-  CLAUDE: {
-    name: 'Claude',
-    baseUrl: 'https://test.wisdgod.com',
-    apiKeyEnv: 'CLAUDE_API_KEY',
-    defaultModel: 'claude-3-7-sonnet-20250219',
-    models: ['claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'],
+  // Grok
+  GROK: {
+    name: 'Grok',
+    baseUrl: 'https://neolovec.com/v1',
+    apiKeyEnv: 'GROK_API_KEY',
+    defaultModel: 'grok-3',
+    models: ['grok-3', 'grok-3-beta', 'grok-vision-beta'],
     authType: 'Bearer',
     endpoints: {
-      chat: '/v1/messages'
+      chat: '/chat/completions'
+    }
+  },
+  // Claude
+  CLAUDE: {
+    name: 'Claude',
+    baseUrl: 'https://demo.voapi.top/v1',
+    apiKeyEnv: 'CLAUDE_API_KEY',
+    defaultModel: 'claude-3-5-sonnet-20240620',
+    models: ['claude-3-5-sonnet-20240620', 'gpt-4o-mini-2024-07-18', 'qwen-turbo'],
+    authType: 'Bearer',
+    endpoints: {
+      chat: '/chat/completions'
     }
   }
 };
@@ -198,6 +210,7 @@ function formatMessages(messages, platformKey) {
 
     console.log('格式化后的Gemini消息:', { contents });
     return { contents };
+
   } else if (platformKey === 'CLAUDE') {
     // Claude使用特殊格式
     let systemPrompt = '';
@@ -233,8 +246,8 @@ function formatMessages(messages, platformKey) {
 
     console.log('格式化后的Claude消息:', claudeBody);
     return claudeBody;
-  } else if (platformKey === 'WHIMSY') {
-    // Whimsy使用类似OpenAI的格式，但需要特殊处理
+  } else if (platformKey === 'WHIMSY' || platformKey === 'GROK') {
+    // Whimsy和Grok使用类似OpenAI的格式，但需要特殊处理
     return messages;
   } else {
     // 其他平台(OpenAI, Crond, CloseAI, 智谱AI)使用标准格式
@@ -263,6 +276,7 @@ function parseResponse(response, platformKey) {
         };
       }
     }
+
   } else if (platformKey === 'CLAUDE') {
     // Claude响应格式
     if (response && response.content) {
@@ -275,8 +289,8 @@ function parseResponse(response, platformKey) {
         }
       };
     }
-  } else if (platformKey === 'WHIMSY') {
-    // Whimsy响应格式 (类似OpenAI)
+  } else if (platformKey === 'WHIMSY' || platformKey === 'GROK') {
+    // Whimsy和Grok响应格式 (类似OpenAI)
     if (response && response.choices && response.choices.length > 0) {
       return {
         content: response.choices[0].message.content,
@@ -338,6 +352,7 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
           topP: params.top_p || 1
         }
       };
+
     } else if (platformKey === 'CLAUDE') {
       // Claude API
       requestBody = {
@@ -347,8 +362,8 @@ async function callModelApi(params, platformKey, retryCount = 3, retryDelay = 10
         max_tokens: params.max_tokens || 2048,
         top_p: params.top_p || 1
       };
-    } else if (platformKey === 'WHIMSY') {
-      // Whimsy API 使用类似OpenAI的格式
+    } else if (platformKey === 'WHIMSY' || platformKey === 'GROK') {
+      // Whimsy和Grok API 使用类似OpenAI的格式
       requestBody = {
         model: params.model || platform.defaultModel,
         messages: formattedMessages,
