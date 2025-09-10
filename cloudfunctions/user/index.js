@@ -40,7 +40,7 @@ async function getInfo(event) {
 
     // 获取用户详细信息
     const userProfileResult = await db.collection('user_profile')
-      .where({ user_id: userId })
+      .where({ user_id: userId }) 
       .get();
 
     // 获取用户配置
