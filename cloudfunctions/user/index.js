@@ -21,51 +21,35 @@ async function getInfo(event) {
   const { userId } = event;
 
   try {
-    // 获取用户基本信息
-    const userBaseResult = await db.collection('user_base')
+    // 获取统一用户信息
+    const userResult = await db.collection('users')
       .where({ user_id: userId })
       .get();
 
-    if (!userBaseResult.data || userBaseResult.data.length === 0) {
+    if (!userResult.data || userResult.data.length === 0) {
       return {
         success: false,
         error: '用户不存在'
       };
     }
 
-    // 获取用户统计信息
-    const userStatsResult = await db.collection('user_stats')
-      .where({ user_id: userId })
-      .get();
-
-    // 获取用户详细信息
-    const userProfileResult = await db.collection('user_profile')
-      .where({ user_id: userId }) 
-      .get();
-
-    // 获取用户配置
-    const userConfigResult = await db.collection('user_config')
-      .where({ user_id: userId })
-      .get();
-
     // 构建完整的用户信息
-    const userBase = userBaseResult.data[0];
-    const userStats = userStatsResult.data[0] || null;
-    const userProfile = userProfileResult.data[0] || {};
-    const userConfig = userConfigResult.data[0] || {};
-
+    const userData = userResult.data[0];
+    
     const user = {
-      userId: userBase.userId,
-      username: userBase.username,
-      avatarUrl: userBase.avatar_url,
-      userType: userBase.user_type,
-      status: userBase.status,
-      gender: userProfile.gender,
-      country: userProfile.country,
-      province: userProfile.province,
-      city: userProfile.city,
-      bio: userProfile.bio,
-      stats: userStats
+      userId: userData.user_id,
+      username: userData.username,
+      avatarUrl: userData.avatar_url,
+      userType: userData.user_type,
+      status: userData.status,
+      gender: userData.profile?.gender,
+      age: userData.profile?.age,
+      country: userData.profile?.country,
+      province: userData.profile?.province,
+      city: userData.profile?.city,
+      bio: userData.profile?.bio,
+      stats: userData.stats,
+      config: userData.config
     };
 
     return {
@@ -93,6 +77,7 @@ async function updateProfile(event, context) {
     username,
     avatarUrl,
     gender,
+    age,
     country,
     province,
     city,
@@ -101,90 +86,46 @@ async function updateProfile(event, context) {
   } = event;
 
   try {
-    // 1. 更新用户基本信息
-    const userBaseUpdate = await db.collection('user_base').where({
+    console.log('开始更新用户信息:', {
+      userId: userId,
+      username: username,
+      avatarUrl: avatarUrl,
+      gender: gender,
+      age: age,
+      bio: bio
+    });
+    
+    // 构建更新数据
+    const updateData = {
+      username: username,
+      avatar_url: avatarUrl,
+      updated_at: db.serverDate(),
+      
+      // 更新 profile 对象
+      'profile.gender': gender,
+      'profile.age': age,
+      'profile.country': country,
+      'profile.province': province,
+      'profile.city': city,
+      'profile.bio': bio,
+      
+      // 更新 config 对象
+      'config.dark_mode': settings.darkMode,
+      'config.notification_enabled': settings.notificationEnabled,
+      'config.language': settings.language
+    };
+
+    // 统一更新用户信息
+    const updateResult = await db.collection('users').where({
       user_id: userId
     }).update({
-      data: {
-        username: username,
-        avatar_url: avatarUrl,
-        updated_at: db.serverDate()
-      }
+      data: updateData
     });
-
-    // 2. 处理用户详细信息
-    const profileCheck = await db.collection('user_profile').where({
-      user_id: userId
-    }).count();
-
-    // 用户详细信息数据
-    const profileData = {
-      user_id: userId,
-      gender: gender,
-      country: country,
-      province: province,
-      city: city,
-      bio: bio,
-      updated_at: db.serverDate()
-    };
-
-    let userProfileUpdate;
-    if (profileCheck.total === 0) {
-      // 创建新的用户详细信息
-      userProfileUpdate = await db.collection('user_profile').add({
-        data: {
-          ...profileData,
-          created_at: db.serverDate()
-        }
-      });
-    } else {
-      // 更新现有用户详细信息
-      userProfileUpdate = await db.collection('user_profile').where({
-        user_id: userId
-      }).update({
-        data: profileData
-      });
-    }
-
-    // 3. 处理用户设置
-    const configCheck = await db.collection('user_config').where({
-      user_id: userId
-    }).count();
-
-    // 用户设置数据
-    const configData = {
-      user_id: userId,
-      dark_mode: settings.darkMode,
-      notification_enabled: settings.notificationEnabled,
-      language: settings.language,
-      updated_at: db.serverDate()
-    };
-
-    let userConfigUpdate;
-    if (configCheck.total === 0) {
-      // 创建新的用户设置
-      userConfigUpdate = await db.collection('user_config').add({
-        data: {
-          ...configData,
-          created_at: db.serverDate()
-        }
-      });
-    } else {
-      // 更新现有用户设置
-      userConfigUpdate = await db.collection('user_config').where({
-        user_id: userId
-      }).update({
-        data: configData
-      });
-    }
+    
+    console.log('用户信息更新结果:', updateResult);
 
     // 获取更新后的用户信息
-    const updatedUserBase = await db.collection('user_base')
-      .where({ user_id: userId })
-      .get();
-
-    // 获取用户统计信息
-    const userStats = await db.collection('user_stats')
+    const updatedUser = await db.collection('users')
       .where({ user_id: userId })
       .get();
 
@@ -192,21 +133,21 @@ async function updateProfile(event, context) {
     return {
       success: true,
       data: {
-        userBaseUpdate,
-        userProfileUpdate,
-        userConfigUpdate,
+        updateResult,
         updatedUser: {
           userId: userId,
           username: username,
           avatarUrl: avatarUrl,
           gender: gender,
+          age: age,
           country: country,
           province: province,
           city: city,
           bio: bio,
-          userType: updatedUserBase.data[0]?.user_type || 1,
-          status: updatedUserBase.data[0]?.status || 1,
-          stats: userStats.data[0] || null
+          userType: updatedUser.data[0]?.user_type || 1,
+          status: updatedUser.data[0]?.status || 1,
+          stats: updatedUser.data[0]?.stats || null,
+          config: updatedUser.data[0]?.config || null
         }
       }
     };
@@ -242,8 +183,8 @@ async function getStats(event, context) {
 
     console.log('查询条件:', query);
 
-    // 查询用户统计信息
-    const result = await db.collection('user_stats')
+    // 查询用户信息（包含统计数据）
+    const result = await db.collection('users')
       .where(query)
       .get();
 
@@ -252,7 +193,7 @@ async function getStats(event, context) {
     if (result.data && result.data.length > 0) {
       return {
         success: true,
-        data: result.data[0]
+        data: result.data[0].stats
       };
     } else {
       return {
@@ -279,21 +220,22 @@ async function updateStats(event, context) {
   try {
     console.log(`更新用户统计数据: userId=${userId}, statsType=${statsType}, value=${value}`);
 
-    // 获取用户统计信息
-    const userStatsResult = await db.collection('user_stats')
+    // 获取用户信息
+    const userResult = await db.collection('users')
       .where({ user_id: userId })
       .get();
 
-    if (!userStatsResult.data || userStatsResult.data.length === 0) {
-      console.error('用户统计信息不存在');
+    if (!userResult.data || userResult.data.length === 0) {
+      console.error('用户不存在');
       return {
         success: false,
-        error: '用户统计信息不存在'
+        error: '用户不存在'
       };
     }
 
-    const userStats = userStatsResult.data[0];
-    const statsId = userStats._id;
+    const user = userResult.data[0];
+    const userStats = user.stats;
+    const userDocId = user._id;
 
     // 根据统计类型更新不同的字段
     const updateData = {
@@ -303,11 +245,11 @@ async function updateStats(event, context) {
     switch (statsType) {
       case 'chatCount':
         // 更新对话次数
-        updateData.chat_count = _.inc(value);
+        updateData['stats.chat_count'] = _.inc(value);
         break;
       case 'solvedCount':
         // 更新解决问题次数
-        updateData.solved_count = _.inc(value);
+        updateData['stats.solved_count'] = _.inc(value);
         break;
       case 'rating':
         // 更新评分
@@ -316,8 +258,8 @@ async function updateStats(event, context) {
         const currentCount = userStats.rating_count || 0;
         const newRating = (currentRating * currentCount + value) / (currentCount + 1);
 
-        updateData.rating_avg = parseFloat(newRating.toFixed(2));
-        updateData.rating_count = _.inc(1);
+        updateData['stats.rating_avg'] = parseFloat(newRating.toFixed(2));
+        updateData['stats.rating_count'] = _.inc(1);
         break;
       case 'activeDay':
         // 更新活跃天数
@@ -329,11 +271,10 @@ async function updateStats(event, context) {
           lastActive.getMonth() === today.getMonth() &&
           lastActive.getDate() === today.getDate();
 
+        updateData['stats.last_active'] = db.serverDate();
         if (!isToday) {
-          updateData.active_days = _.inc(1);
+          updateData['stats.active_days'] = _.inc(1);
         }
-
-        updateData.last_active = db.serverDate();
         break;
       default:
         console.error('未知的统计类型:', statsType);
@@ -344,19 +285,19 @@ async function updateStats(event, context) {
     }
 
     // 更新用户统计信息
-    await db.collection('user_stats').doc(statsId).update({
+    await db.collection('users').doc(userDocId).update({
       data: updateData
     });
 
     // 获取更新后的用户统计信息
-    const updatedStatsResult = await db.collection('user_stats')
-      .doc(statsId)
+    const updatedUserResult = await db.collection('users')
+      .doc(userDocId)
       .get();
 
     return {
       success: true,
       data: {
-        stats: updatedStatsResult.data
+        stats: updatedUserResult.data.stats
       }
     };
   } catch (error) {
@@ -488,6 +429,53 @@ async function getUserInterests(event) {
     return {
       success: false,
       error: error.message || '获取用户兴趣数据失败'
+    };
+  }
+}
+
+/**
+ * 获取用户配置
+ * @param {Object} event 事件参数
+ * @returns {Promise<Object>} 处理结果
+ */
+async function getUserConfig(event) {
+  try {
+    // 获取微信上下文
+    const wxContext = cloud.getWXContext();
+    const userId = event.userId || wxContext.OPENID;
+
+    console.log(`获取用户配置, 用户ID: ${userId}`);
+
+    // 查询用户配置
+    const userResult = await db.collection('users')
+      .where({ user_id: userId })
+      .get();
+
+    if (!userResult.data || userResult.data.length === 0) {
+      return {
+        success: false,
+        error: '用户不存在'
+      };
+    }
+
+    const userData = userResult.data[0];
+    const config = userData.config || {};
+
+    console.log('用户配置数据:', config);
+
+    return {
+      success: true,
+      data: {
+        dark_mode: config.dark_mode || false,
+        notification_enabled: config.notification_enabled !== false, // 默认为true
+        language: config.language || 'zh_CN'
+      }
+    };
+  } catch (error) {
+    console.error('获取用户配置失败:', error);
+    return {
+      success: false,
+      error: error.message || '获取用户配置失败'
     };
   }
 }
@@ -812,6 +800,8 @@ exports.main = async (event, context) => {
       return await batchUpdateKeywordCategories(event);
     case 'updateKeywordEmotionScore':
       return await updateKeywordEmotionScore(event);
+    case 'getUserConfig':
+      return await getUserConfig(event);
     case 'getUserPerception':
       return await getUserPerception(event);
     case 'createDatabaseIndexes':
