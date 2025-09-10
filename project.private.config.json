@@ -1,54 +1,25 @@
 {
-  "condition": {
-    "miniprogram": {
-      "list": [
-        {
-          "name": "packageEmotion/pages/emotion-history/emotion-history",
-          "pathName": "packageEmotion/pages/emotion-history/emotion-history",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/welcome/welcome",
-          "pathName": "pages/welcome/welcome",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "packageEmotion/pages/emotion-history/emotion-history",
-          "pathName": "packageEmotion/pages/emotion-history/emotion-history",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "packageEmotion/pages/daily-report/daily-report",
-          "pathName": "packageEmotion/pages/daily-report/daily-report",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/keywordTest/keywordTest",
-          "pathName": "pages/keywordTest/keywordTest",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/emotionVault/emotionVault",
-          "pathName": "pages/emotionVault/emotionVault",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        }
-      ]
-    }
-  },
+  "condition": {},
   "setting": {
-    "compileHotReLoad": true
+    "compileHotReLoad": true,
+    "urlCheck": true,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "skylineRenderEnable": false,
+    "preloadBackgroundData": false,
+    "autoAudits": false,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "showShadowRootInWxmlPanel": true,
+    "useStaticServer": true,
+    "useLanDebug": false,
+    "showES6CompileOption": false,
+    "checkInvalidKey": true,
+    "ignoreDevUnusedFiles": false,
+    "bigPackageSizeSupport": false,
+    "useIsolateContext": false
   },
-  "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html"
+  "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
+  "libVersion": "3.10.0",
+  "projectname": "HeartChat"
 }
