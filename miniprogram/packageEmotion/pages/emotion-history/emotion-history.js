@@ -611,12 +611,15 @@ Page({
         openId = wx.getStorageSync('openId');
         console.log('从本地存储获取的openId:', openId);
 
-        // 如果没有，尝试从用户信息的stats对象中获取openid
+        // 如果没有，尝试从用户信息的顶层字段中获取openid
         if (!openId) {
           const userInfo = wx.getStorageSync('userInfo');
-          if (userInfo && userInfo.stats && userInfo.stats.openid) {
-            openId = userInfo.stats.openid;
-            console.log('从用户信息的stats对象中获取的openid:', openId);
+          if (userInfo && userInfo.openId) {
+            openId = userInfo.openId;
+            console.log('从用户信息的openId字段中获取的openid:', openId);
+          } else if (userInfo && userInfo.userId) {
+            openId = userInfo.userId;
+            console.log('从用户信息的userId字段中获取的openid:', openId);
           }
         }
 
@@ -796,13 +799,18 @@ Page({
         // 尝试从本地存储中获取openId
         let openId = wx.getStorageSync('openId');
 
-        // 如果没有，尝试从用户信息的stats对象中获取openid
+        // 如果没有，尝试从用户信息的顶层字段中获取openid
         if (!openId) {
           const userInfo = wx.getStorageSync('userInfo');
-          if (userInfo && userInfo.userId) {
+          if (userInfo && userInfo.openId) {
+            openId = userInfo.openId;
+            console.log('从用户信息的openId字段中获取的openid:', openId);
+          } else if (userInfo && userInfo.userId) {
             openId = userInfo.userId;
-            console.log('从用户信息的userId中获取的openId:', openId);
-
+            console.log('从用户信息的userId字段中获取的openid:', openId);
+          }
+          
+          if (openId) {
             // 将openId存入本地存储，以便下次使用
             wx.setStorageSync('openId', openId);
             console.log('将openId存入本地存储:', openId);
@@ -820,13 +828,18 @@ Page({
         // 如果传入的userId不是openId，则尝试使用openId替换
         let openId = wx.getStorageSync('openId');
 
-        // 如果没有，尝试从用户信息的stats对象中获取openid
+        // 如果没有，尝试从用户信息的顶层字段中获取openid
         if (!openId) {
           const userInfo = wx.getStorageSync('userInfo');
-          if (userInfo && userInfo.userId) {
+          if (userInfo && userInfo.openId) {
+            openId = userInfo.openId;
+            console.log('从用户信息的openId字段中获取的openid:', openId);
+          } else if (userInfo && userInfo.userId) {
             openId = userInfo.userId;
-            console.log('从用户信息的userId中获取的openId:', openId);
-
+            console.log('从用户信息的userId字段中获取的openid:', openId);
+          }
+          
+          if (openId) {
             // 将openId存入本地存储，以便下次使用
             wx.setStorageSync('openId', openId);
             console.log('将openId存入本地存储:', openId);

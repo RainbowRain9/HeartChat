@@ -120,8 +120,8 @@ Page({
         configResult.result.data : {}
       
       const settings = {
-        darkMode: app.globalData.darkMode || false,
-        notificationEnabled: configData.notification_enabled || true,
+        darkMode: configData.dark_mode || app.globalData.darkMode || false,
+        notificationEnabled: configData.notification_enabled !== false, // 默认为true
         language: configData.language || 'zh_CN'
       }
 
@@ -191,6 +191,8 @@ Page({
             interests: perceptionData.interests || []
           })
         } else if (userInfo.stats && userInfo.stats.chat_count < 5) {
+          // 使用userInfo.stats保持向后兼容性
+          // 在新的统一users集合中，stats对象应该存在于userData.stats中
           // 如果没有足够的对话数据，显示提示
           this.setData({
             personalitySummary: '需要更多对话数据才能生成准确的性格分析。请继续使用应用，与AI进行更多交流。'

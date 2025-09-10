@@ -102,9 +102,12 @@ App({
         this.globalData.userInfo = result.data.userInfo;
 
         // 将openid存储到本地缓存中，便于其他页面使用
-        if (result.data.userInfo && result.data.userInfo.stats && result.data.userInfo.stats.openid) {
-          wx.setStorageSync('openId', result.data.userInfo.stats.openid);
-          console.log('存储openId到本地缓存:', result.data.userInfo.stats.openid);
+        if (result.data.userInfo) {
+          const openId = result.data.userInfo.openId || result.data.userInfo.userId;
+          if (openId) {
+            wx.setStorageSync('openId', openId);
+            console.log('存储openId到本地缓存:', openId);
+          }
         }
 
         return true;
@@ -149,9 +152,12 @@ App({
           this.globalData.userInfo = userInfo;
 
           // 将openid存储到本地缓存中，便于其他页面使用
-          if (userInfo.stats && userInfo.stats.openid) {
-            wx.setStorageSync('openId', userInfo.stats.openid);
-            console.log('检查登录状态时存储openId到本地缓存:', userInfo.stats.openid);
+          if (userInfo.openId) {
+            wx.setStorageSync('openId', userInfo.openId);
+            console.log('检查登录状态时存储openId到本地缓存:', userInfo.openId);
+          } else if (userInfo.userId) {
+            wx.setStorageSync('openId', userInfo.userId);
+            console.log('检查登录状态时存储userId到本地缓存:', userInfo.userId);
           }
         }
       }

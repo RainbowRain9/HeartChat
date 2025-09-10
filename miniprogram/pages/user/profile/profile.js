@@ -1,5 +1,6 @@
 // 个人资料页面
 const app = getApp();
+const request = require('../../../utils/request');
 
 Page({
   data: {
@@ -178,19 +179,41 @@ Page({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: (res) => {
+      success: async (res) => {
         const tempFilePath = res.tempFilePaths[0];
         
-        // 更新头像
-        const userInfo = this.data.userInfo;
-        userInfo.avatarUrl = tempFilePath;
-        
-        this.setData({
-          userInfo: userInfo
-        });
-        
-        // 这里应该上传头像到服务器
-        // 示例代码省略...
+        try {
+          // 上传头像到云存储
+          const uploadResult = await request.uploadFile(
+            tempFilePath,
+            `avatars/${this.data.userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`
+          );
+          
+          // 更新头像URL
+          const userInfo = { ...this.data.userInfo };
+          userInfo.avatarUrl = uploadResult.fileID;
+          
+          // 同时更新本地缓存
+          const cachedUserInfo = wx.getStorageSync('userInfo') || {};
+          cachedUserInfo.avatarUrl = uploadResult.fileID;
+          cachedUserInfo.nickName = cachedUserInfo.nickName || userInfo.nickName;
+          wx.setStorageSync('userInfo', cachedUserInfo);
+          
+          this.setData({
+            userInfo: userInfo
+          });
+          
+          wx.showToast({
+            title: '头像上传成功',
+            icon: 'success'
+          });
+        } catch (error) {
+          console.error('上传头像失败:', error);
+          wx.showToast({
+            title: '上传头像失败',
+            icon: 'none'
+          });
+        }
       }
     });
   },
@@ -304,8 +327,9 @@ Page({
   /**
    * 保存个人资料
    */
-  saveProfile: function () {
+  saveProfile: async function () {
     const userInfo = this.data.userInfo;
+    const userId = this.data.userId;
     
     // 验证昵称
     if (!userInfo.nickName || userInfo.nickName.trim() === '') {
@@ -322,20 +346,66 @@ Page({
       mask: true
     });
     
-    // 模拟保存数据
-    setTimeout(() => {
-      // 保存到本地缓存
-      wx.setStorageSync('userInfo', userInfo);
+    try {
+      console.log('开始保存用户信息:', {
+        userId: userId,
+        username: userInfo.nickName,
+        avatarUrl: userInfo.avatarUrl,
+        gender: userInfo.gender,
+        age: userInfo.age,
+        bio: userInfo.bio
+      });
       
-      // 这里应该调用云函数或API保存用户信息
-      // 示例代码省略...
+      // 调用云函数保存用户信息
+      const result = await request.callFunction('user', {
+        action: 'updateProfile',
+        userId: userId,
+        username: userInfo.nickName,
+        avatarUrl: userInfo.avatarUrl,
+        gender: userInfo.gender,
+        age: userInfo.age,
+        bio: userInfo.bio,
+        settings: {
+          darkMode: this.data.darkMode
+        }
+      }, { loading: false });
+      
+      console.log('云函数保存结果:', result);
+      
+      // 构建要保存到本地的userInfo对象，保持与数据库结构一致
+      const localUserInfo = {
+        userId: userId,
+        username: userInfo.nickName,
+        avatarUrl: userInfo.avatarUrl,
+        nickName: userInfo.nickName, // 保持前端兼容性
+        gender: userInfo.gender,
+        age: userInfo.age,
+        bio: userInfo.bio,
+        userType: 1,
+        status: 1
+      };
+      
+      // 保存到本地缓存
+      wx.setStorageSync('userInfo', localUserInfo);
+      
+      // 更新页面数据
+      this.setData({
+        userInfo: localUserInfo
+      });
       
       wx.hideLoading();
       wx.showToast({
         title: '保存成功',
         icon: 'success'
       });
-    }, 1500);
+    } catch (error) {
+      console.error('保存用户信息失败:', error);
+      wx.hideLoading();
+      wx.showToast({
+        title: '保存失败',
+        icon: 'none'
+      });
+    }
   },
 
   /**

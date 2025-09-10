@@ -113,7 +113,7 @@ Page({
     console.log('使用用户ID加载角色列表:', userId);
 
     // 同时获取openid，用于调试
-    const openid = userInfo.openid || userInfo.stats?.openid;
+    const openid = userInfo.openid || userInfo.openId || userInfo.userId;
     if (openid) {
       console.log('用户openid:', openid);
     }

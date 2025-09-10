@@ -426,31 +426,33 @@ Page({
           }
         } catch (cloudError) {
           console.error('云函数获取用户信息失败:', cloudError)
-          // 如果云函数失败，则回退到使用数据库直接查询
+          // 如果云函数失败，则回退到使用数据库直接查询统一的users集合
         }
 
-        // 如果云函数失败，则使用数据库直接查询
+        // 如果云函数失败，则使用数据库直接查询统一的users集合
         const db = wx.cloud.database()
-        const userBaseResult = await db.collection('user_base')
+        const userResult = await db.collection('users')
           .where({ user_id: loginInfo.userInfo.userId })
           .get()
 
-        console.log('数据库查询用户基本信息结果:', userBaseResult)
+        console.log('数据库查询用户信息结果:', userResult)
 
-        if (userBaseResult.data && userBaseResult.data.length > 0) {
-          // 获取用户统计信息
-          const userStatsResult = await db.collection('user_stats')
-            .where({ user_id: loginInfo.userInfo.userId })
-            .get()
+        if (userResult.data && userResult.data.length > 0) {
+          const userData = userResult.data[0]
 
-          console.log('数据库查询用户统计信息结果:', userStatsResult)
-
-          // 更新用户信息
+          // 更新用户信息，使用嵌套结构
           const updatedUserInfo = {
             ...loginInfo.userInfo,
-            username: userBaseResult.data[0].username,
-            avatarUrl: userBaseResult.data[0].avatar_url,
-            stats: userStatsResult.data[0] || loginInfo.userInfo.stats
+            username: userData.username,
+            avatarUrl: userData.avatar_url,
+            gender: userData.profile?.gender,
+            age: userData.profile?.age,
+            country: userData.profile?.country,
+            province: userData.profile?.province,
+            city: userData.profile?.city,
+            bio: userData.profile?.bio,
+            stats: userData.stats || loginInfo.userInfo.stats,
+            config: userData.config || loginInfo.userInfo.config
           }
 
           // 更新全局状态

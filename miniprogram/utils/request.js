@@ -1,5 +1,3 @@
-const { getToken, refreshToken } = require('./auth');
-
 const DEFAULT_OPTIONS = {
   loading: true,
   retry: true,
@@ -22,29 +20,12 @@ class Request {
     }
 
     try {
-      // 添加token到请求中
-      const token = getToken();
-      if (token) {
-        data.token = token;
-      }
-
       const { result } = await wx.cloud.callFunction({
         name,
         data
       });
 
       if (!result.success) {
-        // token过期,尝试刷新
-        if (result.error === 'TOKEN_EXPIRED' && finalOptions.retry) {
-          const refreshSuccess = await refreshToken();
-          if (refreshSuccess) {
-            // 重试请求
-            return this.callFunction(name, data, {
-              ...finalOptions,
-              retry: false
-            });
-          }
-        }
         throw new Error(result.error || '请求失败');
       }
 
