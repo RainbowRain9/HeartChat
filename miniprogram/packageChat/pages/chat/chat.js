@@ -917,11 +917,11 @@ Page({
         let openId = null;
 
         if (userInfo) {
-          // 优先使用全局用户信息中的openid
-          if (userInfo.openid) {
+          // 优先使用全局用户信息中的userId
+          if (userInfo.userId) {
+            openId = userInfo.userId;
+          } else if (userInfo.openid) {
             openId = userInfo.openid;
-          } else if (userInfo.stats && userInfo.stats.openid) {
-            openId = userInfo.stats.openid;
           }
         }
 
@@ -1502,11 +1502,11 @@ Page({
       let openId = null;
 
       if (userInfo) {
-        // 优先使用全局用户信息中的openid
-        if (userInfo.openid) {
+        // 优先使用全局用户信息中的userId
+        if (userInfo.userId) {
+          openId = userInfo.userId;
+        } else if (userInfo.openid) {
           openId = userInfo.openid;
-        } else if (userInfo.stats && userInfo.stats.openid) {
-          openId = userInfo.stats.openid;
         }
       }
 
@@ -1544,11 +1544,11 @@ Page({
       let openId = null;
 
       if (userInfo) {
-        // 优先使用全局用户信息中的openid
-        if (userInfo.openid) {
+        // 优先使用全局用户信息中的userId
+        if (userInfo.userId) {
+          openId = userInfo.userId;
+        } else if (userInfo.openid) {
           openId = userInfo.openid;
-        } else if (userInfo.stats && userInfo.stats.openid) {
-          openId = userInfo.stats.openid;
         }
       }
 

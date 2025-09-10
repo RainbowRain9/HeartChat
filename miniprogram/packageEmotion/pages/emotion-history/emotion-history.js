@@ -430,12 +430,12 @@ Page({
       let userId = null;
       let openId = wx.getStorageSync('openId');
 
-      // 如果没有，尝试从用户信息的stats对象中获取openid
+      // 如果没有，尝试从用户信息的userId中获取
       if (!openId) {
         const userInfo = wx.getStorageSync('userInfo');
-        if (userInfo && userInfo.stats && userInfo.stats.openid) {
-          openId = userInfo.stats.openid;
-          console.log('从用户信息的stats对象中获取的openid:', openId);
+        if (userInfo && userInfo.userId) {
+          openId = userInfo.userId;
+          console.log('从用户信息的userId中获取的openId:', openId);
 
           // 将openId存入本地存储，以便下次使用
           wx.setStorageSync('openId', openId);
@@ -510,12 +510,12 @@ Page({
       let userId = null;
       let openId = wx.getStorageSync('openId');
 
-      // 如果没有，尝试从用户信息的stats对象中获取openid
+      // 如果没有，尝试从用户信息的userId中获取
       if (!openId) {
         const userInfo = wx.getStorageSync('userInfo');
-        if (userInfo && userInfo.stats && userInfo.stats.openid) {
-          openId = userInfo.stats.openid;
-          console.log('从用户信息的stats对象中获取的openid:', openId);
+        if (userInfo && userInfo.userId) {
+          openId = userInfo.userId;
+          console.log('从用户信息的userId中获取的openId:', openId);
 
           // 将openId存入本地存储，以便下次使用
           wx.setStorageSync('openId', openId);
@@ -799,9 +799,9 @@ Page({
         // 如果没有，尝试从用户信息的stats对象中获取openid
         if (!openId) {
           const userInfo = wx.getStorageSync('userInfo');
-          if (userInfo && userInfo.stats && userInfo.stats.openid) {
-            openId = userInfo.stats.openid;
-            console.log('从用户信息的stats对象中获取的openid:', openId);
+          if (userInfo && userInfo.userId) {
+            openId = userInfo.userId;
+            console.log('从用户信息的userId中获取的openId:', openId);
 
             // 将openId存入本地存储，以便下次使用
             wx.setStorageSync('openId', openId);
@@ -823,9 +823,9 @@ Page({
         // 如果没有，尝试从用户信息的stats对象中获取openid
         if (!openId) {
           const userInfo = wx.getStorageSync('userInfo');
-          if (userInfo && userInfo.stats && userInfo.stats.openid) {
-            openId = userInfo.stats.openid;
-            console.log('从用户信息的stats对象中获取的openid:', openId);
+          if (userInfo && userInfo.userId) {
+            openId = userInfo.userId;
+            console.log('从用户信息的userId中获取的openId:', openId);
 
             // 将openId存入本地存储，以便下次使用
             wx.setStorageSync('openId', openId);
@@ -1305,8 +1305,8 @@ Page({
         userId = openId;
       } else {
         const userInfo = wx.getStorageSync('userInfo');
-        if (userInfo && userInfo.stats && userInfo.stats.openid) {
-          userId = userInfo.stats.openid;
+        if (userInfo && userInfo.userId) {
+          userId = userInfo.userId;
         }
       }
     } catch (error) {

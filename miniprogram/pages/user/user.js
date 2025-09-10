@@ -163,14 +163,14 @@ Page({
     try {
       console.log('开始加载情绪概览数据...')
 
-      // 获取用户ID
+      // 获取用户ID - 统一使用openId键名
       let userId = null;
       let openId = wx.getStorageSync('openId');
 
       if (!openId) {
         const userInfo = wx.getStorageSync('userInfo');
-        if (userInfo && userInfo.stats && userInfo.stats.openid) {
-          openId = userInfo.stats.openid;
+        if (userInfo && userInfo.userId) {
+          openId = userInfo.userId;
         }
       }
 
@@ -269,14 +269,14 @@ Page({
         summary: '你是一个具有较强责任感和同理心的人，在创造力和耐心方面也有不错的表现。你善于理解他人的情感，并且能够认真完成自己的任务。'
       };
 
-      // 获取用户ID
+      // 获取用户ID - 统一使用openId键名
       let userId = null;
       let openId = wx.getStorageSync('openId');
 
       if (!openId) {
         const userInfo = wx.getStorageSync('userInfo');
-        if (userInfo && userInfo.stats && userInfo.stats.openid) {
-          openId = userInfo.stats.openid;
+        if (userInfo && userInfo.userId) {
+          openId = userInfo.userId;
         }
       }
 
@@ -515,8 +515,8 @@ Page({
       const { userInfo } = getLoginInfo()
 
       if (checkLogin()) {
-        // 获取用户openId
-        const openId = wx.getStorageSync('openId') || (userInfo && userInfo.stats && userInfo.stats.openid);
+        // 获取用户openId - 统一使用openId键名
+        const openId = wx.getStorageSync('openId') || (userInfo && userInfo.userId);
 
         this.setData({
           userInfo,
@@ -670,8 +670,8 @@ Page({
     const userInfo = app.globalData.userInfo;
 
     if (userInfo) {
-      // 获取用户openId
-      const openId = wx.getStorageSync('openId') || (userInfo && userInfo.stats && userInfo.stats.openid);
+      // 获取用户openId - 统一使用openId键名
+      const openId = wx.getStorageSync('openId') || (userInfo && userInfo.userId);
 
       this.setData({
         userInfo,
@@ -691,8 +691,8 @@ Page({
       // 如果全局用户信息不可用，则使用事件中的用户信息
       const { userInfo } = e.detail;
       if (userInfo) {
-        // 获取用户openId
-        const openId = wx.getStorageSync('openId') || (userInfo && userInfo.stats && userInfo.stats.openid);
+        // 获取用户openId - 统一使用openId键名
+        const openId = wx.getStorageSync('openId') || (userInfo && userInfo.userId);
 
         this.setData({
           userInfo,
@@ -978,8 +978,8 @@ Page({
     try {
       console.log('开始加载用户兴趣标签...')
 
-      // 获取用户ID
-      const openId = wx.getStorageSync('openId') || (this.data.userInfo && this.data.userInfo.stats && this.data.userInfo.stats.openid);
+      // 获取用户ID - 统一使用openId键名
+      const openId = wx.getStorageSync('openId') || (this.data.userInfo && this.data.userInfo.userId);
 
       if (!openId) {
         console.error('未获取到用户ID，无法加载兴趣标签');
