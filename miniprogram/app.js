@@ -9,7 +9,7 @@ App({
     systemInfo: null,
     darkMode: false,
     isLoggedIn: false,
-    cloudEnv: 'rainbowrain-2gt3j8hda726e4fe', // 添加云环境ID
+    cloudEnv: 'cloud1-9gpfk3ie94d8630a', // 添加云环境ID
     roleList: [], // 添加角色列表
     cloudInit: false, // 云环境是否初始化
     imageService: null // 图片服务

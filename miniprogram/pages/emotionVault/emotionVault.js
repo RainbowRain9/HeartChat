@@ -401,7 +401,7 @@ Page({
       // 确保云开发已初始化
       if (!wx.cloud.inited) {
         wx.cloud.init({
-          env: app.globalData.cloudEnv || 'rainbowrain-2gt3j8hda726e4fe',
+          env: app.globalData.cloudEnv || 'cloud1-9gpfk3ie94d8630a',
           traceUser: true,
         });
       }

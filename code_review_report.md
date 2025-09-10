@@ -1804,7 +1804,7 @@
 2. **硬编码的环境 ID**：
    ```javascript
    wx.cloud.init({
-     env: 'rainbowrain-2gt3j8hda726e4fe',
+     env: 'cloud1-9gpfk3ie94d8630a',
      traceUser: true
    })
    ```

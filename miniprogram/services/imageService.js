@@ -2,7 +2,7 @@
 // 不在模块顶层调用getApp()
 
 // 云环境ID
-const ENV_ID = 'rainbowrain-2gt3j8hda726e4fe'; // 云环境ID
+const ENV_ID = 'cloud1-9gpfk3ie94d8630a'; // 云环境ID
 
 // 图片资源映射表
 const IMAGE_MAP = {

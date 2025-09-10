@@ -2,7 +2,7 @@
 const cloud = require('wx-server-sdk')
 
 // 初始化云环境
-cloud.init({ env: 'rainbowrain-2gt3j8hda726e4fe' }) // 使用您的实际环境ID
+cloud.init({ env: 'cloud1-9gpfk3ie94d8630a' }) // 使用您的实际环境ID
 
 const db = cloud.database()
 

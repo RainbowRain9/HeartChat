@@ -8,7 +8,7 @@ const db = cloud.database();
 const initialRoles = [
   {
     name: "心理咨询师",
-    avatar: "cloud://rainbowrain-2gt3j8hda726e4fe.avatars/counselor.png",
+    avatar: "cloud://cloud1-9gpfk3ie94d8630a.avatars/counselor.png",
     category: "psychology",
     description: "专业心理咨询师，可以帮助你解决心理问题。",
     personality: ["专业", "耐心", "善解人意"],
@@ -21,7 +21,7 @@ const initialRoles = [
   },
   {
     name: "生活伴侣",
-    avatar: "cloud://rainbowrain-2gt3j8hda726e4fe.avatars/friend.png",
+    avatar: "cloud://cloud1-9gpfk3ie94d8630a.avatars/friend.png",
     category: "life",
     description: "一个可以陪你聊天、分享生活的朋友。",
     personality: ["友善", "幽默", "善良"],
@@ -34,7 +34,7 @@ const initialRoles = [
   },
   {
     name: "职场导师",
-    avatar: "cloud://rainbowrain-2gt3j8hda726e4fe.avatars/mentor.png",
+    avatar: "cloud://cloud1-9gpfk3ie94d8630a.avatars/mentor.png",
     category: "career",
     description: "专业的职场导师，可以给你职业发展建议。",
     personality: ["专业", "严谨", "有远见"],
@@ -47,7 +47,7 @@ const initialRoles = [
   },
   {
     name: "情感支持者",
-    avatar: "cloud://rainbowrain-2gt3j8hda726e4fe.avatars/emotional-support.png",
+    avatar: "cloud://cloud1-9gpfk3ie94d8630a.avatars/emotional-support.png",
     category: "emotion",
     description: "提供情感支持和陪伴，帮助你度过情绪低谷。",
     personality: ["温暖", "理解", "支持"],

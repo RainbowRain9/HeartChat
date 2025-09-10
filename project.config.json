@@ -54,17 +54,23 @@
     "disableUseStrict": false,
     "useCompilerPlugins": [
       "typescript"
-    ]
+    ],
+    "compileWorklet": false,
+    "localPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
   },
   "appid": "wx3b23ed9a8ff5f5c6",
   "condition": {},
   "cloudfunctionRoot": "cloudfunctions/",
   "cloud": true,
-  "envId": "rainbowrain-2gt3j8hda726e4fe",
+  "envId": "cloud1-9gpfk3ie94d8630a",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "srcMiniprogramRoot": "miniprogram/",
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
-  }
+  },
+  "simulatorPluginLibVersion": {}
 }
