@@ -290,25 +290,25 @@ async function saveChatHistory(event, context) {
     if (isNewChat) {
       try {
         console.log('在云函数中更新用户对话次数');
-        // 获取用户统计信息
-        const userStatsResult = await db.collection('user_stats')
+        // 获取用户信息（包含统计数据）
+        const userResult = await db.collection('users')
           .where({ user_id: chatData.userId })
           .get();
 
-        if (userStatsResult.data && userStatsResult.data.length > 0) {
-          const userStats = userStatsResult.data[0];
+        if (userResult.data && userResult.data.length > 0) {
+          const user = userResult.data[0];
 
           // 更新对话次数
-          await db.collection('user_stats').doc(userStats._id).update({
+          await db.collection('users').doc(user._id).update({
             data: {
-              chat_count: _.inc(1),
+              'stats.chat_count': _.inc(1),
               updated_at: db.serverDate()
             }
           });
 
           console.log('用户对话次数更新成功');
         } else {
-          console.log('未找到用户统计信息，无法更新对话次数');
+          console.log('未找到用户信息，无法更新对话次数');
         }
       } catch (statsErr) {
         console.error('更新用户对话次数失败:', statsErr);
@@ -865,21 +865,21 @@ async function clearChatHistory(event, context) {
 // 辅助功能：更新用户统计
 async function updateUserStats(openId, roleId) {
   try {
-    // 查询用户统计信息
-    const userStatsResult = await db.collection('user_stats')
+    // 查询用户信息（包含统计数据）
+    const userResult = await db.collection('users')
       .where({ openid: openId })
       .get();
 
-    if (userStatsResult.data && userStatsResult.data.length > 0) {
+    if (userResult.data && userResult.data.length > 0) {
       // 更新现有统计
-      const userStats = userStatsResult.data[0];
+      const user = userResult.data[0];
 
       // 更新对话次数
-      await db.collection('user_stats').doc(userStats._id).update({
+      await db.collection('users').doc(user._id).update({
         data: {
-          chat_count: _.inc(1),
-          updated_at: db.serverDate(),
-          'favorite_roles': db.command.push({
+          'stats.chat_count': _.inc(1),
+          'stats.updated_at': db.serverDate(),
+          'stats.favorite_roles': db.command.push({
             role_id: roleId,
             usage_count: 1,
             last_used: db.serverDate()
@@ -889,25 +889,33 @@ async function updateUserStats(openId, roleId) {
 
       console.log('用户统计更新成功');
     } else {
-      // 创建新的统计记录
-      await db.collection('user_stats').add({
+      // 创建新的用户记录（如果不存在）
+      const now = db.serverDate();
+      await db.collection('users').add({
         data: {
           openid: openId,
-          chat_count: 1,
-          total_messages: 0,
-          user_messages: 0,
-          ai_messages: 0,
-          emotion_records_count: 0,
-          favorite_roles: [
-            {
-              role_id: roleId,
-              usage_count: 1,
-              last_used: db.serverDate()
-            }
-          ],
-          created_at: db.serverDate(),
-          updated_at: db.serverDate()
-        }
+          user_type: 1,
+          status: 1,
+          created_at: now,
+          updated_at: now,
+          profile: {},
+          config: {},
+          stats: {
+            chat_count: 1,
+            total_messages: 0,
+            user_messages: 0,
+            ai_messages: 0,
+            emotion_records_count: 0,
+            favorite_roles: [
+              {
+                role_id: roleId,
+                usage_count: 1,
+                last_used: db.serverDate()
+              }
+            ],
+            created_at: db.serverDate(),
+            updated_at: db.serverDate()
+          }
       });
 
       console.log('用户统计创建成功');

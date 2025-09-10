@@ -58,14 +58,15 @@ exports.main = async (event, context) => {
         if (result.result.success && result.result.isNew) {
           try {
             // 查询用户通知设置
-            const userInfo = await db.collection('user_base')
+            const userInfo = await db.collection('users')
               .where({ _id: user._id })
-              .field({ reportSettings: 1 })
+              .field({ 'config.reportSettings': 1 })
               .get()
             
             if (userInfo.data.length > 0 && 
-                userInfo.data[0].reportSettings && 
-                userInfo.data[0].reportSettings.notificationEnabled) {
+                userInfo.data[0].config && 
+                userInfo.data[0].config.reportSettings && 
+                userInfo.data[0].config.reportSettings.notificationEnabled) {
               // 发送订阅消息通知
               await sendReportNotification(user._id, result.result.reportId)
             }
@@ -121,7 +122,7 @@ async function sendReportNotification(userId, reportId) {
     const templateId = config[0].configValue
     
     // 查询用户的openid
-    const { data: user } = await db.collection('user_base')
+    const { data: user } = await db.collection('users')
       .where({ _id: userId })
       .field({ openid: 1 })
       .get()
