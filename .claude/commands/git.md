@@ -1,4 +1,4 @@
-先调用git获取修改的代码，然后更新task-logs到.task-logs，并且维护activeContext.md文件，最后上传该任务所修改的代码到git上
+先调用git获取修改的代码，然后更新task-logs到.task-logs文件夹，并且维护activeContext.md文件（也在.task-logs文件夹里），最后上传该任务所修改的代码到git上
 
 # git要求
 
