@@ -55,7 +55,7 @@ async function getInfo(event) {
     const userConfig = userConfigResult.data[0] || {};
 
     const user = {
-      userId: userBase.user_id,
+      userId: userBase.userId,
       username: userBase.username,
       avatarUrl: userBase.avatar_url,
       userType: userBase.user_type,
