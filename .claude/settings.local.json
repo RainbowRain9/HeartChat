@@ -33,7 +33,9 @@
   "enabledMcpjsonServers": [
     "cloudbase",
     "context7",
-    "memory"
+    "memory",
+    "sequential-thinking",
+    "deepwiki"
   ],
   "outputStyle": "Explanatory"
 }
