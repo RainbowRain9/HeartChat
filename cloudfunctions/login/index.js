@@ -108,21 +108,28 @@ exports.main = async (event, context) => {
         data: userBaseData
       });
 
-      // 创建用户统计记录
-      await db.collection('user_stats').add({
-        data: {
-          stats_id: generateId(),
-          user_id: userId,
-          openid: OPENID,
-          chat_count: 0,
-          solved_count: 0,
-          rating_avg: 0,
-          active_days: 1,
-          last_active: now,
-          created_at: now,
-          updated_at: now
-        }
-      });
+      // 检查用户统计记录是否已存在
+      const existingStats = await db.collection('user_stats')
+        .where({ user_id: userId })
+        .get();
+
+      if (!existingStats.data || existingStats.data.length === 0) {
+        // 创建用户统计记录
+        await db.collection('user_stats').add({
+          data: {
+            stats_id: generateId(),
+            user_id: userId,
+            openid: OPENID,
+            chat_count: 0,
+            solved_count: 0,
+            rating_avg: 0,
+            active_days: 1,
+            last_active: now,
+            created_at: now,
+            updated_at: now
+          }
+        });
+      }
 
       userData = {
         ...userBaseData,
@@ -177,22 +184,6 @@ exports.main = async (event, context) => {
             last_active: now,
             // 只有不是今天才增加活跃天数
             active_days: isToday ? userStats.active_days : userStats.active_days + 1,
-            updated_at: now
-          }
-        });
-      } else {
-        // 如果没有找到统计记录，创建一个新的
-        await db.collection('user_stats').add({
-          data: {
-            stats_id: generateId(),
-            user_id: userData.user_id,
-            openid: OPENID,
-            chat_count: 0,
-            solved_count: 0,
-            rating_avg: 0,
-            active_days: 1,
-            last_active: now,
-            created_at: now,
             updated_at: now
           }
         });
@@ -251,7 +242,7 @@ exports.main = async (event, context) => {
     await db.collection('sys_log_login').add({
       data: {
         log_id: generateId(),
-        user_id: userId,
+        user_id: OPENID,
         status: 0, // 登录失败
         error: error.message,
         ip: event.userInfo?.clientIP,
