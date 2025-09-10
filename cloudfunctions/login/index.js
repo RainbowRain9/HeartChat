@@ -9,7 +9,7 @@ cloud.init({
 
 // 初始化数据库
 const db = cloud.database();
-const usersCollection = db.collection('user_base');
+const usersCollection = db.collection('users');
 
 // JWT密钥 - 64位随机字符串
 const JWT_SECRET = 'hc_jwt_2024_03_11_f8e7d6c5b4a3928170615243cba98765432109876';
@@ -31,10 +31,26 @@ exports.main = async (event, context) => {
   const _ = db.command;
 
   try {
-    const { userInfo } = event;
+    const { userInfo, testOpenId } = event || {};
+
+    console.log('Login request:', {
+      event: event,
+      hasUserInfo: !!userInfo,
+      hasOpenID: !!OPENID,
+      hasAppID: !!APPID,
+      testOpenId: testOpenId,
+      userInfo: userInfo ? JSON.stringify(userInfo) : null
+    });
 
     if (!userInfo) {
-      throw new Error('缺少必要参数');
+      throw new Error('缺少必要参数：userInfo');
+    }
+
+    // 使用测试OpenID或真实OpenID
+    const userOpenId = OPENID || testOpenId;
+    
+    if (!userOpenId) {
+      throw new Error('无法获取用户OpenID');
     }
 
     const now = db.serverDate();
@@ -81,7 +97,7 @@ exports.main = async (event, context) => {
 
     // 1. 查询或创建用户基础信息
     const userBase = await usersCollection
-      .where({ openid: OPENID })
+      .where({ openid: userOpenId })
       .get();
 
     let userData;
@@ -92,47 +108,55 @@ exports.main = async (event, context) => {
       // 生成新的唯一userId
       const userId = await getAvailableUserId();
 
-      // 创建新用户
-      const userBaseData = {
+      // 创建新用户（使用统一的数据结构）
+      const newUserData = {
         user_id: userId,
-        openid: OPENID,
+        openid: userOpenId,
         username: userInfo.nickName,
         avatar_url: userInfo.avatarUrl,
         user_type: 1, // 普通用户
         status: 1, // 启用
         created_at: now,
-        updated_at: now
+        updated_at: now,
+        
+        // profile 对象
+        profile: {
+          gender: null,
+          age: null,
+          country: null,
+          province: null,
+          city: null,
+          bio: null
+        },
+        
+        // config 对象
+        config: {
+          dark_mode: false,
+          notification_enabled: true,
+          language: 'zh-CN',
+          reportSettings: {
+            notificationEnabled: true
+          }
+        },
+        
+        // stats 对象
+        stats: {
+          stats_id: generateId(),
+          chat_count: 0,
+          solved_count: 0,
+          rating_avg: 0,
+          rating_count: 0,
+          active_days: 1,
+          last_active: now
+        }
       };
 
       const { _id } = await usersCollection.add({
-        data: userBaseData
+        data: newUserData
       });
 
-      // 检查用户统计记录是否已存在
-      const existingStats = await db.collection('user_stats')
-        .where({ user_id: userId })
-        .get();
-
-      if (!existingStats.data || existingStats.data.length === 0) {
-        // 创建用户统计记录
-        await db.collection('user_stats').add({
-          data: {
-            stats_id: generateId(),
-            user_id: userId,
-            openid: OPENID,
-            chat_count: 0,
-            solved_count: 0,
-            rating_avg: 0,
-            active_days: 1,
-            last_active: now,
-            created_at: now,
-            updated_at: now
-          }
-        });
-      }
-
       userData = {
-        ...userBaseData,
+        ...newUserData,
         _id
       };
     } else {
@@ -157,37 +181,31 @@ exports.main = async (event, context) => {
         });
       }
 
-      // 获取用户当前统计信息
-      const userStatsResult = await db.collection('user_stats')
-        .where({ user_id: userData.user_id })
-        .get();
+      // 更新用户统计信息（在统一集合中）
+      const userStats = userData.stats;
+      const lastActive = userStats.last_active ? new Date(userStats.last_active) : null;
+      const today = new Date();
+      const isToday = lastActive &&
+        lastActive.getFullYear() === today.getFullYear() &&
+        lastActive.getMonth() === today.getMonth() &&
+        lastActive.getDate() === today.getDate();
 
-      if (userStatsResult.data && userStatsResult.data.length > 0) {
-        const userStats = userStatsResult.data[0];
-        const lastActive = userStats.last_active ? new Date(userStats.last_active) : null;
-        const today = new Date();
-        const isToday = lastActive &&
-          lastActive.getFullYear() === today.getFullYear() &&
-          lastActive.getMonth() === today.getMonth() &&
-          lastActive.getDate() === today.getDate();
+      console.log('检查活跃天数:', {
+        lastActive: lastActive ? lastActive.toISOString() : null,
+        today: today.toISOString(),
+        isToday,
+        currentActiveDays: userStats.active_days
+      });
 
-        console.log('检查活跃天数:', {
-          lastActive: lastActive ? lastActive.toISOString() : null,
-          today: today.toISOString(),
-          isToday,
-          currentActiveDays: userStats.active_days
-        });
-
-        // 更新用户统计
-        await db.collection('user_stats').doc(userStats._id).update({
-          data: {
-            last_active: now,
-            // 只有不是今天才增加活跃天数
-            active_days: isToday ? userStats.active_days : userStats.active_days + 1,
-            updated_at: now
-          }
-        });
-      }
+      // 更新用户统计信息
+      await usersCollection.doc(userData._id).update({
+        data: {
+          'stats.last_active': now,
+          // 只有不是今天才增加活跃天数
+          'stats.active_days': isToday ? userStats.active_days : userStats.active_days + 1,
+          updated_at: now
+        }
+      });
     }
 
     // 2. 生成 token，包含必要信息
@@ -206,7 +224,7 @@ exports.main = async (event, context) => {
       data: {
         log_id: generateId(),
         user_id: userData.user_id,
-        openid: OPENID,
+        openid: userOpenId,
         status: 1, // 登录成功
         ip: event.userInfo?.clientIP,
         device: event.userInfo?.userAgent,
@@ -214,10 +232,8 @@ exports.main = async (event, context) => {
       }
     });
 
-    // 4. 获取用户统计信息
-    const userStats = await db.collection('user_stats')
-      .where({ user_id: userData.user_id })
-      .get();
+    // 4. 用户统计信息已在userData中
+    const userStats = userData.stats;
 
     return {
       success: true,
@@ -230,7 +246,7 @@ exports.main = async (event, context) => {
           avatarUrl: userData.avatar_url,
           userType: userData.user_type,
           status: userData.status,
-          stats: userStats.data[0] || null
+          stats: userStats || null
         }
       }
     };
@@ -242,7 +258,7 @@ exports.main = async (event, context) => {
     await db.collection('sys_log_login').add({
       data: {
         log_id: generateId(),
-        user_id: OPENID,
+        user_id: userOpenId,
         status: 0, // 登录失败
         error: error.message,
         ip: event.userInfo?.clientIP,
