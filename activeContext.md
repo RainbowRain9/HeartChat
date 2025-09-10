@@ -4,7 +4,7 @@
 - **项目名称**: HeartChat - AI情感陪伴与情商提升应用
 - **当前版本**: 开发中
 - **云环境**: cloud1-9gpfk3ie94d8630a (已迁移)
-- **最后更新**: 2025-09-10 14:08
+- **最后更新**: 2025-09-10 17:03
 
 ## 最近任务记录
 
@@ -47,6 +47,17 @@
   - 建立统一的字段命名标准，提高代码可维护性
 - **影响范围**: 登录云函数、用户云函数、数据库设计文档
 
+### 任务5: 登录云函数字段命名错误修复 (2025-09-10)
+- **任务类型**: Bug修复
+- **状态**: ✅ 已完成
+- **主要内容**:
+  - 修复登录云函数中userData.userId字段名错误，正确应为userData.user_id
+  - 解决老用户登录时查询参数为undefined导致的数据库错误
+  - 修复JWT token生成、登录日志记录、用户统计查询等多个位置的字段名
+  - 修复用户云函数中用户详细信息查询的字段名问题
+  - 更新Claude配置，添加sequential-thinking和deepwiki MCP服务器支持
+- **影响范围**: 用户认证系统、登录功能、用户统计、Claude配置
+
 ## 修改文件汇总
 
 ### 云环境配置变更 (10个文件)
@@ -80,6 +91,12 @@
 2. `cloudfunctions/user/index.js` - 修复用户信息字段引用
 3. `docs/database/数据库设计文档.md` - 优化字段命名规范
 4. `.task-logs/task-log_2025-09-10-refactor_用户ID字段命名统一优化.md` - 新增重构任务日志
+
+### 登录云函数字段命名错误修复 (3个文件)
+1. `cloudfunctions/login/index.js` - 修复5处字段命名错误
+2. `cloudfunctions/user/index.js` - 修复查询条件字段名
+3. `.claude/settings.local.json` - 更新MCP服务器配置
+4. `.task-logs/task-log_2025-09-10-bugfix_登录云函数字段命名错误修复.md` - 新增Bug修复任务日志
 
 ### 删除文件 (20+个文件)
 - **云函数**: clearDatabase, initReportCollections, quickstartFunctions, testDatabase
@@ -145,5 +162,5 @@
 ## 联系信息
 
 - **项目维护者**: 开发团队
-- **最后更新**: 2025-09-10 14:08
+- **最后更新**: 2025-09-10 17:03
 - **下次更新**: 根据项目进展定期更新
