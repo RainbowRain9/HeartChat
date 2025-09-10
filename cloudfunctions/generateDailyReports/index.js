@@ -58,7 +58,7 @@ exports.main = async (event, context) => {
         if (result.result.success && result.result.isNew) {
           try {
             // 查询用户通知设置
-            const userInfo = await db.collection('users')
+            const userInfo = await db.collection('user_base')
               .where({ _id: user._id })
               .field({ reportSettings: 1 })
               .get()
@@ -121,7 +121,7 @@ async function sendReportNotification(userId, reportId) {
     const templateId = config[0].configValue
     
     // 查询用户的openid
-    const { data: user } = await db.collection('users')
+    const { data: user } = await db.collection('user_base')
       .where({ _id: userId })
       .field({ openid: 1 })
       .get()
