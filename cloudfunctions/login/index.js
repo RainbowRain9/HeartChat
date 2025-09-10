@@ -159,7 +159,7 @@ exports.main = async (event, context) => {
 
       // 获取用户当前统计信息
       const userStatsResult = await db.collection('user_stats')
-        .where({ user_id: userData.user_id })
+        .where({ user_id: userData.userId })
         .get();
 
       if (userStatsResult.data && userStatsResult.data.length > 0) {
@@ -193,7 +193,7 @@ exports.main = async (event, context) => {
     // 2. 生成 token，包含必要信息
     const token = jwt.sign(
       {
-        user_id: userData.user_id,
+        user_id: userData.userId,
         user_type: userData.user_type,
         status: userData.status,
         exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7) // 7天过期
@@ -205,7 +205,7 @@ exports.main = async (event, context) => {
     await db.collection('sys_log_login').add({
       data: {
         log_id: generateId(),
-        user_id: userData.user_id,
+        user_id: userData.userId,
         openid: OPENID,
         status: 1, // 登录成功
         ip: event.userInfo?.clientIP,
@@ -216,7 +216,7 @@ exports.main = async (event, context) => {
 
     // 4. 获取用户统计信息
     const userStats = await db.collection('user_stats')
-      .where({ user_id: userData.user_id })
+      .where({ user_id: userData.userId })
       .get();
 
     return {
@@ -225,7 +225,7 @@ exports.main = async (event, context) => {
         token,
         isNewUser,
         userInfo: {
-          userId: userData.user_id,
+          userId: userData.userId,
           username: userData.username,
           avatarUrl: userData.avatar_url,
           userType: userData.user_type,
