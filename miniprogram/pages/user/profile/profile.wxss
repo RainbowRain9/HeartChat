@@ -193,6 +193,37 @@ page {
   margin-top: 8rpx;
 }
 
+/* 统计信息卡片 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24rpx;
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 16rpx;
+  background: linear-gradient(135deg, var(--primary-light), #f8fbff);
+  border-radius: var(--radius-lg);
+  border: 1rpx solid rgba(74, 108, 247, 0.1);
+}
+
+.stats-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 8rpx;
+}
+
+.stats-label {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.3;
+}
+
 /* 卡片样式 */
 .card {
   background: var(--card-bg);
@@ -231,6 +262,37 @@ page {
 
 .card-content {
   padding: 32rpx;
+}
+
+/* 错误信息样式 */
+.error-messages {
+  margin-bottom: 32rpx;
+}
+
+.error-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  background-color: #fff2f0;
+  border: 1rpx solid #ffccc7;
+  border-radius: var(--radius-md);
+  margin-bottom: 16rpx;
+}
+
+.error-item:last-child {
+  margin-bottom: 0;
+}
+
+.error-icon {
+  font-size: 24rpx;
+  color: var(--error-color);
+  margin-right: 12rpx;
+}
+
+.error-text {
+  font-size: 26rpx;
+  color: var(--error-color);
+  flex: 1;
 }
 
 /* 表单样式 */
@@ -435,6 +497,13 @@ page {
   box-shadow: 0 4rpx 8rpx rgba(74, 108, 247, 0.2);
 }
 
+.submit-button.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4rpx 8rpx rgba(74, 108, 247, 0.1);
+}
+
 /* 分割线 */
 .divider {
   height: 1rpx;
@@ -550,4 +619,14 @@ page {
 
 .dark .setting-item {
   border-color: var(--divider-color);
+}
+
+.dark .stats-item {
+  background: linear-gradient(135deg, #2a3352, #1f2847);
+  border-color: rgba(109, 140, 255, 0.1);
+}
+
+.dark .error-item {
+  background-color: #4a1f1a;
+  border-color: #ff4d4f;
 }

@@ -26,8 +26,36 @@
           <text class="avatar-edit-icon">✎</text> 更换头像
         </view>
       </view>
-      <view class="user-name">{{userInfo.nickName || '未设置昵称'}}</view>
-      <view class="user-id">ID: {{userId || '未登录'}}</view>
+      <view class="user-name">{{userInfo.nickName || userInfo.username || '未设置昵称'}}</view>
+      <view class="user-id">ID: {{userInfo.userId || userId || '未登录'}}</view>
+    </view>
+
+    <!-- 用户统计信息 -->
+    <view class="card">
+      <view class="card-header">
+        <image class="card-icon" src="/images/icons/stats.png"></image>
+        <text class="card-title">我的统计</text>
+      </view>
+      <view class="card-content">
+        <view class="stats-grid">
+          <view class="stats-item">
+            <text class="stats-value">{{userInfo.stats.chatCount || 0}}</text>
+            <text class="stats-label">对话次数</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-value">{{userInfo.stats.activeDays || 0}}</text>
+            <text class="stats-label">活跃天数</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-value">{{userInfo.stats.ratingAvg || '0.0'}}</text>
+            <text class="stats-label">平均评分</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-value">{{userInfo.stats.consecutiveDays || 0}}</text>
+            <text class="stats-label">连续天数</text>
+          </view>
+        </view>
+      </view>
     </view>
 
     <!-- 基本信息卡片 -->
@@ -37,6 +65,14 @@
         <text class="card-title">基本信息</text>
       </view>
       <view class="card-content">
+        <!-- 错误信息展示 -->
+        <view class="error-messages" wx:if="{{errors.length > 0}}">
+          <view class="error-item" wx:for="{{errors}}" wx:key="*this">
+            <text class="error-icon">⚠️</text>
+            <text class="error-text">{{item}}</text>
+          </view>
+        </view>
+
         <view class="form-item">
           <text class="form-label required">昵称</text>
           <input class="form-input {{userInfo.nickName ? 'filled' : ''}}"
@@ -173,7 +209,11 @@
 
     <!-- 提交按钮 -->
     <view class="submit-button-container">
-      <button class="submit-button" bindtap="saveProfile">保存资料</button>
+      <button class="submit-button {{saving ? 'disabled' : ''}}" 
+              bindtap="saveProfile" 
+              disabled="{{saving}}">
+        {{saving ? '保存中...' : '保存资料'}}
+      </button>
     </view>
   </view>
 </view>
