@@ -82,7 +82,8 @@ async function updateProfile(event, context) {
     province,
     city,
     bio,
-    settings
+    settings,
+    config
   } = event;
 
   try {
@@ -92,7 +93,9 @@ async function updateProfile(event, context) {
       avatarUrl: avatarUrl,
       gender: gender,
       age: age,
-      bio: bio
+      bio: bio,
+      settings: settings,
+      config: config
     });
     
     // 构建更新数据
@@ -109,10 +112,10 @@ async function updateProfile(event, context) {
       'profile.city': city,
       'profile.bio': bio,
       
-      // 更新 config 对象
-      'config.dark_mode': settings.darkMode,
-      'config.notification_enabled': settings.notificationEnabled,
-      'config.language': settings.language
+      // 更新 config 对象 - 优先使用 config 对象，兼容 settings 对象
+      'config.dark_mode': config?.dark_mode || settings?.darkMode,
+      'config.notification_enabled': config?.notification_enabled !== undefined ? config?.notification_enabled : settings?.notificationEnabled,
+      'config.language': config?.language || settings?.language
     };
 
     // 统一更新用户信息
