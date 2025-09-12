@@ -64,29 +64,150 @@ Analysis云函数是一个**情感分析与关键词提取服务**，提供基�
 
 ## 涉及的数据库集合
 
-- **`emotionRecords` (读/写)**: 存储情感分析结果，并在生成报告和分析关注点时读取。
-- **`userInterests` (读/写)**: 存储和更新用户的兴趣关键词、分类及情感分数。
-- **`userReports` (写)**: 写入生成的每日心情报告。
-- **`messages` (只读)**: 在进行聊天情绪分析时，读取消息记录作为上下文。
-- **`users` (只读)**: 在发送报告通知时，读取用户的通知设置。
-- **`sys_config` (只读)**: 在发送报告通知时，读取订阅消息的模板ID。
+### 1. emotionRecords（情感记录表）
+```javascript
+{
+  _id: "记录ID",
+  userId: "用户ID",
+  analysis: {
+    // 情感分析结果
+    type: "主要情感类型",
+    intensity: 0.8,
+    valence: 0.5,
+    arousal: 0.6,
+    trend: "上升",
+    primary_emotion: "主要情感",
+    secondary_emotions: ["次要情感1", "次要情感2"],
+    attention_level: "高",
+    radar_dimensions: {
+      trust: 0.7,
+      openness: 0.6,
+      resistance: 0.3,
+      stress: 0.4,
+      control: 0.8
+    },
+    topic_keywords: ["关键词1", "关键词2"],
+    emotion_triggers: ["触发词1", "触发词2"],
+    suggestions: ["建议1", "建议2"],
+    summary: "情感总结"
+  },
+  originalText: "原始文本",
+  createTime: "创建时间",
+  roleId: "角色ID（可选）",
+  chatId: "聊天ID（可选）"
+}
+```
+
+### 2. userInterests（用户兴趣表）
+```javascript
+{
+  _id: "记录ID",
+  userId: "用户ID",
+  keywords: [
+    {
+      word: "关键词",
+      weight: 1.5,
+      category: "分类",
+      emotionScore: 0.6,
+      lastUpdated: "更新时间"
+    }
+  ],
+  createTime: "创建时间",
+  lastUpdated: "最后更新时间"
+}
+```
+
+### 3. userReports（用户报告表）
+```javascript
+{
+  _id: "报告ID",
+  userId: "用户ID",
+  date: "报告日期",
+  emotionSummary: "情感总结",
+  insights: ["洞察1", "洞察2", "洞察3"],
+  suggestions: ["建议1", "建议2", "建议3"],
+  fortune: {
+    good: ["宜做事项1", "宜做事项2"],
+    bad: ["忌做事项1", "忌做事项2"]
+  },
+  encouragement: "鼓励语",
+  keywords: [
+    {
+      word: "关键词",
+      weight: 2.0
+    }
+  ],
+  emotionalVolatility: 65,
+  primaryEmotion: "主要情感",
+  emotionCount: 15,
+  chartData: {
+    emotionDistribution: [
+      {
+        type: "情感类型",
+        count: 5,
+        percentage: "33.3"
+      }
+    ],
+    intensityTrend: [
+      {
+        timestamp: "时间戳",
+        intensity: 0.8,
+        type: "情感类型"
+      }
+    ],
+    focusDistribution: [
+      {
+        category: "分类",
+        weight: 3.0,
+        percentage: "25.0"
+      }
+    ]
+  },
+  focusPoints: [
+    {
+      category: "关注点分类",
+      percentage: "35.0",
+      weight: 4.0,
+      keywords: ["关键词1", "关键词2", "关键词3"]
+    }
+  ],
+  categoryWeights: [
+    {
+      category: "分类",
+      weight: 4.0,
+      percentage: "35.0"
+    }
+  ],
+  emotionalInsights: {
+    positiveAssociations: [
+      {
+        word: "积极关键词",
+        ratio: 0.8,
+        count: 5
+      }
+    ],
+    negativeAssociations: [
+      {
+        word: "消极关键词",
+        ratio: 0.7,
+        count: 4
+      }
+    ]
+  },
+  generatedAt: "生成时间",
+  isRead: false
+}
+```
 
 ## API接口
 
 ### 支持的操作类型
-1. **`emotion`** - 情感分析
-2. **`keywords`** - 关键词提取
-3. **`word_vectors`** - 获取词向量
-4. **`cluster`** - 关键词聚类分析
-5. **`user_interests`** - 用户兴趣分析
-6. **`focus_points`** - 用户关注点分析
-7. **`daily_report`** - 每日报告生成
-8. **`classify_keywords`** - 关键词分类
-9. **`get_categories`** - 获取预定义分类
-10. **`link_keywords_emotion`** - 关联关键词与情感
-11. **`get_keyword_emotion_stats`** - 获取关键词情感统计
-12. **`emotion_record`** - 获取单条情感记录分析
-13. **`chat_emotion`** - 获取聊天的情绪分析
+1. **emotion** - 情感分析
+2. **keywords** - 关键词提取
+3. **user_interests** - 用户兴趣分析
+4. **daily_report** - 每日报告生成
+5. **keyword_categories** - 关键词分类
+6. **cluster_analysis** - 聚类分析
 
 ### 支持的AI模型
 - Google Gemini (gemini-2.5-flash-preview-04-17)
