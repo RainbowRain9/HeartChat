@@ -60,7 +60,7 @@
   "condition": {},
   "cloudfunctionRoot": "cloudfunctions/",
   "cloud": true,
-  "envId": "rainbowrain-2gt3j8hda726e4fe",
+  "envId": "cloud1-9gpfk3ie94d8630a",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "srcMiniprogramRoot": "miniprogram/",
   "editorSetting": {

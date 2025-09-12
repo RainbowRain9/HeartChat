@@ -378,7 +378,7 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
     if (!wx.cloud.inited) {
       try {
         wx.cloud.init({
-          env: 'rainbowrain-2gt3j8hda726e4fe', // 使用您的实际环境ID
+          env: 'cloud1-9gpfk3ie94d8630a', // 使用您的实际环境ID
           traceUser: true
         });
         if (isDev) {

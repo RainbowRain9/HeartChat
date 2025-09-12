@@ -6,7 +6,7 @@
 // 云环境配置
 const cloudConfig = {
   // 云环境ID
-  ENV_ID: 'rainbowrain-2gt3j8hda726e4fe',
+  ENV_ID: 'cloud1-9gpfk3ie94d8630a',
   // 云函数超时时间（毫秒）
   TIMEOUT: 30000,
   // 云函数重试次数
