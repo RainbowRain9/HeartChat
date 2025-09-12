@@ -368,7 +368,7 @@ async function categorizeKeywords(userId) {
     const keywordTexts = keywords.map(k => k.word).join(', ');
 
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",
