@@ -8183,7 +8183,7 @@ const cloud = require('wx-server-sdk')
 
 // 使用明确的云环境ID
 // 注意：请将下面的环境ID替换为您的实际环境ID
-cloud.init({ env: 'rainbowrain-2gt3j8hda726e4fe' })
+cloud.init({ env: 'cloud1-9gpfk3ie94d8630a' })
 
 const db = cloud.database()
 
@@ -8402,7 +8402,7 @@ exports.main = async (event, context) => {
 const cloud = require('wx-server-sdk')
 
 // 初始化云环境
-cloud.init({ env: 'rainbowrain-2gt3j8hda726e4fe' }) // 使用您的实际环境ID
+cloud.init({ env: 'cloud1-9gpfk3ie94d8630a' }) // 使用您的实际环境ID
 
 const db = cloud.database()
 
@@ -9802,7 +9802,7 @@ const db = cloud.database();
 const initialRoles = [
   {
     name: "心理咨询师",
-    avatar: "cloud://rainbowrain-2gt3j8hda726e4fe.avatars/counselor.png",
+    avatar: "cloud://cloud1-9gpfk3ie94d8630a.avatars/counselor.png",
     category: "psychology",
     description: "专业心理咨询师，可以帮助你解决心理问题。",
     personality: ["专业", "耐心", "善解人意"],
@@ -9815,7 +9815,7 @@ const initialRoles = [
   },
   {
     name: "生活伴侣",
-    avatar: "cloud://rainbowrain-2gt3j8hda726e4fe.avatars/friend.png",
+    avatar: "cloud://cloud1-9gpfk3ie94d8630a.avatars/friend.png",
     category: "life",
     description: "一个可以陪你聊天、分享生活的朋友。",
     personality: ["友善", "幽默", "善良"],
@@ -9828,7 +9828,7 @@ const initialRoles = [
   },
   {
     name: "职场导师",
-    avatar: "cloud://rainbowrain-2gt3j8hda726e4fe.avatars/mentor.png",
+    avatar: "cloud://cloud1-9gpfk3ie94d8630a.avatars/mentor.png",
     category: "career",
     description: "专业的职场导师，可以给你职业发展建议。",
     personality: ["专业", "严谨", "有远见"],
@@ -9841,7 +9841,7 @@ const initialRoles = [
   },
   {
     name: "情感支持者",
-    avatar: "cloud://rainbowrain-2gt3j8hda726e4fe.avatars/emotional-support.png",
+    avatar: "cloud://cloud1-9gpfk3ie94d8630a.avatars/emotional-support.png",
     category: "emotion",
     description: "提供情感支持和陪伴，帮助你度过情绪低谷。",
     personality: ["温暖", "理解", "支持"],
@@ -20842,7 +20842,7 @@ Component({
 // 云环境配置
 const cloudConfig = {
   // 云环境ID
-  ENV_ID: 'rainbowrain-2gt3j8hda726e4fe',
+  ENV_ID: 'cloud1-9gpfk3ie94d8630a',
   // 云函数超时时间（毫秒）
   TIMEOUT: 30000,
   // 云函数重试次数
@@ -42165,7 +42165,7 @@ async function getEmotionHistory(userId, roleId = null, limit = 10) {
     if (!wx.cloud.inited) {
       try {
         wx.cloud.init({
-          env: 'rainbowrain-2gt3j8hda726e4fe', // 使用您的实际环境ID
+          env: 'cloud1-9gpfk3ie94d8630a', // 使用您的实际环境ID
           traceUser: true
         });
         if (isDev) {
@@ -43443,7 +43443,7 @@ module.exports = {
 // 图片资源服务
 
 // 云环境ID
-const ENV_ID = 'rainbowrain-2gt3j8hda726e4fe'; // 云环境ID
+const ENV_ID = 'cloud1-9gpfk3ie94d8630a'; // 云环境ID
 
 // 图片资源映射表
 const IMAGE_MAP = {
@@ -48804,7 +48804,7 @@ button[plain] { border: 0; }
   "condition": {},
   "cloudfunctionRoot": "cloudfunctions/",
   "cloud": true,
-  "envId": "rainbowrain-2gt3j8hda726e4fe",
+  "envId": "cloud1-9gpfk3ie94d8630a",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "srcMiniprogramRoot": "miniprogram/",
   "editorSetting": {
