@@ -1,4 +1,4 @@
-先调用git获取修改的代码，然后更新task-logs到.augment_memory/task-logs，最后上传该任务所修改的代码到git上
+先调用git获取修改的代码，然后更新task-logs并且维护activeContext.md到.task-logs，最后上传该任务所修改的代码到git上
 
 # git要求
 
