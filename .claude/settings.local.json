@@ -1,0 +1,55 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp add-json context7 -s user '{\"\"type\"\":\"\"stdio\"\",\"\"command\"\":\"\"cmd\"\",\"\"args\"\": [\"\"/c\"\", \"\"npx\"\", \"\"-y\"\", \"\"@upstash/context7-mcp@latest\"\"]}')",
+      "Bash(claude mcp add-json memory -s user '{\"\"type\"\":\"\"stdio\"\",\"\"command\"\":\"\"cmd\"\",\"\"args\"\": [\"\"/c\"\", \"\"npx\"\", \"\"-y\"\", \"\"@modelcontextprotocol/server-memory@latest\"\"]}')",
+      "Bash(claude mcp add-json cloudbase-mcp -s user '{\"\"type\"\":\"\"stdio\"\",\"\"command\"\":\"\"cmd\"\",\"\"args\"\": [\"\"/c\"\", \"\"npx\"\", \"\"-y\"\", \"\"@cloudbase/cloudbase-mcp@latest\"\"],\"\"env\"\":{\"\"TENCENTCLOUD_SECRETID\"\":\"\"your_secret_id\"\",\"\"TENCENTCLOUD_SECRETKEY\"\":\"\"your_secret_key\"\",\"\"CLOUDBASE_ENV_ID\"\":\"\"campus-mall-dev\"\"}}}')",
+      "Bash(claude mcp list:*)",
+      "WebFetch(domain:tdesign.tencent.com)",
+      "WebFetch(domain:docs.cloudbase.net)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(node:*)",
+      "Bash(find:*)",
+      "Bash(git push:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(git checkout:*)",
+      "Bash(claude mcp add-json:*)",
+      "Bash(cmd:*)",
+      "mcp__cloudbase__login",
+      "mcp__cloudbase__collectionQuery",
+      "Bash(set:*)",
+      "Bash(powershell:*)",
+      "Bash(md:*)",
+      "Bash(git remote set-url:*)",
+      "Read(D:\\/**)",
+      "Bash(claude mcp:*)",
+      "Bash(source:*)",
+      "Bash(echo $VIRTUAL_ENV)",
+      "Bash(pip install:*)",
+      "Bash(python scripts/validation/simple_check.py:*)",
+      "Bash(python:*)",
+      "Bash(pip uninstall:*)",
+      "Bash(nvidia-smi:*)",
+      "Bash(conda install:*)",
+      "Bash(top:*)",
+      "Bash(cat:*)",
+      "Bash(ps:*)",
+      "Bash(echo:*)",
+      "Bash(export:*)",
+      "Bash(ldd:*)",
+      "Bash(QT_QPA_PLATFORM=xcb QT_QPA_PLATFORM_PLUGIN_PATH=/home/robot102/Programs/miniconda3/lib/python3.13/site-packages/PyQt5/Qt5/plugins/platforms python main.py)"
+    ],
+    "deny": [],
+    "additionalDirectories": [
+      "D:\\Code"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "cloudbase"
+  ]
+}

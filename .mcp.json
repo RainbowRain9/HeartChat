@@ -1,8 +1,10 @@
 {
   "mcpServers": {
     "cloudbase": {
-      "command": "npx",
+      "command": "cmd",
       "args": [
+        "/c",
+        "npx",
         "npm-global-exec@latest",
         "@cloudbase/cloudbase-mcp@latest"
       ],
@@ -11,22 +13,28 @@
       }
     },
     "context7": {
-      "command": "npx",
+      "command": "cmd",
       "args": [
+        "/c",
+        "npx",
         "-y",
         "@upstash/context7-mcp@latest"
       ]
     },
     "memory": {
-      "command": "npx",
+      "command": "cmd",
       "args": [
+        "/c",
+        "npx",
         "-y",
         "@modelcontextprotocol/server-memory@latest"
       ]
     },
     "sequential-thinking": {
-      "command": "npx",
+      "command": "cmd",
       "args": [
+        "/c",
+        "npx",
         "-y",
         "@modelcontextprotocol/server-sequential-thinking"
       ],
@@ -35,6 +43,18 @@
      "deepwiki": {
       "type": "http",
       "url": "https://mcp.deepwiki.com/mcp"
+    },
+    "cloudbase": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "npm-global-exec@latest",
+        "@cloudbase/cloudbase-mcp@latest"
+      ],
+      "env": {
+        "INTEGRATION_IDE": "ClaudeCode"
+      }
     }
   }
 }
