@@ -215,7 +215,7 @@ async function analyzeUserDialogues(messages) {
 
     // 调用智谱AI分析用户画像
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",
@@ -406,7 +406,7 @@ async function generateAIPersonalitySummary(userPerception) {
 
     // 调用智谱AI生成用户画像摘要
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",

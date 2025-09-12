@@ -10,7 +10,7 @@ const API_KEY = process.env.ZHIPU_API_KEY || ''; // 从环境变量获取API密�
 const API_BASE_URL = 'https://open.bigmodel.cn/api/paas/v4';
 
 // 模型配置
-const GLM_4_FLASH = 'glm-4-flash'; // 快速版本，适合对话和基础分析
+const GLM_4_FLASH = 'glm-4.5-flash'; // 快速版本，适合对话和基础分析
 const EMBEDDING_3 = 'embedding-3'; // 文本向量化模型
 
 /**

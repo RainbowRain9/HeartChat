@@ -28,7 +28,7 @@ async function testZhipuAI() {
     
     // 构建请求体
     const body = JSON.stringify({
-      model: 'glm-4-flash',
+      model: 'glm-4.5-flash',
       messages: [
         {
           role: 'user',

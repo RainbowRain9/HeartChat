@@ -146,7 +146,7 @@ async function generatePromptWithMemories(basePrompt, memories) {
 
     // 调用智谱AI融合提示词和记忆
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",
@@ -195,7 +195,7 @@ async function generatePromptWithUserPerception(basePrompt, userPerception) {
 
     // 调用智谱AI融合提示词和用户画像
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",

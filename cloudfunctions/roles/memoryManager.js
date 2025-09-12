@@ -78,7 +78,7 @@ async function extractMemoriesFromChat(messages, roleInfo) {
 
     // 调用智谱AI提取记忆
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",
@@ -207,7 +207,7 @@ async function mergeMemories(memories) {
 
     // 调用智谱AI合并记忆
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",
@@ -284,7 +284,7 @@ async function getRelevantMemories(roleId, currentContext, limit = 5) {
 
     // 如果有当前上下文，调用智谱AI计算相关性
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",

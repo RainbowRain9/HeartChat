@@ -80,7 +80,7 @@ async function analyzeUserPerception(messages, userId, roleId) {
 
     // 调用智谱AI分析用户画像
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",
@@ -195,7 +195,7 @@ async function mergeUserPerception(existingPerception, newPerception) {
 
     // 调用智谱AI合并用户画像
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",
@@ -275,7 +275,7 @@ async function generateUserPerceptionSummary(userPerception) {
 
     // 调用智谱AI生成用户画像摘要
     const result = await callZhipuAI({
-      model: "glm-4-flash",
+      model: "glm-4.5-flash",
       messages: [
         {
           role: "system",
