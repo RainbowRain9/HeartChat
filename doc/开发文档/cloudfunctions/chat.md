@@ -63,88 +63,11 @@ Chat云函数是一个**聊天服务模块**，提供用户与AI角色的实时�
 
 ## 涉及的数据库集合
 
-### 1. chats（聊天会话表）
-```javascript
-{
-  _id: "会话ID",
-  roleId: "角色ID",
-  roleName: "角色名称",
-  openId: "用户openid",
-  userId: "用户ID（可选）",
-  messageCount: 0,
-  lastMessage: "最后一条消息",
-  emotionAnalysis: {
-    type: "主要情感类型",
-    intensity: 0.5,
-    suggestions: []
-  },
-  last_message_time: "最后消息时间",
-  createTime: "创建时间",
-  updateTime: "更新时间"
-}
-```
-
-### 2. messages（消息表）
-```javascript
-{
-  _id: "消息ID",
-  chatId: "聊天会话ID",
-  roleId: "角色ID",
-  openId: "用户openid",
-  content: "消息内容",
-  sender_type: "user|ai",
-  createTime: "创建时间",
-  timestamp: "时间戳",
-  status: "发送状态",
-  
-  // 分段消息相关字段
-  isSegment: false,
-  segmentIndex: 0,
-  totalSegments: 1,
-  originalMessageId: "原始消息ID"
-}
-```
-
-### 3. user_stats（用户统计表）
-```javascript
-{
-  _id: "统计ID",
-  openid: "用户openid",
-  user_id: "用户ID（可选）",
-  chat_count: 0,
-  total_messages: 0,
-  user_messages: 0,
-  ai_messages: 0,
-  emotion_records_count: 0,
-  favorite_roles: [
-    {
-      role_id: "角色ID",
-      usage_count: 0,
-      last_used: "最后使用时间"
-    }
-  ],
-  created_at: "创建时间",
-  updated_at: "更新时间"
-}
-```
-
-### 4. roles（角色表）
-```javascript
-{
-  _id: "角色ID",
-  name: "角色名称",
-  description: "角色描述",
-  prompt: "角色提示词",
-  avatar: "角色头像",
-  category: "角色分类",
-  tags: ["标签1", "标签2"],
-  is_public: true,
-  usage_count: 0,
-  created_by: "创建者",
-  created_at: "创建时间",
-  updated_at: "更新时间"
-}
-```
+- **`chats` (读/写)**: 核心集合，用于创建和更新聊天会话的元数据，如消息总数、最后一条消息等。
+- **`messages` (读/写)**: 存储所有具体的聊天消息，包括用户发送的和AI回复的（含分段消息）。
+- **`roles` (只读)**: 在发起聊天时，读取角色的详细信息，特别是其 `prompt`（系统提示词），以指导AI的行为。
+- **`user_stats` (读/写)**: 在新会话开始时，更新用户的累计聊天次数 `chat_count` 等统计信息。
+- **`roleUsage` (写)**: 间接写入。通过调用 `roles` 云函数，记录或更新用户对某个角色的使用次数。
 
 ## API接口
 
