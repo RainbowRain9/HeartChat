@@ -1,0 +1,38 @@
+### 行为任务创建（批量） — PROPOSED
+### 用于将建议/资源转为 behavior_tasks，多条一次写入
+
+POST {{API_BASE}}/api/behavior_tasks/bulk
+Content-Type: application/json
+Authorization: Bearer {{API_KEY}}
+
+[
+  {{#each 1757929910659.structured_output.actionable_suggestions as |s i|}}
+  {
+    "userId": "{{USER_ID}}",
+    "agent": "{{AGENT}}",
+    "sceneTags": {{SCENE_TAGS_JSON}},
+    "title": "{{s}}",
+    "steps": [],
+    "expectedMinutes": {{DEFAULT_MINUTES}},
+    "difficulty": 1,
+    "nudgeLevel": 1,
+    "dueAt": "{{DUE_AT_ISO}}",
+    "status": "issued",
+    "channel": "app",
+    "metadata": {
+      "sourceMessage": "{{#sys.query#}}",
+      "summary": "{{#1757929910659.text#}}"
+    }
+  }{{#unless @last}},{{/unless}}
+  {{/each}}
+]
+
+### 变量说明
+# {{API_BASE}}: 网关地址
+# {{API_KEY}}: 认证密钥
+# {{USER_ID}}: 用户ID/哈希
+# {{AGENT}}: 来源Agent（如“学业与考试压力”）
+# {{SCENE_TAGS_JSON}}: 主题标签数组的JSON字面量，如 ["考试失利"]
+# {{DEFAULT_MINUTES}}: 预估时长（默认10）
+# {{DUE_AT_ISO}}: 到期时间（ISO8601）
+

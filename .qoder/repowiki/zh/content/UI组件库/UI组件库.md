@@ -1,292 +1,345 @@
 # UI组件库
 
 <cite>
-**本文档引用文件**  
-- [emotion-panel.js](file://miniprogram/components/emotion-panel/emotion-panel.js)
-- [interest-tag-cloud.js](file://miniprogram/components/interest-tag-cloud/interest-tag-cloud.js)
-- [model-selector.js](file://miniprogram/components/model-selector/model-selector.js)
+**本文档引用的文件**
+- [emotion-analysis.js](file://miniprogram/components/emotion-analysis/emotion-analysis.js)
+- [emotion-pie.js](file://miniprogram/components/emotion-pie/emotion-pie.js)
+- [role-card.js](file://miniprogram/components/role-card/role-card.js)
+- [chat-bubble/index.js](file://miniprogram/packageChat/components/chat-bubble/index.js)
 - [ec-canvas.js](file://miniprogram/components/ec-canvas/ec-canvas.js)
-- [theme.json](file://miniprogram/theme.json)
-- [用户兴趣标签云组件使用示例.md](file://doc/使用文档/用户兴趣标签云组件使用示例.md)
+- [ECharts组件使用指南.md](file://doc/使用文档/ECharts组件使用指南.md)
 </cite>
 
 ## 目录
-1. [介绍](#介绍)
-2. [emotion-panel 组件](#emotion-panel-组件)
-3. [interest-tag-cloud 组件](#interest-tag-cloud-组件)
-4. [model-selector 组件](#model-selector-组件)
-5. [ec-canvas 组件](#ec-canvas-组件)
-6. [暗黑模式支持](#暗黑模式支持)
-7. [总结](#总结)
+1. [简介](#简介)
+2. [项目结构](#项目结构)
+3. [核心组件](#核心组件)
+4. [架构概览](#架构概览)
+5. [详细组件分析](#详细组件分析)
+6. [依赖分析](#依赖分析)
+7. [性能考虑](#性能考虑)
+8. [故障排除指南](#故障排除指南)
+9. [结论](#结论)
 
-## 介绍
-本文档详细介绍了 HeartChat 小程序中的核心 UI 组件，包括其视觉样式、交互行为、属性、事件、插槽及使用方法。重点涵盖 `emotion-panel`、`interest-tag-cloud`、`model-selector` 和 `ec-canvas` 四个可复用组件，并说明其在暗黑模式下的适配机制。
+## 简介
+本文档系统化地记录了HeartChat项目中所有可复用的UI组件，包括emotion-analysis、emotion-pie、role-card、chat-bubble等。文档详细描述了每个组件的视觉表现、交互行为与使用场景，列出了组件支持的属性（props）、事件（events）与插槽（slots），并提供了WXML与JS的调用示例。同时，文档说明了ECharts组件的集成方式与图表定制选项，为前端开发者提供了组件使用规范与样式覆盖方法。
 
-## emotion-panel 组件
+## 项目结构
+HeartChat项目采用模块化设计，主要分为云函数、文档、小程序三大部分。小程序部分包含组件、页面、服务和工具等子目录，其中组件目录存放了所有可复用的UI组件。
 
-`emotion-panel` 组件用于展示情感分析结果的详细信息面板，支持动态数据绑定和用户交互。
-
-### 视觉样式与交互行为
-该组件以模态面板形式展示情感分析的核心指标，包括情感极性、强度、趋势及关键词。用户可通过点击关闭按钮、切换角色、保存记录或查看历史来触发相应操作。组件设计简洁，信息层级清晰，适合在聊天或情绪分析场景中使用。
-
-### 适用场景
-- 情感分析结果展示
-- 用户情绪回顾与记录
-- 角色切换引导
-
-### 属性（Properties）
-| 属性名 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| emotion | Object | null | 情感分析结果对象，包含 valence、intensity、trend 等字段 |
-| show | Boolean | false | 是否显示面板 |
-| darkMode | Boolean | false | 是否启用暗色主题 |
-
-### 事件（Events）
-| 事件名 | 说明 | 携带数据 |
-|--------|------|----------|
-| close | 用户点击关闭按钮时触发 | 无 |
-| switchRole | 用户点击“切换角色”时触发 | `{ emotion: 当前情感数据 }` |
-| save | 用户点击“保存记录”时触发 | `{ emotion: 当前情感数据 }` |
-| history | 用户点击“查看历史”时触发 | 无 |
-
-### 插槽（Slots）
-该组件无插槽定义。
-
-### WXML 使用示例
-```xml
-<emotion-panel 
-  emotion="{{currentEmotion}}" 
-  show="{{showEmotionPanel}}" 
-  darkMode="{{isDarkMode}}" 
-  bind:close="onClosePanel" 
-  bind:switchRole="onSwitchRole" 
-  bind:save="onSaveEmotion" 
-  bind:history="onViewHistory">
-</emotion-panel>
+```mermaid
+graph TB
+subgraph "小程序"
+Components[components]
+Pages[pages]
+Services[services]
+Utils[utils]
+end
+subgraph "云函数"
+CloudFunctions[cloudfunctions]
+end
+subgraph "文档"
+Docs[doc]
+end
+Components --> Pages
+Services --> Components
+Utils --> Components
+CloudFunctions --> Services
+Docs --> All
 ```
+
+**Diagram sources**
+- [miniprogram/components](file://miniprogram/components)
+- [miniprogram/pages](file://miniprogram/pages)
+- [miniprogram/services](file://miniprogram/services)
+- [cloudfunctions](file://cloudfunctions)
+- [doc](file://doc)
 
 **Section sources**
-- [emotion-panel.js](file://miniprogram/components/emotion-panel/emotion-panel.js#L1-L118)
+- [miniprogram](file://miniprogram)
+- [cloudfunctions](file://cloudfunctions)
+- [doc](file://doc)
 
-## interest-tag-cloud 组件
-
-`interest-tag-cloud` 组件用于可视化展示用户的兴趣标签，支持字体大小加权、颜色分类和交互点击。
-
-### 视觉样式与交互行为
-标签云中的每个标签根据其权重动态调整字体大小，分类标签使用预设颜色区分。用户可点击标签查看详情，也可通过刷新按钮手动更新数据。组件支持响应式布局，适配不同屏幕尺寸。
-
-### 适用场景
-- 用户画像展示
-- 兴趣偏好分析
-- 个性化推荐入口
-
-### 属性（Properties）
-| 属性名 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| userId | String | '' | 用户唯一标识，必填 |
-| maxTags | Number | 20 | 最大显示标签数量 |
-| minFontSize | Number | 12 | 标签最小字体大小（px） |
-| maxFontSize | Number | 24 | 标签最大字体大小（px） |
-| colorMap | Object | 预设颜色映射 | 白天模式下分类颜色映射 |
-| darkModeColorMap | Object | 预设暗色映射 | 暗黑模式下分类颜色映射 |
-| showCategory | Boolean | true | 是否显示分类信息 |
-| autoRefresh | Boolean | false | 是否在组件挂载时自动加载数据 |
-| darkMode | Boolean | false | 是否启用暗黑模式 |
-| showTitle | Boolean | true | 是否显示标题 |
-| showRefreshButton | Boolean | true | 是否显示刷新按钮 |
-| useCategories | Boolean | true | 是否使用分类数据而非关键词数据 |
-
-### 事件（Events）
-| 事件名 | 说明 | 携带数据 |
-|--------|------|----------|
-| tagclick | 用户点击某个标签时触发 | `{ tag: { name, value, category, color } }` |
-| loaded | 标签数据加载完成后触发 | `{ tags: Array }` |
-| error | 数据加载失败时触发 | `{ error: 错误信息 }` |
-| refresh | 用户点击刷新按钮时触发 | 无 |
-
-### 方法（Methods）
-| 方法名 | 参数 | 说明 |
-|--------|------|------|
-| loadTags | forceRefresh: Boolean | 加载标签数据，`forceRefresh=true` 时强制刷新缓存 |
-| handleRefresh | 无 | 手动触发刷新逻辑，同时触发 `refresh` 事件 |
-
-### WXML 使用示例
-```xml
-<interest-tag-cloud 
-  id="interestTagCloud"
-  userId="{{openId}}"
-  maxTags="30"
-  minFontSize="12"
-  maxFontSize="20"
-  showCategory="{{true}}"
-  darkMode="{{isDarkMode}}"
-  bind:tagclick="handleTagClick"
-  bind:loaded="handleTagsLoaded"
-  bind:error="handleTagsError"
-  bind:refresh="handleRefresh">
-</interest-tag-cloud>
-```
-
-### JS 调用示例
-```javascript
-// 手动加载标签
-const tagCloud = this.selectComponent('#interestTagCloud');
-tagCloud.loadTags(true);
-```
+## 核心组件
+本文档重点分析了emotion-analysis、emotion-pie、role-card和chat-bubble四个核心UI组件。这些组件在HeartChat应用中扮演着关键角色，提供了情感分析、数据可视化、角色展示和聊天交互等核心功能。
 
 **Section sources**
-- [interest-tag-cloud.js](file://miniprogram/components/interest-tag-cloud/interest-tag-cloud.js#L1-L256)
-- [用户兴趣标签云组件使用示例.md](file://doc/使用文档/用户兴趣标签云组件使用示例.md#L1-L166)
+- [emotion-analysis.js](file://miniprogram/components/emotion-analysis/emotion-analysis.js)
+- [emotion-pie.js](file://miniprogram/components/emotion-pie/emotion-pie.js)
+- [role-card.js](file://miniprogram/components/role-card/role-card.js)
+- [chat-bubble/index.js](file://miniprogram/packageChat/components/chat-bubble/index.js)
 
-## model-selector 组件
+## 架构概览
+HeartChat的UI组件架构基于微信小程序的组件化体系，采用分层设计模式。基础组件层提供通用UI元素，业务组件层实现特定功能，页面层组合组件构建完整用户界面。
 
-`model-selector` 组件提供 AI 模型选择功能，支持多模型切换与状态管理。
-
-### 视觉样式与交互行为
-组件以下拉选择器形式呈现，用户可选择不同的 AI 模型类型（如智谱、Gemini、OpenAI 等），并进一步选择具体模型。界面包含模型图标、名称、简短描述及 API 状态提示，交互流畅，支持懒加载与连接测试。
-
-### 适用场景
-- AI 模型切换
-- 多模型能力展示
-- 开发者调试与测试
-
-### 属性（Properties）
-| 属性名 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| darkMode | Boolean | false | 是否启用暗黑模式 |
-
-### 事件（Events）
-| 事件名 | 说明 | 携带数据 |
-|--------|------|----------|
-| modelChange | 模型切换成功后触发 | `{ modelType, modelName }` |
-
-### 方法（Methods）
-| 方法名 | 参数 | 说明 |
-|--------|------|------|
-| showModelSelector | 无 | 显示模型选择器弹窗 |
-| hideModelSelector | 无 | 隐藏模型选择器弹窗 |
-| selectModelType | modelType | 选择模型类型并测试连接 |
-| selectModel | modelName | 选择具体模型并保存设置 |
-
-### WXML 使用示例
-```xml
-<model-selector 
-  darkMode="{{isDarkMode}}" 
-  bind:modelChange="onModelChange">
-</model-selector>
+```mermaid
+graph TD
+A[页面层] --> B[业务组件层]
+B --> C[基础组件层]
+C --> D[微信小程序原生组件]
+B --> E[服务层]
+E --> F[云函数]
+F --> G[数据库]
 ```
+
+**Diagram sources**
+- [miniprogram/pages](file://miniprogram/pages)
+- [miniprogram/components](file://miniprogram/components)
+- [miniprogram/services](file://miniprogram/services)
+- [cloudfunctions](file://cloudfunctions)
+
+## 详细组件分析
+
+### 情感分析组件 (emotion-analysis)
+emotion-analysis组件提供全面的情感分析功能，包括实时情感识别、历史记录展示和数据可视化。组件通过调用后端服务分析用户输入的文本，提取情感特征和关键词，并以图表形式展示分析结果。
+
+#### 属性 (Props)
+- `userId`: 用户ID，用于关联用户数据
+- `roleId`: 角色ID，用于区分不同角色的情感分析
+- `emotion`: 当前情感分析结果对象
+- `show`: 控制组件是否显示
+- `darkMode`: 暗黑模式开关
+
+#### 事件 (Events)
+- `save`: 记录当前心情事件
+- `share`: 分享情感分析结果事件
+- `close`: 关闭分析面板事件
+
+#### 方法
+- `analyzeText(text)`: 分析指定文本的情感
+- `loadEmotionHistory()`: 加载用户情感历史记录
+- `initCharts()`: 初始化数据可视化图表
+
+```mermaid
+sequenceDiagram
+participant User as "用户"
+participant Component as "emotion-analysis"
+participant Service as "emotionService"
+participant Cloud as "云函数"
+User->>Component : 输入文本
+Component->>Component : validateText()
+Component->>Service : analyzeEmotion(text)
+Service->>Cloud : callFunction('analysis')
+Cloud-->>Service : 返回情感分析结果
+Service-->>Component : 返回分析结果
+Component->>Component : updatePieChart()
+Component->>Component : updateRadarData()
+Component-->>User : 显示分析结果
+```
+
+**Diagram sources**
+- [emotion-analysis.js](file://miniprogram/components/emotion-analysis/emotion-analysis.js#L1-L420)
+- [services/emotionService.js](file://miniprogram/services/emotionService.js)
 
 **Section sources**
-- [model-selector.js](file://miniprogram/components/model-selector/model-selector.js#L1-L342)
+- [emotion-analysis.js](file://miniprogram/components/emotion-analysis/emotion-analysis.js)
 
-## ec-canvas 组件
+### 情感饼图组件 (emotion-pie)
+emotion-pie组件以饼图形式直观展示用户的情感状态，支持多种情感类型和暗黑模式。组件通过颜色编码和扇区角度来表示不同情感的强度和类型。
 
-`ec-canvas` 是基于 ECharts 的微信小程序图表组件，用于渲染各类数据可视化图表。
+#### 属性 (Props)
+- `emotion`: 情感分析结果对象，包含type和intensity字段
+- `darkMode`: 暗黑模式开关，影响图表颜色主题
 
-### 视觉样式与交互行为
-该组件封装了 ECharts 在小程序环境下的初始化逻辑，支持触摸事件（如点击、缩放）和动态数据更新。图表类型包括折线图、柱状图、饼图等，适用于情绪波动、统计报告等数据展示场景。
+#### 事件 (Events)
+- `update`: 图表更新事件，携带当前情感类型和强度
+- `select`: 情感扇区选择事件，用于交互式探索
 
-### 适用场景
-- 情绪历史趋势图
-- 用户行为统计
-- 每日心情报告可视化
+#### 数据结构
+- `colors`: 情感类型颜色映射表
+- `labels`: 情感类型标签映射表
+- `sectors`: 饼图扇区角度配置
 
-### 属性（Properties）
-| 属性名 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| canvasId | String | 'ec-canvas' | Canvas 元素 ID |
-| ec | Object | 无 | ECharts 配置对象，包含 `onInit` 回调 |
-| forceUseOldCanvas | Boolean | false | 强制使用旧版 Canvas 渲染 |
-
-### 事件（Events）
-| 事件名 | 说明 | 携带数据 |
-|--------|------|----------|
-| init | 图表初始化完成后触发 | `{ canvas, width, height, dpr }` |
-
-### 图表配置传递
-通过 `ec` 属性传递 ECharts 配置项，示例如下：
-```javascript
-Page({
-  data: {
-    ec: {
-      onInit: function(canvas, width, height, dpr) {
-        const chart = echarts.init(canvas, null, {
-          width: width,
-          height: height,
-          devicePixelRatio: dpr
-        });
-        canvas.setChart(chart);
-        chart.setOption({
-          title: { text: '情绪波动趋势' },
-          tooltip: {},
-          xAxis: { type: 'category', data: ['周一', '周二', '周三'] },
-          yAxis: { type: 'value' },
-          series: [{ data: [80, 90, 75], type: 'line' }]
-        });
-        return chart;
-      }
-    }
-  }
-});
-```
-
-### 动态更新数据
-通过组件实例获取 `chart` 对象并调用 `setOption` 方法更新数据：
-```javascript
-const ecComponent = this.selectComponent('#mychart');
-if (ecComponent && ecComponent.chart) {
-  ecComponent.chart.setOption({
-    series: [{ data: newData }]
-  });
+```mermaid
+classDiagram
+class EmotionPie {
++Object emotion
++Boolean darkMode
++Object colors
++Object labels
++Object sectors
++String currentEmotion
++Number intensity
++String highlightSector
++updatePieChart(emotion)
++updateTheme(isDark)
++onSectorTap(e)
+}
+EmotionPie --> "1" EmotionData : 显示
+class EmotionData {
++String type
++Number intensity
++String primary_emotion
 }
 ```
 
-### WXML 使用示例
-```xml
-<ec-canvas id="mychart" canvas-id="mychart" ec="{{ec}}" />
-```
+**Diagram sources**
+- [emotion-pie.js](file://miniprogram/components/emotion-pie/emotion-pie.js#L1-L172)
+- [emotion-analysis.js](file://miniprogram/components/emotion-analysis/emotion-analysis.js)
 
 **Section sources**
-- [ec-canvas.js](file://miniprogram/components/ec-canvas/ec-canvas.js#L1-L285)
+- [emotion-pie.js](file://miniprogram/components/emotion-pie/emotion-pie.js)
 
-## 暗黑模式支持
+### 角色卡片组件 (role-card)
+role-card组件用于展示角色信息，包括头像、名称、描述和分类。组件支持点击和长按交互，适用于角色选择和角色详情展示场景。
 
-所有 UI 组件均支持通过 `darkMode` 属性响应暗黑模式切换，主题样式由 `theme.json` 文件统一定义。
+#### 属性 (Props)
+- `role`: 角色对象，包含name、description、category、avatar等字段
+- `selected`: 选中状态，用于视觉反馈
+- `darkMode`: 暗黑模式开关
 
-### 主题配置机制
-`theme.json` 定义了白天与暗黑两种主题的样式变量，包括背景色、文字色、边框色、阴影等。组件通过绑定 `darkMode` 属性动态切换样式类或颜色映射。
+#### 事件 (Events)
+- `select`: 点击卡片事件，传递角色信息
+- `longpress`: 长按卡片事件，用于更多操作
 
-### 组件适配说明
-- **emotion-panel**：根据 `darkMode` 切换背景与文字颜色。
-- **interest-tag-cloud**：使用 `colorMap` 与 `darkModeColorMap` 分别定义白天与暗黑模式下的分类颜色。
-- **model-selector**：整体界面颜色随主题变化，确保可读性。
-- **ec-canvas**：图表颜色需在 `onInit` 中根据 `darkMode` 动态设置，建议使用主题变量。
+#### 辅助方法
+- `getRoleName()`: 获取角色名称，支持多种字段别名
+- `getRoleDescription()`: 获取角色描述，支持多种字段别名
+- `getRoleCategory()`: 获取角色分类，支持多种字段别名
+- `getRoleAvatar()`: 获取角色头像，支持默认头像
 
-### 主题变量示例（theme.json）
-```json
-{
-  "light": {
-    "color-text-base": "#212529",
-    "color-bg-base": "#ffffff"
-  },
-  "dark": {
-    "color-text-base": "#f8f9fa",
-    "color-bg-base": "#212529"
-  }
-}
+```mermaid
+flowchart TD
+Start([组件初始化]) --> LoadRole["加载角色数据"]
+LoadRole --> CheckAvatar["检查头像有效性"]
+CheckAvatar --> |有效| Display["显示角色信息"]
+CheckAvatar --> |无效| UseDefault["使用默认头像"]
+UseDefault --> Display
+Display --> WaitInput["等待用户交互"]
+WaitInput --> Click{"点击事件?"}
+Click --> |是| TriggerSelect["触发select事件"]
+Click --> |否| LongPress{"长按事件?"}
+LongPress --> |是| TriggerLongPress["触发longpress事件"]
+LongPress --> |否| ContinueWait["继续等待"]
+TriggerSelect --> End([事件处理完成])
+TriggerLongPress --> End
+ContinueWait --> WaitInput
 ```
 
-### 使用建议
-在页面或组件中监听主题变化事件，并同步更新 `darkMode` 属性：
-```javascript
-onLoad() {
-  const isDarkMode = wx.getSystemInfoSync().theme === 'dark';
-  this.setData({ isDarkMode });
-}
-```
+**Diagram sources**
+- [role-card.js](file://miniprogram/components/role-card/role-card.js#L1-L92)
+- [components/role-card](file://miniprogram/components/role-card)
 
 **Section sources**
-- [theme.json](file://miniprogram/theme.json#L1-L76)
+- [role-card.js](file://miniprogram/components/role-card/role-card.js)
 
-## 总结
-本文档全面介绍了 HeartChat 项目中的核心 UI 组件，涵盖其属性、事件、方法及使用方式。各组件均具备良好的可定制性与可访问性，支持暗黑模式，并通过事件机制实现灵活交互。ECharts 集成组件 `ec-canvas` 提供了强大的数据可视化能力，适用于多种数据分析场景。
+### 聊天气泡组件 (chat-bubble)
+chat-bubble组件用于展示聊天消息，支持发送方/接收方样式区分、时间显示、情感标签和多种气泡样式。组件提供了消息复制和删除等交互功能。
+
+#### 属性 (Props)
+- `message`: 消息对象，包含content、timestamp等字段
+- `isSender`: 是否为发送方消息
+- `showTime`: 是否显示时间
+- `showEmotionTag`: 是否显示情感标签
+- `darkMode`: 暗黑模式开关
+- `bubbleStyle`: 气泡样式，可选default、rounded、square
+
+#### 事件 (Events)
+- `delete`: 删除消息事件，传递消息ID
+
+#### 数据监听器
+- `message.timestamp`: 监听时间戳变化，自动格式化显示时间
+- `bubbleStyle`: 监听气泡样式变化，实时更新UI
+
+```mermaid
+sequenceDiagram
+participant Message as "消息数据"
+participant Bubble as "chat-bubble"
+participant User as "用户"
+Message->>Bubble : 传递消息对象
+Bubble->>Bubble : formatTime(timestamp)
+Bubble->>Bubble : renderMessage()
+loop UI渲染
+Bubble->>Bubble : 应用样式
+Bubble->>Bubble : 显示头像
+Bubble->>Bubble : 显示内容
+Bubble->>Bubble : 显示时间
+end
+User->>Bubble : 长按消息
+Bubble->>User : 显示操作菜单
+User->>Bubble : 选择"复制"
+Bubble->>Bubble : setClipboardData()
+Bubble->>User : 显示"复制成功"
+User->>Bubble : 选择"删除"
+Bubble->>Bubble : triggerEvent('delete')
+```
+
+**Diagram sources**
+- [chat-bubble/index.js](file://miniprogram/packageChat/components/chat-bubble/index.js#L1-L147)
+- [packageChat/components/chat-bubble](file://miniprogram/packageChat/components/chat-bubble)
+
+**Section sources**
+- [chat-bubble/index.js](file://miniprogram/packageChat/components/chat-bubble/index.js)
+
+## 依赖分析
+UI组件库依赖于多个内部服务和外部库，形成了清晰的依赖关系网络。组件通过服务层与云函数通信，获取数据和执行业务逻辑。
+
+```mermaid
+graph LR
+A[emotion-analysis] --> B[emotionService]
+A --> C[keywordService]
+B --> D[cloudFunction: analysis]
+C --> D
+E[emotion-pie] --> A
+F[role-card] --> G[userService]
+H[chat-bubble] --> I[chatCacheService]
+D --> J[AI模型]
+G --> K[cloudFunction: user]
+I --> L[cloudFunction: chat]
+```
+
+**Diagram sources**
+- [services/emotionService.js](file://miniprogram/services/emotionService.js)
+- [services/keywordService.js](file://miniprogram/services/keywordService.js)
+- [services/userService.js](file://miniprogram/services/userService.js)
+- [services/chatCacheService.js](file://miniprogram/services/chatCacheService.js)
+- [cloudfunctions/analysis](file://cloudfunctions/analysis)
+- [cloudfunctions/user](file://cloudfunctions/user)
+- [cloudfunctions/chat](file://cloudfunctions/chat)
+
+**Section sources**
+- [miniprogram/services](file://miniprogram/services)
+- [cloudfunctions](file://cloudfunctions)
+
+## 性能考虑
+UI组件在设计时考虑了性能优化，采用了延迟加载、数据缓存和按需渲染等策略。特别是ECharts组件，通过lazyLoad配置避免了不必要的资源消耗。
+
+- **图表性能**: 使用`lazyLoad: true`配置延迟初始化ECharts实例
+- **内存管理**: 及时释放不再使用的图表实例
+- **渲染优化**: 避免频繁的`setOption`调用，批量更新图表配置
+- **网络请求**: 合并相关数据请求，减少网络往返次数
+
+## 故障排除指南
+### 图表不显示
+**问题**: ECharts图表容器显示但内容为空。
+
+**解决方案**:
+1. 确保容器有明确的宽高设置
+2. 检查`ec-canvas`组件是否正确引入
+3. 使用`setTimeout`延迟初始化图表
+4. 确认数据格式正确且不为空
+
+### 组件样式错乱
+**问题**: 组件在不同设备上显示效果不一致。
+
+**解决方案**:
+1. 使用百分比而非固定像素值设置尺寸
+2. 为关键样式添加`!important`确保优先级
+3. 在页面滚动时调用`chart.resize()`
+4. 使用响应式设计适配不同屏幕尺寸
+
+### 交互无响应
+**问题**: 组件点击事件无反应。
+
+**解决方案**:
+1. 检查事件绑定是否正确
+2. 确认组件未被其他元素遮挡
+3. 查看控制台是否有JavaScript错误
+4. 验证数据传递是否完整
+
+**Section sources**
+- [ec-canvas.js](file://miniprogram/components/ec-canvas/ec-canvas.js)
+- [ECharts组件使用指南.md](file://doc/使用文档/ECharts组件使用指南.md)
+
+## 结论
+HeartChat的UI组件库设计合理，功能完整，为应用提供了丰富的用户界面元素。通过组件化开发，提高了代码复用率和开发效率。建议在使用时遵循文档中的规范，充分利用组件提供的属性和事件，同时注意性能优化和用户体验。

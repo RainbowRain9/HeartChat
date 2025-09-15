@@ -1,0 +1,24 @@
+### 反馈入库 — PROPOSED
+### 将 Feedback_Extractor 的结构化结果写入反馈表（示例路径，可按后端实际接口调整）
+
+POST {{API_BASE}}/api/feedbacks
+Content-Type: application/json
+Authorization: Bearer {{API_KEY}}
+
+{
+  "user_hash": "{{USER_HASH}}",
+  "type": "{{#1757939613261.structured_output.feedback_type#}}",
+  "severity": "{{#1757939613261.structured_output.severity#}}",
+  "sentiment": "{{#1757939613261.structured_output.sentiment#}}",
+  "module": "{{#1757939613261.structured_output.module#}}",
+  "summary": "{{#1757939613261.structured_output.summary#}}",
+  "raw_text": "{{#1757939613261.structured_output.raw_text#}}",
+  "ts": "{{NOW_ISO}}"
+}
+
+### 变量说明
+# {{API_BASE}}: 网关地址
+# {{API_KEY}}: 认证密钥
+# {{USER_HASH}}: 脱敏用户哈希
+# {{NOW_ISO}}: 当前时间 ISO8601
+

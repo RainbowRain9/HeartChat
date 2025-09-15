@@ -1,0 +1,267 @@
+好的！下面把**风险评估 LLM**该“抓哪些关键信息、如何分级打分、在工作流里怎么串起来”一次讲清，并给出可直接粘贴的 Schema/提示词/分流规则与测试样例，与你现有流程无缝衔接（在意图/寒暄分流之后、情感分析之前或并行插入一条安全支线）。
+
+---
+
+# 1）要抓的关键信息（输入特征）
+
+* **显式风险线索**：自伤/他伤词（自杀、轻生、割腕、撞、跳、结束生命、杀人、报复…）、计划性要素（时间、地点、工具、方法）、无法自我保护表述（没人能救、控制不住、现在就做）。
+* **隐式风险线索**：强烈绝望/无价值感（“我就是个废物/活着没意义”）、极端词（必须、完了、无路可走）、告别/遗嘱式表达。
+* **时间性与紧迫度**：是否“正在/马上/今晚”；是否“已尝试过”。
+* **保护/缓冲因素**：家人朋友在旁、愿意求助、已有预约、愿意延迟。
+* **情绪强度 & 行为迹象**：极高强度负向情绪 + 行为准备（买刀片、站在楼顶）。
+* **外部他害风险**：威胁他人、校园暴力、具体对象与方式。
+
+> 以上线索同时用于模型打分与**分流阈值**判断（见 §3）。
+
+---
+
+# 2）结构化输出 Schema（直接粘贴到 Dify 的 Structured Output）
+
+```json
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "risk_level": { "type": "integer", "minimum": 0, "maximum": 4 },
+    "intent_type": { "type": "string", "enum": ["self-harm", "harm-others", "both", "none"] },
+    "signals": { "type": "array", "items": { "type": "string" } },
+    "timeframe": { "type": "string", "enum": ["now", "soon(<24h)", "later(>24h)", "unknown"] },
+    "plan_specificity": { "type": "string", "enum": ["none", "vague", "specific"] },
+    "means_access": { "type": "string", "enum": ["no", "possible", "confirmed"] },
+    "protective_factors": { "type": "array", "items": { "type": "string" } },
+    "willing_to_seek_help": { "type": "boolean" },
+    "summary": { "type": "string" }
+  },
+  "required": ["risk_level", "intent_type", "summary"]
+}
+```
+
+> `risk_level` 含义：0 无风险 / 1 轻度关注 / 2 中度风险 / **3 高度风险** / **4 紧急风险**。3/4 进入危机流转接人工，0–2 留在主线。
+
+---
+
+# 3）打分与阈值（可直接用在 If-Else 节点）
+
+**分级规则（LLM 内部遵循 + 分流使用）**
+
+* **4 紧急**：存在明确计划与准备/实施中（时间“现在/今晚”、具体方法与工具、地点），或他害威胁具体且迫在眉睫。
+* **3 高度**：存在强烈意图 + 模糊或部分计划（如“买了刀片”“想今晚结束”但未明确地点），或无法自我保护/无人陪伴。
+* **2 中度**：强烈绝望/自责/无意义感，否认具体计划，但反复意念；有部分保护因素。
+* **1 轻度**：偶发负向情绪与夸张表达，无伤害意图或计划，保护因素明显。
+* **0 无风险**：纯抱怨/比喻性表达，明确否认任何伤害意图。
+
+**工作流分流阈值**
+
+* `risk_level >= 3` → 立即跳 **危机干预与人工转接流**（中断普通建议/检索/SmallTalk）。
+* `risk_level in [1,2]` → 保留在主线，但**追加安全提示与关怀追问**（不贴诊断、不给刺激性细节）。
+* `risk_level == 0` → 正常走情感/推理链路。
+
+---
+
+# 4）提示词模板（System Prompt，直接可用）
+
+```
+# 角色
+你是“心语精灵”的安全风控评估器，负责基于单轮用户文本做风险分级与要素抽取。
+
+# 任务
+仅基于该轮文本，判断是否存在自伤或他伤风险，并输出结构化结论（由系统 JSON Schema 约束）。
+
+# 分级标准（务必遵循）
+- 4 紧急：明确计划/正在实施/短时间内（现在/今晚）准备实施；或明确他害威胁且迫近。
+- 3 高度：有强烈意图 + 模糊或部分计划（方法/工具/时间任一），或难以自我保护。
+- 2 中度：反复自责/绝望/无意义感，无明确计划；存在部分保护因素。
+- 1 轻度：偶发负向表达，无伤害意图或计划，保护因素清晰。
+- 0 无风险：比喻/抱怨/与伤害无关的表达。
+
+# 线索提取（输出到 signals/protective_factors 等）
+- 计划性：是否提到时间/地点/方法/工具（plan_specificity）
+- 工具可得性（means_access）
+- 时间紧迫度（timeframe）
+- 保护因素（家人朋友在旁/愿意聊/愿意延迟/已预约）
+- 他害意向与对象（intent_type）
+
+# 重要禁止
+不要给出任何具体自伤方法的描述细节；不要输出安慰或建议文本；不要输出 JSON 以外内容。
+
+# 输出
+仅输出结构化结果（由系统 Schema 约束）。
+用户文本：{{#sys.query#}}
+```
+
+---
+
+# 5）工作流接线（最小改动）
+
+1. **插入位置**：放在“意图/寒暄分流”之后、情感分析之前（或与情感分析并行，但**风险分流优先**）。
+2. **If-Else 分支**：
+
+   * 条件 A：`{{#风险评估节点.output.risk_level#}} >= 3` → **危机干预与人工转接工作流**
+   * 条件 B：`== 2 || == 1` → 主线回复中插入**安全提示组件**（模板见 §6），并继续 REBT/推理
+   * Else（0）→ 正常主线
+3. **失败分支**：开启 Structured Output 的“解析失败→失败分支”，失败时保守处理为 `risk_level = 2` 并加安全提示。
+4. **与 SmallTalk 关系**：即使命中“日常寒暄”，也先跑**极轻规则**（词典）→ 若触发高危词，绕过 SmallTalk 直达风险评估→危机流。
+
+---
+
+# 6）配套话术（由**主线**或**危机流**使用，风险 LLM 不直接说话）
+
+* **主线·轻/中度（1/2）安全提示片段**（放在最终回复顶部，≤40字）
+
+  > “我在这里，会认真陪你聊。若你感到难以自控，请考虑联系可信的人或校内辅导中心。我们也可以一步步来。”
+* **危机流·高度/紧急（3/4）首句模板**
+
+  > “谢谢你告诉我这些。你的安全最重要。现在请先保证自己待在安全的地方。我可以帮你联系校内辅导与紧急支持。”
+
+> 这些话术在“危机干预与人工转接流”里继续分派与跟进（摘要报告→人工），风险 LLM 本身只做识别与打分，不输出内容。
+
+---
+
+# 7）测试样例（用于验收与阈值调优）
+
+| 文本                  | 期望                                                                              |
+| ------------------- | ------------------------------------------------------------------------------- |
+| “我真的撑不住了，今晚就想结束一切。” | risk\_level=4, timeframe=now/soon, plan\_specificity=vague/specific（看上下文），直达危机流 |
+| “我买了刀片，一直在犹豫。”      | 3（高度），means\_access=confirmed，直达危机流                                             |
+| “活着没啥意思，但我不会做傻事。”   | 2（中度），提示+主线                                                                     |
+| “气到想杀了他（夸张说法）”      | 1（轻度）或 2（中度，若伴持续仇恨），主线                                                          |
+| “好累。”               | 0–1（看上下文），主线                                                                    |
+| “要不要一起跳（玩笑）”        | 2（中度，保守处理），提示+主线                                                                |
+
+---
+
+# 8）与现有图的对应与注意
+
+* 你的当前图中还未单独设置**风险评估节点与危机转接流**。按上面的节点与分流阈值加一条“生命安全优先”的支线即可，不影响主线的情感/文化/汇总节点。
+* **日志与审计**：记录 `risk_level/intent_type/signals` 到用户画像更新流，但**不**在普通对话中回显。
+* **隐私与权限**：危机转接需走合规通道（校内辅导员/热线），工作流里保留“同意/拒绝分享”的分支。
+
+---
+
+需要的话，我可以把**风险评估节点（含 Schema 与 System Prompt）+ If-Else 分支表达式 + 危机流入口占位**打包成一段可直接合入你 Dify 的 YAML 片段，你只要把“节点 ID/名称”对齐即可。
+
+
+没问题。我给你一套\*\*“风险评估 LLM 节点之后”的 If-Else 分支表达式\*\*（按 Dify 工作流节点面板可直接配置的形式），以及**每个分支要流向的下一步节点**。你的现有图（情感节点 `1757929808936`、文化节点 `1757929860081`、汇总节点 `1757929910659`、条件分支节点 `1757921573268` 等）我已经对齐；风险评估是你要新加的节点，所以下面先用一个占位 ID（请把 `RISK_NODE_ID` 替换为你实际的风险评估节点 ID）。
+
+---
+
+# 1) If-Else 分支节点（放在“风险评估 LLM”节点之后）
+
+> 节点类型：**条件分支（If-Else）**
+> 触发源：**风险评估 LLM（Structured Output）**
+> 读取字段：`output.risk_level`、`output.timeframe`、`output.means_access`、`output.intent_type`
+
+## 分支顺序与**精确表达式**
+
+> Dify 的字段选择在 UI 中是“变量选择器（variable\_selector）”，等效路径示例：
+> `["RISK_NODE_ID","output","risk_level"]`
+
+### Case 1 — 紧急/高度风险（直达危机流）
+
+* **条件 A（首选）**：`risk_level >= 4`
+
+  ```yaml
+  - comparison_operator: greater_than_or_equal
+    variable_selector: ["RISK_NODE_ID","output","risk_level"]
+    varType: number
+    value: 4
+  ```
+* **条件 B（备选，或作为单独 Case 放在 A 下方）**：`risk_level == 3 AND timeframe ∈ {"now","soon(<24h)"} AND means_access ∈ {"possible","confirmed"}`
+
+  ```yaml
+  - comparison_operator: equal
+    variable_selector: ["RISK_NODE_ID","output","risk_level"]
+    varType: number
+    value: 3
+  - comparison_operator: in
+    variable_selector: ["RISK_NODE_ID","output","timeframe"]
+    varType: string
+    value:
+      - now
+      - "soon(<24h)"
+  - comparison_operator: in
+    variable_selector: ["RISK_NODE_ID","output","means_access"]
+    varType: string
+    value:
+      - possible
+      - confirmed
+  ```
+* **路由到的下一步节点**：`Crisis_Entry`（你的“危机干预与人工转接流”入口节点；类型可用「触发子工作流」/「Webhook」/「LLM 危机话术」+「人工转接」链）。
+
+### Case 2 — 高度风险（一般情形，直达危机流）
+
+* **条件**：`risk_level == 3`
+
+  ```yaml
+  - comparison_operator: equal
+    variable_selector: ["RISK_NODE_ID","output","risk_level"]
+    varType: number
+    value: 3
+  ```
+* **路由到的下一步节点**：`Crisis_Entry`
+
+> 说明：Case 1 放在 Case 2 之前，用于“3 分 + 高紧迫/可得手段”的优先拦截。普通 3 分也走危机流，保证**生命安全优先**。
+
+### Case 3 — 中/轻度风险（加入安全提示，再走主线）
+
+* **条件**：`risk_level in {2,1}`
+
+  ```yaml
+  - comparison_operator: in
+    variable_selector: ["RISK_NODE_ID","output","risk_level"]
+    varType: number
+    value: [1,2]
+  ```
+* **路由到的下一步节点**（建议串起来三步）：
+
+  1. `Safety_Preamble`（LLM，生成 1 段 ≤40 字的温柔安全提示片段，不做诊断）→
+  2. （可选）`Flag_RiskLight`（变量赋值节点，写入 `risk_hint=true` 供汇总节点拼接）→
+  3. **进入你现有主线：**`1757929808936`（基础情感与心理维度分析） → `1757929860081`（文化语境与触发因素分析） → `1757929910659`（汇总、总结与建议生成）。
+
+### Case 4 — 无风险（走主线）
+
+* **条件**：`risk_level == 0`
+
+  ```yaml
+  - comparison_operator: equal
+    variable_selector: ["RISK_NODE_ID","output","risk_level"]
+    varType: number
+    value: 0
+  ```
+* **路由到的下一步节点**：直接进 `1757929808936` → `1757929860081` → `1757929910659`。
+
+### Default（解析失败/缺字段的兜底）
+
+* **条件**：以上都不匹配（If-Else 的 Default 分支）
+* **路由到的下一步节点**：`Safety_Preamble` → 主线
+
+  > 同时建议在“风险评估 LLM”节点开启 **Structured Output 失败分支**，失败即写入 `risk_level=2` 的保守值，然后进入本 Case。
+
+---
+
+# 2) 推荐的节点连接图（文字版）
+
+```
+Start
+  → 意图识别(1757923580402)
+    → [若 Daily_Conversation & 置信度≥0.7 → SmallTalk_Agent → 返回即可]
+    → 文本(非寒暄) → 风险评估 LLM (RISK_NODE_ID)
+        → If-Else(本回答所列分支)
+            Case1/Case2 → Crisis_Entry(危机干预与人工转接流)
+            Case3       → Safety_Preamble → 1757929808936 → 1757929860081 → 1757929910659
+            Case4       → 1757929808936 → 1757929860081 → 1757929910659
+            Default     → Safety_Preamble → 主线同上
+```
+
+> 其中 `1757929808936 / 1757929860081 / 1757929910659` 均来自你当前的工作流图；危机分支是新增，SmallTalk 是你前面确认要加的轻量分流。
+
+---
+
+# 3) 两个贴士（保证可观测 & 不越界）
+
+1. **审计与画像**：在 Case1/2/3 中把 `risk_level / intent_type / timeframe / means_access` 落到“用户画像更新流”（异步），但**不要**在对话正文回显这些字段。
+2. **与知识检索的关系**：风险分流优先于检索与情绪分析；只有 Case3/4 才允许进入主线并（按需）开启检索。你当前“知识检索”节点 `reranking_enable: false`，后续建议开启 Rerank 并将 `top_k` 调到 6–8，提高上下文质量。
+
+---
+
+需要的话，我可以把**If-Else 节点的 YAML 片段**（含四个 Case 精确 `comparison_operator / variable_selector / value` 配置）和 `Safety_Preamble` 的最小提示词，一并整理好，直接给你粘贴。
