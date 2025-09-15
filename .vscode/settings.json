@@ -2,5 +2,6 @@
     "git.ignoreLimitWarning": true,
     "cSpell.enabledSchemes": {
         "file": false
-    }
+    },
+    "chatgpt.openOnStartup": true
 }
