@@ -90,3 +90,7 @@ cloudfunctions/login/config.js
 # Qoder editor metadata
 .qoder/repowiki/zh/meta/repowiki-metadata.json
 
+# Dify workflow files - DO NOT COMMIT
+dify/
+*.yml
+
