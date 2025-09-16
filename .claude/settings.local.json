@@ -42,7 +42,9 @@
       "Bash(export:*)",
       "Bash(ldd:*)",
       "Bash(QT_QPA_PLATFORM=xcb QT_QPA_PLATFORM_PLUGIN_PATH=/home/robot102/Programs/miniconda3/lib/python3.13/site-packages/PyQt5/Qt5/plugins/platforms python main.py)",
-      "Bash(git check-ignore:*)"
+      "Bash(git check-ignore:*)",
+      "Bash(git restore:*)",
+      "Bash(git init:*)"
     ],
     "deny": [],
     "additionalDirectories": [

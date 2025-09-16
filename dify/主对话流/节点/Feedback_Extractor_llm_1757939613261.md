@@ -4,7 +4,7 @@
 - 问题分类器
 
 ## 下游
-- （无）
+- 反馈话术生成
 
 ## 内部信息
 - 模型：langgenius/openai_api_compatible/openai_api_compatible/zai-org/GLM-4.5 (chat)
